@@ -1,0 +1,8 @@
+package milestoneone;
+
+def(C) printf(char* format, ...);
+
+def main()
+{
+    printf("Hello World");
+} 

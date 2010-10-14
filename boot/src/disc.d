@@ -16,16 +16,39 @@
 *    along with disc.  If not, see <http://www.gnu.org/licenses/>.
 *
 ******************************************************************************/
-module disc; 
+module discompiler; 
 
 import std.stdio;
+
+import disc.basic.Source;
+import disc.dis.Token;
+import disc.dis.Lexer;
 
 /**
 * Main
 */
-int main(char[][] args)
+int main(string[] args)
 {
-    writeln("Dis Compile V0.01");
+    writeln("Dis Compiler V0.01");
+
+    if(args.length < 2)
+    {
+        writeln("No Source File");
+        return 1;
+    }
+
+    //Open Source
+    auto src = new SourceFile();
+    src.open(args[1]);
+    
+    //Lexer
+    auto lex = new Lexer();
+    lex.source = src;
+    
+    while(lex.getToken() != Token.EOF)
+    {
+        writeln(toString(lex.currentToken));
+    }
 
   
     return 0;
