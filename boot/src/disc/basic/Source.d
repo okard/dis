@@ -111,6 +111,6 @@ class SourceFile : File, Source
     */
     public bool isEof()
     {
-        return readEOF;
+        return eof();
     }
 }
