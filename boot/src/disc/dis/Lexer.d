@@ -192,7 +192,12 @@ class Lexer
             scanIdentifier();
             mTok.assign(Token.Identifier);
 
+            //to improve
             //Look for Keywords
+            if(mTok.val.Identifier == "def")
+                mTok.tok = Token.KwDef;
+            if(mTok.val.Identifier == "package")
+                mTok.tok = Token.KwPackage;
         }
             
 
