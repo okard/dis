@@ -21,6 +21,10 @@ module disc.dis.Lexer;
 import disc.basic.Source;
 import disc.dis.Token;
 
+//phobos imports
+import std.container;
+
+//debug
 import std.stdio;
 
 /**
@@ -28,7 +32,8 @@ import std.stdio;
 */
 struct Value
 {
-    enum Type { None, String, Double, Float, Integer, UInteger }
+    public enum Type { None, String, Identifier, Double, Float, Integer, UInteger }
+
 
     //Type
     Type ValueType;
@@ -36,6 +41,7 @@ struct Value
     union
     {
         char[] String;
+        char[] Identifier;
         double Double;
         float Float;
         int   Integer;
@@ -49,22 +55,41 @@ struct Value
 */
 class Lexer
 {
-    struct TokenEntry
+    ///Structure for TokenList
+    public struct TokenEntry
     {
+        public TokenEntry assign(Token tok, Value v)
+        {
+            this.tok = tok;
+            this.val = v;
+            hasValue = true;
+            return this;
+        }
+
+        public TokenEntry assign(Token tok)
+        {
+            this.tok = tok;
+            //this.val = null;
+            hasValue = false;
+            return this;
+        }
+
         Token tok;
         Value val;
         bool hasValue;
     }
 
+    //Token List
+    private SList!(TokenEntry) mTokList;
     ///The current source to lex
     private Source mSrc;
     ///Current Token
-    private Token mTok;
+    private TokenEntry mTok;
     ///Current char
     private char mC;
 
     /**
-    * Get a valid characeter
+    * Get a valid character
     */
     private bool nextValidChar(ref char c)
     {
@@ -75,7 +100,7 @@ class Lexer
 
             c = mSrc.getChar();
         }
-        while(c == ' ' || c == '\t') //Ignore Space and tab at the moment, to fix
+        while(c == ' ' || c == '\t') //Ignore Space and tab at the moment, to improve
 
         return true;
     }
@@ -93,50 +118,79 @@ class Lexer
     */
     private void scanIdentifier()
     {
+        char[] ident;
+        ident ~= mC;
+
         while(isAlpha(mSrc.peekChar(1)))
         {
             mC = mSrc.getChar();
+            ident ~= mC;
         }
+
+        mTok.val = Value(Value.Type.Identifier, ident);
+    }
+
+    /**
+    * Scan String
+    */
+    private void scanString()
+    {
+        mTok.assign(Token.String);
+        
+        char[] str;
+
+        do
+        { 
+            mC = mSrc.getChar();
+            if(mC != '"')
+                str ~= mC;
+        }
+        while(mC != '"');
+        
+        mTok.val = Value(Value.Type.String, str);
     }
 
     /**
     * Get next Token
     */
-    Token getToken()
+    TokenEntry getToken()
     {
         if(mSrc is null)
             throw new Exception("No Source File");
         
-
+        //look for file end and no valid chars
         if(mSrc.isEof() || !nextValidChar(mC))
         {
-            mTok = Token.EOF;
+            mTok.assign(Token.EOF);
             return mTok;
         }   
 
         //writeln(mC == '\n' ? 'n' : mC);
 
+        //Check for special characters
         switch(mC)
         {
-        case '\n': mTok = Token.EOL; break;
-        case ';':  mTok = Token.Semicolon; break;
-        case ',':  mTok = Token.Comma; break;
-        case '.':  mTok = Token.Dot; break;
-        case ':':  mTok = Token.Colon; break;
-        case '(':  mTok = Token.ROBracket; break;
-        case ')':  mTok = Token.RCBracket; break;
-        case '[':  mTok = Token.AOBracket; break;
-        case ']':  mTok = Token.ACBracket; break;
-        case '{':  mTok = Token.COBracket; break;
-        case '}':  mTok = Token.CCBracket; break;
+        case '\n': mTok.assign(Token.EOL); break;
+        case ';':  mTok.assign(Token.Semicolon); break;
+        case ',':  mTok.assign(Token.Comma); break;
+        case '.':  mTok.assign(Token.Dot); break;
+        case ':':  mTok.assign(Token.Colon); break;
+        case '(':  mTok.assign(Token.ROBracket); break;
+        case ')':  mTok.assign(Token.RCBracket); break;
+        case '[':  mTok.assign(Token.AOBracket); break;
+        case ']':  mTok.assign(Token.ACBracket); break;
+        case '{':  mTok.assign(Token.COBracket); break;
+        case '}':  mTok.assign(Token.CCBracket); break;
+        case '"':  scanString(); break;
         default:
-            mTok = Token.None;
+            mTok.assign(Token.None);
         }
 
-        if(mTok == Token.None && isAlpha(mC))
+        //Handle Identifiers and Keywords
+        if(mTok.tok == Token.None && isAlpha(mC))
         {
             scanIdentifier();
-            mTok = Token.Identifier;
+            mTok.assign(Token.Identifier);
 
             //Look for Keywords
         }
@@ -148,15 +202,15 @@ class Lexer
     /**
     * Take a peek for next Token 
     */
-    Token peekToken()
+    TokenEntry peekToken()
     {
-        return Token.None;
+        return TokenEntry().assign(Token.None);
     }
     
     /**
     * The current Token
     */
-    Token currentToken()
+    TokenEntry currentToken()
     {
        return mTok;
     }
@@ -183,6 +237,6 @@ class Lexer
     */
     Source source()
     {
-        return null;
+        return mSrc;
     }  
 } 

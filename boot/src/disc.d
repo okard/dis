@@ -45,9 +45,15 @@ int main(string[] args)
     auto lex = new Lexer();
     lex.source = src;
     
-    while(lex.getToken() != Token.EOF)
+    while(lex.getToken().tok != Token.EOF)
     {
-        writeln(toString(lex.currentToken));
+        auto t = lex.currentToken;
+        if(t.tok == Token.Identifier)
+            writefln("Identifier: %1$s", t.val.Identifier);
+        else if (t.tok == Token.String)
+            writefln("String: %1$s", t.val.String);
+        else
+            writeln(toString(t.tok));
     }
 
   
