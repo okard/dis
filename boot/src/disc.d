@@ -23,6 +23,7 @@ import std.stdio;
 import disc.basic.Source;
 import disc.dis.Token;
 import disc.dis.Lexer;
+import disc.dis.Parser;
 
 /**
 * Main
@@ -40,11 +41,24 @@ int main(string[] args)
     //Open Source
     auto src = new SourceFile();
     src.open(args[1]);
-    
-    //Lexer
+
     auto lex = new Lexer();
     lex.source = src;
-    
+    //dumpLexer(lex);
+
+    //Parser
+    auto parser = new Parser();
+    parser.source = src;
+    parser.parse();
+
+    return 0;
+}
+
+/**
+* Debug Function that dumps out lexer output
+*/
+private void dumpLexer(Lexer lex)
+{
     while(lex.getToken().tok != Token.EOF)
     {
         auto t = lex.currentToken;
@@ -55,7 +69,4 @@ int main(string[] args)
         else
             writeln(toString(t.tok));
     }
-
-  
-    return 0;
 }

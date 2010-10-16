@@ -82,6 +82,17 @@ class SourceFile : File, Source
     {
         char c;
         read(c);
+        
+        if(c == '\n')
+        {
+            mLoc.Line++;
+            mLoc.Col = 0;
+        }
+        else
+        {
+            mLoc.Col++;
+        }
+        
         return c;
     }
 

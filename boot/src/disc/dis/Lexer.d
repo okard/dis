@@ -18,6 +18,7 @@
 ******************************************************************************/
 module disc.dis.Lexer;
 
+import disc.basic.Location;
 import disc.basic.Source;
 import disc.dis.Token;
 
@@ -76,6 +77,7 @@ class Lexer
 
         Token tok;
         Value val;
+        Location loc;
         bool hasValue;
     }
 
@@ -167,6 +169,8 @@ class Lexer
 
         //writeln(mC == '\n' ? 'n' : mC);
 
+        mTok.loc = mSrc.Loc;
+
         //Check for special characters
         switch(mC)
         {
@@ -225,7 +229,7 @@ class Lexer
     */
     Value currentValue()
     {
-        return Value();
+        return mTok.val;
     }
 
     /**

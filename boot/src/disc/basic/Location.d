@@ -25,7 +25,9 @@ import std.conv;
 */
 struct Location
 {
+    ///Line starts with 0
     uint Line; 
+    ///Column starts with 0
     uint Col; 	
     
     /*
@@ -40,8 +42,9 @@ struct Location
     /*
     * to String
     */
-    public char[] toString()
+    public string toString()
     {
-        return "Line " ~ to!(char[])(Line) ~ ", Col " ~ to!(char[])(Col);
+        //return here with Line+1 
+        return cast(string)("Line " ~ to!(char[])(Line+1) ~ ", Col " ~ to!(char[])(Col));
     }
 }
