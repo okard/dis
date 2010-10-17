@@ -1,8 +1,9 @@
 package milestoneone;
 
-def(C) printf(format: char*, ...);
+def(C) printf(format: char*, T...);
 
 def main()
 {
     printf("Hello World");
 }
+

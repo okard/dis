@@ -24,7 +24,11 @@ import disc.dis.Token;
 import disc.dis.Lexer;
 
 import disc.ast.Node;
+import disc.ast.Type;
 import disc.ast.Declaration;
+import disc.ast.Statement;
+import disc.ast.Expression;
+import disc.ast.Printer;
 
 //debug
 import std.stdio;
@@ -35,20 +39,23 @@ import std.stdio;
 class Parser
 {
     ///Lexer
-    private Lexer lex;
+    private Lexer mLex;
     ///Token
     private Lexer.TokenEntry mToken;
     ///AST Root Node
     private Node mAstRoot;
     ///AST Current Node
     private Node mAstCurrent;
+    ///AST Printer
+    private Printer mAstPrinter;
 
     /**
     * Ctor
     */
     public this()
     {
-        lex = new Lexer();
+        mLex = new Lexer();
+        mAstPrinter = new Printer();
     }
     
     /**
@@ -56,7 +63,7 @@ class Parser
     */
     public void parse()
     {
-        mToken = lex.getToken();
+        mToken = mLex.getToken();
         
         while(mToken.tok != Token.EOF)
         {
@@ -67,7 +74,7 @@ class Parser
             default:
             }
 
-            mToken = lex.getToken();
+            mToken = mLex.getToken();
         }
     }
 
@@ -81,19 +88,20 @@ class Parser
         //package identifier;
         assert(mToken.tok == Token.KwPackage);
         
-        mToken = lex.getToken();
+        mToken = mLex.getToken();
         
         if(mToken.tok != Token.Identifier)
             error(mToken.loc, "Expected Identifier after package");
         
         //Create new Package Declaration
-        writefln("Package: %1$s", mToken.val.Identifier);
         auto pkg = new PackageDeclaration(cast(string)mToken.val.Identifier);
 
         //Look for semicolon or end of line
-        mToken = lex.getToken();
+        mToken = mLex.getToken();
         if(mToken.tok != Token.EOL && mToken.tok != Token.Semicolon)
             error(mToken.loc, "Expected EOL or Semicolon");
+
+        mAstPrinter.print(pkg);
     }
 
     /**
@@ -101,79 +109,117 @@ class Parser
     */
     private void parseDef()
     {
-        writeln("parseDef");
-
         //def{(Calling Convention)} Identifier(Parameter) ReturnType
         // Block {}
         assert(mToken.tok == Token.KwDef);
 
-        mToken = lex.getToken();
+        auto func = new FunctionDeclaration();
+        mToken = mLex.getToken();
         
         //Parse Calling Convention
         if(mToken.tok == Token.ROBracket)
         {
             //identifier aka calling convention
-            mToken = lex.getToken();
-            if(mToken.tok != Token.Identifier)
+            if(!expect(mToken,Token.Identifier))
                 error(mToken.loc, "parseDef: Expected Identifier for Calling Convention");
             
-            //debug output
-            writefln("Calling Convention: %1$s", mToken.val.Identifier);
+            switch(mToken.val.Identifier)
+            {
+            case "C": func.mType.mCallingConv = FunctionType.CallingConvention.C; break;
+            case "Dis": func.mType.mCallingConv = FunctionType.CallingConvention.Dis;break;
+            default: error(mToken.loc, "Invalid CallingConvention");
+            }
             
             //close )
-            mToken = lex.getToken();
-            if(mToken.tok != Token.RCBracket)
+            if(!expect(mToken, Token.RCBracket))
                 error(mToken.loc, "parseDef: Expected )");
 
-            mToken = lex.getToken();
+            mToken = mLex.getToken();
         }
         
         //parse function name (identifier)
         if(mToken.tok != Token.Identifier)
+        {
             error(mToken.loc, "parseDef: expected identifier");
+            return;
+        }
         
-        //Debug Output
-        writefln("Function: %1$s", mToken.val.Identifier);
+        func.mName = cast(string)mToken.val.Identifier;
 
         //expected (params) return type {
-        mToken = lex.getToken();
-        if(mToken.tok != Token.ROBracket)
+        if(!expect(mToken, Token.ROBracket))
         {
             error(mToken.loc, "parseDef: expected (");
             return;
         }
-        
-        //identfier{:} type, ...
-        while(mToken.tok != Token.RCBracket)
-        {
-            mToken = lex.getToken();
-            if(mToken.tok == Token.Identifier)
-                parseParam();
-            //varargs?
-        }
-        
-        
+
+        //parse parameters
+        parseDefParams(func);
+
+        //after parsing parameters expects )
+        if(mToken.tok != Token.RCBracket)
+            error(mToken.loc, "parseDef: expected ) after parameters");
+
+        //TODO return type
+
+        //debug: print out function for debug 
+        mAstPrinter.print(func);
     }
 
     /**
     * Parse Defintion
     */
-    private void parseParam()
+    private void parseDefParams(FunctionDeclaration fd)
     {
-        writeln("parseParam");
-        // identifier [:] type{*}
-        assert(mToken.tok == Token.Identifier);
-    
-        writefln("ParamName: %1$s", mToken.val.Identifier);
+        //accept Identifier, ":", "," 
 
-        mToken= lex.getToken();
-        if(mToken.tok == Token.Colon)
-            mToken = lex.getToken();
+        //Parse one parameter
 
-        if(mToken.tok != Token.Identifier)
-            error(mToken.loc, "parseParam: Expected Type Identifier");
+        char[][] list;
 
-        writefln("Type: %1$s", mToken.val.Identifier);
+        do
+        {
+            //no params
+            if(!expect(mToken, Token.Identifier))           
+                return;
+
+            //variants are: 
+            //1. name : type
+            //2. name type
+            //3. name
+            //4. type
+            //5. varargs
+            //TODO: keywords before: ref, const, in, out,....
+            list ~= mToken.val.Identifier;
+
+            mToken = mLex.getToken();
+            if(mToken.tok == Token.Colon)
+                mToken = mLex.getToken();
+            
+            //Variant one or two
+            if(mToken.tok == Token.Identifier)
+            {
+                list ~= mToken.val.Identifier;
+            }
+
+            if(mToken.tok == Token.RCBracket)
+            {
+                //all finished
+                return;
+            }
+
+            //varargs
+            if(mToken.tok == Token.Dot)
+            {
+            }
+
+            if(mToken.tok == Token.Comma)
+            {
+                //one param finished
+                continue;
+            }
+        }
+        while(mToken.tok != Token.Identifier);
                  
     }
 
@@ -182,7 +228,17 @@ class Parser
     */
     private void parseStatement()
     {
+        //Expressions and Statements
         //CallStatement
+    }
+
+    /**
+    * Expect a special token
+    */
+    private bool expect(ref Lexer.TokenEntry token, Token expected)
+    {
+        token = mLex.getToken();
+        return (token.tok == expected);
     }
 
     /**
@@ -199,6 +255,6 @@ class Parser
     */
     public void source(Source src)
     {
-        lex.source = src;
+        mLex.source = src;
     }
 } 

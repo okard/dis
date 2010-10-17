@@ -27,3 +27,11 @@ abstract class Expression : Node
 {
     //return type
 }
+
+/**
+* A Function Call
+*/
+class FunctionCall : Expression
+{
+    //Identifier
+}

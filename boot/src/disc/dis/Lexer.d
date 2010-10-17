@@ -118,7 +118,7 @@ class Lexer
     /**
     * Scan Identifier
     */
-    private void scanIdentifier()
+    private void scanIdentifier(ref TokenEntry te)
     {
         char[] ident;
         ident ~= mC;
@@ -129,15 +129,15 @@ class Lexer
             ident ~= mC;
         }
 
-        mTok.val = Value(Value.Type.Identifier, ident);
+        te.val = Value(Value.Type.Identifier, ident);
     }
 
     /**
     * Scan String
     */
-    private void scanString()
+    private void scanString(ref TokenEntry te)
     {
-        mTok.assign(Token.String);
+        te.assign(Token.String);
         
         char[] str;
 
@@ -149,7 +149,64 @@ class Lexer
         }
         while(mC != '"');
         
-        mTok.val = Value(Value.Type.String, str);
+        te.val = Value(Value.Type.String, str);
+    }
+
+    /**
+    * Get Next Entry
+    */
+    private TokenEntry nextToken()
+    {
+        auto tok = TokenEntry();
+
+        if(mSrc is null)
+            throw new Exception("No Source File");
+        
+        //look for file end and no valid chars
+        if(mSrc.isEof() || !nextValidChar(mC))
+        {
+            tok.assign(Token.EOF);
+            return tok;
+        }   
+
+        //writeln(mC == '\n' ? 'n' : mC);
+
+        tok.loc = mSrc.Loc;
+
+        //Check for special characters
+        switch(mC)
+        {
+        case '\n': tok.assign(Token.EOL); break;
+        case ';':  tok.assign(Token.Semicolon); break;
+        case ',':  tok.assign(Token.Comma); break;
+        case '.':  tok.assign(Token.Dot); break;
+        case ':':  tok.assign(Token.Colon); break;
+        case '(':  tok.assign(Token.ROBracket); break;
+        case ')':  tok.assign(Token.RCBracket); break;
+        case '[':  tok.assign(Token.AOBracket); break;
+        case ']':  tok.assign(Token.ACBracket); break;
+        case '{':  tok.assign(Token.COBracket); break;
+        case '}':  tok.assign(Token.CCBracket); break;
+        case '"':  scanString(tok); break;
+        default:
+            tok.assign(Token.None);
+        }
+
+        //Handle Identifiers and Keywords
+        if(tok.tok == Token.None && isAlpha(mC))
+        {
+            scanIdentifier(tok);
+            tok.assign(Token.Identifier);
+
+            //to improve
+            //Look for Keywords
+            if(tok.val.Identifier == "def")
+                tok.tok = Token.KwDef;
+            if(tok.val.Identifier == "package")
+                tok.tok = Token.KwPackage;
+        }
+            
+        return tok;
     }
 
     /**
@@ -157,54 +214,14 @@ class Lexer
     */
     TokenEntry getToken()
     {
-        if(mSrc is null)
-            throw new Exception("No Source File");
+        if(!mTokList.empty())
+        {
+            mTok = mTokList.front();
+            mTokList.removeFront();
+        }
+        else
+            mTok = nextToken();
         
-        //look for file end and no valid chars
-        if(mSrc.isEof() || !nextValidChar(mC))
-        {
-            mTok.assign(Token.EOF);
-            return mTok;
-        }   
-
-        //writeln(mC == '\n' ? 'n' : mC);
-
-        mTok.loc = mSrc.Loc;
-
-        //Check for special characters
-        switch(mC)
-        {
-        case '\n': mTok.assign(Token.EOL); break;
-        case ';':  mTok.assign(Token.Semicolon); break;
-        case ',':  mTok.assign(Token.Comma); break;
-        case '.':  mTok.assign(Token.Dot); break;
-        case ':':  mTok.assign(Token.Colon); break;
-        case '(':  mTok.assign(Token.ROBracket); break;
-        case ')':  mTok.assign(Token.RCBracket); break;
-        case '[':  mTok.assign(Token.AOBracket); break;
-        case ']':  mTok.assign(Token.ACBracket); break;
-        case '{':  mTok.assign(Token.COBracket); break;
-        case '}':  mTok.assign(Token.CCBracket); break;
-        case '"':  scanString(); break;
-        default:
-            mTok.assign(Token.None);
-        }
-
-        //Handle Identifiers and Keywords
-        if(mTok.tok == Token.None && isAlpha(mC))
-        {
-            scanIdentifier();
-            mTok.assign(Token.Identifier);
-
-            //to improve
-            //Look for Keywords
-            if(mTok.val.Identifier == "def")
-                mTok.tok = Token.KwDef;
-            if(mTok.val.Identifier == "package")
-                mTok.tok = Token.KwPackage;
-        }
-            
-
         return mTok;
     }
 
@@ -213,7 +230,9 @@ class Lexer
     */
     TokenEntry peekToken()
     {
-        return TokenEntry().assign(Token.None);
+        auto tok = nextToken();
+        mTokList = mTokList ~ tok;
+        return tok;
     }
     
     /**

@@ -16,21 +16,33 @@
 *    along with disc.  If not, see <http://www.gnu.org/licenses/>.
 *
 ******************************************************************************/
-module disc.Semantic;
+module disc.ast.Statement;
 
 import disc.ast.Node;
+import disc.ast.Expression;
+ 
 
 /**
-* Semantic Pass for AST
+* Statement Base Class
 */
-class Semantic
+abstract class Statement : Node
 {
-    //rules
 
-    /**
-    * Run semantic passes on ast
-    */
-    public void run(Node astNode)
-    {
-    }
+} 
+
+/**
+* Defines a Block {}
+*/
+class BlockStatement : Statement
+{
+    Statement[] mStatements;
+}
+
+/**
+* A Expression Statement
+* e.g. Function Call, Assign Expression
+*/
+class ExpressionStatement : Statement
+{
+    Expression mExpression;
 }

@@ -20,6 +20,7 @@ module disc.ast.Declaration;
 
 import disc.ast.Node;
 import disc.ast.Type;
+import disc.ast.Statement;
 
 /**
 * Basic Class for Declaration
@@ -27,15 +28,22 @@ import disc.ast.Type;
 abstract class Declaration : Node
 {
     ///name
-    string name;
+    public string mName;
     
+    /**
+    * Ctor
+    */
+    public this()
+    {
+    }
+
     /**
     * Ctor
     */
     public this(string name)
     {
-        this.name = name;
-    }
+        this.mName = name;
+    }    
 }
 
 /**
@@ -51,8 +59,8 @@ class PackageDeclaration : Declaration
         super(name);
     }
     
-    //childs
-
+    //FunctionDeclarations
+    //Classes
 }
 
 /**
@@ -62,18 +70,30 @@ class FunctionDeclaration : Declaration
 {
     //flags: public, private, protected, package, static
 
+    //parameter names?
+    public ubyte[string] mArgumentNames;
 
-    //FunctionType (parameter, return type)
-    //parameter naming?
-    //body -> Block
-    
+    //Function Signature
+    public FunctionType mType;
+    //Has a Body
+    public BlockStatement mBody;
+
+    /**
+    * Default Ctor
+    */
+    public this()
+    {
+        mType = new FunctionType();
+    }
+
     /**
     * Ctor
     */
     public this(string name)
     {
         super(name);
-    }
+        mType = new FunctionType();
+    }   
 }
 
 /**
@@ -81,13 +101,25 @@ class FunctionDeclaration : Declaration
 */
 class VariableDeclaration : Declaration
 {
+    //Variable Type
+    private Type mType;
+
+    //Initializer
+
     /**
     * Ctor
     */
-    public this(string name)
+    public this(string name, Type type = new OpaqueType())
     {
         super(name);
+        this.mType = type;
     }
 
-    //type
+    /**
+    * Get type
+    */
+    public Type type()
+    {
+        return mType;
+    }
 }

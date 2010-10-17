@@ -33,6 +33,7 @@ enum PrimaryTypes : ubyte
     //Void
     Void,
     //Numbers
+    Bool,       //1 Bit
     Byte,       //8 Bit signed
     UByte,      //8 Bit unsigned
     Short,      //16 Bit signed
@@ -48,21 +49,56 @@ enum PrimaryTypes : ubyte
     Ptr         //Pointer Type, Platform specific, void*
 } 
 
+/**
+* PrimaryType
+*/
 class PrimaryType : Type
 {
     //isPointer
     PrimaryTypes Type;
+
+    public this(PrimaryTypes type)
+    {
+        this.Type = type;
+    }
+
+    //instances for PrimaryTypes
+    static PrimaryType Void;
+    static PrimaryType Int;
+
+    static this()
+    {
+        Void = new PrimaryType(PrimaryTypes.Void);
+        Int = new PrimaryType(PrimaryTypes.Int);
+    }
 }
 
-//OpaqueType
+/**
+* Not yet resolved type
+*/
+class OpaqueType : Type
+{
+    
+}
+
+/**
+* Defines a Function Signature
+*/
+class FunctionType : Type
+{
+    public enum CallingConvention {None, C, Dis}
+
+    //Arguments
+    public Type[] mArguments;
+    //Return Type
+    public Type mReturnType;
+    //Varargs Function
+    public bool mVarArgs;
+    //Calling Convention
+    public CallingConvention mCallingConv;
+}
+
 //PointerType -> Ptr to Type
 //ArrayType
-
-class FunctionType
-{
-    //calling convention C, Dis, ... FunctionType or Declration?
-    //parameter -> name, type
-    //return type
-    //vaargs
-}
-
+//String
+//Char?
