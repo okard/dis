@@ -1,0 +1,102 @@
+package foo;
+
+//Compile Time Ifs
+static if(int.size == 32)
+    type int32 int;
+
+// define a delegate type (function type?)
+type delegate_def def(x, y) : int;
+
+// delegate as parameter
+def callother(x : delegate__def) : int
+{
+    ret x(5,6);
+}
+
+//sample class
+class bla
+{
+    //ctor
+    def this()
+    {
+    
+    }
+    
+    //dtor
+    def ~this()
+    {
+    }
+    
+    // One Line Function
+    def add(x, y) = x + y;
+    
+    //normal function
+    def printHello()
+    {
+        io.writeln("Hello World");
+    }
+
+    //implicit typed
+    def getFive() 
+    {
+        return 5;
+    }
+    
+    // explicit return type
+    def getSix() : int = 6;
+    
+    //full function with explicit typing
+    def getSeven() : int
+    {
+        ret 7;
+    }
+    
+    //returns a function?
+    def getFunc(x : int) {
+        ret (f : int) = x+f;
+    }
+        
+    //test function     
+    def testGetFunc()
+    {
+        var adder = getFunc(2);
+        assert(adder(5) == 7);
+    }
+
+    //static function returning a tuple
+    static def getTuple(x, y) = x+1, y+1; 
+    //set type to Tuple!(int, int); for example
+    
+    //class variables initialized from static class function
+    var x, y = getTuple(5, 6);
+    
+    //example for method overoading and opDispatch operator
+    def opDispatch(const ref name : string, x) = void;        //template, one argument
+    def opDispatch(const ref name : string, x : int) = void; //higher priority
+    
+    //test function for dispatch
+    def testDispatch()
+    {
+        this.doesnotexist(5.6);
+        this.doesnotexist(5);
+    }
+    
+
+}
+
+// generic class
+class generic(T)
+{
+    var x : T;
+}
+
+// static function returning a generic int instance
+def getInt()
+{
+    var g = generic!int();
+    g.x = 5;
+    ret g;
+}   
+
+// const class -> can not inherited
+// static class -> can not instantiated

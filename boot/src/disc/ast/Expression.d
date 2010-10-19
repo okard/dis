@@ -42,4 +42,5 @@ class DotIdentifier : Expression
 class FunctionCall : Expression
 {
     //Identifier
+    //FunctionDeclaration
 }
