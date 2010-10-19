@@ -47,6 +47,8 @@ enum Token : ubyte
     COBracket,      // { - Cambered Open Bracket
     CCBracket,      // } - Cambered Close Bracket
 
+    Mul,            // *
+
     //Keywords
     KwPackage,
     KwDef 
@@ -74,6 +76,7 @@ string toString(Token tok)
     case Token.ACBracket:   return "]";
     case Token.COBracket:   return "{";
     case Token.CCBracket:   return "}";
+    case Token.Mul:         return "*";
     case Token.KwPackage:   return "package";
     case Token.KwDef:       return "def";
     default: return "no token description";

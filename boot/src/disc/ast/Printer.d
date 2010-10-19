@@ -41,11 +41,14 @@ class Printer
 
         foreach(string key, ubyte index; fd.mArgumentNames)
         {
-            //auto t = fd.mType.mArguments[index];
-            
-            writef("%s %s", key, "type"); 
+            auto t = fd.mType.mArguments[index];
+            writef("%s %s, ", key, t.toString()); 
         }
-        writefln(") %s", "return type");
+        
+        if(fd.mType.mVarArgs)
+            write("...");
+
+        writefln(") %s", fd.mType.mReturnType.toString());
         //fd.mType.mReturnType
     }
 

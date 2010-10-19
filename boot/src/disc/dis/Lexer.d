@@ -196,6 +196,7 @@ class Lexer
         case ']':  tok.assign(Token.ACBracket); break;
         case '{':  tok.assign(Token.COBracket); break;
         case '}':  tok.assign(Token.CCBracket); break;
+        case '*':  tok.assign(Token.Mul); break;
         case '"':  scanString(tok); break;
         default:
             tok.assign(Token.None);

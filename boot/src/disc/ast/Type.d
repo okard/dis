@@ -23,6 +23,7 @@ module disc.ast.Type;
 */
 class Type
 {
+
 }
 
 /**
@@ -64,12 +65,32 @@ class PrimaryType : Type
 
     //instances for PrimaryTypes
     static PrimaryType Void;
-    static PrimaryType Int;
+    static PrimaryType Bool;
+    static PrimaryType Byte;       
+    static PrimaryType UByte;      
+    static PrimaryType Short;      
+    static PrimaryType UShort;     
+    static PrimaryType Int;        
+    static PrimaryType UInt;       
+    static PrimaryType Long;       
+    static PrimaryType ULong;      
+    static PrimaryType Float;      
+    static PrimaryType Double;
 
     static this()
     {
         Void = new PrimaryType(PrimaryTypes.Void);
-        Int = new PrimaryType(PrimaryTypes.Int);
+        Bool = new PrimaryType(PrimaryTypes.Bool); 
+        Byte = new PrimaryType(PrimaryTypes.Byte);       
+        UByte = new PrimaryType(PrimaryTypes.UByte);      
+        Short = new PrimaryType(PrimaryTypes.Short);      
+        UShort = new PrimaryType(PrimaryTypes.UShort);     
+        Int = new PrimaryType(PrimaryTypes.Int);        
+        UInt = new PrimaryType(PrimaryTypes.UInt);       
+        Long = new PrimaryType(PrimaryTypes.Long);       
+        ULong = new PrimaryType(PrimaryTypes.ULong);      
+        Float = new PrimaryType(PrimaryTypes.Float);      
+        Double = new PrimaryType(PrimaryTypes.Double);
     }
 }
 
@@ -96,6 +117,11 @@ class FunctionType : Type
     public bool mVarArgs;
     //Calling Convention
     public CallingConvention mCallingConv;
+
+    public this()
+    {
+        mReturnType = PrimaryType.Void;
+    }
 }
 
 /**
@@ -105,6 +131,11 @@ class FunctionType : Type
 class PointerType : Type 
 {
     public Type mType;
+
+    public this(Type t)
+    {
+        mType = t;
+    }
 }
 
 //ArrayType
