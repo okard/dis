@@ -26,72 +26,76 @@ class Type
 
 }
 
-/**
-* Primary Types
-*/
-enum PrimaryTypes : ubyte
+/// Void
+class VoidType : Type
 {
-    //Void
-    Void,
-    //Numbers
-    Bool,       //1 Bit
-    Byte,       //8 Bit signed
-    UByte,      //8 Bit unsigned
-    Short,      //16 Bit signed
-    UShort,     //16 Bit unsigned
-    Int,        //32 Bit signed
-    UInt,       //32 Bit unsigned
-    Long,       //64 Bit signed
-    ULong,      //64 Bit unsigned
-    //Floating Points
-    Float,      //32 Bit IEEE 754
-    Double,     //64 Bit IEEE 754
-    //Pointer
-    Ptr         //Pointer Type, Platform specific, void*
-} 
+    override string toString() { return "void"; }
+}
 
-/**
-* PrimaryType
-*/
-class PrimaryType : Type
+/// 1 Bit Type
+class BoolType : Type
 {
-    //isPointer
-    PrimaryTypes Type;
+    override string toString() { return "bool"; }
+}
 
-    public this(PrimaryTypes type)
-    {
-        this.Type = type;
-    }
+/// 8 Bit signed
+class ByteType : Type
+{
+    override string toString() { return "byte"; }
+}
 
-    //instances for PrimaryTypes
-    static PrimaryType Void;
-    static PrimaryType Bool;
-    static PrimaryType Byte;       
-    static PrimaryType UByte;      
-    static PrimaryType Short;      
-    static PrimaryType UShort;     
-    static PrimaryType Int;        
-    static PrimaryType UInt;       
-    static PrimaryType Long;       
-    static PrimaryType ULong;      
-    static PrimaryType Float;      
-    static PrimaryType Double;
+/// 8 Bit unsigned
+class UByteType : Type
+{
+    override string toString() { return "ubyte"; }
+}
 
-    static this()
-    {
-        Void = new PrimaryType(PrimaryTypes.Void);
-        Bool = new PrimaryType(PrimaryTypes.Bool); 
-        Byte = new PrimaryType(PrimaryTypes.Byte);       
-        UByte = new PrimaryType(PrimaryTypes.UByte);      
-        Short = new PrimaryType(PrimaryTypes.Short);      
-        UShort = new PrimaryType(PrimaryTypes.UShort);     
-        Int = new PrimaryType(PrimaryTypes.Int);        
-        UInt = new PrimaryType(PrimaryTypes.UInt);       
-        Long = new PrimaryType(PrimaryTypes.Long);       
-        ULong = new PrimaryType(PrimaryTypes.ULong);      
-        Float = new PrimaryType(PrimaryTypes.Float);      
-        Double = new PrimaryType(PrimaryTypes.Double);
-    }
+/// 16 Bit
+class ShortType : Type
+{
+    override string toString() { return "short"; }
+}
+
+/// 16 Bit
+class UShortType : Type
+{
+    override string toString() { return "ushort"; }
+}
+
+/// 32 Bit
+class IntType : Type
+{
+    override string toString() { return "int"; }
+}
+
+/// 32 Bit
+class UIntType : Type
+{
+    override string toString() { return "uint"; }
+}
+
+/// 64 Bit
+class LongType : Type
+{
+    override string toString() { return "long"; }
+}
+
+/// 64 Bit
+class ULongType : Type
+{
+    override string toString() { return "ushort"; }
+}
+
+/// 32 Bit Float 
+class FloatType : Type
+{
+    override string toString() { return "float"; }
+}
+
+/// 64 Bit
+class DoubleType : Type
+{
+    override string toString() { return "double"; }
 }
 
 /**
@@ -99,7 +103,7 @@ class PrimaryType : Type
 */
 class OpaqueType : Type
 {
-    
+    override string toString() { return "<unkown>"; }
 }
 
 /**
@@ -120,7 +124,7 @@ class FunctionType : Type
 
     public this()
     {
-        mReturnType = PrimaryType.Void;
+        mReturnType = new VoidType();
     }
 }
 
@@ -136,8 +140,19 @@ class PointerType : Type
     {
         mType = t;
     }
+
+    override string toString() 
+    { 
+        return mType.toString() ~ "*"; 
+    }
 }
 
 //ArrayType
 //String
-//Char?
+
+class CharType : Type
+{
+    //encoding???
+
+     override string toString() { return "char"; }
+}

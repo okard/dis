@@ -29,6 +29,14 @@ abstract class Expression : Node
 }
 
 /**
+* Dotted Identifier
+* e.g. foo.bar.x.y
+*/
+class DotIdentifier : Expression
+{
+}
+
+/**
 * A Function Call
 */
 class FunctionCall : Expression

@@ -70,7 +70,7 @@ class FunctionDeclaration : Declaration
 {
     //flags: public, private, protected, package, static
 
-    //parameter names?
+    //parameter names? index of parameter type
     public ubyte[string] mArgumentNames;
 
     //Function Signature

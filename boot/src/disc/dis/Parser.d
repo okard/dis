@@ -75,6 +75,7 @@ class Parser
 
             //case Token.COBracket: parseBlock(); break;
             //case Token.Semicolon: endActualNode(); break;
+            //case Token.Identifier: parseStatement(); break;
             default:
             }
 
@@ -87,14 +88,11 @@ class Parser
     */
     private void parsePackage()
     {
-        writeln("parsePackage");
-
         //package identifier;
         assert(mToken.tok == Token.KwPackage);
         
-        mToken = mLex.getToken();
-        
-        if(mToken.tok != Token.Identifier)
+        //Package need a name
+        if(!expect(mToken, Token.Identifier))
             error(mToken.loc, "Expected Identifier after package");
         
         //Create new Package Declaration
@@ -172,9 +170,11 @@ class Parser
         //look for return value
         if(peekTok.tok == Token.Identifier)
         {
-            //TODO return type
+            next();
+            func.mType.mReturnType = resolveType(mToken.val.Identifier);
         }
 
+        //declaration???
         //followed by implemention? (ignore end of line)
         if(peekTok.tok == Token.COBracket)
         {
@@ -209,6 +209,7 @@ class Parser
             //currently max 2
             assert(list.length < 3);
 
+            //varargs
             if(list[list.length-1] == "...")
             {
                 fd.mType.mVarArgs = true;
@@ -217,11 +218,13 @@ class Parser
                     //vararg name
                 }
             }
+            //name and type
             else if(list.length == 2)
             {
                 fd.mType.mArguments ~= resolveType(list[1]);
-                fd.mArgumentNames[list[1]] = cast(ubyte)(fd.mType.mArguments.length-1);
+                fd.mArgumentNames[list[0]] = cast(ubyte)(fd.mType.mArguments.length-1);
             }
+            //TODO 1 element, variablename or type (declaration with block or not) -> semantic?
         }
 
         //parse loop
@@ -281,12 +284,26 @@ class Parser
         {
             switch(identifier)
             {
-                case "char": return PrimaryType.Byte;
+                case "void": return new VoidType();
+                case "bool": return new BoolType();
+                case "byte": return new ByteType();
+                case "ubyte": return new UByteType();
+                case "short": return new ShortType();
+                case "ushort": return new UShortType();
+                case "int": return new IntType();
+                case "uint": return new UIntType();
+                case "long": return new LongType();
+                case "ulong": return new ULongType();
+                case "float": return new FloatType();
+                case "double": return new DoubleType();
+                //special:
+                case "char": return new CharType();
                 //TODO lookup
                 default: return new OpaqueType();
             }
         }
 
+        //check for pointer
         if(identifier[identifier.length-1] == '*')
         {
             //pointer type
