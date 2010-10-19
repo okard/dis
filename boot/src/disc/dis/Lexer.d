@@ -20,10 +20,11 @@ module disc.dis.Lexer;
 
 import disc.basic.Location;
 import disc.basic.Source;
+import disc.basic.ArrayBuffer;
 import disc.dis.Token;
 
 //phobos imports
-import std.container;
+//import std.container;
 
 //debug
 import std.stdio;
@@ -82,13 +83,21 @@ class Lexer
     }
 
     //Token List
-    private SList!(TokenEntry) mTokList;
+    private ArrayBuffer!(TokenEntry) mTokList;
     ///The current source to lex
     private Source mSrc;
     ///Current Token
     private TokenEntry mTok;
     ///Current char
     private char mC;
+
+    /**
+    * Ctor
+    */
+    public this()
+    {
+        mTokList = ArrayBuffer!(TokenEntry)(10);
+    }
 
     /**
     * Get a valid character
@@ -216,8 +225,8 @@ class Lexer
     {
         if(!mTokList.empty())
         {
-            mTok = mTokList.front();
-            mTokList.removeFront();
+            mTok = mTokList.popFront();
+            //mTokList.removeFront();
         }
         else
             mTok = nextToken();
@@ -228,10 +237,15 @@ class Lexer
     /**
     * Take a peek for next Token 
     */
-    TokenEntry peekToken()
+    TokenEntry peekToken(ushort n)
     {
-        auto tok = nextToken();
-        mTokList = mTokList ~ tok;
+        if(mTokList.length() > n)
+            return mTokList[n-1];
+        
+        TokenEntry tok;
+        while(mTokList.length < n)
+            tok =  mTokList.addAfter(nextToken());
+
         return tok;
     }
     

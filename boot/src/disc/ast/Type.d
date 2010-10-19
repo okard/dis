@@ -98,7 +98,15 @@ class FunctionType : Type
     public CallingConvention mCallingConv;
 }
 
-//PointerType -> Ptr to Type
+/**
+* PointerType 
+* Ptr to a type
+*/
+class PointerType : Type 
+{
+    public Type mType;
+}
+
 //ArrayType
 //String
 //Char?

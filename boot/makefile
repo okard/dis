@@ -1,7 +1,7 @@
 
 
 DMD=dmd
-DFLAGS=-w -debug -gc -Isrc
+DFLAGS=-w -debug -gc -Isrc -unittest
 EXE=bin/disc
 LIBDIR=./lib/linux32
 SOURCE=src/disc.d src/disc/basic/*.d src/disc/dis/*.d src/disc/ast/*.d

@@ -71,6 +71,8 @@ class Parser
             {
             case Token.KwPackage: parsePackage(); break;
             case Token.KwDef: parseDef(); break;
+
+            //case Token.COBracket: parseBlock(); break;
             default:
             }
 
@@ -160,7 +162,18 @@ class Parser
         if(mToken.tok != Token.RCBracket)
             error(mToken.loc, "parseDef: expected ) after parameters");
 
-        //TODO return type
+        
+        auto peekTok = mLex.peekToken(1);
+        //look for return value
+        if(peekTok.tok == Token.Identifier)
+        {
+            //TODO return type
+        }
+
+        //followed by implemention? (ignore end of line)
+        if(peekTok.tok == Token.COBracket)
+        {
+        }
 
         //debug: print out function for debug 
         mAstPrinter.print(func);
