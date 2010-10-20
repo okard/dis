@@ -18,8 +18,6 @@
 ******************************************************************************/
 module disc.basic.ArrayBuffer;
 
-version(unittest) import std.stdio;
-
 /**
 * Array Buffer
 */
@@ -102,6 +100,11 @@ struct ArrayBuffer(T)
     }
 }
  
+
+// UnitTests ==================================================================
+
+version(unittest) import std.stdio;
+
 unittest
 {
     auto ab = ArrayBuffer!int(8);
