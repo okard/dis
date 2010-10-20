@@ -81,6 +81,8 @@ class Parser
             // Blocks {}
             case Token.COBracket: parseBlock(); break;
             case Token.CCBracket: closeBlock(); break;
+
+            case Token.Semicolon: endActualNode(); break;
             //case Token.Semicolon: endActualNode(); break;
             case Token.Identifier: parseStatement(); break;
             default:
@@ -89,18 +91,42 @@ class Parser
             mToken = mLex.getToken();
         }
         //end of file?
-        assert(cast(PackageDeclaration)mAstStack.top());
-        mAstPrinter.print(cast(PackageDeclaration)mAstStack.top());
+        if(mAstStack.length > 0)
+        {
+            writeln(mAstStack.top().toString());
+            auto pd = cast(PackageDeclaration)mAstStack.top();
+            assert(pd !is null);
+            mAstPrinter.print(pd);
+        }
+    }
+
+    private void endActualNode()
+    {
+        if(cast(FunctionDeclaration)mAstStack.top())
+        {
+           auto fd = cast(FunctionDeclaration)mAstStack.pop();
+            // Function Declaration is finished so add to ...
+            if(cast(PackageDeclaration)mAstStack.top())
+            {
+                auto pd = cast(PackageDeclaration)mAstStack.top();
+                pd.mFunctions ~= fd;
+                writeln("func added");
+            }    
+        }   
     }
 
     private void closeBlock()
     {
         //Close 
+        writeln("close block");
+        writeln(mAstStack.length());
         assert(cast(BlockStatement)mAstStack.top());
         auto t = cast(BlockStatement)mAstStack.pop();
+
         if(cast(FunctionDeclaration)mAstStack.top())
         {
-            auto fd = cast(FunctionDeclaration)mAstStack.top();
+            writeln("inner close block");
+            auto fd = cast(FunctionDeclaration)mAstStack.pop();
             fd.mBody = t;
 
             // Function Declaration is finished so add to ...
@@ -108,6 +134,7 @@ class Parser
             {
                 auto pd = cast(PackageDeclaration)mAstStack.top();
                 pd.mFunctions ~= fd;
+                writeln("func added");
             }
         }
         
@@ -147,7 +174,7 @@ class Parser
 
         auto func = new FunctionDeclaration();
         mToken = mLex.getToken();
-        
+
         //Parse Calling Convention
         if(mToken.tok == Token.ROBracket)
         {
@@ -209,6 +236,7 @@ class Parser
         /*if(peekTok.tok == Token.COBracket)
         {
         }*/
+        mAstStack.push(func);
     }
        
     /**
@@ -333,7 +361,6 @@ class Parser
                 bs.mStatements ~= stat;
             }
         }
-        //mAstPrinter.print(stat);
     }
 
     /**
