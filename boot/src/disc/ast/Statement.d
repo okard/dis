@@ -27,7 +27,6 @@ import disc.ast.Expression;
 */
 abstract class Statement : Node
 {
-
 } 
 
 /**
@@ -35,7 +34,7 @@ abstract class Statement : Node
 */
 class BlockStatement : Statement
 {
-    Statement[] mStatements;
+    public Statement[] mStatements;
 }
 
 /**
@@ -44,5 +43,15 @@ class BlockStatement : Statement
 */
 class ExpressionStatement : Statement
 {
-    Expression mExpression;
+    public Expression mExpression;
+
+    public this(Expression expr)
+    {
+        mExpression = expr;
+    }
+
+    override string toString()
+    {
+        return mExpression.toString();
+    }
 }

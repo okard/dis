@@ -24,6 +24,7 @@ import disc.basic.Source;
 import disc.dis.Token;
 import disc.dis.Lexer;
 import disc.dis.Parser;
+import disc.Semantic;
 
 /**
 * Main
@@ -50,6 +51,9 @@ int main(string[] args)
     auto parser = new Parser();
     parser.source = src;
     parser.parse();
+
+    //run semantics
+    auto semantic = new Semantic();
 
     return 0;
 }

@@ -59,8 +59,9 @@ class PackageDeclaration : Declaration
         super(name);
     }
     
-    //FunctionDeclarations
-    //Classes
+    FunctionDeclaration[] mFunctions;
+
+    //ClassDeclaration[] mClasses;
 }
 
 /**
@@ -72,6 +73,7 @@ class FunctionDeclaration : Declaration
 
     //parameter names? index of parameter type
     public ubyte[string] mArgumentNames;
+    public string mVarArgsName;
 
     //Function Signature
     public FunctionType mType;
@@ -105,6 +107,7 @@ class VariableDeclaration : Declaration
     private Type mType;
 
     //Initializer
+    //Expression mInitializer;
 
     /**
     * Ctor

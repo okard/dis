@@ -20,6 +20,8 @@ module disc.dis.Parser;
 
 import disc.basic.Location;
 import disc.basic.Source;
+import disc.basic.Stack;
+
 import disc.dis.Token;
 import disc.dis.Lexer;
 
@@ -47,6 +49,8 @@ class Parser
     private Node mAstRoot;
     ///AST Current Node
     private Node mAstCurrent;
+    ///AST Parser Stack
+    private Stack!Node mAstStack;
     ///AST Printer
     private Printer mAstPrinter;
 
@@ -57,6 +61,7 @@ class Parser
     {
         mLex = new Lexer();
         mAstPrinter = new Printer();
+        mAstStack = Stack!Node(256);
     }
     
     /**
@@ -70,17 +75,42 @@ class Parser
         {
             switch(mToken.tok)
             {
+            //Keywords
             case Token.KwPackage: parsePackage(); break;
             case Token.KwDef: parseDef(); break;
-
-            //case Token.COBracket: parseBlock(); break;
+            // Blocks {}
+            case Token.COBracket: parseBlock(); break;
+            case Token.CCBracket: closeBlock(); break;
             //case Token.Semicolon: endActualNode(); break;
-            //case Token.Identifier: parseStatement(); break;
+            case Token.Identifier: parseStatement(); break;
             default:
             }
 
             mToken = mLex.getToken();
         }
+        //end of file?
+        assert(cast(PackageDeclaration)mAstStack.top());
+        mAstPrinter.print(cast(PackageDeclaration)mAstStack.top());
+    }
+
+    private void closeBlock()
+    {
+        //Close 
+        assert(cast(BlockStatement)mAstStack.top());
+        auto t = cast(BlockStatement)mAstStack.pop();
+        if(cast(FunctionDeclaration)mAstStack.top())
+        {
+            auto fd = cast(FunctionDeclaration)mAstStack.top();
+            fd.mBody = t;
+
+            // Function Declaration is finished so add to ...
+            if(cast(PackageDeclaration)mAstStack.top())
+            {
+                auto pd = cast(PackageDeclaration)mAstStack.top();
+                pd.mFunctions ~= fd;
+            }
+        }
+        
     }
 
     /**
@@ -103,7 +133,7 @@ class Parser
         if(mToken.tok != Token.EOL && mToken.tok != Token.Semicolon)
             error(mToken.loc, "Expected EOL or Semicolon");
 
-        mAstPrinter.print(pkg);
+        mAstStack.push(pkg);
     }
 
     /**
@@ -176,12 +206,9 @@ class Parser
 
         //declaration???
         //followed by implemention? (ignore end of line)
-        if(peekTok.tok == Token.COBracket)
+        /*if(peekTok.tok == Token.COBracket)
         {
-        }
-
-        //debug: print out function for debug 
-        mAstPrinter.print(func);
+        }*/
     }
        
     /**
@@ -213,9 +240,11 @@ class Parser
             if(list[list.length-1] == "...")
             {
                 fd.mType.mVarArgs = true;
+
                 if(list.length == 2)
                 {
                     //vararg name
+                    fd.mVarArgsName = cast(string)list[0];
                 }
             }
             //name and type
@@ -257,7 +286,6 @@ class Parser
                 //one param finished
                 add();
                 list.length = 0;
-                next();
                 break;
             
             default:
@@ -269,10 +297,66 @@ class Parser
     /**
     * Parse Statement
     */
+    private void parseBlock()
+    {
+        auto block = new BlockStatement();
+       
+        mAstStack.push(block);
+    }
+
+    /**
+    * Parse Statement
+    */
     private void parseStatement()
     {
-        //Expressions and Statements
-        //CallStatement
+        assert(mToken.tok == Token.Identifier);
+        
+        Statement stat;
+
+        //statement with started identifier?
+        DotIdentifier d = new DotIdentifier(mToken.val.Identifier);
+
+        //call Statment
+        if(mLex.peekToken(1).tok == Token.ROBracket)
+        {
+            next();
+            //create function call expression
+            auto call =  new FunctionCall();
+            call.mFunction = d;
+            stat = new ExpressionStatement(call);
+    
+            //Parse until RCBracket
+
+            if(cast(BlockStatement)mAstStack.top())
+            {
+                auto bs = cast(BlockStatement)mAstStack.top();
+                bs.mStatements ~= stat;
+            }
+        }
+        //mAstPrinter.print(stat);
+    }
+
+    /**
+    * Parse Identifier
+    */
+    private DotIdentifier parseIdentifier()
+    {
+        assert(mToken.tok == Token.Identifier);
+
+        auto di = new DotIdentifier(mToken.val.Identifier);
+        bool expDot = true;
+
+        while(peek(1) == Token.Identifier || peek(1) == Token.Dot)
+        {
+            next();
+            if(expDot && mToken.tok == Token.Identifier)
+            {
+                error(mToken.loc, "expected dot to seperate identifiers");
+                break;
+            }   
+        }
+
+        return di;
     }
 
     /**
@@ -329,6 +413,14 @@ class Parser
     private void next()
     {
         mToken = mLex.getToken();
+    }
+
+    /**
+    * Peek token type
+    */
+    private Token peek(ushort lookahead = 1)
+    {
+        return mLex.peekToken(lookahead).tok;
     }
 
     /**

@@ -62,6 +62,14 @@ struct Stack(T)
     }
 
     /**
+    * Element on Top
+    */
+    T top()
+    {
+        return mStackArr[mCount-1];
+    }
+
+    /**
     * Count of elements
     */
     uint length()
@@ -69,6 +77,9 @@ struct Stack(T)
         return mCount;
     }
 
+    /**
+    * Stack Size
+    */
     uint size()
     {
         return mStackArr.length;

@@ -19,13 +19,14 @@
 module disc.ast.Expression;
 
 import disc.ast.Node;
+import disc.ast.Type;
 
 /**
 * Base Class for Expression
 */
 abstract class Expression : Node
 {
-    //return type
+    Type mReturnType;
 }
 
 /**
@@ -34,6 +35,30 @@ abstract class Expression : Node
 */
 class DotIdentifier : Expression
 {
+    ///parts of identifiers splitted with .
+    char[][] mIdentifier;
+
+    //resolve type
+    //Type type;
+
+    /**
+    * Create dotted identifier
+    */
+    public this(char[] identifier)
+    {
+        mIdentifier ~= identifier;
+    }
+
+    /**
+    * To string
+    */
+    override string toString()
+    {
+        char[] str;
+        foreach(ident; mIdentifier)
+            str ~= ident ~ ".";
+        return cast(string)str;
+    }
 }
 
 /**
@@ -41,6 +66,22 @@ class DotIdentifier : Expression
 */
 class FunctionCall : Expression
 {
-    //Identifier
-    //FunctionDeclaration
+    ///Expression to retrieve a function type
+    Expression mFunction;
+
+    /// Arguments for function call
+    Expression[] mArguments;
+
+    //return type is mFunction.solve().mReturnType
+
+    /**
+    * to string
+    */
+    override string toString()
+    {
+        if(mFunction is null) return "No function expression set";
+
+        //add arguments
+        return "Call: " ~ mFunction.toString();
+    }
 }

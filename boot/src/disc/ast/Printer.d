@@ -46,10 +46,13 @@ class Printer
         }
         
         if(fd.mType.mVarArgs)
-            write("...");
+            writef("%s...", fd.mVarArgsName);
 
         writefln(") %s", fd.mType.mReturnType.toString());
         //fd.mType.mReturnType
+
+        if(fd.mBody !is null)
+            print(fd.mBody);
     }
 
     /**
@@ -58,6 +61,28 @@ class Printer
     public void print(PackageDeclaration pd)
     {
         writefln("Package: %s",  pd.mName);
+
+        foreach(fd; pd.mFunctions)
+            print(fd);
+    }
+
+    /**
+    * Print Block Statement
+    */
+    public void print(BlockStatement bs)
+    {
+        writeln("{");
+        foreach(Statement stat; bs.mStatements)
+            print(stat);
+        writeln("}");
+    }
+
+    /**
+    * Print statement
+    */
+    public void print(Statement stat)
+    {
+        writeln(stat.toString());
     }
 
     /**
