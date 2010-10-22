@@ -82,6 +82,8 @@ class Lexer
         bool hasValue;
     }
 
+    //Keyword to Token
+    private static Token[char[]] mKeywords;
     //Token List
     private ArrayBuffer!(TokenEntry) mTokList;
     ///The current source to lex
@@ -208,12 +210,11 @@ class Lexer
             scanIdentifier(tok);
             tok.assign(Token.Identifier);
 
-            //to improve
-            //Look for Keywords
-            if(tok.val.Identifier == "def")
-                tok.tok = Token.KwDef;
-            if(tok.val.Identifier == "package")
-                tok.tok = Token.KwPackage;
+            //look for keywords
+            if(tok.val.Identifier in mKeywords)
+            {
+                tok.tok = mKeywords[tok.val.Identifier];
+            }
         }
             
         return tok;
@@ -282,4 +283,11 @@ class Lexer
     {
         return mSrc;
     }  
+
+
+    static this()
+    {
+        mKeywords["def"] = Token.KwDef;
+        mKeywords["package"] = Token.KwPackage;
+    }
 } 
