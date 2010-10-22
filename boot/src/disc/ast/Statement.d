@@ -35,6 +35,11 @@ abstract class Statement : Node
 class BlockStatement : Statement
 {
     public Statement[] mStatements;
+
+    this()
+    {
+        mNodeType = NodeType.BlockStat;
+    }
 }
 
 /**
@@ -48,6 +53,7 @@ class ExpressionStatement : Statement
     public this(Expression expr)
     {
         mExpression = expr;
+        mNodeType = NodeType.ExpressionStat;
     }
 
     override string toString()

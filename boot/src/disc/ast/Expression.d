@@ -46,6 +46,7 @@ class DotIdentifier : Expression
     */
     public this(char[] identifier)
     {
+        mNodeType = NodeType.DotIdentifier;
         mIdentifier ~= identifier;
     }
 
@@ -73,6 +74,11 @@ class FunctionCall : Expression
     Expression[] mArguments;
 
     //return type is mFunction.solve().mReturnType
+
+    this()
+    {
+        mNodeType = NodeType.FunctionCall;
+    }
 
     /**
     * to string

@@ -102,7 +102,7 @@ class Parser
 
     private void endActualNode()
     {
-        if(cast(FunctionDeclaration)mAstStack.top())
+        if(mAstStack.top().mNodeType == NodeType.FunctionDecl)
         {
            auto fd = cast(FunctionDeclaration)mAstStack.pop();   
         }   
@@ -111,10 +111,11 @@ class Parser
     private void closeBlock()
     {
         //Close 
-        assert(cast(BlockStatement)mAstStack.top());
+        assert(mAstStack.top().mNodeType == NodeType.BlockStat);
         auto t = cast(BlockStatement)mAstStack.pop();
 
-        if(cast(FunctionDeclaration)mAstStack.top())
+        //add body to function
+        if(mAstStack.top().mNodeType == NodeType.FunctionDecl)
         {
             auto fd = cast(FunctionDeclaration)mAstStack.pop();
             fd.mBody = t;

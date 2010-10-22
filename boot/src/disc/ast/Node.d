@@ -23,5 +23,23 @@ module disc.ast.Node;
 */
 abstract class Node
 {
-
+    public NodeType mNodeType = NodeType.Unknown;
 } 
+
+/**
+* Node Types
+*/
+enum NodeType
+{
+    Unknown,
+    //Declarations
+    PackageDecl,
+    FunctionDecl,
+    VariableDecl,
+    //Statements
+    BlockStat,
+    ExpressionStat,
+    //Expressions
+    DotIdentifier,
+    FunctionCall
+}

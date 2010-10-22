@@ -86,6 +86,7 @@ class FunctionDeclaration : Declaration
     public this()
     {
         mType = new FunctionType();
+        this.mNodeType = NodeType.FunctionDecl;
     }
 
     /**
@@ -93,8 +94,8 @@ class FunctionDeclaration : Declaration
     */
     public this(string name)
     {
-        super(name);
-        mType = new FunctionType();
+        this();
+        this.mName = name;
     }   
 }
 
@@ -115,6 +116,7 @@ class VariableDeclaration : Declaration
     public this(string name, Type type = new OpaqueType())
     {
         super(name);
+        this.mNodeType = NodeType.VariableDecl;
         this.mType = type;
     }
 
