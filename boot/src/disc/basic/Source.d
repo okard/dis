@@ -47,6 +47,9 @@ interface Source
     */
     public void reset();
 
+    /**
+    * Is eof
+    */
     public bool isEof();
 }
 
@@ -125,3 +128,91 @@ class SourceFile : File, Source
         return eof();
     }
 }
+
+/**
+* A Source String
+*/
+class SourceString : Source
+{
+    /// Current Location
+    private Location mLoc;
+
+    /// Source String
+    private string mStr;
+
+    /// Position
+    private uint mPos;
+
+    /**
+    * Ctor
+    */
+    public this(string str)
+    {
+        mPos = 0;
+        mLoc = Location(0, 0);
+        mStr = str;
+    }
+
+    /**
+    * Get current location
+    */
+    public Location Loc()
+    {
+        return mLoc;
+    }
+
+    /**
+    * get next char
+    */
+    public char getChar()
+    {
+        return mStr[mPos++];
+    }
+
+    /**
+    * peek next char
+    */
+    public char peekChar(ubyte n)
+    {
+        return mStr[mPos+(n-1)];
+    }
+
+    /**
+    * reset source
+    */
+    public void reset()
+    {
+        mPos = 0;
+    }
+
+    /**
+    * Is eof
+    */
+    public bool isEof()
+    {
+        return mPos == mStr.length;
+    }
+}
+
+// Test Source String
+version(unittest) import io = std.stdio;
+unittest
+{
+    auto ss = new SourceString("abcd efgh ijkl mnop qrst uvwx yz");
+
+    assert(ss.getChar() == 'a');
+    assert(ss.getChar() == 'b');
+    assert(ss.peekChar(1) == 'c');
+    assert(ss.peekChar(6) == 'g');
+    assert(ss.getChar() == 'c');
+    
+    while(!ss.isEof())
+        ss.getChar();
+
+    ss.reset();
+    assert(ss.getChar() == 'a');
+
+
+    io.writeln("[TEST] Source Tests passed");
+}
+

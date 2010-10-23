@@ -56,8 +56,11 @@ class DotIdentifier : Expression
     override string toString()
     {
         char[] str;
-        foreach(ident; mIdentifier)
-            str ~= ident ~ ".";
+
+        for(int i=0; i < (mIdentifier.length-1); i++)
+            str ~= mIdentifier[i] ~ ".";
+
+        str ~= mIdentifier[mIdentifier.length-1];
         return cast(string)str;
     }
 }

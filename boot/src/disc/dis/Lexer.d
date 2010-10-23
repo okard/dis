@@ -76,6 +76,11 @@ class Lexer
             return this;
         }
 
+        public string toString()
+        {
+            return disc.dis.Token.toString(tok);
+        }
+
         Token tok;
         Value val;
         Location loc;

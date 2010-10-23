@@ -93,7 +93,7 @@ class Parser
         //end of file?
         if(mAstStack.length > 0)
         {
-            writeln(mAstStack.top().toString());
+            //writeln(mAstStack.top().toString());
             auto pd = cast(PackageDeclaration)mAstStack.top();
             assert(pd !is null);
             mAstPrinter.print(pd);
@@ -329,7 +329,8 @@ class Parser
         Statement stat;
 
         //statement with started identifier?
-        DotIdentifier d = new DotIdentifier(mToken.val.Identifier);
+        DotIdentifier d =  new DotIdentifier(mToken.val.Identifier);
+        //auto d = parseIdentifier();
 
         //call Statment
         if(mLex.peekToken(1).tok == Token.ROBracket)
@@ -351,6 +352,13 @@ class Parser
     }
 
     /**
+    * Parse Expressions
+    */
+    private void parseExpression()
+    {
+    }
+
+    /**
     * Parse Identifier
     */
     private DotIdentifier parseIdentifier()
@@ -360,14 +368,27 @@ class Parser
         auto di = new DotIdentifier(mToken.val.Identifier);
         bool expDot = true;
 
-        while(peek(1) == Token.Identifier || peek(1) == Token.Dot)
-        {
+        while((peek(1) == Token.Identifier) || (peek(1) == Token.Dot))
+        {              
             next();
+            //identifier
             if(expDot && mToken.tok == Token.Identifier)
             {
                 error(mToken.loc, "expected dot to seperate identifiers");
                 break;
             }   
+            //dot
+            if(!expDot && mToken.tok == Token.Dot)
+            {
+                error(mToken.loc, "expected identifier after dot");
+                break;
+            }
+            
+            expDot = !expDot;
+            
+            if(mToken.tok == Token.Identifier)
+                di.mIdentifier ~= mToken.val.Identifier;
+            
         }
 
         return di;
