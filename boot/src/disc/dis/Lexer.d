@@ -30,65 +30,12 @@ import disc.dis.Token;
 import std.stdio;
 
 /**
-* Represents a Value
-*/
-struct Value
-{
-    public enum Type { None, String, Identifier, Double, Float, Integer, UInteger }
-
-
-    //Type
-    Type ValueType;
-
-    union
-    {
-        char[] String;
-        char[] Identifier;
-        double Double;
-        float Float;
-        int   Integer;
-        uint  UInteger;
-    }
-}
-
-
-/**
 * Dis Lexer
 */
 class Lexer
 {
-    ///Structure for TokenList
-    public struct TokenEntry
-    {
-        public TokenEntry assign(Token tok, Value v)
-        {
-            this.tok = tok;
-            this.val = v;
-            hasValue = true;
-            return this;
-        }
-
-        public TokenEntry assign(Token tok)
-        {
-            this.tok = tok;
-            //this.val = null;
-            hasValue = false;
-            return this;
-        }
-
-        public string toString()
-        {
-            return disc.dis.Token.toString(tok);
-        }
-
-        Token tok;
-        Value val;
-        Location loc;
-        bool hasValue;
-    }
-
     //Keyword to Token
-    private static Token[char[]] mKeywords;
+    private static TokenType[char[]] mKeywords;
     //Token List
     private ArrayBuffer!(TokenEntry) mTokList;
     ///The current source to lex
@@ -153,7 +100,7 @@ class Lexer
     */
     private void scanString(ref TokenEntry te)
     {
-        te.assign(Token.String);
+        te.assign(TokenType.String);
         
         char[] str;
 
@@ -181,7 +128,7 @@ class Lexer
         //look for file end and no valid chars
         if(mSrc.isEof() || !nextValidChar(mC))
         {
-            tok.assign(Token.EOF);
+            tok.assign(TokenType.EOF);
             return tok;
         }   
 
@@ -192,28 +139,28 @@ class Lexer
         //Check for special characters
         switch(mC)
         {
-        case '\n': tok.assign(Token.EOL); break;
-        case ';':  tok.assign(Token.Semicolon); break;
-        case ',':  tok.assign(Token.Comma); break;
-        case '.':  tok.assign(Token.Dot); break;
-        case ':':  tok.assign(Token.Colon); break;
-        case '(':  tok.assign(Token.ROBracket); break;
-        case ')':  tok.assign(Token.RCBracket); break;
-        case '[':  tok.assign(Token.AOBracket); break;
-        case ']':  tok.assign(Token.ACBracket); break;
-        case '{':  tok.assign(Token.COBracket); break;
-        case '}':  tok.assign(Token.CCBracket); break;
-        case '*':  tok.assign(Token.Mul); break;
+        case '\n': tok.assign(TokenType.EOL); break;
+        case ';':  tok.assign(TokenType.Semicolon); break;
+        case ',':  tok.assign(TokenType.Comma); break;
+        case '.':  tok.assign(TokenType.Dot); break;
+        case ':':  tok.assign(TokenType.Colon); break;
+        case '(':  tok.assign(TokenType.ROBracket); break;
+        case ')':  tok.assign(TokenType.RCBracket); break;
+        case '[':  tok.assign(TokenType.AOBracket); break;
+        case ']':  tok.assign(TokenType.ACBracket); break;
+        case '{':  tok.assign(TokenType.COBracket); break;
+        case '}':  tok.assign(TokenType.CCBracket); break;
+        case '*':  tok.assign(TokenType.Mul); break;
         case '"':  scanString(tok); break;
         default:
-            tok.assign(Token.None);
+            tok.assign(TokenType.None);
         }
 
         //Handle Identifiers and Keywords
-        if(tok.tok == Token.None && isAlpha(mC))
+        if(tok.tok == TokenType.None && isAlpha(mC))
         {
             scanIdentifier(tok);
-            tok.assign(Token.Identifier);
+            tok.assign(TokenType.Identifier);
 
             //look for keywords
             if(tok.val.Identifier in mKeywords)
@@ -292,7 +239,7 @@ class Lexer
 
     static this()
     {
-        mKeywords["def"] = Token.KwDef;
-        mKeywords["package"] = Token.KwPackage;
+        mKeywords["def"] = TokenType.KwDef;
+        mKeywords["package"] = TokenType.KwPackage;
     }
 } 

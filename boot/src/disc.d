@@ -63,12 +63,12 @@ int main(string[] args)
 */
 private void dumpLexer(Lexer lex)
 {
-    while(lex.getToken().tok != Token.EOF)
+    while(lex.getToken().tok != TokenType.EOF)
     {
         auto t = lex.currentToken;
-        if(t.tok == Token.Identifier)
+        if(t.tok == TokenType.Identifier)
             writefln("Identifier: %1$s", t.val.Identifier);
-        else if (t.tok == Token.String)
+        else if (t.tok == TokenType.String)
             writefln("String: %1$s", t.val.String);
         else
             writeln(toString(t.tok));

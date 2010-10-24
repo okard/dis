@@ -44,7 +44,7 @@ class Parser
     ///Lexer
     private Lexer mLex;
     ///Token
-    private Lexer.TokenEntry mToken;
+    private TokenEntry mToken;
     ///AST Root Node
     private Node mAstRoot;
     ///AST Current Node
@@ -71,20 +71,20 @@ class Parser
     {
         mToken = mLex.getToken();
         
-        while(mToken.tok != Token.EOF)
+        while(mToken.tok != TokenType.EOF)
         {
             switch(mToken.tok)
             {
             //Keywords
-            case Token.KwPackage: parsePackage(); break;
-            case Token.KwDef: parseDef(); break;
+            case TokenType.KwPackage: parsePackage(); break;
+            case TokenType.KwDef: parseDef(); break;
             // Blocks {}
-            case Token.COBracket: parseBlock(); break;
-            case Token.CCBracket: closeBlock(); break;
+            case TokenType.COBracket: parseBlock(); break;
+            case TokenType.CCBracket: closeBlock(); break;
             //end actual node
-            case Token.Semicolon: endActualNode(); break;
+            case TokenType.Semicolon: endActualNode(); break;
             //inner blocks
-            case Token.Identifier: parseStatement(); break;
+            case TokenType.Identifier: parseStatement(); break;
             default:
             }
 
@@ -129,10 +129,10 @@ class Parser
     private void parsePackage()
     {
         //package identifier;
-        assert(mToken.tok == Token.KwPackage);
+        assert(mToken.tok == TokenType.KwPackage);
         
         //Package need a name
-        if(!expect(mToken, Token.Identifier))
+        if(!expect(mToken, TokenType.Identifier))
             error(mToken.loc, "Expected Identifier after package");
         
         //Create new Package Declaration
@@ -140,7 +140,7 @@ class Parser
 
         //Look for semicolon or end of line
         mToken = mLex.getToken();
-        if(mToken.tok != Token.EOL && mToken.tok != Token.Semicolon)
+        if(mToken.tok != TokenType.EOL && mToken.tok != TokenType.Semicolon)
             error(mToken.loc, "Expected EOL or Semicolon");
 
         mAstStack.push(pkg);
@@ -154,17 +154,17 @@ class Parser
         //top level node must be PackageDeclaration,(ClassDeclaration) 
         //def{(Calling Convention)} Identifier(Parameter) ReturnType
         // Block {}
-        assert(mToken.tok == Token.KwDef);
+        assert(mToken.tok == TokenType.KwDef);
 
         auto func = new FunctionDeclaration();
 
         mToken = mLex.getToken();
 
         //Parse Calling Convention
-        if(mToken.tok == Token.ROBracket)
+        if(mToken.tok == TokenType.ROBracket)
         {
             //identifier aka calling convention
-            if(!expect(mToken,Token.Identifier))
+            if(!expect(mToken,TokenType.Identifier))
                 error(mToken.loc, "parseDef: Expected Identifier for Calling Convention");
             
             switch(mToken.val.Identifier)
@@ -175,14 +175,14 @@ class Parser
             }
             
             //close )
-            if(!expect(mToken, Token.RCBracket))
+            if(!expect(mToken, TokenType.RCBracket))
                 error(mToken.loc, "parseDef: Expected )");
 
             mToken = mLex.getToken();
         }
         
         //parse function name (identifier)
-        if(mToken.tok != Token.Identifier)
+        if(mToken.tok != TokenType.Identifier)
         {
             error(mToken.loc, "parseDef: expected identifier");
             return;
@@ -191,26 +191,26 @@ class Parser
         func.mName = cast(string)mToken.val.Identifier;
 
         //expected (params) return type {
-        if(!expect(mToken, Token.ROBracket))
+        if(!expect(mToken, TokenType.ROBracket))
         {
             error(mToken.loc, "parseDef: expected (");
             return;
         }
 
         //parse parameters when some available
-        if(mLex.peekToken(1).tok != Token.RCBracket)
+        if(mLex.peekToken(1).tok != TokenType.RCBracket)
             parseDefParams(func);
         else 
             next();
 
         //after parsing parameters expects )
-        if(mToken.tok != Token.RCBracket)
+        if(mToken.tok != TokenType.RCBracket)
             error(mToken.loc, "parseDef: expected ) after parameters");
 
         
         auto peekTok = mLex.peekToken(1);
         //look for return value
-        if(peekTok.tok == Token.Identifier)
+        if(peekTok.tok == TokenType.Identifier)
         {
             next();
             func.mType.mReturnType = resolveType(mToken.val.Identifier);
@@ -272,32 +272,32 @@ class Parser
         }
 
         //parse loop
-        while(mToken.tok != Token.RCBracket)
+        while(mToken.tok != TokenType.RCBracket)
         {
             next();
 
             switch(mToken.tok)
             {
-            case Token.Identifier:
+            case TokenType.Identifier:
                 list  ~= mToken.val.Identifier;
                 break;
-            case Token.Dot:
+            case TokenType.Dot:
                 //todo dotted identifier
-                if(mLex.peekToken(1).tok == Token.Dot && mLex.peekToken(2).tok == Token.Dot)
+                if(mLex.peekToken(1).tok == TokenType.Dot && mLex.peekToken(2).tok == TokenType.Dot)
                 {
                     next(); next();
                     list ~= cast(char[])"...";
                 }
                 break;
-            case Token.Colon:
+            case TokenType.Colon:
                 continue;
-            case Token.RCBracket:
+            case TokenType.RCBracket:
                 add();
                 return;
-            case Token.Mul:
+            case TokenType.Mul:
                 list[list.length-1] ~= '*';
                 break;
-            case Token.Comma:
+            case TokenType.Comma:
                 //one param finished
                 add();
                 list.length = 0;
@@ -324,7 +324,7 @@ class Parser
     */
     private void parseStatement()
     {
-        assert(mToken.tok == Token.Identifier);
+        assert(mToken.tok == TokenType.Identifier);
         
         Statement stat;
 
@@ -333,7 +333,7 @@ class Parser
         //auto d = parseIdentifier();
 
         //call Statment
-        if(mLex.peekToken(1).tok == Token.ROBracket)
+        if(mLex.peekToken(1).tok == TokenType.ROBracket)
         {
             next();
             //create function call expression
@@ -363,22 +363,22 @@ class Parser
     */
     private DotIdentifier parseIdentifier()
     {
-        assert(mToken.tok == Token.Identifier);
+        assert(mToken.tok == TokenType.Identifier);
 
         auto di = new DotIdentifier(mToken.val.Identifier);
         bool expDot = true;
 
-        while((peek(1) == Token.Identifier) || (peek(1) == Token.Dot))
+        while((peek(1) == TokenType.Identifier) || (peek(1) == TokenType.Dot))
         {              
             next();
             //identifier
-            if(expDot && mToken.tok == Token.Identifier)
+            if(expDot && mToken.tok == TokenType.Identifier)
             {
                 error(mToken.loc, "expected dot to seperate identifiers");
                 break;
             }   
             //dot
-            if(!expDot && mToken.tok == Token.Dot)
+            if(!expDot && mToken.tok == TokenType.Dot)
             {
                 error(mToken.loc, "expected identifier after dot");
                 break;
@@ -386,7 +386,7 @@ class Parser
             
             expDot = !expDot;
             
-            if(mToken.tok == Token.Identifier)
+            if(mToken.tok == TokenType.Identifier)
                 di.mIdentifier ~= mToken.val.Identifier;
             
         }
@@ -436,7 +436,7 @@ class Parser
     /**
     * Expect a special token
     */
-    private bool expect(ref Lexer.TokenEntry token, Token expected)
+    private bool expect(ref TokenEntry token, TokenType expected)
     {
         token = mLex.getToken();
         return (token.tok == expected);
@@ -453,7 +453,7 @@ class Parser
     /**
     * Peek token type
     */
-    private Token peek(ushort lookahead = 1)
+    private TokenType peek(ushort lookahead = 1)
     {
         return mLex.peekToken(lookahead).tok;
     }

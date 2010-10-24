@@ -18,6 +18,8 @@
 ******************************************************************************/
 module disc.dis.Token;
 
+import disc.basic.Location;
+
 /*
 Change structure as soon as bug 4423 is fixed
 http://d.puremagic.com/issues/show_bug.cgi?id=4423
@@ -26,7 +28,7 @@ http://d.puremagic.com/issues/show_bug.cgi?id=4423
 /**
 * Token
 */
-enum Token : ubyte
+enum TokenType : ubyte
 {
     None,
     EOF,
@@ -58,27 +60,79 @@ enum Token : ubyte
 /**
 * Token to String
 */
-string toString(Token tok)
+string toString(TokenType tok)
 {
     switch(tok)
     {
-    case Token.None:        return "None";
-    case Token.Identifier:  return "Identifier";
-    case Token.String:      return "String";
-    case Token.EOL:         return "End of Line";
-    case Token.Semicolon:   return ";";
-    case Token.Comma:       return ",";
-    case Token.Dot:         return ".";
-    case Token.Colon:       return ":";
-    case Token.ROBracket:   return "(";
-    case Token.RCBracket:   return ")";
-    case Token.AOBracket:   return "[";
-    case Token.ACBracket:   return "]";
-    case Token.COBracket:   return "{";
-    case Token.CCBracket:   return "}";
-    case Token.Mul:         return "*";
-    case Token.KwPackage:   return "package";
-    case Token.KwDef:       return "def";
+    case TokenType.None:        return "None";
+    case TokenType.Identifier:  return "Identifier";
+    case TokenType.String:      return "String";
+    case TokenType.EOL:         return "End of Line";
+    case TokenType.Semicolon:   return ";";
+    case TokenType.Comma:       return ",";
+    case TokenType.Dot:         return ".";
+    case TokenType.Colon:       return ":";
+    case TokenType.ROBracket:   return "(";
+    case TokenType.RCBracket:   return ")";
+    case TokenType.AOBracket:   return "[";
+    case TokenType.ACBracket:   return "]";
+    case TokenType.COBracket:   return "{";
+    case TokenType.CCBracket:   return "}";
+    case TokenType.Mul:         return "*";
+    case TokenType.KwPackage:   return "package";
+    case TokenType.KwDef:       return "def";
     default: return "no token description";
     }
+}
+
+/**
+* Represents a Value
+*/
+struct Value
+{
+    public enum Type { None, String, Identifier, Double, Float, Integer, UInteger }
+
+
+    //Type
+    Type ValueType;
+
+    union
+    {
+        char[] String;
+        char[] Identifier;
+        double Double;
+        float Float;
+        int   Integer;
+        uint  UInteger;
+    }
+}
+
+///Structure for TokenList
+public struct TokenEntry
+{
+    public TokenEntry assign(TokenType tok, Value v)
+    {
+        this.tok = tok;
+        this.val = v;
+        hasValue = true;
+        return this;
+    }
+
+    public TokenEntry assign(TokenType tok)
+    {
+        this.tok = tok;
+        //this.val = null;
+        hasValue = false;
+        return this;
+    }
+
+    public string toString()
+    {
+        return disc.dis.Token.toString(tok);
+    }
+
+    TokenType tok;
+    Value val;
+    Location loc;
+    bool hasValue;
 }
