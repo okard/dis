@@ -136,7 +136,7 @@ class Parser
             error(mToken.loc, "Expected Identifier after package");
         
         //Create new Package Declaration
-        auto pkg = new PackageDeclaration(cast(string)mToken.val.Identifier);
+        auto pkg = new PackageDeclaration(cast(string)mToken.value);
 
         //Look for semicolon or end of line
         mToken = mLex.getToken();
@@ -167,7 +167,7 @@ class Parser
             if(!expect(mToken,TokenType.Identifier))
                 error(mToken.loc, "parseDef: Expected Identifier for Calling Convention");
             
-            switch(mToken.val.Identifier)
+            switch(mToken.value)
             {
             case "C": func.mType.mCallingConv = FunctionType.CallingConvention.C; break;
             case "Dis": func.mType.mCallingConv = FunctionType.CallingConvention.Dis;break;
@@ -188,7 +188,7 @@ class Parser
             return;
         }
         
-        func.mName = cast(string)mToken.val.Identifier;
+        func.mName = cast(string)mToken.value;
 
         //expected (params) return type {
         if(!expect(mToken, TokenType.ROBracket))
@@ -213,7 +213,7 @@ class Parser
         if(peekTok.tok == TokenType.Identifier)
         {
             next();
-            func.mType.mReturnType = resolveType(mToken.val.Identifier);
+            func.mType.mReturnType = resolveType(mToken.value);
         }
 
         //declaration???
@@ -265,7 +265,7 @@ class Parser
             //name and type
             else if(list.length == 2)
             {
-                fd.mType.mArguments ~= resolveType(list[1]);
+                fd.mType.mArguments ~= resolveType(cast(string)list[1]);
                 fd.mArgumentNames[list[0]] = cast(ubyte)(fd.mType.mArguments.length-1);
             }
             //TODO 1 element, variablename or type (declaration with block or not) -> semantic?
@@ -279,7 +279,7 @@ class Parser
             switch(mToken.tok)
             {
             case TokenType.Identifier:
-                list  ~= mToken.val.Identifier;
+                list  ~= cast(char[])mToken.value;
                 break;
             case TokenType.Dot:
                 //todo dotted identifier
@@ -329,7 +329,7 @@ class Parser
         Statement stat;
 
         //statement with started identifier?
-        DotIdentifier d =  new DotIdentifier(mToken.val.Identifier);
+        DotIdentifier d =  new DotIdentifier(cast(char[])mToken.value);
         //auto d = parseIdentifier();
 
         //call Statment
@@ -365,7 +365,7 @@ class Parser
     {
         assert(mToken.tok == TokenType.Identifier);
 
-        auto di = new DotIdentifier(mToken.val.Identifier);
+        auto di = new DotIdentifier(cast(char[])mToken.value);
         bool expDot = true;
 
         while((peek(1) == TokenType.Identifier) || (peek(1) == TokenType.Dot))
@@ -387,7 +387,7 @@ class Parser
             expDot = !expDot;
             
             if(mToken.tok == TokenType.Identifier)
-                di.mIdentifier ~= mToken.val.Identifier;
+                di.mIdentifier ~= cast(char[])mToken.value;
             
         }
 
@@ -397,7 +397,7 @@ class Parser
     /**
     * Get type for an identifier
     */
-    private Type resolveType(char[] identifier)
+    private Type resolveType(string identifier)
     {
         Type getType()
         {

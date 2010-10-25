@@ -67,9 +67,9 @@ private void dumpLexer(Lexer lex)
     {
         auto t = lex.currentToken;
         if(t.tok == TokenType.Identifier)
-            writefln("Identifier: %1$s", t.val.Identifier);
+            writefln("Identifier: %1$s", t.value);
         else if (t.tok == TokenType.String)
-            writefln("String: %1$s", t.val.String);
+            writefln("String: %1$s", t.value);
         else
             writeln(toString(t.tok));
     }

@@ -85,54 +85,15 @@ string toString(TokenType tok)
     }
 }
 
-/**
-* Represents a Value
-*/
-struct Value
-{
-    public enum Type { None, String, Identifier, Double, Float, Integer, UInteger }
-
-
-    //Type
-    Type ValueType;
-
-    union
-    {
-        char[] String;
-        char[] Identifier;
-        double Double;
-        float Float;
-        int   Integer;
-        uint  UInteger;
-    }
-}
-
 ///Structure for TokenList
 public struct Token
 {
-    public Token assign(TokenType tok, Value v)
-    {
-        this.tok = tok;
-        this.val = v;
-        hasValue = true;
-        return this;
-    }
-
-    public Token assign(TokenType tok)
-    {
-        this.tok = tok;
-        //this.val = null;
-        hasValue = false;
-        return this;
-    }
-
     public string toString()
     {
         return disc.dis.Token.toString(tok);
     }
 
     TokenType tok;
-    Value val;
     Location loc;
-    bool hasValue;
+    string value;
 }

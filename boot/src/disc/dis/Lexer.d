@@ -92,7 +92,7 @@ class Lexer
             ident ~= mC;
         }
 
-        te.val = Value(Value.Type.Identifier, ident);
+        te.value = cast(string)ident;
     }
 
     /**
@@ -100,7 +100,7 @@ class Lexer
     */
     private void scanString(ref Token te)
     {
-        te.assign(TokenType.String);
+        te.tok = TokenType.String;
         
         char[] str;
 
@@ -112,7 +112,7 @@ class Lexer
         }
         while(mC != '"');
         
-        te.val = Value(Value.Type.String, str);
+        te.value = cast(string)str;
     }
 
     /**
@@ -128,7 +128,7 @@ class Lexer
         //look for file end and no valid chars
         if(mSrc.isEof() || !nextValidChar(mC))
         {
-            tok.assign(TokenType.EOF);
+            tok.tok = TokenType.EOF;
             return tok;
         }   
 
@@ -139,33 +139,33 @@ class Lexer
         //Check for special characters
         switch(mC)
         {
-        case '\n': tok.assign(TokenType.EOL); break;
-        case ';':  tok.assign(TokenType.Semicolon); break;
-        case ',':  tok.assign(TokenType.Comma); break;
-        case '.':  tok.assign(TokenType.Dot); break;
-        case ':':  tok.assign(TokenType.Colon); break;
-        case '(':  tok.assign(TokenType.ROBracket); break;
-        case ')':  tok.assign(TokenType.RCBracket); break;
-        case '[':  tok.assign(TokenType.AOBracket); break;
-        case ']':  tok.assign(TokenType.ACBracket); break;
-        case '{':  tok.assign(TokenType.COBracket); break;
-        case '}':  tok.assign(TokenType.CCBracket); break;
-        case '*':  tok.assign(TokenType.Mul); break;
+        case '\n': tok.tok = TokenType.EOL; break;
+        case ';':  tok.tok = TokenType.Semicolon; break;
+        case ',':  tok.tok = TokenType.Comma; break;
+        case '.':  tok.tok = TokenType.Dot; break;
+        case ':':  tok.tok = TokenType.Colon; break;
+        case '(':  tok.tok = TokenType.ROBracket; break;
+        case ')':  tok.tok = TokenType.RCBracket; break;
+        case '[':  tok.tok = TokenType.AOBracket; break;
+        case ']':  tok.tok = TokenType.ACBracket; break;
+        case '{':  tok.tok = TokenType.COBracket; break;
+        case '}':  tok.tok = TokenType.CCBracket; break;
+        case '*':  tok.tok = TokenType.Mul; break;
         case '"':  scanString(tok); break;
         default:
-            tok.assign(TokenType.None);
+            tok.tok = TokenType.None;
         }
 
         //Handle Identifiers and Keywords
         if(tok.tok == TokenType.None && isAlpha(mC))
         {
             scanIdentifier(tok);
-            tok.assign(TokenType.Identifier);
+            tok.tok = TokenType.Identifier;
 
             //look for keywords
-            if(tok.val.Identifier in mKeywords)
+            if(tok.value in mKeywords)
             {
-                tok.tok = mKeywords[tok.val.Identifier];
+                tok.tok = mKeywords[tok.value];
             }
         }
             
@@ -214,9 +214,9 @@ class Lexer
     /**
     * Current Value for Token
     */
-    Value currentValue()
+    string currentValue()
     {
-        return mTok.val;
+        return mTok.value;
     }
 
     /**
