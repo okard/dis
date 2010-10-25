@@ -108,9 +108,9 @@ struct Value
 }
 
 ///Structure for TokenList
-public struct TokenEntry
+public struct Token
 {
-    public TokenEntry assign(TokenType tok, Value v)
+    public Token assign(TokenType tok, Value v)
     {
         this.tok = tok;
         this.val = v;
@@ -118,7 +118,7 @@ public struct TokenEntry
         return this;
     }
 
-    public TokenEntry assign(TokenType tok)
+    public Token assign(TokenType tok)
     {
         this.tok = tok;
         //this.val = null;

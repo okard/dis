@@ -37,11 +37,11 @@ class Lexer
     //Keyword to Token
     private static TokenType[char[]] mKeywords;
     //Token List
-    private ArrayBuffer!(TokenEntry) mTokList;
+    private ArrayBuffer!(Token) mTokList;
     ///The current source to lex
     private Source mSrc;
     ///Current Token
-    private TokenEntry mTok;
+    private Token mTok;
     ///Current char
     private char mC;
 
@@ -50,7 +50,7 @@ class Lexer
     */
     public this()
     {
-        mTokList = ArrayBuffer!(TokenEntry)(10);
+        mTokList = ArrayBuffer!(Token)(10);
     }
 
     /**
@@ -81,7 +81,7 @@ class Lexer
     /**
     * Scan Identifier
     */
-    private void scanIdentifier(ref TokenEntry te)
+    private void scanIdentifier(ref Token te)
     {
         char[] ident;
         ident ~= mC;
@@ -98,7 +98,7 @@ class Lexer
     /**
     * Scan String
     */
-    private void scanString(ref TokenEntry te)
+    private void scanString(ref Token te)
     {
         te.assign(TokenType.String);
         
@@ -118,9 +118,9 @@ class Lexer
     /**
     * Get Next Entry
     */
-    private TokenEntry nextToken()
+    private Token nextToken()
     {
-        auto tok = TokenEntry();
+        auto tok = Token();
 
         if(mSrc is null)
             throw new Exception("No Source File");
@@ -175,7 +175,7 @@ class Lexer
     /**
     * Get next Token
     */
-    TokenEntry getToken()
+    Token getToken()
     {
         if(!mTokList.empty())
         {
@@ -191,12 +191,12 @@ class Lexer
     /**
     * Take a peek for next Token 
     */
-    TokenEntry peekToken(ushort n)
+    Token peekToken(ushort n)
     {
         if(mTokList.length() > n)
             return mTokList[n-1];
         
-        TokenEntry tok;
+        Token tok;
         while(mTokList.length < n)
             tok =  mTokList.addAfter(nextToken());
 
@@ -206,7 +206,7 @@ class Lexer
     /**
     * The current Token
     */
-    TokenEntry currentToken()
+    Token currentToken()
     {
        return mTok;
     }

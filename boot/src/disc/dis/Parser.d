@@ -44,7 +44,7 @@ class Parser
     ///Lexer
     private Lexer mLex;
     ///Token
-    private TokenEntry mToken;
+    private Token mToken;
     ///AST Root Node
     private Node mAstRoot;
     ///AST Current Node
@@ -436,7 +436,7 @@ class Parser
     /**
     * Expect a special token
     */
-    private bool expect(ref TokenEntry token, TokenType expected)
+    private bool expect(ref Token token, TokenType expected)
     {
         token = mLex.getToken();
         return (token.tok == expected);
