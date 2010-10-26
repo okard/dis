@@ -198,7 +198,7 @@ class Parser
         }
 
         //parse parameters when some available
-        if(mLex.peekToken(1).tok != TokenType.RCBracket)
+        if(peek(1) != TokenType.RCBracket)
             parseDefParams(func);
         else 
             next();
@@ -283,7 +283,7 @@ class Parser
                 break;
             case TokenType.Dot:
                 //todo dotted identifier
-                if(mLex.peekToken(1).tok == TokenType.Dot && mLex.peekToken(2).tok == TokenType.Dot)
+                if(peek(1) == TokenType.Dot && peek(2) == TokenType.Dot)
                 {
                     next(); next();
                     list ~= cast(char[])"...";
@@ -333,13 +333,18 @@ class Parser
         //auto d = parseIdentifier();
 
         //call Statment
-        if(mLex.peekToken(1).tok == TokenType.ROBracket)
+        if(peek(1) == TokenType.ROBracket)
         {
             next();
             //create function call expression
             auto call =  new FunctionCall();
             call.mFunction = d;
             stat = new ExpressionStatement(call);
+
+            while(peek(1) != TokenType.RCBracket)
+            {
+                next();
+            }
     
             //Parse until RCBracket
 
