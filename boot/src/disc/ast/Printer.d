@@ -82,7 +82,50 @@ class Printer
     */
     public void print(Statement stat)
     {
-        writeln(stat.toString());
+        writeln(toString(stat));
+    }
+
+
+    public static string toString(Expression exp)
+    {
+        switch(exp.mNodeType)
+        {
+            case NodeType.DotIdentifier: return toString(cast(DotIdentifier) exp);
+            case NodeType.FunctionCall: return toString(cast(FunctionCall) exp);
+            default: return "<unkown expression>";
+        }
+    }
+
+    public static string toString(Statement stat)
+    {
+        switch(stat.mNodeType)
+        {
+            case NodeType.ExpressionStat: return toString((cast(ExpressionStatement)stat).mExpression);
+            default: return "<unkown statement>";
+        }
+    }
+
+
+    public static string toString(DotIdentifier di)
+    {
+        char[] str;
+
+        for(int i=0; i < (di.mIdentifier.length-1); i++)
+            str ~= di.mIdentifier[i] ~ ".";
+
+        str ~= di.mIdentifier[di.mIdentifier.length-1];
+        return cast(string)str;
+    }
+
+    /**
+    * to string
+    */
+    public static string toString(FunctionCall fc)
+    {
+        if(fc.mFunction is null) return "No function expression set";
+
+        //add arguments
+        return "Call: " ~ toString(fc.mFunction);
     }
 
     /**

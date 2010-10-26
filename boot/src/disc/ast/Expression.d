@@ -49,20 +49,6 @@ class DotIdentifier : Expression
         mNodeType = NodeType.DotIdentifier;
         mIdentifier ~= identifier;
     }
-
-    /**
-    * To string
-    */
-    override string toString()
-    {
-        char[] str;
-
-        for(int i=0; i < (mIdentifier.length-1); i++)
-            str ~= mIdentifier[i] ~ ".";
-
-        str ~= mIdentifier[mIdentifier.length-1];
-        return cast(string)str;
-    }
 }
 
 /**
@@ -82,15 +68,9 @@ class FunctionCall : Expression
     {
         mNodeType = NodeType.FunctionCall;
     }
-
-    /**
-    * to string
-    */
-    override string toString()
-    {
-        if(mFunction is null) return "No function expression set";
-
-        //add arguments
-        return "Call: " ~ mFunction.toString();
-    }
 }
+
+//AssignExpression
+//Binary/Unary
+//if/else
+//switch/case

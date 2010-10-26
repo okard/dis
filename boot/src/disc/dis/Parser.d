@@ -348,7 +348,6 @@ class Parser
         assert(mToken.tok == TokenType.Identifier);
         
         Statement stat;
-
         //statement with started identifier?
         DotIdentifier d =  new DotIdentifier(cast(char[])mToken.value);
         //auto d = parseIdentifier();
@@ -366,7 +365,11 @@ class Parser
             {
                 next();
                 
-                
+                parseExpression();
+
+                if(mToken.tok == TokenType.Comma)
+                {
+                }
             }
     
             //Parse until RCBracket
@@ -384,6 +387,9 @@ class Parser
     */
     private void parseExpression()
     {
+        //Function Call
+        //If
+        //Switch Case
     }
 
     /**
