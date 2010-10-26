@@ -53,6 +53,8 @@ class Parser
     private Stack!Node mAstStack;
     ///AST Printer
     private Printer mAstPrinter;
+    ///Internal Types
+    private static Type[string] mInternalTypes;
 
     /**
     * Ctor
@@ -62,6 +64,25 @@ class Parser
         mLex = new Lexer();
         mAstPrinter = new Printer();
         mAstStack = Stack!Node(256);
+    }
+
+    public static this()
+    {
+        //Primary
+        mInternalTypes["void"] = new VoidType();
+        mInternalTypes["bool"] = new BoolType();
+        mInternalTypes["byte"] = new ByteType();
+        mInternalTypes["ubyte"] = new UByteType();
+        mInternalTypes["short"] = new ShortType();
+        mInternalTypes["ushort"] = new UShortType();
+        mInternalTypes["int"] = new IntType();
+        mInternalTypes["uint"] = new UIntType();
+        mInternalTypes["long"] = new LongType();
+        mInternalTypes["ulong"] = new ULongType();
+        mInternalTypes["float"] = new FloatType();
+        mInternalTypes["double"] = new DoubleType();
+        //special:
+        mInternalTypes["char"] = new CharType();
     }
     
     /**
@@ -344,6 +365,8 @@ class Parser
             while(peek(1) != TokenType.RCBracket)
             {
                 next();
+                
+                
             }
     
             //Parse until RCBracket
@@ -404,38 +427,15 @@ class Parser
     */
     private Type resolveType(string identifier)
     {
-        Type getType()
-        {
-            switch(identifier)
-            {
-                case "void": return new VoidType();
-                case "bool": return new BoolType();
-                case "byte": return new ByteType();
-                case "ubyte": return new UByteType();
-                case "short": return new ShortType();
-                case "ushort": return new UShortType();
-                case "int": return new IntType();
-                case "uint": return new UIntType();
-                case "long": return new LongType();
-                case "ulong": return new ULongType();
-                case "float": return new FloatType();
-                case "double": return new DoubleType();
-                //special:
-                case "char": return new CharType();
-                //TODO lookup
-                default: return new OpaqueType();
-            }
-        }
-
         //check for pointer
         if(identifier[identifier.length-1] == '*')
         {
             //pointer type
             identifier.length -= 1;
-            return new PointerType(getType());
+            return new PointerType(mInternalTypes.get(identifier, new OpaqueType()));
         }
         else
-            return getType();
+            return mInternalTypes.get(identifier, new OpaqueType());
     }
 
     /**
