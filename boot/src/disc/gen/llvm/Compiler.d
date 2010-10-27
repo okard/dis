@@ -20,16 +20,19 @@ module disc.gen.llvm.Compiler;
 
 import disc.ast.Node;
 import disc.ast.Visitor;
+import disc.ast.Declaration;
+import disc.ast.Statement;
+import disc.ast.Expression;
 import disc.gen.llvm.LLVM;
 
 
 /**
 * LLVM based Dis Compiler
 */
-class Compiler : AbstractVisitor
+class Compiler : public AbstractVisitor
 {
     ///LLVM Context
-    private Context context;
+    private Context mContext;
 
     ///Internal Types to LLVM Types
 
@@ -38,7 +41,7 @@ class Compiler : AbstractVisitor
     */
     public this()
     {
-        context = new Context();
+        mContext = new Context();
     }
 
     /**
@@ -48,4 +51,24 @@ class Compiler : AbstractVisitor
     {
         ast.accept(this);
     }
+
+    /**
+    * Generate Code for Package
+    */
+    override void visit(PackageDeclaration pack)
+    {
+        auto mod = new Module(mContext, pack.mName);
+        
+        string filename = pack.mName ~ ".bc\0";
+        mod.writeByteCode(filename);
+    }
+
+    //To Implement:
+    override void visit(FunctionDeclaration func){}
+    override void visit(BlockStatement block){}
+    override void visit(ExpressionStatement expr){}
+    override void visit(FunctionCall call){}
+    override void visit(Declaration decl){}
+    override void visit(Statement stat){}
+    override void visit(Expression expr){}
 } 

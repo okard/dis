@@ -1,3 +1,6 @@
 # boot 
 boot/bin/disc
 .obj/
+
+# llvm
+*.bc

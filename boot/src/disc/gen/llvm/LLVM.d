@@ -119,7 +119,7 @@ class Module
     */
     public void writeByteCode(string file)
     {
-        LLVMWriteBitcodeToFile(mModule, (cast(char[])file).ptr);
+        LLVMWriteBitcodeToFile(mModule, cast(char*)file.ptr);
     }
 }
 
@@ -140,12 +140,27 @@ class Type
     }
 }
 
+/*
+    integer type
+    real type
+    function type
+    sequence types:
+       struct type
+       array type
+       pointer type
+       vector type
+    void type
+    label type
+    opaque type
+*/
+
+
 /**
 * LLVM Value
 */
 class Value
 {
-    //LLVM Value
+    /// LLVM Value
     private LLVMValueRef mValue;
 
 
@@ -164,6 +179,14 @@ class Value
     {
         return  LLVMTypeOf(mValue);
     }
+
+    /**
+    * Get LLVM Value
+    */
+    public LLVMValueRef llvmValue()
+    {
+        return mValue;
+    }
 }
 
 /**
@@ -171,8 +194,25 @@ class Value
 */
 class BasicBlock
 {
-    //LLVM Basic Block
-    LLVMBasicBlockRef mBasicBlock;
+    /// LLVM Basic Block
+    private LLVMBasicBlockRef mBasicBlock;
+
+    /**
+    * Create new Basic Block
+    */
+    public this(Value val, string name)
+    {
+        //value must be a function
+        mBasicBlock = LLVMAppendBasicBlock(val.llvmValue(), (cast(char[])name).ptr);
+    }
+
+    /**
+    * Get llvm basis block
+    */
+    public LLVMBasicBlockRef llvmBasicBlock()
+    {
+        return mBasicBlock;
+    }
 }
 
 /**
@@ -197,6 +237,14 @@ class Builder
     public ~this()
     {
         LLVMDisposeBuilder(mBuilder);
+    }
+
+    /**
+    * Set Position to the end of a basis block
+    */
+    public void PositionAtEnd(BasicBlock block)
+    {
+        LLVMPositionBuilderAtEnd(mBuilder, block.llvmBasicBlock());
     }
 
 }

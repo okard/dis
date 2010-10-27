@@ -25,8 +25,9 @@ import disc.ast.Expression;
 /**
 * AST Visitor
 */
-interface Visitor
+public interface Visitor
 {
+    public {
     //Declarations
     void visit(PackageDeclaration pack);
     void visit(FunctionDeclaration func);
@@ -38,6 +39,7 @@ interface Visitor
     void visit(Declaration decl);
     void visit(Statement stat);
     void visit(Expression expr);
+    }
 }
 
 /**
@@ -54,7 +56,7 @@ mixin template VisitorMixin()
 * Abstract Visitor
 * Does not work, ... 
 */
-abstract class AbstractVisitor : Visitor
+public abstract class AbstractVisitor : Visitor
 {
     public{
     //Declarations
