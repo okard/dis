@@ -118,6 +118,7 @@ class Parser
             auto pd = cast(PackageDeclaration)mAstStack.top();
             assert(pd !is null);
             mAstPrinter.print(pd);
+            mAstRoot = pd;
         }
     }
 
@@ -484,5 +485,13 @@ class Parser
     public void source(Source src)
     {
         mLex.source = src;
+    }
+
+    /**
+    * Get Parse Tree
+    */
+    public Node ParseTree()
+    {
+        return mAstRoot;
     }
 } 

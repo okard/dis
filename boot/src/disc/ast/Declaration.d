@@ -19,6 +19,7 @@
 module disc.ast.Declaration;
 
 import disc.ast.Node;
+import disc.ast.Visitor;
 import disc.ast.Type;
 import disc.ast.Statement;
 
@@ -29,6 +30,8 @@ abstract class Declaration : Node
 {
     ///name
     public string mName;
+    
+    mixin VisitorMixin;
     
     /**
     * Ctor
@@ -51,6 +54,14 @@ abstract class Declaration : Node
 */
 class PackageDeclaration : Declaration
 {
+    //Functions
+    FunctionDeclaration[] mFunctions;
+        
+    //ClassDeclaration[] mClasses;
+
+    //Visitor Mixin
+    mixin VisitorMixin;
+    
     /**
     * Ctor
     */
@@ -58,10 +69,6 @@ class PackageDeclaration : Declaration
     {
         super(name);
     }
-    
-    FunctionDeclaration[] mFunctions;
-
-    //ClassDeclaration[] mClasses;
 }
 
 /**
@@ -69,6 +76,9 @@ class PackageDeclaration : Declaration
 */
 class FunctionDeclaration : Declaration
 {
+    //Visitor Mixin
+    mixin VisitorMixin;
+
     //flags: public, private, protected, package, static
 
     //parameter names? index of parameter type

@@ -16,35 +16,32 @@
 *    along with disc.  If not, see <http://www.gnu.org/licenses/>.
 *
 ******************************************************************************/
-module disc.ast.Node;
+module disc.ast.Visitor;
 
-import disc.ast.Visitor;
-
-/**
-* Base Class for AST Nodes
-*/
-abstract class Node
-{
-    public NodeType mNodeType = NodeType.Unknown;
-    
-    public void accept(Visitor v);
-    public NodeType NType() { return mNodeType; }
-} 
+import disc.ast.Declaration;
+import disc.ast.Statement;
+import disc.ast.Expression;
 
 /**
-* Node Types
+* AST Visitor
 */
-enum NodeType
+interface Visitor
 {
-    Unknown,
-    //Declarations
-    PackageDecl,
-    FunctionDecl,
-    VariableDecl,
-    //Statements
-    BlockStat,
-    ExpressionStat,
-    //Expressions
-    DotIdentifier,
-    FunctionCall
+    //Specialized Visits
+    void visit(PackageDeclaration pack);
+    void visit(FunctionDeclaration func);
+    //Base Visits
+    void visit(Declaration decl);
+    void visit(Statement stat);
+    void visit(Expression expr);
 }
+
+/**
+* Visitor Mixin
+*/
+mixin template VisitorMixin()
+{
+    /// Accept Visitor
+    public override void accept(Visitor v) { v.visit(this); }
+}
+    

@@ -19,6 +19,7 @@
 module disc.ast.Statement;
 
 import disc.ast.Node;
+import disc.ast.Visitor;
 import disc.ast.Expression;
  
 
@@ -27,6 +28,7 @@ import disc.ast.Expression;
 */
 abstract class Statement : Node
 {
+    mixin VisitorMixin;
 } 
 
 /**

@@ -19,6 +19,7 @@
 module disc.ast.Expression;
 
 import disc.ast.Node;
+import disc.ast.Visitor;
 import disc.ast.Type;
 
 /**
@@ -27,6 +28,7 @@ import disc.ast.Type;
 abstract class Expression : Node
 {
     Type mReturnType;
+    mixin VisitorMixin;
 }
 
 /**

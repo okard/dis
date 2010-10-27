@@ -19,18 +19,67 @@
 module disc.Semantic;
 
 import disc.ast.Node;
+import disc.ast.Visitor;
+import disc.ast.Declaration;
+import disc.ast.Statement;
+import disc.ast.Expression;
+
+import std.stdio;
 
 /**
 * Semantic Pass for AST
 */
-class Semantic
+class Semantic : Visitor
 {
     //rules
 
+    //Type stack name -> Type 
+    //Stack!(Type[char[]])
+    
     /**
-    * Run semantic passes on ast
+    * Visit Declaration
     */
-    public void run(Node astNode)
+    void visit(Declaration decl)
     {
+    }
+
+    /**
+    * Visit Statement
+    */
+    void visit(Statement stat)
+    {
+    }
+
+    /**
+    * Visit Expression
+    */
+    void visit(Expression expr)
+    {
+    }
+
+    /**
+    * Visit PackageDeclaration
+    */
+    void visit(PackageDeclaration pack)
+    {
+        foreach(FunctionDeclaration f; pack.mFunctions)
+            f.accept(this);  
+    }
+
+    /**
+    * Visit FunctionDeclaration
+    */
+    void visit(FunctionDeclaration func)
+    { 
+    }
+
+    /**
+    * Run semantic passes 
+    * Parse Tree -> AST
+    */
+    public Node run(Node astNode)
+    {
+        astNode.accept(this);
+        return astNode;
     }
 }

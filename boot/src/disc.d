@@ -25,6 +25,7 @@ import disc.dis.Token;
 import disc.dis.Lexer;
 import disc.dis.Parser;
 import disc.Semantic;
+import disc.gen.llvm.Compiler;
 
 /**
 * Main
@@ -54,6 +55,11 @@ int main(string[] args)
 
     //run semantics
     auto semantic = new Semantic();
+    auto ast = semantic.run(parser.ParseTree());
+
+    //Compiler
+    auto compiler = new Compiler();
+    compiler.compile(ast);
 
     return 0;
 }
