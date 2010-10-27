@@ -76,7 +76,7 @@ class Semantic : AbstractVisitor
     }
 
     /**
-    * Block Statement
+    * Visit Block Statement
     */
     override void visit(BlockStatement block)
     {
@@ -85,7 +85,7 @@ class Semantic : AbstractVisitor
     }
 
     /**
-    * Expression Statement
+    * Visit Expression Statement
     */
     override void visit(ExpressionStatement expr)
     {
@@ -93,7 +93,7 @@ class Semantic : AbstractVisitor
     }
 
     /**
-    * Function call
+    * Visit Function Call
     */
     override void visit(FunctionCall call)
     {

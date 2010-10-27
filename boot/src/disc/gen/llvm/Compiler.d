@@ -46,5 +46,6 @@ class Compiler : AbstractVisitor
     */
     public void compile(Node ast)
     {
+        ast.accept(this);
     }
 } 

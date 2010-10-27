@@ -40,8 +40,11 @@ class Printer : public AbstractVisitor
         astNode.accept(this);
     }
 
+    //=========================================================================
+    //== Visitor Implementation
+
     /**
-    * Print FunctionDeclaration
+    * Visit FunctionDeclaration
     */
     public override void visit(FunctionDeclaration fd)
     {
@@ -64,7 +67,7 @@ class Printer : public AbstractVisitor
     }
 
     /**
-    * Print Package Declaration
+    * Visit Package Declaration
     */
     public override void visit(PackageDeclaration pd)
     {
@@ -75,7 +78,7 @@ class Printer : public AbstractVisitor
     }
 
     /**
-    * Print Block Statement
+    * Visit Block Statement
     */
     public override void visit(BlockStatement bs)
     {
@@ -86,33 +89,44 @@ class Printer : public AbstractVisitor
     }
 
     /**
-    * Print statement
+    * Visit ExpressionStatement
+    */
+    public override void visit(ExpressionStatement expr) 
+    {
+        expr.mExpression.accept(this);
+    }
+
+    /**
+    * FunctionCall
+    */
+    public override void visit(FunctionCall call) 
+    {
+        writeln(toString(call));
+    }
+
+    /**
+    * Print Statement
     */
     public override void visit(Statement stat)
     {
         writeln(toString(stat));
     }
 
-    //Statements
-    override void visit(ExpressionStatement expr) 
-    {
-        expr.mExpression.accept(this);
-    }
-
-    override void visit(FunctionCall call) 
-    {
-        writeln(toString(call));
-    }
-
-    //Base Visits
+    /**
+    * Visit Declaration
+    */
     override void visit(Declaration decl){}
+
+    /**
+    * Visit Expression
+    */
     override void visit(Expression expr){}
 
     //=========================================================================
     //== To String Functions
 
     /**
-    * to string
+    * Expression to string
     */
     public static string toString(Expression exp)
     {
@@ -125,7 +139,7 @@ class Printer : public AbstractVisitor
     }
 
     /**
-    * to string
+    * Statement to string
     */
     public static string toString(Statement stat)
     {
@@ -137,7 +151,7 @@ class Printer : public AbstractVisitor
     }
 
     /**
-    * to string
+    * DotIdentifier to string
     */
     public static string toString(DotIdentifier di)
     {
@@ -151,7 +165,7 @@ class Printer : public AbstractVisitor
     }
 
     /**
-    * to string
+    * FunctionCall to string
     */
     public static string toString(FunctionCall fc)
     {
@@ -162,7 +176,7 @@ class Printer : public AbstractVisitor
     }
 
     /**
-    * Calling Convention to String
+    * Calling Convention to string
     */
     private static string toString(FunctionType.CallingConvention cc)
     {

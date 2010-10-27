@@ -20,6 +20,7 @@ module disc.gen.llvm.LLVM;
 // This Module wraps LLVM C API back to Classes
 
 import llvm.c.Core;
+import llvm.c.BitWriter;
 
 
 /**
@@ -111,6 +112,14 @@ class Module
     public void dump()
     {
         LLVMDumpModule(mModule);
+    }
+
+    /**
+    * Writes ByteCode to File
+    */
+    public void writeByteCode(string file)
+    {
+        LLVMWriteBitcodeToFile(mModule, (cast(char[])file).ptr);
     }
 }
 
