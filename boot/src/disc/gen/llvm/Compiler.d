@@ -19,14 +19,27 @@
 module disc.gen.llvm.Compiler;
 
 import disc.ast.Node;
+import disc.ast.Visitor;
 import disc.gen.llvm.LLVM;
 
 
 /**
 * LLVM based Dis Compiler
 */
-class Compiler
+class Compiler : AbstractVisitor
 {
+    ///LLVM Context
+    private Context context;
+
+    ///Internal Types to LLVM Types
+
+    /**
+    * Constructor
+    */
+    public this()
+    {
+        context = new Context();
+    }
 
     /**
     * Compile AST

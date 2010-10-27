@@ -19,6 +19,7 @@
 module disc.ast.Printer;
 
 import disc.ast.Node;
+import disc.ast.Visitor;
 import disc.ast.Type;
 import disc.ast.Declaration;
 import disc.ast.Statement;
@@ -29,13 +30,20 @@ import std.stdio;
 /**
 * AST Printer
 */
-class Printer
+class Printer : public AbstractVisitor
 {
+    /**
+    * Print Ast
+    */
+    public void print(Node astNode)
+    {
+        astNode.accept(this);
+    }
 
     /**
     * Print FunctionDeclaration
     */
-    public void print(FunctionDeclaration fd)
+    public override void visit(FunctionDeclaration fd)
     {
         writef("Function(%s): %s(", toString(fd.mType.mCallingConv), fd.mName);
 
@@ -52,40 +60,60 @@ class Printer
         //fd.mType.mReturnType
 
         if(fd.mBody !is null)
-            print(fd.mBody);
+            fd.mBody.accept(this);
     }
 
     /**
     * Print Package Declaration
     */
-    public void print(PackageDeclaration pd)
+    public override void visit(PackageDeclaration pd)
     {
         writefln("Package: %s",  pd.mName);
 
         foreach(fd; pd.mFunctions)
-            print(fd);
+            fd.accept(this);
     }
 
     /**
     * Print Block Statement
     */
-    public void print(BlockStatement bs)
+    public override void visit(BlockStatement bs)
     {
         writeln("{");
-        foreach(Statement stat; bs.mStatements)
-            print(stat);
+        foreach(stat; bs.mStatements)
+            stat.accept(this);
         writeln("}");
     }
 
     /**
     * Print statement
     */
-    public void print(Statement stat)
+    public override void visit(Statement stat)
     {
         writeln(toString(stat));
     }
 
+    //Statements
+    override void visit(ExpressionStatement expr) 
+    {
+        expr.mExpression.accept(this);
+    }
 
+    override void visit(FunctionCall call) 
+    {
+        writeln(toString(call));
+    }
+
+    //Base Visits
+    override void visit(Declaration decl){}
+    override void visit(Expression expr){}
+
+    //=========================================================================
+    //== To String Functions
+
+    /**
+    * to string
+    */
     public static string toString(Expression exp)
     {
         switch(exp.mNodeType)
@@ -96,6 +124,9 @@ class Printer
         }
     }
 
+    /**
+    * to string
+    */
     public static string toString(Statement stat)
     {
         switch(stat.mNodeType)
@@ -105,7 +136,9 @@ class Printer
         }
     }
 
-
+    /**
+    * to string
+    */
     public static string toString(DotIdentifier di)
     {
         char[] str;

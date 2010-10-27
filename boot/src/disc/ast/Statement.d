@@ -36,6 +36,8 @@ abstract class Statement : Node
 */
 class BlockStatement : Statement
 {
+    mixin VisitorMixin;
+
     public Statement[] mStatements;
 
     this()
@@ -50,17 +52,14 @@ class BlockStatement : Statement
 */
 class ExpressionStatement : Statement
 {
+    mixin VisitorMixin;
+
     public Expression mExpression;
 
     public this(Expression expr)
     {
         mExpression = expr;
         mNodeType = NodeType.ExpressionStat;
-    }
-
-    override string toString()
-    {
-        return mExpression.toString();
     }
 }
 

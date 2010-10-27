@@ -40,6 +40,8 @@ class DotIdentifier : Expression
     ///parts of identifiers splitted with .
     char[][] mIdentifier;
 
+    mixin VisitorMixin;
+
     //resolve type
     //Type type;
 
@@ -58,6 +60,8 @@ class DotIdentifier : Expression
 */
 class FunctionCall : Expression
 {
+    mixin VisitorMixin;
+
     ///Expression to retrieve a function type
     Expression mFunction;
 

@@ -27,9 +27,13 @@ import disc.ast.Expression;
 */
 interface Visitor
 {
-    //Specialized Visits
+    //Declarations
     void visit(PackageDeclaration pack);
     void visit(FunctionDeclaration func);
+    //Statements
+    void visit(BlockStatement block);
+    void visit(ExpressionStatement expr);
+    void visit(FunctionCall call);
     //Base Visits
     void visit(Declaration decl);
     void visit(Statement stat);
@@ -43,5 +47,27 @@ mixin template VisitorMixin()
 {
     /// Accept Visitor
     public override void accept(Visitor v) { v.visit(this); }
+}
+
+
+/**
+* Abstract Visitor
+* Does not work, ... 
+*/
+abstract class AbstractVisitor : Visitor
+{
+    public{
+    //Declarations
+    void visit(PackageDeclaration pack){}
+    void visit(FunctionDeclaration func){}
+    //Statements
+    void visit(BlockStatement block){}
+    void visit(ExpressionStatement expr){}
+    void visit(FunctionCall call){}
+    //Base Visits
+    void visit(Declaration decl){}
+    void visit(Statement stat){}
+    void visit(Expression expr){}
+    }
 }
     

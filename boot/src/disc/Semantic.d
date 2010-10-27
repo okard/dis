@@ -29,7 +29,7 @@ import std.stdio;
 /**
 * Semantic Pass for AST
 */
-class Semantic : Visitor
+class Semantic : AbstractVisitor
 {
     //rules
 
@@ -39,28 +39,28 @@ class Semantic : Visitor
     /**
     * Visit Declaration
     */
-    void visit(Declaration decl)
+    override void visit(Declaration decl)
     {
     }
 
     /**
     * Visit Statement
     */
-    void visit(Statement stat)
+    override void visit(Statement stat)
     {
     }
 
     /**
     * Visit Expression
     */
-    void visit(Expression expr)
+    override void visit(Expression expr)
     {
     }
 
     /**
     * Visit PackageDeclaration
     */
-    void visit(PackageDeclaration pack)
+    override void visit(PackageDeclaration pack)
     {
         foreach(FunctionDeclaration f; pack.mFunctions)
             f.accept(this);  
@@ -69,8 +69,36 @@ class Semantic : Visitor
     /**
     * Visit FunctionDeclaration
     */
-    void visit(FunctionDeclaration func)
+    override void visit(FunctionDeclaration func)
     { 
+        if(func.mBody !is null)
+            func.mBody.accept(this);
+    }
+
+    /**
+    * Block Statement
+    */
+    override void visit(BlockStatement block)
+    {
+        foreach(stat; block.mStatements)
+            stat.accept(this);
+    }
+
+    /**
+    * Expression Statement
+    */
+    override void visit(ExpressionStatement expr)
+    {
+        expr.mExpression.accept(this);
+    }
+
+    /**
+    * Function call
+    */
+    override void visit(FunctionCall call)
+    {
+        //check for function
+        //call.mFunction.NType() == NodeType.DotIdentifier
     }
 
     /**

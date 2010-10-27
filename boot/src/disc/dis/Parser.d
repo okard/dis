@@ -51,8 +51,6 @@ class Parser
     private Node mAstCurrent;
     ///AST Parser Stack
     private Stack!Node mAstStack;
-    ///AST Printer
-    private Printer mAstPrinter;
     ///Internal Types
     private static Type[string] mInternalTypes;
 
@@ -62,7 +60,6 @@ class Parser
     public this()
     {
         mLex = new Lexer();
-        mAstPrinter = new Printer();
         mAstStack = Stack!Node(256);
     }
 
@@ -117,7 +114,6 @@ class Parser
             //writeln(mAstStack.top().toString());
             auto pd = cast(PackageDeclaration)mAstStack.top();
             assert(pd !is null);
-            mAstPrinter.print(pd);
             mAstRoot = pd;
         }
     }

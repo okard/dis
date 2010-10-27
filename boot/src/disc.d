@@ -21,6 +21,7 @@ module discompiler;
 import std.stdio;
 
 import disc.basic.Source;
+import disc.ast.Printer;
 import disc.dis.Token;
 import disc.dis.Lexer;
 import disc.dis.Parser;
@@ -52,6 +53,10 @@ int main(string[] args)
     auto parser = new Parser();
     parser.source = src;
     parser.parse();
+
+    //Print out
+    auto printer = new Printer();
+    printer.print(parser.ParseTree());
 
     //run semantics
     auto semantic = new Semantic();
