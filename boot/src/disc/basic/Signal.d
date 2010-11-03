@@ -26,11 +26,13 @@ module disc.basic.Signal;
 struct Signal(T...)
 {
     //Handle Delegates
-    alias void delegate(T) Dg;
+    public alias void delegate(T) Dg;
     //Handle Functions
-    alias void function(T) Fn;
-
+    public alias void function(T) Fn;
+    
+    //List of delegates
     private Dg[] dgHandler;
+    //List of functions
     private Fn[] fnHandler;
 
     /**
@@ -53,9 +55,8 @@ struct Signal(T...)
         //TODO
     } 
 
-
     /**
-    * Assign Operator += to add delegates
+    * Assign Operator += to add function
     */
     void opOpAssign(string s)(Fn fn) 
         if (s == "+") 
@@ -64,7 +65,16 @@ struct Signal(T...)
         fnHandler ~= fn;
     }
 
-   
+    /**
+    * Assign Operator -= to remove function
+    */
+    void opOpAssign(string s)(Fn fn) 
+        if (s == "-") 
+    {
+        //remove
+        //TODO
+    } 
+
     /**
     * Dispatch Event
     */
@@ -75,19 +85,20 @@ struct Signal(T...)
 
         foreach(Fn f; fnHandler)
             f(args);
-    }  
+    }
 
-    
-
-    //alias definitions
-    //alias opOpAssign!("+") connect;
-    //alias opOpAssign!("-") disconnect;
-    //alias opCall call;
+    /**
+    * Clear events
+    */
+    void clear()
+    {
+        dgHandler.length = 0;
+        fnHandler.length = 0;
+    }
 }
 
 
-
-
+// Unittests
 unittest
 {
 
@@ -98,6 +109,4 @@ unittest
     mySig += &setFoo;
     mySig(5);
     assert(foo == 5);
-
-
 }

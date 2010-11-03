@@ -35,53 +35,93 @@ enum LogType : ubyte
     Fatal = 5
 }
 
+/**
+* Log Source
+*/
 class LogSource
 {
-    private alias Signal!(LogSource, d_time, LogType, string) LogEvent;
-    private string name;
+    //Log Event Definition
+    public alias Signal!(LogSource, d_time, LogType, string) LogEvent;
+    
+    // Log Source Name
+    private string mName;
 
-    private LogEvent  evLog;
+    //Log Event
+    private LogEvent evLog;
 
+    /**
+    * Create new Log Source
+    */
     private this(string name)
     {
-        this.name = name;
+        this.mName = name;
     }
 
+    /**
+    * Logs a specific Message
+    */
     public void log(LogType type, T...)(T args)
     {
         auto str = format(args);
         evLog(this, getUTCtime(), type, str);
     }
 
-    public void log(T...)(T args)
+    /**
+    * Logs Information
+    */
+    public void information(T...)(T args)
     {
        log!(LogType.Information)(args);
     }
 
+    /**
+    * Getting Log event
+    */
     @property
     public auto ref OnLog()
     {
         return evLog;
     }
 
+    /**
+    * Getting LogSource Name
+    */
+    @property
+    public string Name()
+    {
+        return mName;
+    }
+
 }
 
-class Log
+final static class Log
 {
+    //all log sources
     private static LogSource[string] logSources;
+    
+    //static core log source
     private static LogSource mLog;
 
+    /**
+    * Initialize Log
+    */
     static this()
     {
         mLog = new LogSource("");
         logSources[""] = mLog;
     }
 
+    /**
+    * Get Default Log Source
+    */
     static LogSource opCall()
     {
         return mLog;
     }
 
+    /**
+    * Get a specific Log Source
+    */
     static LogSource opCall(string s)
     {
         auto ls = (s in logSources); 
@@ -94,6 +134,9 @@ class Log
         return *ls;
     }
 
+    /**
+    * Get a specific Log Source
+    */
     static LogSource opDispatch(string s)()
     {
         return opCall(s);
@@ -101,16 +144,49 @@ class Log
 
 }
 
+/**
+* Console Log Listener
+*/
+public void ConsoleListener(LogSource ls, d_time t, LogType ty,string msg)
+{
+    string type;
+    switch(ty) {
+    case LogType.Verbose: type = "Verbose"; break;
+    case LogType.Information: type = "Information"; break;
+    case LogType.Warning: type = "Warning"; break;
+    case LogType.Error: type = "Error"; break;
+    case LogType.Fatal: type = "Fatal"; break;
+    default: type = "";
+    }
 
+    writefln("%1$s %2$s: %3$s", ls.Name, type, msg);
+}
+
+/**
+* File Log Listener
+*/
+public LogSource.LogEvent.Dg FileListener(string file)
+{
+    return (LogSource ls, d_time t, LogType ty,string msg)
+    {
+        auto f = File(file, "a");
+        f.writefln("%1$s: %2$s", ls.Name, msg);
+    };
+}
+
+// Unittests
 version(unittest) import std.stdio;
 unittest
 {
-   auto s = Log.Test;
-   s.OnLog() += (LogSource ls,d_time t, LogType ty,string msg){
-        writeln(msg);
+   Log().OnLog() += &ConsoleListener;
+   auto s = Log.Test; 
+   s.OnLog() += (LogSource ls, d_time t, LogType ty,string msg){
+        assert(ls.Name == "Test");
    };
 
-   s.log("%s", "foo");
+   s.information("%s", "foo");
    s.log!(LogType.Verbose)("%s", "foo");
-   Log().log("%s", "foo"); 
+   Log().information("%s", "foo"); 
+
+   Log().OnLog().clear();
 }

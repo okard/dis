@@ -4,3 +4,6 @@ boot/bin/disc
 
 # llvm
 *.bc
+
+# general
+*.log

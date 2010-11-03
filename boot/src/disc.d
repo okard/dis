@@ -20,6 +20,7 @@ module discompiler;
 
 import std.stdio;
 
+import disc.basic.Log;
 import disc.basic.Source;
 import disc.ast.Printer;
 import disc.dis.Token;
