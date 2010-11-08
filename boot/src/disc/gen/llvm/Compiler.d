@@ -34,6 +34,9 @@ class Compiler : public AbstractVisitor
     ///LLVM Context
     private Context mContext;
 
+    /// LLVM Builder
+    private Builder mBuilder;
+
     ///Internal Types to LLVM Types
 
     /**
@@ -42,6 +45,7 @@ class Compiler : public AbstractVisitor
     public this()
     {
         mContext = new Context();
+        mBuilder = new Builder(mContext);
     }
 
     /**
@@ -58,14 +62,34 @@ class Compiler : public AbstractVisitor
     override void visit(PackageDeclaration pack)
     {
         auto mod = new Module(mContext, pack.mName);
+
+        foreach(func; pack.mFunctions)
+            func.accept(this);
         
         string filename = pack.mName ~ ".bc\0";
         mod.writeByteCode(filename);
     }
 
-    //To Implement:
-    override void visit(FunctionDeclaration func){}
-    override void visit(BlockStatement block){}
+    /**
+    * Compile Function Declaration
+    */
+    override void visit(FunctionDeclaration func)
+    {
+        //generate Function Declaration
+        //function type
+        
+        //block Statement
+        if(func.mBody !is null)
+            func.mBody.accept(this);
+    }
+
+    /**
+    * Generate Block Statement
+    */
+    override void visit(BlockStatement block)
+    {
+    }
+
     override void visit(ExpressionStatement expr){}
     override void visit(FunctionCall call){}
     
