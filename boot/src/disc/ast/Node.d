@@ -25,9 +25,21 @@ import disc.ast.Visitor;
 */
 abstract class Node
 {
-    public NodeType mNodeType = NodeType.Unknown;
+    /// Node Type
+    public NodeType mNodeType;
+
+    ///mixin for type
+    const string set_nodetype = "this.mNodeType = mixin(\"NodeType.\" ~ typeof(this).stringof);";
     
+    /**
+    * Visitor pattern
+    */
     public void accept(Visitor v);
+    
+    /**
+    * Node Type
+    */
+    @property
     public NodeType NType() { return mNodeType; }
 } 
 
@@ -38,12 +50,12 @@ enum NodeType
 {
     Unknown,
     //Declarations
-    PackageDecl,
-    FunctionDecl,
-    VariableDecl,
+    PackageDeclaration,
+    FunctionDeclaration,
+    VariableDeclaration,
     //Statements
-    BlockStat,
-    ExpressionStat,
+    BlockStatement,
+    ExpressionStatement,
     //Expressions
     DotIdentifier,
     FunctionCall

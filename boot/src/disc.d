@@ -19,6 +19,7 @@
 module discompiler; 
 
 import std.stdio;
+import date = std.date;
 
 import disc.basic.Log;
 import disc.basic.Source;
@@ -34,7 +35,9 @@ import disc.gen.llvm.Compiler;
 */
 int main(string[] args)
 {
-    writeln("Dis Compiler V0.01");
+    Log().OnLog() += LevelConsoleListener(LogType.Information);
+
+    Log().information("Dis Compiler V0.01");
 
     if(args.length < 2)
     {
@@ -85,4 +88,17 @@ private void dumpLexer(Lexer lex)
         else
             writeln(toString(t.tok));
     }
+}
+
+
+/**
+* Level Console Log Listener
+*/
+public LogSource.LogEvent.Dg LevelConsoleListener(LogType minimal)
+{
+    return (LogSource ls, date.d_time t, LogType ty, string msg)
+    {
+        if(ty >= minimal)
+            writefln(ls.Name == "" ? "%s%s" : "%s: %s" , ls.Name, msg);
+    };
 }

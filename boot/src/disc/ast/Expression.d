@@ -35,12 +35,13 @@ abstract class Expression : Node
 * Dotted Identifier
 * e.g. foo.bar.x.y
 */
-class DotIdentifier : Expression
+final class DotIdentifier : Expression
 {
+    //Visitor Mixin
+    mixin VisitorMixin;
+
     ///parts of identifiers splitted with .
     char[][] mIdentifier;
-
-    mixin VisitorMixin;
 
     //resolve type
     //Type type;
@@ -58,8 +59,9 @@ class DotIdentifier : Expression
 /**
 * A Function Call
 */
-class FunctionCall : Expression
+final class FunctionCall : Expression
 {
+    //Visitor Mixin
     mixin VisitorMixin;
 
     ///Expression to retrieve a function type

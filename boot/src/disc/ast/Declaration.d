@@ -31,22 +31,8 @@ abstract class Declaration : Node
     ///name
     public string mName;
     
-    mixin VisitorMixin;
-    
-    /**
-    * Ctor
-    */
-    public this()
-    {
-    }
-
-    /**
-    * Ctor
-    */
-    public this(string name)
-    {
-        this.mName = name;
-    }    
+    //Visitor Mixin
+    mixin VisitorMixin;   
 }
 
 /**
@@ -67,7 +53,8 @@ class PackageDeclaration : Declaration
     */
     public this(string name)
     {
-        super(name);
+        mixin(set_nodetype);
+        mName = name;
     }
 }
 
@@ -95,8 +82,8 @@ class FunctionDeclaration : Declaration
     */
     public this()
     {
-        mType = new FunctionType();
-        this.mNodeType = NodeType.FunctionDecl;
+        mixin(set_nodetype);
+        mType = new FunctionType(); 
     }
 
     /**
@@ -125,8 +112,8 @@ class VariableDeclaration : Declaration
     */
     public this(string name, Type type = new OpaqueType())
     {
-        super(name);
-        this.mNodeType = NodeType.VariableDecl;
+        mixin(set_nodetype);
+        this.mName = name;
         this.mType = type;
     }
 

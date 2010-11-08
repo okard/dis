@@ -42,7 +42,7 @@ class BlockStatement : Statement
 
     this()
     {
-        mNodeType = NodeType.BlockStat;
+        mixin(set_nodetype);
     }
 }
 
@@ -58,8 +58,8 @@ class ExpressionStatement : Statement
 
     public this(Expression expr)
     {
+        mixin(set_nodetype);
         mExpression = expr;
-        mNodeType = NodeType.ExpressionStat;
     }
 }
 

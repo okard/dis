@@ -145,7 +145,7 @@ class Printer : public AbstractVisitor
     {
         switch(stat.mNodeType)
         {
-            case NodeType.ExpressionStat: return toString((cast(ExpressionStatement)stat).mExpression);
+            case NodeType.ExpressionStatement: return toString((cast(ExpressionStatement)stat).mExpression);
             default: return "<unkown statement>";
         }
     }

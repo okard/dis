@@ -68,6 +68,8 @@ class Compiler : public AbstractVisitor
     override void visit(BlockStatement block){}
     override void visit(ExpressionStatement expr){}
     override void visit(FunctionCall call){}
+    
+    //Basics
     override void visit(Declaration decl){}
     override void visit(Statement stat){}
     override void visit(Expression expr){}

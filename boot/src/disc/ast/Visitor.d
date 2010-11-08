@@ -35,10 +35,10 @@ public interface Visitor
     void visit(BlockStatement block);
     void visit(ExpressionStatement expr);
     void visit(FunctionCall call);
-    //Base Visits
-    void visit(Declaration decl);
-    void visit(Statement stat);
-    void visit(Expression expr);
+    //basic 
+    void visit(Statement);
+    void visit(Expression);
+    void visit(Declaration);
     }
 }
 
@@ -66,10 +66,10 @@ public abstract class AbstractVisitor : Visitor
     void visit(BlockStatement block){}
     void visit(ExpressionStatement expr){}
     void visit(FunctionCall call){}
-    //Base Visits
-    void visit(Declaration decl){}
-    void visit(Statement stat){}
-    void visit(Expression expr){}
+    //basic
+    void visit(Statement) {}
+    void visit(Expression) {}
+    void visit(Declaration) {}
     }
 }
     

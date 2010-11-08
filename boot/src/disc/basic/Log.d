@@ -178,15 +178,16 @@ public LogSource.LogEvent.Dg FileListener(string file)
 version(unittest) import std.stdio;
 unittest
 {
-   Log().OnLog() += &ConsoleListener;
-   auto s = Log.Test; 
-   s.OnLog() += (LogSource ls, d_time t, LogType ty,string msg){
+    auto s = Log.Test; 
+    s.OnLog() += (LogSource ls, d_time t, LogType ty,string msg){
         assert(ls.Name == "Test");
-   };
+        assert(msg == "foo");
+    };
 
-   s.information("%s", "foo");
-   s.log!(LogType.Verbose)("%s", "foo");
-   Log().information("%s", "foo"); 
+    s.information("%s", "foo");
+    s.log!(LogType.Verbose)("%s", "foo");
+    Log().information("%s", "foo"); 
 
-   Log().OnLog().clear();
+    //clear log stuff after unittest
+    Log().OnLog().clear();
 }
