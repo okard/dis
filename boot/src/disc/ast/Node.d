@@ -18,6 +18,7 @@
 ******************************************************************************/
 module disc.ast.Node;
 
+import disc.basic.Any;
 import disc.ast.Visitor;
 
 /**
@@ -25,6 +26,12 @@ import disc.ast.Visitor;
 */
 abstract class Node
 {
+    /// parent node
+    public Node parent;
+
+    /// Data Save
+    public Any any;
+
     /// Node Type
     public NodeType mNodeType;
 

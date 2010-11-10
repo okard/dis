@@ -121,6 +121,15 @@ class Module
     {
         LLVMWriteBitcodeToFile(mModule, cast(char*)file.ptr);
     }
+
+    /**
+    * Get llvmModule
+    */
+    @property
+    public LLVMModuleRef llvmModule() 
+    {
+        return mModule;
+    }
 }
 
 /**
@@ -128,7 +137,7 @@ class Module
 */
 class Type
 {
-    // LLVM Type
+    /// LLVM Type
     private LLVMTypeRef mType;
 
     /**
@@ -137,6 +146,15 @@ class Type
     private this(LLVMTypeRef type)
     {
         mType = type;
+    }
+
+    /**
+    * Get LLVM type
+    */
+    @property
+    public LLVMTypeRef llvmType()
+    {
+        return mType;
     }
 }
 
@@ -154,6 +172,41 @@ class Type
     opaque type
 */
 
+//Primary Types
+static Type llvmBoolType;
+static Type llvmInt8Type;
+static Type llvmInt16Type;
+static Type llvmInt32Type;
+static Type llvmInt64Type;
+
+//Create Primary Types
+static this()
+{
+    llvmBoolType = new Type(LLVMInt1Type());
+    llvmInt8Type = new Type(LLVMInt8Type());
+    llvmInt16Type = new Type(LLVMInt16Type());
+    llvmInt32Type = new Type(LLVMInt32Type());
+    llvmInt64Type = new Type(LLVMInt64Type());
+}
+
+/**
+* Function Type
+*/
+class llvmFunctionType : Type
+{
+    /**
+    * Create new FunctionType
+    */
+    this(Type retType, Type[] params, bool varargs)
+    {   
+        //Create Array with primary llvm types
+        auto p = new LLVMTypeRef[params.length];
+        for(int i = 0; i < params.length; i++)
+            p[i] = params[i].llvmType;
+            
+        super(LLVMFunctionType(retType.llvmType, p.ptr, params.length, varargs));
+    }
+}
 
 /**
 * LLVM Value
@@ -183,9 +236,19 @@ class Value
     /**
     * Get LLVM Value
     */
+    @property
     public LLVMValueRef llvmValue()
     {
         return mValue;
+    }
+}
+
+//FunctionValue
+class llvmFunctionValue : Value
+{
+    public this(Module m, llvmFunctionType func, string name)
+    {
+        mValue = LLVMAddFunction(m.llvmModule, cast(char*)name.ptr, func.llvmType);
     }
 }
 

@@ -23,6 +23,7 @@ import disc.ast.Visitor;
 import disc.ast.Declaration;
 import disc.ast.Statement;
 import disc.ast.Expression;
+import disc.ast.Type;
 import disc.gen.llvm.LLVM;
 
 
@@ -31,11 +32,17 @@ import disc.gen.llvm.LLVM;
 */
 class Compiler : public AbstractVisitor
 {
+    alias disc.gen.llvm.LLVM.Type llvmType;
+    alias disc.ast.Type.Type astType;
+
     ///LLVM Context
     private Context mContext;
 
     /// LLVM Builder
     private Builder mBuilder;
+
+    /// LLVM Types
+    private llvmType mTypes[astType];
 
     ///Internal Types to LLVM Types
 
@@ -61,11 +68,17 @@ class Compiler : public AbstractVisitor
     */
     override void visit(PackageDeclaration pack)
     {
+        //Create Module for Package
         auto mod = new Module(mContext, pack.mName);
+        pack.any = mod;
 
+        //Create Functions
         foreach(func; pack.mFunctions)
+        {
             func.accept(this);
+        }
         
+        //Write Package LLVM Moduel to file
         string filename = pack.mName ~ ".bc\0";
         mod.writeByteCode(filename);
     }
@@ -76,7 +89,12 @@ class Compiler : public AbstractVisitor
     override void visit(FunctionDeclaration func)
     {
         //generate Function Declaration
+        
         //function type
+
+        //function
+        //auto f = new llvmFunctionValue(cast(Module)func.parent.any, cast(llvmType)func.type.any, func.name);
+        //func.any = f;
         
         //block Statement
         if(func.mBody !is null)
@@ -88,6 +106,8 @@ class Compiler : public AbstractVisitor
     */
     override void visit(BlockStatement block)
     {
+        //value from parent node
+        //auto block = new BasicBlock(cast(Value)block.parent.Any, "block");
     }
 
     override void visit(ExpressionStatement expr){}
@@ -97,4 +117,12 @@ class Compiler : public AbstractVisitor
     override void visit(Declaration decl){}
     override void visit(Statement stat){}
     override void visit(Expression expr){}
+
+    /**
+    * Convert Ast Type to LLVM Type
+    */
+    llvmType AstType2LLVMType(astType t)
+    {
+        return null;
+    }
 } 
