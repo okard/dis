@@ -34,7 +34,10 @@ struct Storage(T)
     @property
     T opDispatch(string s)()
     {
-        return data[s];
+        static if(is(T == class) || is(T == interface))
+            return data.get(s, null);
+        else
+            return data[s];
     }
     
     /**

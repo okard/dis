@@ -18,12 +18,15 @@
 ******************************************************************************/
 module disc.ast.Type;
 
+import disc.ast.Node;
+import disc.basic.Storage;
+
 /**
 * Base Type Class
 */
-class Type
+abstract class Type
 {
-
+    public Storage!(NodeData) Store;
 }
 
 /// Void

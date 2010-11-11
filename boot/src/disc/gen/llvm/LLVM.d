@@ -257,7 +257,7 @@ class llvmFunctionValue : Value
 /**
 * Basic Block
 */
-class BasicBlock
+class BasicBlock : NodeData
 {
     /// LLVM Basic Block
     private LLVMBasicBlockRef mBasicBlock;

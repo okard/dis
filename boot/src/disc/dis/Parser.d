@@ -240,8 +240,13 @@ class Parser
         /*if(peekTok.tok == Token.COBracket)
         {
         }*/
-        if(cast(PackageDeclaration)mAstStack.top())
-            (cast(PackageDeclaration)mAstStack.top()).mFunctions ~= func;
+        if(mAstStack.top().NType == NodeType.PackageDeclaration)
+        {
+            auto pd = cast(PackageDeclaration)mAstStack.top();
+            func.Parent = pd;
+            pd.mFunctions ~= func;
+            
+        }
         mAstStack.push(func);
     }
        

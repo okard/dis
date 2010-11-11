@@ -88,13 +88,21 @@ class Compiler : public AbstractVisitor
     */
     override void visit(FunctionDeclaration func)
     {
+        //already generated
+        if(cast(llvmFunctionValue)func.Store.Compiler())
+            return;
+
         //generate Function Declaration
         
-        //function type
+        //create function type
+        func.mType.Store.Compiler(new llvmFunctionType(llvmBoolType, [llvmBoolType], false));
 
-        //function
-        //auto f = new llvmFunctionValue(cast(Module)func.parent.any, cast(llvmType)func.type.any, func.name);
-        //func.any = f;
+        //create llvm function
+        auto f = new llvmFunctionValue(cast(Module)func.Parent.Store.Compiler(), 
+                                       cast(llvmFunctionType)func.mType.Store.Compiler(), 
+                                       func.mName);
+        //store created function
+        func.Store.Compiler(f);
         
         //block Statement
         if(func.mBody !is null)
@@ -107,11 +115,18 @@ class Compiler : public AbstractVisitor
     override void visit(BlockStatement block)
     {
         //value from parent node
-        //auto block = new BasicBlock(cast(Value)block.parent.Any, "block");
+        auto bl = new BasicBlock(cast(Value)block.Parent.Store.Compiler(), "block");
     }
 
     override void visit(ExpressionStatement expr){}
-    override void visit(FunctionCall call){}
+    
+    override void visit(FunctionCall call)
+    {
+        //semantic pass should have resolved the function
+        //get function: auto f =  (cast(FunctionDeclaration)call.Store.Semantic()
+        //get llvmValue auto llvmF = cast(llvmFunctionDeclaration)f.Store.Compiler();
+        //if not created then create???
+    }
     
     //Basics
     override void visit(Declaration decl){}
