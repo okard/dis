@@ -16,62 +16,47 @@
 *    along with disc.  If not, see <http://www.gnu.org/licenses/>.
 *
 ******************************************************************************/
-module disc.ast.Node;
+module disc.basic.Storage;
 
-import disc.basic.Storage;
-import disc.ast.Visitor;
 
 /**
-* Dummy Interface
+* Stupid Named Storage Class
+* Single Assigned
 */
-interface NodeData
+struct Storage(T)
 {
-}
+    /// Data Storage
+    private T data[string];
 
-/**
-* Base Class for AST Nodes
-*/
-abstract class Node
-{
-    /// parent node
-    public Node Parent;
-
-    /// Data Storge
-    /// For Parser, Semantic, Compiler specific data in AST
-    public Storage!(NodeData) Store;
-
-    /// Node Type
-    public NodeType mNodeType;
-
-    ///mixin for type
-    const string set_nodetype = "this.mNodeType = mixin(\"NodeType.\" ~ typeof(this).stringof);";
-    
     /**
-    * Visitor pattern
-    */
-    public void accept(Visitor v);
-    
-    /**
-    * Node Type
+    * Get Data
     */
     @property
-    public NodeType NType() { return mNodeType; }
+    T opDispatch(string s)()
+    {
+        return data[s];
+    }
+    
+    /**
+    * Set Data
+    * only once
+    */
+    @property
+    void opDispatch(string s)(T value)
+    {
+        if(s !in data)
+            data[s] = value;
+        else
+            throw new Exception("data already assigned");
+        
+    }
 } 
 
-/**
-* Node Types
-*/
-enum NodeType
+
+unittest
 {
-    Unknown,
-    //Declarations
-    PackageDeclaration,
-    FunctionDeclaration,
-    VariableDeclaration,
-    //Statements
-    BlockStatement,
-    ExpressionStatement,
-    //Expressions
-    DotIdentifier,
-    FunctionCall
+    Storage!(int) store;
+
+    store.foo(5);
+    assert(store.foo() == 5);
 }

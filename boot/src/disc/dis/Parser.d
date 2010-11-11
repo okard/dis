@@ -137,6 +137,7 @@ class Parser
         {
             auto fd = cast(FunctionDeclaration)mAstStack.pop();
             fd.mBody = t;
+            t.Parent = fd;
         }
         
     }

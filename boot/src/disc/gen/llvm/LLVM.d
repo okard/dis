@@ -22,11 +22,13 @@ module disc.gen.llvm.LLVM;
 import llvm.c.Core;
 import llvm.c.BitWriter;
 
+import disc.ast.Node;
+
 
 /**
 * LLVM Context
 */
-class Context
+class Context : NodeData
 {
     // Global Context Instance
     private static Context mGlobal;
@@ -85,7 +87,7 @@ class Context
 /**
 * LLVM Module
 */
-class Module
+class Module : NodeData
 {
     //LLVM Module
     private LLVMModuleRef mModule;
@@ -135,7 +137,7 @@ class Module
 /**
 * LLVM Type
 */
-class Type
+class Type : NodeData
 {
     /// LLVM Type
     private LLVMTypeRef mType;
@@ -211,7 +213,7 @@ class llvmFunctionType : Type
 /**
 * LLVM Value
 */
-class Value
+class Value : NodeData
 {
     /// LLVM Value
     private LLVMValueRef mValue;

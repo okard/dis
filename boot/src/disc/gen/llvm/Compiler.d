@@ -70,7 +70,7 @@ class Compiler : public AbstractVisitor
     {
         //Create Module for Package
         auto mod = new Module(mContext, pack.mName);
-        pack.any = mod;
+        pack.Store.Compiler(mod);
 
         //Create Functions
         foreach(func; pack.mFunctions)
