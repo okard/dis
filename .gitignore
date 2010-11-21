@@ -7,3 +7,7 @@ boot/bin/disc
 
 # general
 *.log
+
+# documentation
+*.aux
+*.pdf

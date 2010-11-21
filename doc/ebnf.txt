@@ -1,0 +1,14 @@
+(* Basic Definitions *)
+digit = ;
+alpha = ;
+
+ident = alpha, {alpha | digit};
+
+(* Declarations *)
+FunctionDeclaration = "def", {CallingConvention}, ident; 
+CallingConvention = "(", "C" | "Dis", ")";
+
+ 
+(* Statements *)
+
+(* Expressions *)
