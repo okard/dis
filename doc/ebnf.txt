@@ -5,10 +5,32 @@ alpha = ;
 ident = alpha, {alpha | digit};
 
 (* Declarations *)
-FunctionDeclaration = "def", {CallingConvention}, ident; 
+FunctionDeclaration = "def", {CallingConvention}, ident, ; 
 CallingConvention = "(", "C" | "Dis", ")";
+ParameterList = ident, ":", ident 
 
  
 (* Statements *)
+Statement = Expression
+BlockStatement = "{", {Statement}, "}"
+
+(* For, ForEach, While *)
+
 
 (* Expressions *)
+Expression = BinaryExpression | IfExpression
+
+BinaryExpression = Expression, "+" | "-" | "*" | "/" | "%" | "^", Expression
+
+IfExpression = "if", "(", Expression, ")", Expression | Statement | BlockStatement
+(* todo: else *)
+
+SwitchExpression = "switch", "(", Expression, ")", SwitchBlock
+SwitchBlock = "{", "}"
+
+(* Special Expressions *)
+DotIdentifier = ident, {".", ident}
+FunctionCall = Expression, "(", {Expression}, ")"
+
+
+

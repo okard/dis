@@ -24,7 +24,7 @@ import disc.ast.Declaration;
 import disc.ast.Statement;
 import disc.ast.Expression;
 import disc.ast.Type;
-import disc.gen.llvm.LLVM;
+import llvm = disc.gen.llvm.LLVM;
 
 
 /**
@@ -32,27 +32,31 @@ import disc.gen.llvm.LLVM;
 */
 class Compiler : public AbstractVisitor
 {
-    alias disc.gen.llvm.LLVM.Type llvmType;
     alias disc.ast.Type.Type astType;
 
     ///LLVM Context
-    private Context mContext;
+    private llvm.Context mContext;
 
     /// LLVM Builder
-    private Builder mBuilder;
+    private llvm.Builder mBuilder;
 
     /// LLVM Types
-    private llvmType mTypes[astType];
+    private llvm.Type mTypes[astType];
 
     ///Internal Types to LLVM Types
+
+    //Current SymbolTable
 
     /**
     * Constructor
     */
     public this()
     {
-        mContext = new Context();
-        mBuilder = new Builder(mContext);
+        mContext = new llvm.Context();
+        mBuilder = new llvm.Builder(mContext);
+
+        //Initialize types
+        //mTypes[Parser.InternalTypes["bool"]] = new Type(LLVMInt1Type())
     }
 
     /**
@@ -69,7 +73,7 @@ class Compiler : public AbstractVisitor
     override void visit(PackageDeclaration pack)
     {
         //Create Module for Package
-        auto mod = new Module(mContext, pack.mName);
+        auto mod = new llvm.Module(mContext, pack.mName);
         pack.Store.Compiler(mod);
 
         //Create Functions
@@ -89,20 +93,22 @@ class Compiler : public AbstractVisitor
     override void visit(FunctionDeclaration func)
     {
         //already generated
-        if(cast(llvmFunctionValue)func.Store.Compiler())
+        if(cast(llvm.FunctionValue)func.Store.Compiler())
             return;
 
         //generate Function Declaration
         
         //create function type
-        func.mType.Store.Compiler(new llvmFunctionType(llvmBoolType, [llvmBoolType], false));
+        /*
+        func.mType.Store.Compiler(new llvm.FunctionType(llvmBoolType, [llvmBoolType], false));
 
         //create llvm function
-        auto f = new llvmFunctionValue(cast(Module)func.Parent.Store.Compiler(), 
+         auto f = new llvmFunctionValue(cast(Module)func.Parent.Store.Compiler(), 
                                        cast(llvmFunctionType)func.mType.Store.Compiler(), 
-                                       func.mName);
+                                        func.mName);
+        */
         //store created function
-        func.Store.Compiler(f);
+        //func.Store.Compiler(f);
         
         //block Statement
         if(func.mBody !is null)
@@ -115,11 +121,14 @@ class Compiler : public AbstractVisitor
     override void visit(BlockStatement block)
     {
         //value from parent node
-        auto bl = new BasicBlock(cast(Value)block.Parent.Store.Compiler(), "block");
+        //auto bl = new llvm.BasicBlock(cast(llvm.Value)block.Parent.Store.Compiler(), "block");
     }
 
     override void visit(ExpressionStatement expr){}
     
+    /**
+    * Generate a Function Call
+    */
     override void visit(FunctionCall call)
     {
         //semantic pass should have resolved the function
@@ -136,8 +145,9 @@ class Compiler : public AbstractVisitor
     /**
     * Convert Ast Type to LLVM Type
     */
-    llvmType AstType2LLVMType(astType t)
+    llvm.Type AstType2LLVMType(astType t)
     {
+        //lookup in mTypes
         return null;
     }
 } 

@@ -3,6 +3,22 @@
 \usepackage[T1]{fontenc}
 \usepackage[english]{babel}
 \usepackage{amsmath}
+
+\usepackage{listings}
+\usepackage[usenames,dvipsnames]{color} 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Lang Spec
+\lstdefinelanguage{DIS}
+{morekeywords={package, import, class, var, type, return, this, if, else, switch, case, for,
+void, bool, int, uint, string},
+sensitive=true,
+morecomment=[l]{//},
+morecomment=[s]{/*}{*/},
+morestring=[b]"
+}
+ 
+ 
  
 \title{Dis Language Specification}
 \date{2010-11-17}

@@ -52,7 +52,7 @@ class Parser
     ///AST Parser Stack
     private Stack!Node mAstStack;
     ///Internal Types
-    private static Type[string] mInternalTypes;
+    public static Type[string] InternalTypes;
 
     /**
     * Ctor
@@ -63,23 +63,26 @@ class Parser
         mAstStack = Stack!Node(256);
     }
 
+    /**
+    * Static Dtor
+    */
     public static this()
     {
         //Primary
-        mInternalTypes["void"] = new VoidType();
-        mInternalTypes["bool"] = new BoolType();
-        mInternalTypes["byte"] = new ByteType();
-        mInternalTypes["ubyte"] = new UByteType();
-        mInternalTypes["short"] = new ShortType();
-        mInternalTypes["ushort"] = new UShortType();
-        mInternalTypes["int"] = new IntType();
-        mInternalTypes["uint"] = new UIntType();
-        mInternalTypes["long"] = new LongType();
-        mInternalTypes["ulong"] = new ULongType();
-        mInternalTypes["float"] = new FloatType();
-        mInternalTypes["double"] = new DoubleType();
+        InternalTypes["void"] = new VoidType();
+        InternalTypes["bool"] = new BoolType();
+        InternalTypes["byte"] = new ByteType();
+        InternalTypes["ubyte"] = new UByteType();
+        InternalTypes["short"] = new ShortType();
+        InternalTypes["ushort"] = new UShortType();
+        InternalTypes["int"] = new IntType();
+        InternalTypes["uint"] = new UIntType();
+        InternalTypes["long"] = new LongType();
+        InternalTypes["ulong"] = new ULongType();
+        InternalTypes["float"] = new FloatType();
+        InternalTypes["double"] = new DoubleType();
         //special:
-        mInternalTypes["char"] = new CharType();
+        InternalTypes["char"] = new CharType();
     }
     
     /**
@@ -441,10 +444,10 @@ class Parser
         {
             //pointer type
             identifier.length -= 1;
-            return new PointerType(mInternalTypes.get(identifier, new OpaqueType()));
+            return new PointerType(InternalTypes.get(identifier, new OpaqueType()));
         }
         else
-            return mInternalTypes.get(identifier, new OpaqueType());
+            return InternalTypes.get(identifier, new OpaqueType());
     }
 
     /**

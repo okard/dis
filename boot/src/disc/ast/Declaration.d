@@ -43,7 +43,8 @@ class PackageDeclaration : Declaration
     //Functions
     FunctionDeclaration[] mFunctions;
         
-    //ClassDeclaration[] mClasses;
+    //ClassDeclaration[] Classes;
+    //VariableDeclaration[] Variables
 
     //Visitor Mixin
     mixin VisitorMixin;

@@ -194,7 +194,7 @@ static this()
 /**
 * Function Type
 */
-class llvmFunctionType : Type
+class FunctionType : Type
 {
     /**
     * Create new FunctionType
@@ -246,9 +246,9 @@ class Value : NodeData
 }
 
 //FunctionValue
-class llvmFunctionValue : Value
+class FunctionValue : Value
 {
-    public this(Module m, llvmFunctionType func, string name)
+    public this(Module m, FunctionType func, string name)
     {
         mValue = LLVMAddFunction(m.llvmModule, cast(char*)name.ptr, func.llvmType);
     }
@@ -272,11 +272,35 @@ class BasicBlock : NodeData
     }
 
     /**
+    * Interfacing Existing BasicBLock
+    */
+    public this(LLVMBasicBlockRef block)
+    {
+        mBasicBlock = block;
+    }
+
+    /**
     * Get llvm basis block
     */
     public LLVMBasicBlockRef llvmBasicBlock()
     {
         return mBasicBlock;
+    }
+
+    /**
+    * Next Basic Block
+    */
+    public BasicBlock nextBlock()
+    {
+        return new BasicBlock(LLVMGetNextBasicBlock(mBasicBlock));
+    }
+
+    /**
+    * Previous Basic Block
+    */
+    public BasicBlock prevBlock()
+    {
+        return new BasicBlock(LLVMGetPreviousBasicBlock(mBasicBlock));
     }
 }
 
