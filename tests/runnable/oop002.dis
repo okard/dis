@@ -1,0 +1,17 @@
+//test simple constructor with class variable
+package tests.runnable.oop002;
+
+class foo
+{
+    var i int = 0;
+
+    this(i int)
+    {
+        this.i = i;
+    }
+}
+
+def main
+{
+    var f = foo(5);
+}

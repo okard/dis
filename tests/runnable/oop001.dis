@@ -1,6 +1,5 @@
-
+//test simple class
 package tests.runnable.oop001;
-
 
 class foo
 {

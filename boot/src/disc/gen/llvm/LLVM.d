@@ -21,6 +21,9 @@ module disc.gen.llvm.LLVM;
 
 import llvm.c.Core;
 import llvm.c.BitWriter;
+import llvm.c.transforms.IPO;
+import llvm.c.transforms.Scalar;
+
 
 import disc.ast.Node;
 
@@ -254,15 +257,37 @@ class Value : NodeData
     }
 }
 
-//FunctionValue
+/** 
+* FunctionValue
+*/
 class FunctionValue : Value
 {
+    private string mFnName;
+
     /**
     * Create new FunctionValue for a Function Type
     */
     public this(Module m, FunctionType func, string name)
     {
+        mFnName = name;
         mValue = LLVMAddFunction(m.llvmModule, cast(char*)name.ptr, func.llvmType);
+    }
+
+    /**
+    * Get Function Name
+    */
+    @property
+    public string Name()
+    {
+        return mFnName;
+    }
+
+    /**
+    * Set Calling Convention
+    */
+    public void setCallConv(LLVMCallConv cc)
+    {
+        LLVMSetFunctionCallConv(mValue, cc);
     }
 
     /**
@@ -285,9 +310,10 @@ class BasicBlock : NodeData
     /**
     * Create new Basic Block
     */
-    public this(Value val, string name)
+    public this(FunctionValue val, string name)
     {
         //value must be a function
+
         mBasicBlock = LLVMAppendBasicBlock(val.llvmValue(), (cast(char[])name).ptr);
     }
 
@@ -356,4 +382,128 @@ class Builder
         LLVMPositionBuilderAtEnd(mBuilder, block.llvmBasicBlock());
     }
 
+    /** 
+    * Add Return Void Instruction
+    */
+    public void RetVoid()
+    {
+       auto value = LLVMBuildRetVoid(mBuilder);
+    }
+
+    /**
+    * Return a value
+    */
+    public void RetValue(Value value)
+    {
+        auto val =  LLVMBuildRet(mBuilder, value.llvmValue());
+    }
+
+    /**
+    * Create a Function Call
+    */
+    public void Call(FunctionValue fn, Value[] args)
+    {
+        //Create Array with primary llvm types
+        auto argarr = new  LLVMValueRef[args.length];
+        for(int i = 0; i < args.length; i++)
+            argarr[i] = args[i].llvmValue();
+
+        auto v = LLVMBuildCall(mBuilder, fn.llvmValue(), argarr.ptr, argarr.length, (cast(char[])fn.Name).ptr);
+    }
+}
+
+/**
+* PassManager
+*/
+class PassManager
+{
+    ///llvm PassManager
+    private LLVMPassManagerRef mPassManager;
+
+    /**
+    * Creates new PassManager
+    */
+    public this()
+    {
+        mPassManager = LLVMCreatePassManager();
+    }
+
+    /**
+    * Destructor
+    */
+    public ~this()
+    {
+        LLVMDisposePassManager(mPassManager);
+    }
+
+    /**
+    * Run Pass Manager
+    */
+    public bool run(Module m)
+    {   
+        return LLVMRunPassManager(mPassManager, m.llvmModule()) == 0 ? false : true;
+    }
+
+    /**
+    * Add Pass
+    */
+    public void AddFunctionInliningPass()
+    {
+        /** See llvm::createFunctionInliningPass function. */
+        LLVMAddFunctionInliningPass(mPassManager);
+    }
+    
+    /**
+    * Add Pass
+    */
+    public void AddGlobalOptimizerPass()
+    {
+        /** See llvm::createGlobalOptimizerPass function. */
+        LLVMAddGlobalOptimizerPass(mPassManager);
+    }
+
+    /**
+    * Add Pass
+    */
+    public void AddStripSymbolsPass()
+    {
+        /** See llvm::createStripSymbolsPass function. */
+        LLVMAddStripSymbolsPass(mPassManager);
+    }
+
+    /**
+    * Add Pass
+    */
+    public void AddDeadTypeEliminationPass()
+    {
+        /** See llvm::createDeadTypeEliminationPass function. */
+        LLVMAddDeadTypeEliminationPass(mPassManager);
+    }
+      
+    /**
+    * Add Pass
+    */
+    public void AddDeadArgEliminationPass()
+    {
+        /** See llvm::createDeadArgEliminationPass function. */
+        LLVMAddDeadArgEliminationPass(mPassManager);
+    }
+
+    /**
+    * Add Pass
+    */
+    public void AddCFGSimplificationPass()
+    {
+        /** See llvm::createCFGSimplificationPass function. */
+        LLVMAddCFGSimplificationPass(mPassManager);
+    }
+
+    /**
+    * Add Pass
+    */
+    public void AddStripDeadPrototypesPass()
+    {
+        /** See llvm::createStripDeadPrototypesPass function. */
+        LLVMAddStripDeadPrototypesPass(mPassManager);
+    }
 }

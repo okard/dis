@@ -85,6 +85,7 @@ class Compiler : public AbstractVisitor
         //Write Package LLVM Moduel to file
         string filename = pack.mName ~ ".bc\0";
         mod.writeByteCode(filename);
+        mod.dump();
     }
 
     /**
