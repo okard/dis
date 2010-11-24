@@ -1,0 +1,12 @@
+
+package tests.runnable.oop001;
+
+
+class foo
+{
+}
+
+def main
+{
+    var f: foo = foo();
+}

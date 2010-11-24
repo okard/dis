@@ -1,0 +1,18 @@
+//test basic types
+package tests.runnable.basic003;
+
+def main
+{
+    var b: bool = true;
+    var si: int = 1;
+    var ui: uint = 2;
+    var ss: short = 3;
+    var us: ushort = 4; 
+    var sl: long = 5;
+    var ul: ulong = 6;
+    var f: float = 7.;
+    var d: double = 8.;
+
+    var c: char = 'c';
+    var str: string = "foobar";
+}

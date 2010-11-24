@@ -1,0 +1,6 @@
+//test simple empty main
+package tests.runnable.basic001;
+
+def main
+{
+}

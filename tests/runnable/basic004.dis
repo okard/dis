@@ -1,0 +1,14 @@
+//test binary expressions
+package tests.runnable.basic004;
+
+def main
+{
+    var i int = 0;
+
+    i = 1 + 1;
+    i = 2 - 1;
+    i = 2 * 2;
+    i = 4 / 2;
+    i = 2 ^ 2;
+    i = 4 % 3;
+}

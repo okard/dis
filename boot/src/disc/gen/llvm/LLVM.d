@@ -158,6 +158,15 @@ class Type : NodeData
     {
         return mType;
     }
+
+    /**
+    * LLVM Kind of Type
+    */
+    @property
+    public LLVMTypeKind llvmTypeKind()
+    {
+        return LLVMGetTypeKind(mType);
+    }
 }
 
 /*
@@ -248,9 +257,20 @@ class Value : NodeData
 //FunctionValue
 class FunctionValue : Value
 {
+    /**
+    * Create new FunctionValue for a Function Type
+    */
     public this(Module m, FunctionType func, string name)
     {
         mValue = LLVMAddFunction(m.llvmModule, cast(char*)name.ptr, func.llvmType);
+    }
+
+    /**
+    * Get First Basic Block
+    */
+    BasicBlock getFirstBlock()
+    {
+        return new BasicBlock(LLVMGetFirstBasicBlock(mValue));
     }
 }
 
