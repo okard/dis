@@ -1,0 +1,28 @@
+//tests interface + extension method
+package tests.runnable.extended001;
+
+import std.io;
+
+//class
+class foo
+{
+    var i: int = 0;
+}
+
+//interface
+trait Printable
+{
+    def print() : void;
+}
+
+//extension method
+def print(this f: foo): void = writeln(f.i.toString());
+
+//main
+def main
+{
+    var f: Printable = foo();
+    f.print();
+}
+
+
