@@ -3,6 +3,7 @@
 \usepackage[T1]{fontenc}
 \usepackage[english]{babel}
 \usepackage{amsmath}
+\usepackage{mathptmx}
 
 \usepackage{listings}
 \usepackage[usenames,dvipsnames]{color} 
@@ -17,23 +18,38 @@ morecomment=[l]{//},
 morecomment=[s]{/*}{*/},
 morestring=[b]"
 }
- 
- 
- 
+  
 \title{Dis Language Specification}
 \date{2010-11-17}
+\author{}
+
 \begin{document}
+\maketitle
+\newpage
+\tableofcontents
+\newpage
 
-\section*{Introduction}
+\section{Introduction}
+This Document describes the Dis programming language. 
 
-\section*{Lexical}
+\section{Lexical}
+Keywords:
 
-\section*{Types}
+\section{Types}
+bool byte ubyte short ushort int uint long ulong float double ptr char string
 
-\section*{Declarations}
+\section{Declarations}
+package trait class def var val type
 
-\section*{Statements}
+\section{Statements}
+for while do
 
-\section*{Expression}
+\section{Expression}
+\begin{itemize}
+\item Binary: \& | + - * / \% \textasciicircum{} 
+\item Logical: \&\&  ||
+\end{itemize}
+if 
+switch
 
 \end{document} 

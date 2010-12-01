@@ -135,6 +135,14 @@ class Module : NodeData
     {
         return mModule;
     }
+
+    /**
+    * New Global Variable
+    */
+    public Value AddGlobal(Type t, string name)
+    {
+        return new Value(LLVMAddGlobal(mModule, t.llvmType, (cast(char[])name).ptr));
+    }
 }
 
 /**
@@ -230,6 +238,13 @@ class Value : NodeData
     /// LLVM Value
     private LLVMValueRef mValue;
 
+    /**
+    * Creates Basic Value
+    */
+    private this(LLVMValueRef v)
+    {
+       mValue = v;
+    }
 
     /**
     * Get Type
@@ -270,7 +285,7 @@ class FunctionValue : Value
     public this(Module m, FunctionType func, string name)
     {
         mFnName = name;
-        mValue = LLVMAddFunction(m.llvmModule, cast(char*)name.ptr, func.llvmType);
+        super(LLVMAddFunction(m.llvmModule, cast(char*)name.ptr, func.llvmType));
     }
 
     /**
@@ -288,6 +303,14 @@ class FunctionValue : Value
     public void setCallConv(LLVMCallConv cc)
     {
         LLVMSetFunctionCallConv(mValue, cc);
+    }
+
+    /**
+    * Add Function Attribute
+    */
+    public void addFunctionAttr(LLVMAttribute PA)
+    {
+        LLVMAddFunctionAttr(mValue, PA);
     }
 
     /**
@@ -403,10 +426,10 @@ class Builder
     */
     public void Call(FunctionValue fn, Value[] args)
     {
-        //Create Array with primary llvm types
+        //Create array with primary llvm values
         auto argarr = new  LLVMValueRef[args.length];
         for(int i = 0; i < args.length; i++)
-            argarr[i] = args[i].llvmValue();
+            argarr[i] = args[i].llvmValue;
 
         auto v = LLVMBuildCall(mBuilder, fn.llvmValue(), argarr.ptr, argarr.length, (cast(char[])fn.Name).ptr);
     }
@@ -419,6 +442,8 @@ class PassManager
 {
     ///llvm PassManager
     private LLVMPassManagerRef mPassManager;
+
+    enum PassType { None =0, Debug = 1, Release = 2, Optimized = 3}
 
     /**
     * Creates new PassManager
@@ -440,8 +465,36 @@ class PassManager
     * Run Pass Manager
     */
     public bool run(Module m)
-    {   
+    {  
+        //Verify Module before?
+
         return LLVMRunPassManager(mPassManager, m.llvmModule()) == 0 ? false : true;
+    }
+
+
+    /**
+    * Simplify Pass Configuration
+    */
+    public void Configure(PassType p)
+    {
+        //TODO
+
+        //Add right passes for choosen configuration
+        if(p <= PassType.None)
+        {
+        }
+        
+        if(p <= PassType.Debug)
+        {
+        }
+        
+        if(p <= PassType.Release)
+        {
+        }
+        
+        if(p <= PassType.Optimized)
+        {
+        }
     }
 
     /**

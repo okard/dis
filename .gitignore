@@ -11,3 +11,4 @@ boot/bin/disc
 # documentation
 *.aux
 *.pdf
+*.toc

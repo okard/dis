@@ -34,7 +34,10 @@ class Compiler : public AbstractVisitor
 {
     alias disc.ast.Type.Type astType;
 
-    ///LLVM Context
+    /// LLVM PassManager
+    private llvm.PassManager mPassManager;
+    
+    /// LLVM Context
     private llvm.Context mContext;
 
     /// LLVM Builder
@@ -52,6 +55,7 @@ class Compiler : public AbstractVisitor
     */
     public this()
     {
+        mPassManager = new llvm.PassManager();
         mContext = new llvm.Context();
         mBuilder = new llvm.Builder(mContext);
 
