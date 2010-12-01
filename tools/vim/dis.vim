@@ -10,7 +10,7 @@ endif
 
 " Keywords & Types
 syn keyword disType             bool void byte ubyte short ushort int uint long ulong float double char string
-syn keyword disDeclaration      package class def var val type
+syn keyword disDeclaration      package trait class def var val type
 syn keyword disExpression       if switch case 
 syn keyword disBoolean          true false
 

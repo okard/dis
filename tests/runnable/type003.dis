@@ -1,0 +1,13 @@
+//test enum type
+package tests.runnable.type003;
+
+
+//enum type
+type Status = { Normal, Error}
+
+//main function
+def main
+{
+    var e = Status.Normal;
+    e = Status.Error;
+}

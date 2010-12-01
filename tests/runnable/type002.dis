@@ -1,0 +1,18 @@
+//test struct type
+package tests.runnable.type002;
+
+//structure type
+type myStruct
+{
+    i: int;
+    str: string;
+}
+
+//main function
+def main
+{
+    var s: myStruct;
+    s.i = 5;
+    s.str = "foo";
+}
+

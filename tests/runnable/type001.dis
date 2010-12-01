@@ -1,0 +1,11 @@
+//test alias type
+package tests.runnable.type001;
+
+//alias type
+type foo int;
+
+//main
+def main
+{
+    var i: foo = 6;
+}
