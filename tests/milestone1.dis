@@ -2,7 +2,7 @@ package milestoneone;
 
 def(C) printf(format: char*, T...);
 
-def main()
+def main
 {
     printf("Hello World");
 }

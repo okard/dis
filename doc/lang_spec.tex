@@ -1,28 +1,47 @@
-\documentclass{scrartcl}
+\documentclass[9pt,a4paper]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[english]{babel}
 \usepackage{amsmath}
 \usepackage{mathptmx}
+\usepackage{multicol}
 
 \usepackage{listings}
 \usepackage[usenames,dvipsnames]{color} 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Lang Spec
-\lstdefinelanguage{DIS}
-{morekeywords={package, import, class, var, type, return, this, if, else, switch, case, for,
+\lstdefinelanguage{Dis}
+{morekeywords={package, import, class, trait, def, var, val, type, return, this, if, else, switch, case, for,
 void, bool, int, uint, string},
 sensitive=true,
 morecomment=[l]{//},
 morecomment=[s]{/*}{*/},
 morestring=[b]"
 }
+\lstset{%
+  language=Dis,
+  basicstyle=\tiny\ttfamily,
+  commentstyle=\itshape\color{green},
+  keywordstyle=\bfseries\color{blue},
+  stringstyle=\color{red},
+  showspaces=false,
+  showtabs=false,
+  columns=fixed,
+  numbers=left,
+  frame=single,
+  numberstyle=\tiny,
+  breaklines=true,
+  showstringspaces=false,
+  xleftmargin=1cm
+}%
   
 \title{Dis Language Specification}
 \date{2010-11-17}
 \author{}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Start Document
 \begin{document}
 \maketitle
 \newpage
@@ -30,23 +49,113 @@ morestring=[b]"
 \newpage
 
 \section{Introduction}
-This Document describes the Dis programming language. 
+This Document describes the Dis programming language.
+
+\section{About}
+The dis programming language is a multi paradigm programming language, designed with following paradigm in mind:
+\begin{itemize}
+\item Meta-programming
+\item Object-oriented programming
+\item Functional programming
+\item Imperative programming
+\item Modular
+\end{itemize}
+
+Other concepts:
+\begin{itemize}
+\item Type less, do more
+\item Clear readable syntax
+\item Programming language as tool, not as philosophy
+\end{itemize}
 
 \section{Lexical}
 Keywords:
+package trait class def var val type for while do if switch as
+Basic:
+
+\begin{itemize}
+\item $Alpha \rightarrow [a-zA-Z\_]+$
+\item $Number \rightarrow [0-9]+$
+\item $Identifier \rightarrow Alpha (Alpha / Number)+$
+\end{itemize}
 
 \section{Types}
-bool byte ubyte short ushort int uint long ulong float double ptr char string
+Built-in:
+
+\begin{multicols}{4}
+\begin{itemize}
+\item bool 
+\item byte 
+\item ubyte 
+\item short 
+\item ushort 
+\item int 
+\item uint 
+\item long 
+\item ulong 
+\item float 
+\item double 
+\item ptr 
+\item char 
+\item string
+\end{itemize}
+\end{multicols}
+
+
+(Classes, Functions, Traits, Structures, Enums, Delegates,)
 
 \section{Declarations}
-package trait class def var val type
+
+\subsection*{Packages}
+package 
+\[PackageDeclaration \rightarrow "package" identifier;\]
+
+\subsection*{Variables \& Values}
+var val
+\lstinline!var i : int = 5;!
+
+\subsection*{Functions}
+def
+\lstinline!def square(x) = x**2;!
+
+\subsubsection*{Classes}
+class
+\lstinline!class foo {}!
+
+\subsection*{Traits}
+trait
+\begin{lstlisting}
+trait printable
+{
+	def print(): void;
+}
+
+class foo
+{
+	def print = io.writeln("foo");
+}
+
+//class foo can be printable
+(foo() as printable).print();
+\end{lstlisting}
+
+\subsection*{Enums, Structure, Delegates, Alias}
+type
+
+\begin{lstlisting}
+type myInteger int
+type point { x: int; y : int; }
+type myBoolean = {True, False}
+type dgTest (int) => bool
+\end{lstlisting}
+
 
 \section{Statements}
-for while do
+for while do (mixins)
 
 \section{Expression}
 \begin{itemize}
-\item Binary: \& | + - * / \% \textasciicircum{} 
+\item Binary: \& | + - * ** / \% \textasciicircum{} 
 \item Logical: \&\&  ||
 \end{itemize}
 if 

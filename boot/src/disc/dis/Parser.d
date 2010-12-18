@@ -254,7 +254,7 @@ class Parser
     }
        
     /**
-    * Parse Defintion
+    * Parse Function Defintion Parameters
     */
     private void parseDefParams(FunctionDeclaration fd)
     {

@@ -33,6 +33,8 @@ abstract class Statement : Node
 
 /**
 * Defines a Block {}
+* Is more Declaration?
+* Has a SymbolTable?
 */
 class BlockStatement : Statement
 {

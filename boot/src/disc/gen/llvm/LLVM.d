@@ -465,7 +465,7 @@ class PassManager
     * Run Pass Manager
     */
     public bool run(Module m)
-    {  
+    {
         //Verify Module before?
 
         return LLVMRunPassManager(mPassManager, m.llvmModule()) == 0 ? false : true;
@@ -483,15 +483,15 @@ class PassManager
         if(p <= PassType.None)
         {
         }
-        
+
         if(p <= PassType.Debug)
         {
         }
-        
+
         if(p <= PassType.Release)
         {
         }
-        
+
         if(p <= PassType.Optimized)
         {
         }
@@ -505,7 +505,7 @@ class PassManager
         /** See llvm::createFunctionInliningPass function. */
         LLVMAddFunctionInliningPass(mPassManager);
     }
-    
+
     /**
     * Add Pass
     */
@@ -532,7 +532,7 @@ class PassManager
         /** See llvm::createDeadTypeEliminationPass function. */
         LLVMAddDeadTypeEliminationPass(mPassManager);
     }
-      
+
     /**
     * Add Pass
     */
