@@ -31,6 +31,21 @@ abstract class Expression : Node
     mixin VisitorMixin;
 }
 
+
+/**
+* Literal Expression Node
+*/
+final class LiteralExpression : Expression
+{
+    // Visitor Mixin
+    mixin VisitorMixin;
+    
+    // Value
+    public string Value;
+}
+
+//
+
 /**
 * Dotted Identifier
 * e.g. foo.bar.x.y

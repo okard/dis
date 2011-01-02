@@ -147,7 +147,7 @@ final static class Log
 /**
 * Console Log Listener
 */
-public void ConsoleListener(LogSource ls, d_time t, LogType ty,string msg)
+public void ConsoleListener(LogSource ls, d_time t, LogType ty, string msg)
 {
     string type;
     switch(ty) {

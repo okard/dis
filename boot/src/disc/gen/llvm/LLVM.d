@@ -443,6 +443,9 @@ class PassManager
     ///llvm PassManager
     private LLVMPassManagerRef mPassManager;
 
+    ///llvm optimization level
+    private PassType mPassType;
+
     enum PassType { None =0, Debug = 1, Release = 2, Optimized = 3}
 
     /**
@@ -464,7 +467,7 @@ class PassManager
     /**
     * Run Pass Manager
     */
-    public bool run(Module m)
+    public bool Run(Module m)
     {
         //Verify Module before?
 
@@ -490,6 +493,7 @@ class PassManager
 
         if(p <= PassType.Release)
         {
+            AddStripSymbolsPass();
         }
 
         if(p <= PassType.Optimized)

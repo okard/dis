@@ -49,11 +49,27 @@ enum TokenType : ubyte
     COBracket,      // { - Cambered Open Bracket
     CCBracket,      // } - Cambered Close Bracket
 
+    //Binary & Math Operator
     Mul,            // *
+    Div,            // /
+    Add,            // +
+    Sub,            // -
+    Mod,            // %
+    //Power,        // **
+    Not,            // !
+    Xor,            // ^
+    And,            // &
+    Or,             // |
+    LAnd,           // && Logic And
+    LOr,            // || Logic Or
+    Assign,         // =
+    Equal,          // ==
+    NotEqual,       // !=
 
     //Keywords
     KwPackage,
-    KwDef 
+    KwDef
+    //Var, Val, Class, 
 }
 
 

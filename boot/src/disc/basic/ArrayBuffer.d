@@ -86,6 +86,7 @@ struct ArrayBuffer(T)
     /**
     * Return count of elements
     */
+    @property
     public uint length()
     {
         return mCount;
@@ -94,6 +95,7 @@ struct ArrayBuffer(T)
     /**
     * Is empty
     */
+    @property
     public bool empty()
     {
         return mCount == 0;

@@ -64,6 +64,7 @@ struct Stack(T)
     /**
     * Element on Top
     */
+    @property
     T top()
     {
         return mStackArr[mCount-1];
@@ -72,6 +73,7 @@ struct Stack(T)
     /**
     * Count of elements
     */
+    @property
     uint length()
     {
         return mCount;
@@ -80,6 +82,7 @@ struct Stack(T)
     /**
     * Stack Size
     */
+    @property
     uint size()
     {
         return mStackArr.length;

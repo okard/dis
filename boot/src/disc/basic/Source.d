@@ -188,6 +188,7 @@ class SourceString : Source
     /**
     * Is eof
     */
+    @property
     public bool isEof()
     {
         return mPos == mStr.length;

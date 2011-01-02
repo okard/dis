@@ -293,7 +293,7 @@ class Parser
             else if(list.length == 2)
             {
                 fd.mType.mArguments ~= resolveType(cast(string)list[1]);
-                fd.mArgumentNames[list[0]] = cast(ubyte)(fd.mType.mArguments.length-1);
+                fd.mArgumentNames[cast(string)list[0]] = cast(ubyte)(fd.mType.mArguments.length-1);
             }
             //TODO 1 element, variablename or type (declaration with block or not) -> semantic?
         }
