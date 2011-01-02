@@ -100,7 +100,7 @@ class Lexer
     */
     private void scanString(ref Token te)
     {
-        te.tok = TokenType.String;
+        te.type = TokenType.String;
         
         char[] str;
 
@@ -128,7 +128,7 @@ class Lexer
         //look for file end and no valid chars
         if(mSrc.isEof() || !nextValidChar(mC))
         {
-            tok.tok = TokenType.EOF;
+            tok.type = TokenType.EOF;
             return tok;
         }   
 
@@ -139,33 +139,33 @@ class Lexer
         //Check for special characters
         switch(mC)
         {
-        case '\n': tok.tok = TokenType.EOL; break;
-        case ';':  tok.tok = TokenType.Semicolon; break;
-        case ',':  tok.tok = TokenType.Comma; break;
-        case '.':  tok.tok = TokenType.Dot; break;
-        case ':':  tok.tok = TokenType.Colon; break;
-        case '(':  tok.tok = TokenType.ROBracket; break;
-        case ')':  tok.tok = TokenType.RCBracket; break;
-        case '[':  tok.tok = TokenType.AOBracket; break;
-        case ']':  tok.tok = TokenType.ACBracket; break;
-        case '{':  tok.tok = TokenType.COBracket; break;
-        case '}':  tok.tok = TokenType.CCBracket; break;
-        case '*':  tok.tok = TokenType.Mul; break;
+        case '\n': tok.type = TokenType.EOL; break;
+        case ';':  tok.type = TokenType.Semicolon; break;
+        case ',':  tok.type = TokenType.Comma; break;
+        case '.':  tok.type = TokenType.Dot; break;
+        case ':':  tok.type = TokenType.Colon; break;
+        case '(':  tok.type = TokenType.ROBracket; break;
+        case ')':  tok.type = TokenType.RCBracket; break;
+        case '[':  tok.type = TokenType.AOBracket; break;
+        case ']':  tok.type = TokenType.ACBracket; break;
+        case '{':  tok.type = TokenType.COBracket; break;
+        case '}':  tok.type = TokenType.CCBracket; break;
+        case '*':  tok.type = TokenType.Mul; break;
         case '"':  scanString(tok); break;
         default:
-            tok.tok = TokenType.None;
+            tok.type = TokenType.None;
         }
 
         //Handle Identifiers and Keywords
-        if(tok.tok == TokenType.None && isAlpha(mC))
+        if(tok.type == TokenType.None && isAlpha(mC))
         {
             scanIdentifier(tok);
-            tok.tok = TokenType.Identifier;
+            tok.type = TokenType.Identifier;
 
             //look for keywords
             if(tok.value in mKeywords)
             {
-                tok.tok = mKeywords[tok.value];
+                tok.type = mKeywords[tok.value];
             }
         }
             

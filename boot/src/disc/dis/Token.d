@@ -106,10 +106,10 @@ public struct Token
 {
     public string toString()
     {
-        return disc.dis.Token.toString(tok);
+        return disc.dis.Token.toString(type);
     }
 
-    TokenType tok;
+    TokenType type;
     Location loc;
     string value;
 }
