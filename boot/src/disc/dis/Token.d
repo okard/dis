@@ -32,7 +32,7 @@ enum TokenType : ubyte
 {
     None,
     EOF,
-    //Values & Identifier
+    //Values/Literals & Identifier
     Identifier,
     String,
 

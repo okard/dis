@@ -32,6 +32,7 @@ import std.stdio;
 class Semantic : AbstractVisitor
 {
     //rules
+    //semantic passes?
 
     //Type stack name -> Type 
     //Stack!(Type[char[]])
@@ -99,6 +100,7 @@ class Semantic : AbstractVisitor
     {
         //check for function
         //call.mFunction.NType() == NodeType.DotIdentifier
+        // Look for parameter type matching
     }
 
     /**

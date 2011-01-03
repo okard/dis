@@ -129,6 +129,9 @@ class Parser
         }
     }
 
+    /**
+    * Get called when } appears
+    */
     private void closeBlock()
     {
         //Close 
@@ -142,6 +145,8 @@ class Parser
             fd.mBody = t;
             t.Parent = fd;
         }
+
+        //if, while, for, do, else, class, array, enums
         
     }
 

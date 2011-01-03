@@ -195,7 +195,7 @@ class Type : NodeData
 */
 
 //Primary Types
-static Type llvmBoolType;
+static immutable Type llvmBoolType;
 static Type llvmInt8Type;
 static Type llvmInt16Type;
 static Type llvmInt32Type;
