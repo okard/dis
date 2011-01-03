@@ -442,6 +442,7 @@ class Parser
 
     /**
     * Get type for an identifier
+    * return Opaque Type when not resolved
     */
     private DataType resolveType(string identifier)
     {

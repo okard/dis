@@ -52,7 +52,19 @@ struct Signal(T...)
         if (s == "-") 
     {
         //remove
-        //TODO
+        for(int i=0; i < dgHandler.length; i++)
+        {
+            if(dgHandler[i] == dg)
+            {
+                //swap with tail and clear tail
+                dgHandler[i] = dgHandler[dgHandler.length-1];
+                dgHandler.length -= 1;
+                //recursive remove because of array loop and swap
+                if(dgHandler.length > 0)
+                    this -= dg;
+                break;
+            }
+        }
     } 
 
     /**
@@ -72,7 +84,19 @@ struct Signal(T...)
         if (s == "-") 
     {
         //remove
-        //TODO
+        for(int i=0; i < fnHandler.length; i++)
+        {
+            if(fnHandler[i] == fn)
+            {
+                //swap with tail and clear tail
+                fnHandler[i] = fnHandler[fnHandler.length-1];
+                fnHandler.length -= 1;
+                //recursive remove because of array loop and swap
+                if(fnHandler.length > 0)
+                    this -= fn;
+                break;
+            }
+        }
     } 
 
     /**
@@ -105,11 +129,22 @@ unittest
 
     Signal!(int) mySig;
     int foo = 0;
+    int bar = 0;
 
     void setFoo(int x) { foo = x; }
+    void setBar(int x) { bar++; }
+    mySig += &setFoo;
+    mySig += &setFoo;
+    mySig += &setBar;
+    mySig += &setFoo;
     mySig += &setFoo;
     mySig(5);
     assert(foo == 5);
+    assert(bar == 1);
+    mySig -= &setFoo;
+    mySig(6);
+    assert(foo == 5);
+    assert(bar == 2);
 
     writeln("[TEST] Signal Tests passed");
 }

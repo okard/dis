@@ -29,6 +29,8 @@ abstract class Expression : Node
 {
     DataType mReturnType;
     mixin VisitorMixin;
+
+    alias mReturnType ReturnType;
 }
 
 
@@ -39,7 +41,7 @@ final class LiteralExpression : Expression
 {
     // Visitor Mixin
     mixin VisitorMixin;
-    
+
     // Value
     public string Value;
 }
