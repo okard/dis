@@ -97,6 +97,7 @@ struct Signal(T...)
     }
 }
 
+version(unittest) import std.stdio;
 
 // Unittests
 unittest
@@ -109,4 +110,6 @@ unittest
     mySig += &setFoo;
     mySig(5);
     assert(foo == 5);
+
+    writeln("[TEST] Signal Tests passed");
 }

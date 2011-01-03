@@ -30,7 +30,7 @@ class SymbolTable
     private SymbolTable mPrev;
     
     /// the symbols
-    private Type mSymbols[string];
+    private DataType mSymbols[string];
     
     /**
     * Create new SymbolTable
@@ -43,7 +43,7 @@ class SymbolTable
     /**
     * Index Access for Types
     */
-    public Type opIndex(string identifier)
+    public DataType opIndex(string identifier)
     {
         return mSymbols[identifier];
     }

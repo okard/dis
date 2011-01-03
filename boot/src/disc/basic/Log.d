@@ -190,4 +190,5 @@ unittest
 
     //clear log stuff after unittest
     Log().OnLog().clear();
+    writeln("[TEST] Log Tests passed");
 }

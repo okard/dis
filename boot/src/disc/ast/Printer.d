@@ -130,7 +130,7 @@ class Printer : public AbstractVisitor
     */
     public static string toString(Expression exp)
     {
-        switch(exp.mNodeType)
+        switch(exp.Type)
         {
             case NodeType.DotIdentifier: return toString(cast(DotIdentifier) exp);
             case NodeType.FunctionCall: return toString(cast(FunctionCall) exp);
@@ -143,7 +143,7 @@ class Printer : public AbstractVisitor
     */
     public static string toString(Statement stat)
     {
-        switch(stat.mNodeType)
+        switch(stat.Type)
         {
             case NodeType.ExpressionStatement: return toString((cast(ExpressionStatement)stat).mExpression);
             default: return "<unkown statement>";

@@ -32,7 +32,7 @@ import llvm = disc.gen.llvm.LLVM;
 */
 class Compiler : public AbstractVisitor
 {
-    alias disc.ast.Type.Type astType;
+    alias disc.ast.Type.DataType astType;
 
     /// LLVM PassManager
     private llvm.PassManager mPassManager;

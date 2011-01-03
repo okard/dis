@@ -103,7 +103,7 @@ class FunctionDeclaration : Declaration
 class VariableDeclaration : Declaration
 {
     //Variable Type
-    private Type mType;
+    private DataType mDataType;
 
     //Initializer
     //Expression mInitializer;
@@ -111,18 +111,18 @@ class VariableDeclaration : Declaration
     /**
     * Ctor
     */
-    public this(string name, Type type = new OpaqueType())
+    public this(string name, DataType type = new OpaqueType())
     {
         mixin(set_nodetype);
         this.mName = name;
-        this.mType = type;
+        this.mDataType = type;
     }
 
     /**
     * Get type
     */
-    public Type type()
+    public DataType DataTyp()
     {
-        return mType;
+        return mDataType;
     }
 }

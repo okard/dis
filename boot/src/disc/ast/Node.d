@@ -41,21 +41,16 @@ abstract class Node
     public Storage!(NodeData) Store;
 
     /// Node Type
-    public NodeType mNodeType;
+    public NodeType Type;
 
     ///mixin for type
-    const string set_nodetype = "this.mNodeType = mixin(\"NodeType.\" ~ typeof(this).stringof);";
+    const string set_nodetype = "this.Type = mixin(\"NodeType.\" ~ typeof(this).stringof);";
     
     /**
     * Visitor pattern
     */
     public void accept(Visitor v);
     
-    /**
-    * Node Type
-    */
-    @property
-    public NodeType NType() { return mNodeType; }
 } 
 
 /**
@@ -64,6 +59,7 @@ abstract class Node
 enum NodeType
 {
     Unknown,
+    Special,
     //Declarations
     PackageDeclaration,
     FunctionDeclaration,

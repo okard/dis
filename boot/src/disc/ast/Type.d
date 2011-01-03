@@ -24,79 +24,79 @@ import disc.basic.Storage;
 /**
 * Base Type Class
 */
-abstract class Type
+abstract class DataType
 {
     public Storage!(NodeData) Store;
 }
 
 /// Void
-class VoidType : Type
+class VoidType : DataType
 {
     override string toString() { return "void"; }
 }
 
 /// 1 Bit Type
-class BoolType : Type
+class BoolType : DataType
 {
     override string toString() { return "bool"; }
 }
 
 /// 8 Bit signed
-class ByteType : Type
+class ByteType : DataType
 {
     override string toString() { return "byte"; }
 }
 
 /// 8 Bit unsigned
-class UByteType : Type
+class UByteType : DataType
 {
     override string toString() { return "ubyte"; }
 }
 
 /// 16 Bit
-class ShortType : Type
+class ShortType : DataType
 {
     override string toString() { return "short"; }
 }
 
 /// 16 Bit
-class UShortType : Type
+class UShortType : DataType
 {
     override string toString() { return "ushort"; }
 }
 
 /// 32 Bit
-class IntType : Type
+class IntType : DataType
 {
     override string toString() { return "int"; }
 }
 
 /// 32 Bit
-class UIntType : Type
+class UIntType : DataType
 {
     override string toString() { return "uint"; }
 }
 
 /// 64 Bit
-class LongType : Type
+class LongType : DataType
 {
     override string toString() { return "long"; }
 }
 
 /// 64 Bit
-class ULongType : Type
+class ULongType : DataType
 {
     override string toString() { return "ushort"; }
 }
 
 /// 32 Bit Float 
-class FloatType : Type
+class FloatType : DataType
 {
     override string toString() { return "float"; }
 }
 
 /// 64 Bit
-class DoubleType : Type
+class DoubleType : DataType
 {
     override string toString() { return "double"; }
 }
@@ -104,7 +104,7 @@ class DoubleType : Type
 /**
 * Not yet resolved type
 */
-class OpaqueType : Type
+class OpaqueType : DataType
 {
     override string toString() { return "<unkown>"; }
 }
@@ -112,14 +112,14 @@ class OpaqueType : Type
 /**
 * Defines a Function Signature
 */
-class FunctionType : Type
+class FunctionType : DataType
 {
     public enum CallingConvention {None, C, Dis}
 
     //Arguments
-    public Type[] mArguments;
+    public DataType[] mArguments;
     //Return Type
-    public Type mReturnType;
+    public DataType mReturnType;
     //Varargs Function
     public bool mVarArgs;
     //Calling Convention
@@ -135,11 +135,11 @@ class FunctionType : Type
 * PointerType 
 * Ptr to a type
 */
-class PointerType : Type 
+class PointerType : DataType 
 {
-    public Type mType;
+    public DataType mType;
 
-    public this(Type t)
+    public this(DataType t)
     {
         mType = t;
     }
@@ -153,7 +153,7 @@ class PointerType : Type
 //ArrayType
 //String
 
-class CharType : Type
+class CharType : DataType
 {
     //encoding???
 

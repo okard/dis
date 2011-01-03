@@ -27,7 +27,7 @@ import disc.ast.Type;
 */
 abstract class Expression : Node
 {
-    Type mReturnType;
+    DataType mReturnType;
     mixin VisitorMixin;
 }
 
@@ -66,7 +66,7 @@ final class DotIdentifier : Expression
     */
     public this(char[] identifier)
     {
-        mNodeType = NodeType.DotIdentifier;
+        mixin(set_nodetype);
         mIdentifier ~= identifier;
     }
 }
@@ -89,7 +89,7 @@ final class FunctionCall : Expression
 
     this()
     {
-        mNodeType = NodeType.FunctionCall;
+        mixin(set_nodetype);
     }
 }
 

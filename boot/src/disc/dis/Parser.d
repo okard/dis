@@ -52,7 +52,7 @@ class Parser
     ///AST Parser Stack
     private Stack!Node mAstStack;
     ///Internal Types
-    public static Type[string] InternalTypes;
+    public static DataType[string] InternalTypes;
 
     /**
     * Ctor
@@ -123,20 +123,20 @@ class Parser
 
     private void endActualNode()
     {
-        if(mAstStack.top().NType == NodeType.FunctionDeclaration)
+        if(mAstStack.top().Type == NodeType.FunctionDeclaration)
         {
            auto fd = cast(FunctionDeclaration)mAstStack.pop();   
-        }   
+        }
     }
 
     private void closeBlock()
     {
         //Close 
-        assert(mAstStack.top().NType == NodeType.BlockStatement);
+        assert(mAstStack.top().Type == NodeType.BlockStatement);
         auto t = cast(BlockStatement)mAstStack.pop();
 
         //add body to function
-        if(mAstStack.top().NType == NodeType.FunctionDeclaration)
+        if(mAstStack.top().Type == NodeType.FunctionDeclaration)
         {
             auto fd = cast(FunctionDeclaration)mAstStack.pop();
             fd.mBody = t;
@@ -212,27 +212,25 @@ class Parser
         
         func.mName = cast(string)mToken.value;
 
-        //expected (params) return type {
-        if(!expect(mToken, TokenType.ROBracket))
-        {
-            error(mToken.loc, "parseDef: expected (");
-            return;
-        }
 
-        //parse parameters when some available
-        if(peek(1) != TokenType.RCBracket)
-            parseDefParams(func);
-        else 
+        //Parse Parameter if available
+        if(peek(1) == TokenType.ROBracket)
+        {
             next();
 
-        //after parsing parameters expects )
-        if(mToken.type != TokenType.RCBracket)
-            error(mToken.loc, "parseDef: expected ) after parameters");
+            //parse parameters when some available
+            if(peek(1) != TokenType.RCBracket)
+                parseDefParams(func);
+            else 
+                next();
 
-        
-        auto peekTok = mLex.peekToken(1);
+            //after parsing parameters expects )
+            if(mToken.type != TokenType.RCBracket)
+                error(mToken.loc, "parseDef: expected ) after parameters");
+        }
+
         //look for return value
-        if(peekTok.type == TokenType.Identifier)
+        if(peek(1) == TokenType.Identifier)
         {
             next();
             func.mType.mReturnType = resolveType(mToken.value);
@@ -243,7 +241,10 @@ class Parser
         /*if(peekTok.type == Token.COBracket)
         {
         }*/
-        if(mAstStack.top().NType == NodeType.PackageDeclaration)
+
+        //finished function definition parsing
+        //added to package declaration when parsed before
+        if(mAstStack.top().Type == NodeType.PackageDeclaration)
         {
             auto pd = cast(PackageDeclaration)mAstStack.top();
             func.Parent = pd;
@@ -437,7 +438,7 @@ class Parser
     /**
     * Get type for an identifier
     */
-    private Type resolveType(string identifier)
+    private DataType resolveType(string identifier)
     {
         //check for pointer
         if(identifier[identifier.length-1] == '*')

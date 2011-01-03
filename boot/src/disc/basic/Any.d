@@ -73,6 +73,7 @@ struct Any
     }
 } 
 
+version(unittest) import std.stdio;
 
 unittest
 {
@@ -82,4 +83,5 @@ unittest
     
     p = "foo bar";
     //i = cast(int)p; // error cant cast
+    writeln("[TEST] Any Tests passed");
 }
