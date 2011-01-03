@@ -16,7 +16,7 @@
 *    along with disc.  If not, see <http://www.gnu.org/licenses/>.
 *
 ******************************************************************************/
-module disc.Semantic;
+module disc.gen.Semantic;
 
 import disc.ast.Node;
 import disc.ast.Visitor;

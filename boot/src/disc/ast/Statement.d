@@ -35,6 +35,7 @@ abstract class Statement : Node
 * Defines a Block {}
 * Is more Declaration?
 * Has a SymbolTable?
+* Can have classes, functions, ...
 */
 class BlockStatement : Statement
 {

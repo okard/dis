@@ -1,4 +1,4 @@
-package milestoneone;
+package milestone1;
 
 def(C) printf(format: char*, T...);
 

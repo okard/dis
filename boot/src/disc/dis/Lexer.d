@@ -79,6 +79,30 @@ class Lexer
     }
 
     /**
+    * Is Numeric
+    */
+    private bool isNumeric(char c)
+    {
+        return (c >= '0' && c <= '9');
+    }
+
+    /**
+    * For double Lookups
+    * e.g. +=
+    */
+    private TokenType lookFor(char c, TokenType a, TokenType b) 
+    {
+        //if c match peekchar return b if not return a
+        if(mSrc.peekChar(1) == c)
+        {
+            mC = mSrc.getChar();
+            return b;
+        }
+        else
+            return a;
+    }
+
+    /**
     * Scan Identifier
     */
     private void scanIdentifier(ref Token te)
@@ -86,7 +110,7 @@ class Lexer
         char[] ident;
         ident ~= mC;
 
-        while(isAlpha(mSrc.peekChar(1)))
+        while(isAlpha(mSrc.peekChar(1)) || isNumeric(mSrc.peekChar(1)))
         {
             mC = mSrc.getChar();
             ident ~= mC;
@@ -104,6 +128,8 @@ class Lexer
         
         char[] str;
 
+        //TODO String "..." can't be defined over multiple lines?
+        //TODO Escape Characters "\n"
         do
         { 
             mC = mSrc.getChar();
@@ -113,6 +139,16 @@ class Lexer
         while(mC != '"');
         
         te.value = cast(string)str;
+    }
+
+    /**
+    * TODO Read Numbers
+    */
+    private void scanNumber(ref Token te)
+    {
+        //TODO scanNumbers
+        //Integer, Float, Double
+
     }
 
     /**
@@ -160,13 +196,13 @@ class Lexer
         if(tok.type == TokenType.None && isAlpha(mC))
         {
             scanIdentifier(tok);
-            tok.type = TokenType.Identifier;
+            //keyword or identifier
+            tok.type = mKeywords.get(tok.value, TokenType.Identifier);
+        }
 
-            //look for keywords
-            if(tok.value in mKeywords)
-            {
-                tok.type = mKeywords[tok.value];
-            }
+        //Handle Numbers
+        if(tok.type == TokenType.None && isNumeric(mC))
+        {
         }
             
         return tok;
@@ -206,6 +242,7 @@ class Lexer
     /**
     * The current Token
     */
+    @property
     Token currentToken()
     {
        return mTok;
@@ -214,6 +251,7 @@ class Lexer
     /**
     * Current Value for Token
     */
+    @property
     string currentValue()
     {
         return mTok.value;
@@ -222,6 +260,7 @@ class Lexer
     /**
     * Set current Source
     */
+    @property
     void source(Source src)
     {
         src.reset();
@@ -231,12 +270,16 @@ class Lexer
     /**
     * Get current Source
     */
+    @property
     Source source()
     {
         return mSrc;
     }  
 
-
+    /**
+    * Static Constructor
+    * Initialize Keywords
+    */
     static this()
     {
         mKeywords["def"] = TokenType.KwDef;

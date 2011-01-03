@@ -27,7 +27,7 @@ import disc.ast.Printer;
 import disc.dis.Token;
 import disc.dis.Lexer;
 import disc.dis.Parser;
-import disc.Semantic;
+import disc.gen.Semantic;
 import disc.gen.llvm.Compiler;
 
 /**
@@ -52,6 +52,7 @@ int main(string[] args)
     auto lex = new Lexer();
     lex.source = src;
     //dumpLexer(lex);
+    src.reset();
 
     //Parser
     auto parser = new Parser();

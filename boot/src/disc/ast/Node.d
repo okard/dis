@@ -44,7 +44,7 @@ abstract class Node
     public NodeType Type;
 
     ///mixin for type
-    const string set_nodetype = "this.Type = mixin(\"NodeType.\" ~ typeof(this).stringof);";
+    protected const string set_nodetype = "this.Type = mixin(\"NodeType.\" ~ typeof(this).stringof);";
     
     /**
     * Visitor pattern

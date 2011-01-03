@@ -35,6 +35,9 @@ enum TokenType : ubyte
     //Values/Literals & Identifier
     Identifier,
     String,
+    Integer,
+    Float,
+    Double,
 
     //Symbols
     EOL,            // End of Line
@@ -69,7 +72,7 @@ enum TokenType : ubyte
     //Keywords
     KwPackage,
     KwDef
-    //Var, Val, Class, 
+    //var, val, class, trait,  
 }
 
 

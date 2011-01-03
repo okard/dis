@@ -51,6 +51,10 @@ interface Source
     * Is eof
     */
     public bool isEof();
+
+    //TODO Slice & Index Operator 
+    //char[] opIndex(int pos);
+    //char[] opSlice(int start, int end);
 }
 
 
@@ -59,6 +63,8 @@ interface Source
 */
 class SourceFile : File, Source
 {
+    //TODO Implement a double buffer?
+
     /// Current Location
     private Location mLoc;
 

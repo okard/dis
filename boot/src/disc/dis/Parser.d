@@ -53,6 +53,8 @@ class Parser
     private Stack!Node mAstStack;
     ///Internal Types
     public static DataType[string] InternalTypes;
+    ///Opaque Type
+    public static DataType opaqueType;
 
     /**
     * Ctor
@@ -83,6 +85,8 @@ class Parser
         InternalTypes["double"] = new DoubleType();
         //special:
         InternalTypes["char"] = new CharType();
+        //opaque
+        opaqueType = new OpaqueType();
     }
     
     /**
@@ -451,10 +455,10 @@ class Parser
         {
             //pointer type
             identifier.length -= 1;
-            return new PointerType(InternalTypes.get(identifier, new OpaqueType()));
+            return new PointerType(InternalTypes.get(identifier, opaqueType));
         }
         else
-            return InternalTypes.get(identifier, new OpaqueType());
+            return InternalTypes.get(identifier, opaqueType);
     }
 
     /**
@@ -494,14 +498,25 @@ class Parser
     /**
     * Set Source file for Lexer
     */
+    @property
     public void source(Source src)
     {
         mLex.source = src;
+    }
+    
+    /**
+    * Get source 
+    */
+    @property 
+    public Source source()
+    {
+        return mLex.source;
     }
 
     /**
     * Get Parse Tree
     */
+    @property
     public Node ParseTree()
     {
         return mAstRoot;
