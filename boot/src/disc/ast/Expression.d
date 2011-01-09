@@ -71,6 +71,26 @@ final class DotIdentifier : Expression
         mixin(set_nodetype);
         mIdentifier ~= identifier;
     }
+
+    /**
+    * To String
+    */
+    override string toString() 
+    {
+        string s;
+        foreach(ps; mIdentifier)
+            s ~= ps;
+        return s;
+    }
+
+    /**
+    * TODO Parse dotted expression from string
+    */
+    public static parse(string value)
+    {
+    }
+
+    
 }
 
 /**

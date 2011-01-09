@@ -162,12 +162,21 @@ class Parser
         //package identifier;
         assert(mToken.type == TokenType.KwPackage);
         
-        //Package need a name
-        if(!expect(mToken, TokenType.Identifier))
+        //check for package identifier
+        if(peek(1) != TokenType.Identifier)
             error(mToken.loc, "Expected Identifier after package");
+
+        //parse identifier for Package
+        next();
+        auto di = parseIdentifier();
+
+        //Package need a name
+        //if(!expect(mToken, TokenType.Identifier))
+        //    
         
         //Create new Package Declaration
-        auto pkg = new PackageDeclaration(cast(string)mToken.value);
+        //auto di = parseIdentifier();
+        auto pkg = new PackageDeclaration(di.toString());
 
         //Look for semicolon or end of line
         mToken = mLex.getToken();

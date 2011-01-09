@@ -51,7 +51,7 @@ int main(string[] args)
 
     auto lex = new Lexer();
     lex.source = src;
-    //dumpLexer(lex);
+    dumpLexer(lex);
     src.reset();
 
     //Parser
