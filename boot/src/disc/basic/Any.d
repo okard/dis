@@ -24,7 +24,7 @@ module disc.basic.Any;
 struct Any
 {
     /// Pointer to data
-    private byte* data;
+    private void* data;
     /// Current Type Info
     private TypeInfo type;
 
@@ -33,7 +33,7 @@ struct Any
     */
     public this(T)(T value)
     {
-        data = cast(byte*)new container!(T)(value);
+        data = new container!(T)(value);
         type = typeid(T);
     }
 
@@ -42,7 +42,7 @@ struct Any
     */
     public void opAssign(T)(T value)
     {
-        data = cast(byte*)new container!(T)(value);
+        data = new container!(T)(value);
         type = typeid(T);
     }
 

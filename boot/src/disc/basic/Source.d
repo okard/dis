@@ -68,6 +68,12 @@ class SourceFile : File, Source
     /// Current Location
     private Location mLoc;
 
+    /// Buffer
+    private char[2][20] mBuffer; 
+
+    /// current Buffer
+    private ubyte mBufIndex = 0;
+
     /**
     * Ctor
     */
