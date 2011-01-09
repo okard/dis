@@ -102,7 +102,9 @@ class Parser
             {
             //Keywords
             case TokenType.KwPackage: parsePackage(); break;
+            case TokenType.KwClass: break;
             case TokenType.KwDef: parseDef(); break;
+            case TokenType.KwImport: break;
             // Blocks {}
             case TokenType.COBracket: parseBlock(); break;
             case TokenType.CCBracket: closeBlock(); break;
@@ -270,6 +272,10 @@ class Parser
             
         }
         mAstStack.push(func);
+
+
+        //Look for Basic Block here, ignore new lines and comments
+        if(peekIgnore(1, [TokenType.EOL, TokenType.Comment]) == TokenType.COBracket) return;
     }
        
     /**
@@ -356,13 +362,18 @@ class Parser
     }
 
     /**
-    * Parse Statement
+    * Parse Block {}
+    * Parse Complete Block
     */
     private void parseBlock()
     {
+        //TODO symbol table?
         auto block = new BlockStatement();
-       
         mAstStack.push(block);
+
+        //a block can have variables
+        //statments
+        //expressions
     }
 
     /**
@@ -504,9 +515,50 @@ class Parser
     }
 
     /**
+    * Peek next valid TokenType
+    * Ignore the ignore list
+    */
+    private TokenType peekIgnore(ushort lookahead = 1, TokenType[] ignore = [])
+    {
+        TokenType t;
+
+        do
+        {
+            t = mLex.peekToken(lookahead).type;
+            lookahead++;
+        }
+        while(!isIn!TokenType(t, ignore));
+
+        return t;
+    }
+
+
+    /**
+    * Is in Array Function
+    * TODO: Seperate
+    */
+    public static bool isIn(T)(T t, T[] arr)
+    {
+        foreach(T ta; arr)
+            if(ta == t)
+                return true;
+        return false;
+    }
+
+    /**
     * Error Event
     */
     private void error(Location loc, string msg)
+    {
+        //TODO: Make error events, remove stupid writeln
+        writefln("(%s): %s", mToken.loc.toString(), msg);
+    }
+
+
+    /**
+    * Warning Event
+    */
+    private void warning(Location loc, string msg)
     {
         //TODO: Make error events, remove stupid writeln
         writefln("(%s): %s", mToken.loc.toString(), msg);

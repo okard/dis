@@ -329,5 +329,6 @@ class Lexer
         mKeywords["val"] = TokenType.KwVal;
         mKeywords["trait"] = TokenType.KwTrait;
         mKeywords["type"] = TokenType.KwType;
+        mKeywords["import"] = TokenType.KwImport;
     }
 } 

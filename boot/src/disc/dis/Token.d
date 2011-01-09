@@ -79,6 +79,7 @@ enum TokenType : ubyte
     KwVal,
     KwTrait,
     KwType,
+    KwImport,
 
     //Comment Tokens
     Comment
@@ -115,6 +116,7 @@ string toString(TokenType tok)
     case TokenType.KwVal:       return "val";
     case TokenType.KwTrait:     return "trait";
     case TokenType.KwType:      return "type";
+    case TokenType.KwImport:    return "import";
     case TokenType.Comment:     return "<comment>";
     default: return "no token description";
     }
