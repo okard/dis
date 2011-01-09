@@ -68,6 +68,8 @@ enum TokenType : ubyte
     Assign,         // =
     Equal,          // ==
     NotEqual,       // !=
+    
+    MulAssign,      // *=
 
     //Keywords
     KwPackage,
@@ -105,6 +107,7 @@ string toString(TokenType tok)
     case TokenType.COBracket:   return "{";
     case TokenType.CCBracket:   return "}";
     case TokenType.Mul:         return "*";
+    case TokenType.MulAssign:   return "*=";
     case TokenType.KwPackage:   return "package";
     case TokenType.KwDef:       return "def";
     case TokenType.KwClass:     return "class";

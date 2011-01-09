@@ -24,7 +24,9 @@ import disc.ast.Declaration;
 import disc.ast.Statement;
 import disc.ast.Expression;
 import disc.ast.Type;
+
 import llvm = disc.gen.llvm.LLVM;
+import disc.gen.llvm.Node;
 
 
 /**
@@ -73,12 +75,14 @@ class Compiler : public AbstractVisitor
 
     /**
     * Generate Code for Package
+    * Entry Point for generating code for a package
     */
     override void visit(PackageDeclaration pack)
     {
         //Create Module for Package
         auto mod = new llvm.Module(mContext, pack.mName);
-        pack.Store.Compiler(mod);
+        pack.NodeStack.push(new CompilerNode());
+        //pack.Store.Compiler(mod);
 
         //Create Functions
         foreach(func; pack.mFunctions)
@@ -98,8 +102,8 @@ class Compiler : public AbstractVisitor
     override void visit(FunctionDeclaration func)
     {
         //already generated
-        if(cast(llvm.FunctionValue)func.Store.Compiler())
-            return;
+        //if(cast(llvm.FunctionValue)func.Store.Compiler())
+        //    return;
 
         //generate Function Declaration
         

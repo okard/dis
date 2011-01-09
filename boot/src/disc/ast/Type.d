@@ -26,7 +26,7 @@ import disc.basic.Storage;
 */
 abstract class DataType
 {
-    public Storage!(NodeData) Store;
+    
 }
 
 /// Void

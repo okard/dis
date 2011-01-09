@@ -73,7 +73,7 @@ class Lexer
     /**
     * Is Alpha
     */
-    private bool isAlpha(char c)
+    private static bool isAlpha(char c)
     {
         return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_';
     }
@@ -81,7 +81,7 @@ class Lexer
     /**
     * Is Numeric
     */
-    private bool isNumeric(char c)
+    private static bool isNumeric(char c)
     {
         return (c >= '0' && c <= '9');
     }
@@ -152,7 +152,7 @@ class Lexer
 
 
     /**
-    * TODO Scan Comments
+    * Scan Comments
     * TODO Scan Comment Docs
     */
     private void scanComments(ref Token te)
@@ -167,7 +167,7 @@ class Lexer
         //block comment
         if(c == '*')
         {
-            //readUntil "*\"
+            //readUntil "*/"
             while(true)
             {
                 mSrc.getChar();
@@ -216,13 +216,17 @@ class Lexer
         case ']':  tok.type = TokenType.ACBracket; break;
         case '{':  tok.type = TokenType.COBracket; break;
         case '}':  tok.type = TokenType.CCBracket; break;
-        case '*':  tok.type = TokenType.Mul; break;
-        case '"':  scanString(tok); break;
+        case '!':  tok.type = TokenType.Not; break;
+        case '+':  tok.type = TokenType.Add; break;
+        case '-':  tok.type = TokenType.Sub; break;
+        case '*':  tok.type = lookFor('=', TokenType.Mul, TokenType.MulAssign); break;
+        //Can be Comments
         case '/':  if(mSrc.peekChar(1) == '/' || mSrc.peekChar(1) == '*') 
                         scanComments(tok);
                    else
                         tok.type = TokenType.Div;
                    break;
+        case '"':  scanString(tok); break;
         default:
             tok.type = TokenType.None;
         }
@@ -238,6 +242,7 @@ class Lexer
         //Handle Numbers
         if(tok.type == TokenType.None && isNumeric(mC))
         {
+            scanNumber(tok);
         }
             
         return tok;

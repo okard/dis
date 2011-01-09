@@ -16,51 +16,52 @@
 *    along with disc.  If not, see <http://www.gnu.org/licenses/>.
 *
 ******************************************************************************/
-module disc.ast.Node;
+module disc.gen.llvm.Node; 
 
-import disc.basic.Stack;
+import disc.ast.Node;
 import disc.ast.Visitor;
 
 /**
-* Base Class for AST Nodes
+* LLVM Compiler Node Types
 */
-abstract class Node
+enum CompilerNodeType
 {
-    /// parent node
-    public Node Parent;
-
-    /// Node Type
-    public NodeType Type;
-
-    /// NodeStack for Additional Information Nodes
-    public Stack!Node NodeStack;
-
-    ///mixin for type
-    protected const string set_nodetype = "this.Type = mixin(\"NodeType.\" ~ typeof(this).stringof);";
-    
-    /**
-    * Visitor pattern
-    */
-    public void accept(Visitor v);
-    
-} 
+    Context,
+    Module,
+    Type,
+    Value,
+    BasicBlock
+}
 
 /**
-* Node Types
+* LLVM Compiler Nodes
 */
-enum NodeType
+class CompilerNode : Node
 {
-    Unknown,
-    Special,
-    //Declarations
-    PackageDeclaration,
-    FunctionDeclaration,
-    VariableDeclaration,
-    //Statements
-    BlockStatement,
-    ExpressionStatement,
-    //Expressions
-    DotIdentifier,
-    FunctionCall,
-    LiteralExpression
+    //LLVM Context
+    //LLVM Module
+    //LLVM Type
+    //LLVM Value
+    //LLVM BasicBlock
+
+    CompilerNodeType CNType;
+
+    /**
+    * Create new CompilerNode
+    */
+    public this()
+    {
+        Type = NodeType.Special;
+    }
+
+
+    /**
+    * For Node Compatibility
+    */
+    public override void accept(Visitor v)
+    {
+        assert(true);
+    }
+
+
 }

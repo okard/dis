@@ -24,14 +24,10 @@ import llvm.c.BitWriter;
 import llvm.c.transforms.IPO;
 import llvm.c.transforms.Scalar;
 
-
-import disc.ast.Node;
-
-
 /**
 * LLVM Context
 */
-class Context : NodeData
+class Context
 {
     // Global Context Instance
     private static Context mGlobal;
@@ -90,7 +86,7 @@ class Context : NodeData
 /**
 * LLVM Module
 */
-class Module : NodeData
+class Module 
 {
     //LLVM Module
     private LLVMModuleRef mModule;
@@ -148,7 +144,7 @@ class Module : NodeData
 /**
 * LLVM Type
 */
-class Type : NodeData
+class Type 
 {
     /// LLVM Type
     private LLVMTypeRef mType;
@@ -233,7 +229,7 @@ class FunctionType : Type
 /**
 * LLVM Value
 */
-class Value : NodeData
+class Value 
 {
     /// LLVM Value
     private LLVMValueRef mValue;
@@ -325,7 +321,7 @@ class FunctionValue : Value
 /**
 * Basic Block
 */
-class BasicBlock : NodeData
+class BasicBlock
 {
     /// LLVM Basic Block
     private LLVMBasicBlockRef mBasicBlock;
