@@ -26,12 +26,17 @@ import disc.ast.Statement;
 import disc.ast.Expression;
 
 import std.stdio;
+import std.string;
 
 /**
 * AST Printer
 */
 class Printer : public AbstractVisitor
 {
+
+    /// Tab Count
+    private ubyte tabDeepness = 0;
+
     /**
     * Print Ast
     */
@@ -71,10 +76,12 @@ class Printer : public AbstractVisitor
     */
     public override void visit(PackageDeclaration pd)
     {
-        writefln("Package: %s",  pd.mName);
+        writefln("%sPackage: %s",tabs(),  pd.mName);
 
+        tabDeepness++;
         foreach(fd; pd.mFunctions)
             fd.accept(this);
+        tabDeepness--;
     }
 
     /**
@@ -121,6 +128,15 @@ class Printer : public AbstractVisitor
     * Visit Expression
     */
     override void visit(Expression expr){}
+
+
+    /**
+    * Get Tabs
+    */
+    private string tabs()
+    {
+        return repeat("\t", tabDeepness);
+    }
 
     //=========================================================================
     //== To String Functions

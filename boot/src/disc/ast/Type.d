@@ -137,25 +137,56 @@ class FunctionType : DataType
 */
 class PointerType : DataType 
 {
+    ///The Type this PointerType points to
     public DataType mType;
 
+    ///Create new PointerType
     public this(DataType t)
     {
         mType = t;
     }
 
+    ///toString
     override string toString() 
     { 
         return mType.toString() ~ "*"; 
     }
 }
 
-//ArrayType
 //String
 
+/**
+* CharType
+*/
 class CharType : DataType
 {
     //encoding???
 
      override string toString() { return "char"; }
 }
+
+/**
+* Array Type
+*/
+class ArrayType : DataType
+{
+    //DataType type
+    //Size 
+}
+
+/**
+* Class Type
+*/
+class ClassType : DataType
+{
+    //Class Declaration
+}
+
+/**
+* Trait Type 
+*/
+class TraitType : DataType
+{
+    //Trait Declaration
+}
+

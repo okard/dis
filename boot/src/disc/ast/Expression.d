@@ -95,6 +95,20 @@ final class FunctionCall : Expression
     }
 }
 
+
+/**
+* 
+*/
+final class BinaryExpression : Expression
+{
+    /// OP + - * / % ** ^ && ||
+    enum Op {Add, Div, Mul}
+
+    Expression Left;
+    Expression Right;
+    
+}
+
 //AssignExpression
 //Binary/Unary
 //if/else

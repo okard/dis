@@ -69,5 +69,6 @@ enum NodeType
     ExpressionStatement,
     //Expressions
     DotIdentifier,
-    FunctionCall
+    FunctionCall,
+    LiteralExpression
 }

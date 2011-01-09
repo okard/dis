@@ -28,6 +28,9 @@ import disc.ast.Statement;
 */
 abstract class Declaration : Node
 {
+    ///Modifiers
+    enum Modifiers : ushort { Private=1, Protected=2, Public=4, Package=8, Static=16, Final=32, Const=64 } 
+
     ///name
     public string mName;
     
@@ -125,4 +128,29 @@ class VariableDeclaration : Declaration
     {
         return mDataType;
     }
+}
+
+/**
+* Class Declaration
+*/
+class ClassDeclaration : Declaration
+{
+    //Visitor Mixin
+    mixin VisitorMixin;
+
+    //ClassType?
+    //BaseClass
+    //Traits
+}
+
+/**
+* Trait Declaration
+*/
+class TraitDeclaration : Declaration
+{
+    //Visitor Mixin
+    mixin VisitorMixin;
+
+    //TraitType?
+    //Variables, Methods, Properties
 }

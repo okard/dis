@@ -48,4 +48,29 @@ class SymbolTable
         return mSymbols[identifier];
     }
 
+    /**
+    * Creates a new SymbolTable
+    */
+    public SymbolTable push()
+    {
+        auto st = new SymbolTable(this);
+        return st;
+    }
+
+    /**
+    * Popes Table and get parent
+    */
+    public SymbolTable pop()
+    {
+        return mPrev;
+    }
+
+    /**
+    * Is Head
+    */
+    public bool isHead()
+    {
+        return !(mPrev is null);
+    }
+
 } 

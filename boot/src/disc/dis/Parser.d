@@ -362,6 +362,13 @@ class Parser
     private void parseStatement()
     {
         assert(mToken.type == TokenType.Identifier);
+
+        //for 
+        //do-while 
+        //while
+        
+        //Statement-Expression
+        
         
         Statement stat;
         //statement with started identifier?
@@ -404,8 +411,9 @@ class Parser
     private void parseExpression()
     {
         //Function Call
-        //If
-        //Switch Case
+        //If-ElseIf-Else
+        //Switch-Case
+        //Binary&Unary Expressions
     }
 
     /**

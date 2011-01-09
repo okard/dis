@@ -71,8 +71,14 @@ enum TokenType : ubyte
 
     //Keywords
     KwPackage,
-    KwDef
-    //var, val, class, trait,  
+    KwDef,
+    KwClass,
+    KwVar,
+    KwVal,
+    KwTrait,
+
+    //Comment Tokens
+    Comment
 }
 
 

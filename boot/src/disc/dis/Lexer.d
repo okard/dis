@@ -50,7 +50,7 @@ class Lexer
     */
     public this()
     {
-        mTokList = ArrayBuffer!(Token)(10);
+        mTokList = ArrayBuffer!(Token)(25);
     }
 
     /**
@@ -148,6 +148,36 @@ class Lexer
     {
         //TODO scanNumbers
         //Integer, Float, Double
+    }
+
+
+    /**
+    * TODO Scan Comments
+    * TODO Scan Comment Docs
+    */
+    private void scanComments(ref Token te)
+    {
+        te.type = TokenType.Comment;
+        char c = mSrc.getChar();
+
+        //line comment
+        if(c == '/')
+            while(mSrc.peekChar(1) != '\n') mSrc.getChar();
+        
+        //block comment
+        if(c == '*')
+        {
+            //readUntil "*\"
+            while(true)
+            {
+                mSrc.getChar();
+                if(mSrc.peekChar(1) == '*' && mSrc.peekChar(2) == '/')
+                {
+                    mSrc.getChar(); mSrc.getChar();
+                    break;
+                }
+            }
+        }
 
     }
 
@@ -188,6 +218,11 @@ class Lexer
         case '}':  tok.type = TokenType.CCBracket; break;
         case '*':  tok.type = TokenType.Mul; break;
         case '"':  scanString(tok); break;
+        case '/':  if(mSrc.peekChar(1) == '/' || mSrc.peekChar(1) == '*') 
+                        scanComments(tok);
+                   else
+                        tok.type = TokenType.Div;
+                   break;
         default:
             tok.type = TokenType.None;
         }
