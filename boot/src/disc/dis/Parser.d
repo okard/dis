@@ -21,6 +21,7 @@ module disc.dis.Parser;
 import disc.basic.Location;
 import disc.basic.Source;
 import disc.basic.Stack;
+import disc.basic.Util;
 
 import disc.dis.Token;
 import disc.dis.Lexer;
@@ -230,6 +231,10 @@ class Parser
         //Look for Basic Block here, ignore new lines and comments
         if(peekIgnore(1, [TokenType.EOL, TokenType.Comment]) == TokenType.COBracket)
         {
+            //goto "{"
+            while(mToken.type != TokenType.COBracket) 
+                next();
+            //parse the block
             parseBlock();
         }
 
@@ -340,9 +345,15 @@ class Parser
         //parse until "}"
         while(peek(1) != TokenType.CCBracket)
         {
-            writeln("test");
             next();
-            parseStatement();
+            
+            //ignore newlines
+            if(mToken.type == TokenType.EOL)
+                continue;
+            
+            //writeln(disc.dis.Token.toString(mToken.type));
+            if(mToken.type == TokenType.Identifier)
+                parseStatement();
             //Declarations:
             //var, val, def, class, trait, type
            
@@ -435,6 +446,7 @@ class Parser
         //Binary&Unary Expressions
         //Math Expressions
         //()
+        //Literal
     }
 
     /**
@@ -534,17 +546,6 @@ class Parser
     }
 
 
-    /**
-    * Is in Array Function
-    * TODO: Seperate
-    */
-    public static bool isIn(T)(T t, T[] arr)
-    {
-        foreach(T ta; arr)
-            if(ta == t)
-                return true;
-        return false;
-    }
 
     /**
     * Error Event

@@ -130,6 +130,8 @@ class SourceFile : File, Source
     public void reset()
     {
         position = 0;
+        mLoc.Col = 0;
+        mLoc.Line = 0;
     }
 
     /**

@@ -147,6 +147,7 @@ class Lexer
     private void scanNumber(ref Token te)
     {
         //TODO scanNumbers
+        te.type = TokenType.Integer;
         //Integer, Float, Double
     }
 
@@ -248,7 +249,7 @@ class Lexer
         {
             scanNumber(tok);
         }
-            
+        
         return tok;
     }
 
@@ -273,11 +274,11 @@ class Lexer
     */
     Token peekToken(ushort n)
     {
-        if(mTokList.length() > n)
+        if(mTokList.length() >= n)
             return mTokList[n-1];
         
         Token tok;
-        while(mTokList.length < n)
+        while(mTokList.length() < n)
             tok =  mTokList.addAfter(nextToken());
 
         return tok;
