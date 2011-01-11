@@ -8,5 +8,6 @@ if [[ "$osbit" == "64" ]]; then
 	LD_LIBRARY_PATH=./lib/linux32/:$LD_LIBRARY_PATH
 fi
 
+
 ./bin/disc $@
 #gdb --args ./bin/disc $@
