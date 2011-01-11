@@ -117,7 +117,7 @@ final class FunctionCall : Expression
 
 
 /**
-* 
+* Binary Expression
 */
 final class BinaryExpression : Expression
 {

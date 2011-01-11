@@ -49,6 +49,9 @@ class PackageDeclaration : Declaration
     //ClassDeclaration[] Classes;
     //VariableDeclaration[] Variables
 
+    //ImportStatement[] Imports;
+    //TraitDeclaration[] Traits;
+
     //Visitor Mixin
     mixin VisitorMixin;
     
@@ -141,6 +144,10 @@ class ClassDeclaration : Declaration
     //ClassType?
     //BaseClass
     //Traits
+
+    //VariableDeclaration[] Variables;
+    //FunctionDeclaration[] Methods;
+    
 }
 
 /**
@@ -154,3 +161,5 @@ class TraitDeclaration : Declaration
     //TraitType?
     //Variables, Methods, Properties
 }
+
+//Type Declarations: Struct, Enum, Alias, Delegate 

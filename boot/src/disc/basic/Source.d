@@ -53,7 +53,7 @@ interface Source
     public bool isEof();
 
     //TODO Slice & Index Operator 
-    //char[] opIndex(int pos);
+    //char opIndex(int pos);
     //char[] opSlice(int start, int end);
 }
 

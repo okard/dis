@@ -21,6 +21,9 @@ module disc.gen.llvm.Node;
 import disc.ast.Node;
 import disc.ast.Visitor;
 
+//LLVM OOP Wrapper
+import llvm = disc.gen.llvm.LLVM;
+
 /**
 * LLVM Compiler Node Types
 */
@@ -63,5 +66,17 @@ class CompilerNode : Node
         assert(true);
     }
 
+}
+
+/**
+* Type Node
+*/ 
+class TypeNode : CompilerNode
+{
+    /// LLVM Type
+    llvm.Type LLVMType;
+
+    //OpaqueType?
 
 }
+

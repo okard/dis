@@ -96,6 +96,7 @@ class Parser
     {
         mToken = mLex.getToken();
         
+        //general parse loop (package scope)
         while(mToken.type != TokenType.EOF)
         {
             switch(mToken.type)
@@ -105,18 +106,12 @@ class Parser
             case TokenType.KwClass: break;
             case TokenType.KwDef: parseDef(); break;
             case TokenType.KwImport: break;
-            // Blocks {}
-            case TokenType.COBracket: parseBlock(); break;
-            case TokenType.CCBracket: closeBlock(); break;
-            //end actual node
-            case TokenType.Semicolon: endActualNode(); break;
-            //inner blocks
-            case TokenType.Identifier: parseStatement(); break;
             default:
             }
 
             mToken = mLex.getToken();
         }
+
         //end of file?
         if(mAstStack.length > 0)
         {
@@ -125,35 +120,6 @@ class Parser
             assert(pd !is null);
             mAstRoot = pd;
         }
-    }
-
-    private void endActualNode()
-    {
-        if(mAstStack.top().Type == NodeType.FunctionDeclaration)
-        {
-           auto fd = cast(FunctionDeclaration)mAstStack.pop();   
-        }
-    }
-
-    /**
-    * Get called when } appears
-    */
-    private void closeBlock()
-    {
-        //Close 
-        assert(mAstStack.top().Type == NodeType.BlockStatement);
-        auto t = cast(BlockStatement)mAstStack.pop();
-
-        //add body to function
-        if(mAstStack.top().Type == NodeType.FunctionDeclaration)
-        {
-            auto fd = cast(FunctionDeclaration)mAstStack.pop();
-            fd.mBody = t;
-            t.Parent = fd;
-        }
-
-        //if, while, for, do, else, class, array, enums
-        
     }
 
     /**
@@ -172,20 +138,17 @@ class Parser
         next();
         auto di = parseIdentifier();
 
-        //Package need a name
-        //if(!expect(mToken, TokenType.Identifier))
-        //    
-        
         //Create new Package Declaration
-        //auto di = parseIdentifier();
         auto pkg = new PackageDeclaration(di.toString());
+        //add package to parse stack
+        mAstStack.push(pkg);
 
         //Look for semicolon or end of line
         mToken = mLex.getToken();
         if(mToken.type != TokenType.EOL && mToken.type != TokenType.Semicolon)
-            error(mToken.loc, "Expected EOL or Semicolon");
+            error(mToken.loc, "Expected EOL or Semicolon after package declaration");
 
-        mAstStack.push(pkg);
+        //dont pop from stack
     }
 
     /**
@@ -199,6 +162,8 @@ class Parser
         assert(mToken.type == TokenType.KwDef);
 
         auto func = new FunctionDeclaration();
+        //add function declaration to stack
+        mAstStack.push(func);
 
         mToken = mLex.getToken();
 
@@ -256,26 +221,24 @@ class Parser
             func.mType.mReturnType = resolveType(mToken.value);
         }
 
-        //declaration???
-        //followed by implemention? (ignore end of line)
-        /*if(peekTok.type == Token.COBracket)
+        //if function declarations closes with ";" it is finished
+        if(peek(1) == TokenType.Semicolon)
         {
-        }*/
-
-        //finished function definition parsing
-        //added to package declaration when parsed before
-        if(mAstStack.top().Type == NodeType.PackageDeclaration)
-        {
-            auto pd = cast(PackageDeclaration)mAstStack.top();
-            func.Parent = pd;
-            pd.mFunctions ~= func;
-            
+            next();
         }
-        mAstStack.push(func);
-
-
+        
         //Look for Basic Block here, ignore new lines and comments
-        if(peekIgnore(1, [TokenType.EOL, TokenType.Comment]) == TokenType.COBracket) return;
+        if(peekIgnore(1, [TokenType.EOL, TokenType.Comment]) == TokenType.COBracket)
+        {
+            parseBlock();
+        }
+
+        //Function Declaration finished pop from stack
+        mAstStack.pop();
+        if(mAstStack.top.Type == NodeType.PackageDeclaration)
+        {
+            (cast(PackageDeclaration)mAstStack.top).mFunctions ~= func;
+        }
     }
        
     /**
@@ -367,13 +330,39 @@ class Parser
     */
     private void parseBlock()
     {
+        //start token is "{"
+        assert(mToken.type == TokenType.COBracket);
+
         //TODO symbol table?
         auto block = new BlockStatement();
         mAstStack.push(block);
 
-        //a block can have variables
-        //statments
-        //expressions
+        //parse until "}"
+        while(peek(1) != TokenType.CCBracket)
+        {
+            writeln("test");
+            next();
+            parseStatement();
+            //Declarations:
+            //var, val, def, class, trait, type
+           
+            //Statments:
+            //for, while, do
+
+            //Expressions:
+            //if, do, while, terms,...
+        }
+
+        //pop block from stack
+        if(mAstStack.top.Type == NodeType.BlockStatement)
+            mAstStack.pop();
+        
+        //look for node before block
+        auto node = mAstStack.top;
+        if(node.Type == NodeType.FunctionDeclaration)
+        {
+            (cast(FunctionDeclaration)mAstStack.top).mBody = block;
+        }
     }
 
     /**
@@ -433,7 +422,19 @@ class Parser
         //Function Call
         //If-ElseIf-Else
         //Switch-Case
+
+
+        auto t = peek(1);
+        switch(t)
+        {
+            case TokenType.KwIf: break;
+            case TokenType.KwSwitch: break;
+            default:
+        }
+
         //Binary&Unary Expressions
+        //Math Expressions
+        //()
     }
 
     /**
@@ -527,7 +528,7 @@ class Parser
             t = mLex.peekToken(lookahead).type;
             lookahead++;
         }
-        while(!isIn!TokenType(t, ignore));
+        while(isIn!TokenType(t, ignore));
 
         return t;
     }

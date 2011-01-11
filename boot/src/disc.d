@@ -53,6 +53,7 @@ int main(string[] args)
     lex.source = src;
     dumpLexer(lex);
     src.reset();
+    writeln("------- END LEXER DUMP ------------------------------");
 
     //Parser
     auto parser = new Parser();
@@ -62,6 +63,7 @@ int main(string[] args)
     //Print out
     auto printer = new Printer();
     printer.print(parser.ParseTree());
+     writeln("------- END PARSER DUMP ------------------------------");
 
     //run semantics
     auto semantic = new Semantic();

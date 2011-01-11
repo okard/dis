@@ -53,23 +53,27 @@ enum TokenType : ubyte
     CCBracket,      // } - Cambered Close Bracket
 
     //Binary & Math Operator
-    Mul,            // *
-    Div,            // /
     Add,            // +
     Sub,            // -
+    Mul,            // *
+    Div,            // /
     Mod,            // %
-    //Power,        // **
     Not,            // !
     Xor,            // ^
     And,            // &
     Or,             // |
+    Assign,         // =
+    //Double Operator
+    Power,          // ** e.g. 2²
     LAnd,           // && Logic And
     LOr,            // || Logic Or
-    Assign,         // =
     Equal,          // ==
     NotEqual,       // !=
     
+    AddAssign,      // +=
+    SubAssign,      // -=
     MulAssign,      // *=
+    DivAssign,      // /=
 
     //Keywords
     KwPackage,
@@ -80,6 +84,13 @@ enum TokenType : ubyte
     KwTrait,
     KwType,
     KwImport,
+    KwIf,
+    KwElse,
+    KwSwitch,
+    KwCase,
+    KwFor,
+    KwWhile,
+    KwDo,
 
     //Comment Tokens
     Comment
@@ -117,6 +128,13 @@ string toString(TokenType tok)
     case TokenType.KwTrait:     return "trait";
     case TokenType.KwType:      return "type";
     case TokenType.KwImport:    return "import";
+    case TokenType.KwIf:        return "if";
+    case TokenType.KwElse:      return "else";
+    case TokenType.KwSwitch:    return "switch";
+    case TokenType.KwCase:      return "case";
+    case TokenType.KwFor:       return "for";
+    case TokenType.KwWhile:     return "while";
+    case TokenType.KwDo:        return "do";
     case TokenType.Comment:     return "<comment>";
     default: return "no token description";
     }

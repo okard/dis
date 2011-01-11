@@ -53,6 +53,7 @@ class Printer : public AbstractVisitor
     */
     public override void visit(FunctionDeclaration fd)
     {
+        writef(tabs());
         writef("Function(%s): %s(", toString(fd.mType.mCallingConv), fd.mName);
 
         foreach(string key, ubyte index; fd.mArgumentNames)
@@ -76,6 +77,7 @@ class Printer : public AbstractVisitor
     */
     public override void visit(PackageDeclaration pd)
     {
+        writef(tabs());
         writefln("%sPackage: %s",tabs(),  pd.mName);
 
         tabDeepness++;
@@ -90,8 +92,10 @@ class Printer : public AbstractVisitor
     public override void visit(BlockStatement bs)
     {
         writeln("{");
+        tabDeepness++;
         foreach(stat; bs.mStatements)
             stat.accept(this);
+        tabDeepness--;
         writeln("}");
     }
 
@@ -108,6 +112,7 @@ class Printer : public AbstractVisitor
     */
     public override void visit(FunctionCall call) 
     {
+        writef(tabs());
         writeln(toString(call));
     }
 
@@ -116,6 +121,7 @@ class Printer : public AbstractVisitor
     */
     public override void visit(Statement stat)
     {
+        writef(tabs());
         writeln(toString(stat));
     }
 
@@ -136,6 +142,15 @@ class Printer : public AbstractVisitor
     private string tabs()
     {
         return repeat("\t", tabDeepness);
+    }
+
+    /**
+    * Write with Tabs
+    */
+    private void write(T...)(string s, T args)
+    {
+        writef(tabs());
+        writef(s, args);
     }
 
     //=========================================================================

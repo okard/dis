@@ -81,7 +81,7 @@ class Compiler : public AbstractVisitor
     {
         //Create Module for Package
         auto mod = new llvm.Module(mContext, pack.mName);
-        pack.NodeStack.push(new CompilerNode());
+        //pack.NodeStack.push(new CompilerNode());
         //pack.Store.Compiler(mod);
 
         //Create Functions
@@ -157,6 +157,17 @@ class Compiler : public AbstractVisitor
     llvm.Type AstType2LLVMType(astType t)
     {
         //lookup in mTypes
+        return null;
+    }
+
+    /**
+    * extract compiler node
+    */
+    private CompilerNode cnode(Node n)
+    {
+        //n.NodeStack.top.Type == Special
+        //auto cn = cast(CompilerNode)n.NodeStack.top;
+        //cn.CNType 
         return null;
     }
 } 

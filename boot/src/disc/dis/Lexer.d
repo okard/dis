@@ -226,6 +226,10 @@ class Lexer
                    else
                         tok.type = TokenType.Div;
                    break;
+
+        case '&': tok.type = TokenType.And; break;
+        case '|': tok.type = TokenType.Or; break;
+        case '=': tok.type = TokenType.Assign; break;
         case '"':  scanString(tok); break;
         default:
             tok.type = TokenType.None;
@@ -303,7 +307,6 @@ class Lexer
     @property
     void source(Source src)
     {
-        src.reset();
         mSrc = src;
     }
     
@@ -330,5 +333,12 @@ class Lexer
         mKeywords["trait"] = TokenType.KwTrait;
         mKeywords["type"] = TokenType.KwType;
         mKeywords["import"] = TokenType.KwImport;
+        mKeywords["if"] = TokenType.KwIf;
+        mKeywords["else"] = TokenType.KwElse;
+        mKeywords["switch"] = TokenType.KwSwitch;
+        mKeywords["case"] = TokenType.KwCase;
+        mKeywords["for"] = TokenType.KwFor;
+        mKeywords["while"] = TokenType.KwWhile;
+        mKeywords["do"] = TokenType.KwDo;
     }
 } 
