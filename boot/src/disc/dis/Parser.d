@@ -338,7 +338,7 @@ class Parser
         //start token is "{"
         assert(mToken.type == TokenType.COBracket);
 
-        //TODO symbol table?
+        //TODO symbol table? each block has one?
         auto block = new BlockStatement();
         mAstStack.push(block);
 
@@ -350,19 +350,21 @@ class Parser
             //ignore newlines
             if(mToken.type == TokenType.EOL)
                 continue;
-            
-            //writeln(disc.dis.Token.toString(mToken.type));
-            if(mToken.type == TokenType.Identifier)
-                parseStatement();
+
             //Declarations:
             //var, val, def, class, trait, type
+            //parseDeclarations
            
             //Statments:
             //for, while, do
+            if(mToken.type == TokenType.Identifier)
+                parseStatement();
 
             //Expressions:
             //if, do, while, terms,...
         }
+        //go over } ?
+        next();
 
         //pop block from stack
         if(mAstStack.top.Type == NodeType.BlockStatement)
@@ -430,11 +432,10 @@ class Parser
     */
     private void parseExpression()
     {
-        //Function Call
+
+        //Keyword Based
         //If-ElseIf-Else
         //Switch-Case
-
-
         auto t = peek(1);
         switch(t)
         {
@@ -443,6 +444,10 @@ class Parser
             default:
         }
 
+        //other expressions should start with an (Dot)Identifier
+        //or this
+        
+        //Function Call
         //Binary&Unary Expressions
         //Math Expressions
         //()
