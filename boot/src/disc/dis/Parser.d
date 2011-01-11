@@ -351,17 +351,18 @@ class Parser
             if(mToken.type == TokenType.EOL)
                 continue;
 
+            //a Block can only contain declarations and statements
+
             //Declarations:
             //var, val, def, class, trait, type
             //parseDeclarations
-           
-            //Statments:
-            //for, while, do
-            if(mToken.type == TokenType.Identifier)
-                parseStatement();
 
-            //Expressions:
-            //if, do, while, terms,...
+            //parse statements
+            auto stat = parseStatement();
+            if(stat !is null)
+            {
+                block.mStatements ~= stat;
+            }
         }
         //go over } ?
         next();
@@ -381,77 +382,94 @@ class Parser
     /**
     * Parse Statement
     */
-    private void parseStatement()
+    private Statement parseStatement()
     {
-        assert(mToken.type == TokenType.Identifier);
 
-        //for 
-        //do-while 
-        //while
-        
-        //Statement-Expression
-        
-        
-        Statement stat;
-        //statement with started identifier?
-        DotIdentifier d =  new DotIdentifier(cast(char[])mToken.value);
-        //auto d = parseIdentifier();
+        //a Statement can be a statement
+        //or a StatementExpression
 
-        //call Statment
-        if(peek(1) == TokenType.ROBracket)
+        switch(mToken.type)
         {
-            next();
-            //create function call expression
-            auto call =  new FunctionCall();
-            call.mFunction = d;
-            stat = new ExpressionStatement(call);
-
-            while(peek(1) != TokenType.RCBracket)
-            {
-                next();
-                
-                parseExpression();
-
-                if(mToken.type == TokenType.Comma)
-                {
-                }
-            }
-    
-            //Parse until RCBracket
-
-            if(cast(BlockStatement)mAstStack.top())
-            {
-                auto bs = cast(BlockStatement)mAstStack.top();
-                bs.mStatements ~= stat;
-            }
+        //for 
+        case TokenType.KwFor: break;
+        //do-while
+        case TokenType.KwDo: break;
+        //while
+        case TokenType.KwWhile: break;
+        default:
         }
+
+
+        //parse Statement-Expression
+        auto exp = parseExpression();
+        if(exp !is null)
+        {
+            return new ExpressionStatement(exp);
+        }
+
+        return null;
     }
 
     /**
     * Parse Expressions
     */
-    private void parseExpression()
+    private Expression parseExpression()
     {
+        writefln("Current Token: %s", disc.dis.Token.toString(mToken.type));
 
         //Keyword Based
         //If-ElseIf-Else
         //Switch-Case
-        auto t = peek(1);
-        switch(t)
+        switch(mToken.type)
         {
             case TokenType.KwIf: break;
             case TokenType.KwSwitch: break;
+            case TokenType.KwThis: break;
+            case TokenType.ROBracket: break;
             default:
         }
+
+        auto di = parseIdentifier();
+
+        if(peek(1) == TokenType.ROBracket)
+        {
+            next();
+
+            //function call
+            writeln("function call");
+
+            while(peek(1) != TokenType.RCBracket)
+            {
+                //parse calling arguments
+                next();
+            }
+            next();
+
+            //ending semicolon (or new line?)
+            if(peek(1) == TokenType.Semicolon)
+                next();
+
+            auto call = new FunctionCall();
+            call.mFunction = di;
+            return call;
+        }
+
+        //array access [
+        //operator? =, ==, !=, +, - , 
 
         //other expressions should start with an (Dot)Identifier
         //or this
         
-        //Function Call
+        //Function Call the identifier is followed by a "("
+
         //Binary&Unary Expressions
         //Math Expressions
-        //()
-        //Literal
+        //-> Followed by an operator
+
+        //Literal -> Char, String, Integer, Float, Double, Array, Lambda
+
+        //starts with "(" ?
+        return null;
     }
 
     /**
