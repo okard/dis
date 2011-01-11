@@ -260,7 +260,7 @@ class Parser
         //3. name
         //4. type
         //5. varargs
-        //TODO: keywords before: ref, const, in, out,....
+        //TODO: keywords before: ref, const, in, out, this, ...
 
         //save elements for one parameter
         char[][] list;
@@ -355,9 +355,13 @@ class Parser
 
             //Declarations:
             //var, val, def, class, trait, type
-            //parseDeclarations
+            if(isIn!TokenType(mToken.type, [TokenType.KwVar, TokenType.KwVal, TokenType.KwDef, TokenType.KwClass]))
+            {
+                //parseDeclarations
+                continue;
+            }
 
-            //parse statements
+            //Parse statements
             auto stat = parseStatement();
             if(stat !is null)
             {
@@ -426,17 +430,18 @@ class Parser
             case TokenType.KwSwitch: break;
             case TokenType.KwThis: break;
             case TokenType.ROBracket: break;
+            case TokenType.Identifier: break;
             default:
+                assert(true);
         }
 
+        //current is identifier?
         auto di = parseIdentifier();
 
+        //seems to be a function call
         if(peek(1) == TokenType.ROBracket)
         {
             next();
-
-            //function call
-            writeln("function call");
 
             while(peek(1) != TokenType.RCBracket)
             {

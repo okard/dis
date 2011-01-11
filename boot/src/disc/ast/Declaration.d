@@ -76,12 +76,18 @@ class FunctionDeclaration : Declaration
     //flags: public, private, protected, package, static
 
     //parameter names? index of parameter type
+    //map the names to the datatyps index of FunctionType
     public ubyte[string] mArgumentNames;
+    //If VarArgs Function the Parameter Name for VarArgs
     public string mVarArgsName;
 
-    //Function Signature
+    /// Is Template Function
+    bool isTemplate;
+
+    ///Function Signature
     public FunctionType mType;
-    //Has a Body
+    
+    ///Has a Body
     public BlockStatement mBody;
 
     /**

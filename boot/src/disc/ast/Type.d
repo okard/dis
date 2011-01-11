@@ -122,6 +122,8 @@ class FunctionType : DataType
     public DataType mReturnType;
     //Varargs Function
     public bool mVarArgs;
+    //Extensions Method
+    public bool ExtensionMethod;
     //Calling Convention
     public CallingConvention mCallingConv;
 

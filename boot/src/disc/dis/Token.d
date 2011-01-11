@@ -108,6 +108,9 @@ string toString(TokenType tok)
     case TokenType.None:        return "None";
     case TokenType.Identifier:  return "Identifier";
     case TokenType.String:      return "String";
+    case TokenType.Integer:     return "Integer";
+    case TokenType.Float:       return "Float";
+    case TokenType.Double:      return "Double";
     case TokenType.EOL:         return "End of Line";
     case TokenType.Semicolon:   return ";";
     case TokenType.Comma:       return ",";
@@ -119,6 +122,7 @@ string toString(TokenType tok)
     case TokenType.ACBracket:   return "]";
     case TokenType.COBracket:   return "{";
     case TokenType.CCBracket:   return "}";
+    case TokenType.Assign:      return "=";
     case TokenType.Mul:         return "*";
     case TokenType.MulAssign:   return "*=";
     case TokenType.KwPackage:   return "package";
