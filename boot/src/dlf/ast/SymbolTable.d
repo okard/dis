@@ -18,7 +18,7 @@
 ******************************************************************************/
 module dlf.ast.SymbolTable;
 
-import dlf.ast.Type;
+import dlf.ast.Declaration;
 
 
 /**
@@ -29,8 +29,11 @@ class SymbolTable
     /// Prev Symbol Table
     private SymbolTable mPrev;
     
+    //save the symbols mangled in AST?
+    //in other ways the name can be duplicated avaiable
+
     /// the symbols
-    private DataType mSymbols[string];
+    private Declaration mSymbols[string];
     
     /**
     * Create new SymbolTable
@@ -43,7 +46,7 @@ class SymbolTable
     /**
     * Index Access for Types
     */
-    public DataType opIndex(string identifier)
+    public Declaration opIndex(string identifier)
     {
         return mSymbols[identifier];
     }

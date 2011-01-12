@@ -23,6 +23,7 @@ import date = std.date;
 
 import dlf.basic.Log;
 import dlf.basic.Source;
+import dlf.basic.ArgHelper;
 import dlf.ast.Printer;
 import dlf.dis.Token;
 import dlf.dis.Lexer;
@@ -30,6 +31,35 @@ import dlf.dis.Parser;
 import dlf.gen.Semantic;
 import dlf.gen.llvm.Compiler;
 
+
+/**
+* Helper Class for CommandLine Arguments
+*/
+class CommandLineArg : ArgHelper
+{
+    //option
+    public bool doLex;
+
+    //prepare
+    public this(string[] args)
+    {
+        //prepare options
+        Options["--lex"] = (){ doLex = true; };
+
+        //parse Options
+        parse(args);
+    }
+
+    /**
+    * Get source files 
+    */
+    public string[] getSourceFiles()
+    {
+        return Args[Pos..Args.length];
+    }
+}
+
+    
 /**
 * Main
 */
@@ -39,11 +69,15 @@ int main(string[] args)
 
     Log().information("Dis Compiler V0.01");
 
+    //parse arguments
+    auto arguments = new CommandLineArg(args);
+
     if(args.length < 2)
     {
         writeln("No Source File");
         return 1;
     }
+
 
     //Command Line Options:
     // "--lex"          -> Print Tokens

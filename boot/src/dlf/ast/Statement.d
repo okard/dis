@@ -21,6 +21,8 @@ module dlf.ast.Statement;
 import dlf.ast.Node;
 import dlf.ast.Visitor;
 import dlf.ast.Expression;
+
+import dlf.ast.SymbolTable;
  
 
 /**

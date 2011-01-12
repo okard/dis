@@ -32,6 +32,7 @@ import dlf.ast.Declaration;
 import dlf.ast.Statement;
 import dlf.ast.Expression;
 import dlf.ast.Printer;
+import dlf.ast.SymbolTable;
 
 import std.string;
 //debug
@@ -52,10 +53,14 @@ class Parser
     private Node mAstCurrent;
     ///AST Parser Stack
     private Stack!Node mAstStack;
+    ///Current SymbolTable
+    private SymbolTable mSymTbl;
+
     ///Internal Types
     public static DataType[string] InternalTypes;
     ///Opaque Type
     public static DataType opaqueType;
+
 
     /**
     * Ctor
