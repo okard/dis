@@ -16,9 +16,9 @@
 *    along with disc.  If not, see <http://www.gnu.org/licenses/>.
 *
 ******************************************************************************/
-module disc.dis.Token;
+module dlf.dis.Token;
 
-import disc.basic.Location;
+import dlf.basic.Location;
 
 /*
 Change structure as soon as bug 4423 is fixed
@@ -155,7 +155,7 @@ public struct Token
 {
     public string toString()
     {
-        return disc.dis.Token.toString(type);
+        return dlf.dis.Token.toString(type);
     }
 
     TokenType type;

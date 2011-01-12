@@ -16,56 +16,51 @@
 *    along with disc.  If not, see <http://www.gnu.org/licenses/>.
 *
 ******************************************************************************/
-module disc.ast.Statement;
+module dlf.ast.Node;
 
-import disc.ast.Node;
-import disc.ast.Visitor;
-import disc.ast.Expression;
- 
+import dlf.basic.Stack;
+import dlf.ast.Visitor;
 
 /**
-* Statement Base Class
+* Base Class for AST Nodes
 */
-abstract class Statement : Node
+abstract class Node
 {
-    mixin VisitorMixin;
+    /// parent node
+    public Node Parent;
+
+    /// Node Type
+    public NodeType Type;
+
+    /// NodeStack for Additional Information Nodes
+    public Stack!Node NodeStack;
+
+    ///mixin for type
+    protected const string set_nodetype = "this.Type = mixin(\"NodeType.\" ~ typeof(this).stringof);";
+    
+    /**
+    * Visitor pattern
+    */
+    public void accept(Visitor v);
+    
 } 
 
 /**
-* Defines a Block {}
-* Is more Declaration?
-* Has a SymbolTable?
-* Can have classes, functions, ...
+* Node Types
 */
-class BlockStatement : Statement
+enum NodeType
 {
-    mixin VisitorMixin;
-
-    public Statement[] mStatements;
-
-    this()
-    {
-        mixin(set_nodetype);
-    }
+    Unknown,
+    Special,
+    //Declarations
+    PackageDeclaration,
+    FunctionDeclaration,
+    VariableDeclaration,
+    //Statements
+    BlockStatement,
+    ExpressionStatement,
+    //Expressions
+    DotIdentifier,
+    FunctionCall,
+    LiteralExpression
 }
-
-/**
-* A Expression Statement
-* e.g. Function Call, Assign Expression
-*/
-class ExpressionStatement : Statement
-{
-    mixin VisitorMixin;
-
-    public Expression mExpression;
-
-    public this(Expression expr)
-    {
-        mixin(set_nodetype);
-        mExpression = expr;
-    }
-}
-
-//For
-//ForEach
-//While

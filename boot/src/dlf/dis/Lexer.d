@@ -16,12 +16,12 @@
 *    along with disc.  If not, see <http://www.gnu.org/licenses/>.
 *
 ******************************************************************************/
-module disc.dis.Lexer;
+module dlf.dis.Lexer;
 
-import disc.basic.Location;
-import disc.basic.Source;
-import disc.basic.ArrayBuffer;
-import disc.dis.Token;
+import dlf.basic.Location;
+import dlf.basic.Source;
+import dlf.basic.ArrayBuffer;
+import dlf.dis.Token;
 
 //phobos imports
 //import std.container;

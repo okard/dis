@@ -16,7 +16,7 @@
 *    along with disc.  If not, see <http://www.gnu.org/licenses/>.
 *
 ******************************************************************************/
-module disc.basic.Location;
+module dlf.basic.Location;
 
 import std.conv;
 

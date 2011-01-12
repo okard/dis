@@ -16,11 +16,11 @@
 *    along with disc.  If not, see <http://www.gnu.org/licenses/>.
 *
 ******************************************************************************/
-module disc.ast.Visitor;
+module dlf.ast.Visitor;
 
-import disc.ast.Declaration;
-import disc.ast.Statement;
-import disc.ast.Expression;
+import dlf.ast.Declaration;
+import dlf.ast.Statement;
+import dlf.ast.Expression;
 
 /**
 * AST Visitor

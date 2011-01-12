@@ -16,51 +16,61 @@
 *    along with disc.  If not, see <http://www.gnu.org/licenses/>.
 *
 ******************************************************************************/
-module disc.ast.Node;
+module dlf.ast.SymbolTable;
 
-import disc.basic.Stack;
-import disc.ast.Visitor;
+import dlf.ast.Type;
+
 
 /**
-* Base Class for AST Nodes
+* SymbolTable
 */
-abstract class Node
+class SymbolTable
 {
-    /// parent node
-    public Node Parent;
-
-    /// Node Type
-    public NodeType Type;
-
-    /// NodeStack for Additional Information Nodes
-    public Stack!Node NodeStack;
-
-    ///mixin for type
-    protected const string set_nodetype = "this.Type = mixin(\"NodeType.\" ~ typeof(this).stringof);";
+    /// Prev Symbol Table
+    private SymbolTable mPrev;
+    
+    /// the symbols
+    private DataType mSymbols[string];
     
     /**
-    * Visitor pattern
+    * Create new SymbolTable
     */
-    public void accept(Visitor v);
-    
-} 
+    public this(SymbolTable parent)
+    {
+        this.mPrev = parent;
+    }
 
-/**
-* Node Types
-*/
-enum NodeType
-{
-    Unknown,
-    Special,
-    //Declarations
-    PackageDeclaration,
-    FunctionDeclaration,
-    VariableDeclaration,
-    //Statements
-    BlockStatement,
-    ExpressionStatement,
-    //Expressions
-    DotIdentifier,
-    FunctionCall,
-    LiteralExpression
-}
+    /**
+    * Index Access for Types
+    */
+    public DataType opIndex(string identifier)
+    {
+        return mSymbols[identifier];
+    }
+
+    /**
+    * Creates a new SymbolTable
+    */
+    public SymbolTable push()
+    {
+        auto st = new SymbolTable(this);
+        return st;
+    }
+
+    /**
+    * Popes Table and get parent
+    */
+    public SymbolTable pop()
+    {
+        return mPrev;
+    }
+
+    /**
+    * Is Head
+    */
+    public bool isHead()
+    {
+        return !(mPrev is null);
+    }
+
+} 

@@ -16,7 +16,7 @@
 *    along with disc.  If not, see <http://www.gnu.org/licenses/>.
 *
 ******************************************************************************/
-module disc.gen.llvm.LLVM;
+module dlf.gen.llvm.LLVM;
 // This Module wraps LLVM C API back to Classes
 
 import llvm.c.Core;

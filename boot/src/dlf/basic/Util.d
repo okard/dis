@@ -16,50 +16,28 @@
 *    along with disc.  If not, see <http://www.gnu.org/licenses/>.
 *
 ******************************************************************************/
-module disc.basic.Storage;
+module dlf.basic.Util;
 
 
 /**
-* Stupid Named Storage Class
-* Single Assigned
+* Is in Array Function
 */
-struct Storage(T)
+public static bool isIn(T)(T t, T[] arr)
 {
-    /// Data Storage
-    private T data[string];
+    foreach(T ta; arr)
+        if(ta == t)
+            return true;
+    return false;
+}
 
-    /**
-    * Get Data
-    */
-    @property
-    T opDispatch(string s)()
-    {
-        static if(is(T == class) || is(T == interface))
-            return data.get(s, null);
-        else
-            return data[s];
-    }
-    
-    /**
-    * Set Data
-    * only once
-    */
-    @property
-    void opDispatch(string s)(T value)
-    {
-        if(s !in data)
-            data[s] = value;
-        else
-            throw new Exception("data already assigned");
-        
-    }
-} 
 
+version(unittest) import std.stdio;
 
 unittest
 {
-    Storage!(int) store;
+    //test isIn
+    assert(isIn!int(3, [1, 2, 3, 4, 5]));
+    assert(!isIn!int(6, [1, 2, 3, 4, 5]));
 
-    store.foo(5);
-    assert(store.foo() == 5);
+    writeln("[TEST] Util Tests passed");
 }

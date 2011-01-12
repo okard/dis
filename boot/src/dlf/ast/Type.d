@@ -16,10 +16,10 @@
 *    along with disc.  If not, see <http://www.gnu.org/licenses/>.
 *
 ******************************************************************************/
-module disc.ast.Type;
+module dlf.ast.Type;
 
-import disc.ast.Node;
-import disc.basic.Storage;
+import dlf.ast.Node;
+import dlf.basic.Storage;
 
 /**
 * Base Type Class

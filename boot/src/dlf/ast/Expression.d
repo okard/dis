@@ -16,11 +16,11 @@
 *    along with disc.  If not, see <http://www.gnu.org/licenses/>.
 *
 ******************************************************************************/
-module disc.ast.Expression;
+module dlf.ast.Expression;
 
-import disc.ast.Node;
-import disc.ast.Visitor;
-import disc.ast.Type;
+import dlf.ast.Node;
+import dlf.ast.Visitor;
+import dlf.ast.Type;
 
 /**
 * Base Class for Expression

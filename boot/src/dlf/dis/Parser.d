@@ -16,22 +16,22 @@
 *    along with disc.  If not, see <http://www.gnu.org/licenses/>.
 *
 ******************************************************************************/
-module disc.dis.Parser;
+module dlf.dis.Parser;
 
-import disc.basic.Location;
-import disc.basic.Source;
-import disc.basic.Stack;
-import disc.basic.Util;
+import dlf.basic.Location;
+import dlf.basic.Source;
+import dlf.basic.Stack;
+import dlf.basic.Util;
 
-import disc.dis.Token;
-import disc.dis.Lexer;
+import dlf.dis.Token;
+import dlf.dis.Lexer;
 
-import disc.ast.Node;
-import disc.ast.Type;
-import disc.ast.Declaration;
-import disc.ast.Statement;
-import disc.ast.Expression;
-import disc.ast.Printer;
+import dlf.ast.Node;
+import dlf.ast.Type;
+import dlf.ast.Declaration;
+import dlf.ast.Statement;
+import dlf.ast.Expression;
+import dlf.ast.Printer;
 
 import std.string;
 //debug
@@ -324,7 +324,7 @@ class Parser
                 break;
             
             default:
-                error(mToken.loc, format("Not expected Token in parseDefParams: %s", disc.dis.Token.toString(mToken.type)) );
+                error(mToken.loc, format("Not expected Token in parseDefParams: %s", dlf.dis.Token.toString(mToken.type)) );
             }
         }     
     }
@@ -419,7 +419,7 @@ class Parser
     */
     private Expression parseExpression()
     {
-        writefln("Current Token: %s", disc.dis.Token.toString(mToken.type));
+        writefln("Current Token: %s", dlf.dis.Token.toString(mToken.type));
 
         //Keyword Based
         //If-ElseIf-Else

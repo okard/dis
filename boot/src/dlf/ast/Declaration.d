@@ -16,12 +16,12 @@
 *    along with disc.  If not, see <http://www.gnu.org/licenses/>.
 *
 ******************************************************************************/
-module disc.ast.Declaration;
+module dlf.ast.Declaration;
 
-import disc.ast.Node;
-import disc.ast.Visitor;
-import disc.ast.Type;
-import disc.ast.Statement;
+import dlf.ast.Node;
+import dlf.ast.Visitor;
+import dlf.ast.Type;
+import dlf.ast.Statement;
 
 /**
 * Basic Class for Declaration

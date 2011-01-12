@@ -16,67 +16,56 @@
 *    along with disc.  If not, see <http://www.gnu.org/licenses/>.
 *
 ******************************************************************************/
-module disc.gen.llvm.Node; 
+module dlf.ast.Statement;
 
-import disc.ast.Node;
-import disc.ast.Visitor;
-
-//LLVM OOP Wrapper
-import llvm = disc.gen.llvm.LLVM;
+import dlf.ast.Node;
+import dlf.ast.Visitor;
+import dlf.ast.Expression;
+ 
 
 /**
-* LLVM Compiler Node Types
+* Statement Base Class
 */
-enum CompilerNodeType
+abstract class Statement : Node
 {
-    Context,
-    Module,
-    Type,
-    Value,
-    BasicBlock
-}
+    mixin VisitorMixin;
+} 
 
 /**
-* LLVM Compiler Nodes
+* Defines a Block {}
+* Is more Declaration?
+* Has a SymbolTable?
+* Can have classes, functions, ...
 */
-class CompilerNode : Node
+class BlockStatement : Statement
 {
-    //LLVM Context
-    //LLVM Module
-    //LLVM Type
-    //LLVM Value
-    //LLVM BasicBlock
+    mixin VisitorMixin;
 
-    CompilerNodeType CNType;
+    public Statement[] mStatements;
 
-    /**
-    * Create new CompilerNode
-    */
-    public this()
+    this()
     {
-        Type = NodeType.Special;
+        mixin(set_nodetype);
     }
-
-
-    /**
-    * For Node Compatibility
-    */
-    public override void accept(Visitor v)
-    {
-        assert(true);
-    }
-
 }
 
 /**
-* Type Node
-*/ 
-class TypeNode : CompilerNode
+* A Expression Statement
+* e.g. Function Call, Assign Expression
+*/
+class ExpressionStatement : Statement
 {
-    /// LLVM Type
-    llvm.Type LLVMType;
+    mixin VisitorMixin;
 
-    //OpaqueType?
+    public Expression mExpression;
 
+    public this(Expression expr)
+    {
+        mixin(set_nodetype);
+        mExpression = expr;
+    }
 }
 
+//For
+//ForEach
+//While

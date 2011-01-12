@@ -16,10 +16,10 @@
 *    along with disc.  If not, see <http://www.gnu.org/licenses/>.
 *
 ******************************************************************************/
-module  disc.basic.Source;
+module dlf.basic.Source;
 
 import std.stream;
-import disc.basic.Location;
+import dlf.basic.Location;
 
 /**
 * Represents a piece of source

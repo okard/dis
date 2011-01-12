@@ -16,17 +16,17 @@
 *    along with disc.  If not, see <http://www.gnu.org/licenses/>.
 *
 ******************************************************************************/
-module disc.gen.llvm.Compiler;
+module dlf.gen.llvm.Compiler;
 
-import disc.ast.Node;
-import disc.ast.Visitor;
-import disc.ast.Declaration;
-import disc.ast.Statement;
-import disc.ast.Expression;
-import disc.ast.Type;
+import dlf.ast.Node;
+import dlf.ast.Visitor;
+import dlf.ast.Declaration;
+import dlf.ast.Statement;
+import dlf.ast.Expression;
+import dlf.ast.Type;
 
-import llvm = disc.gen.llvm.LLVM;
-import disc.gen.llvm.Node;
+import llvm = dlf.gen.llvm.LLVM;
+import dlf.gen.llvm.Node;
 
 
 /**
@@ -34,7 +34,7 @@ import disc.gen.llvm.Node;
 */
 class Compiler : public AbstractVisitor
 {
-    alias disc.ast.Type.DataType astType;
+    alias dlf.ast.Type.DataType astType;
 
     /// LLVM PassManager
     private llvm.PassManager mPassManager;

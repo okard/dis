@@ -16,61 +16,50 @@
 *    along with disc.  If not, see <http://www.gnu.org/licenses/>.
 *
 ******************************************************************************/
-module disc.ast.SymbolTable;
-
-import disc.ast.Type;
+module dlf.basic.Storage;
 
 
 /**
-* SymbolTable
+* Stupid Named Storage Class
+* Single Assigned
 */
-class SymbolTable
+struct Storage(T)
 {
-    /// Prev Symbol Table
-    private SymbolTable mPrev;
+    /// Data Storage
+    private T data[string];
+
+    /**
+    * Get Data
+    */
+    @property
+    T opDispatch(string s)()
+    {
+        static if(is(T == class) || is(T == interface))
+            return data.get(s, null);
+        else
+            return data[s];
+    }
     
-    /// the symbols
-    private DataType mSymbols[string];
-    
     /**
-    * Create new SymbolTable
+    * Set Data
+    * only once
     */
-    public this(SymbolTable parent)
+    @property
+    void opDispatch(string s)(T value)
     {
-        this.mPrev = parent;
+        if(s !in data)
+            data[s] = value;
+        else
+            throw new Exception("data already assigned");
+        
     }
-
-    /**
-    * Index Access for Types
-    */
-    public DataType opIndex(string identifier)
-    {
-        return mSymbols[identifier];
-    }
-
-    /**
-    * Creates a new SymbolTable
-    */
-    public SymbolTable push()
-    {
-        auto st = new SymbolTable(this);
-        return st;
-    }
-
-    /**
-    * Popes Table and get parent
-    */
-    public SymbolTable pop()
-    {
-        return mPrev;
-    }
-
-    /**
-    * Is Head
-    */
-    public bool isHead()
-    {
-        return !(mPrev is null);
-    }
-
 } 
+
+
+unittest
+{
+    Storage!(int) store;
+
+    store.foo(5);
+    assert(store.foo() == 5);
+}

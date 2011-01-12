@@ -4,6 +4,6 @@ package tests.runnable.basic002;
 def main
 {
     var i: int = 5; //full syntax
-    var i int = 10; //short syntax
-    var i = 15;     //implicit typing
+    var j int = 10; //short syntax
+    var l = 15;     //implicit typing
 }

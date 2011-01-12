@@ -16,14 +16,14 @@
 *    along with disc.  If not, see <http://www.gnu.org/licenses/>.
 *
 ******************************************************************************/
-module disc.ast.Printer;
+module dlf.ast.Printer;
 
-import disc.ast.Node;
-import disc.ast.Visitor;
-import disc.ast.Type;
-import disc.ast.Declaration;
-import disc.ast.Statement;
-import disc.ast.Expression;
+import dlf.ast.Node;
+import dlf.ast.Visitor;
+import dlf.ast.Type;
+import dlf.ast.Declaration;
+import dlf.ast.Statement;
+import dlf.ast.Expression;
 
 import std.stdio;
 import std.string;

@@ -16,7 +16,7 @@
 *    along with disc.  If not, see <http://www.gnu.org/licenses/>.
 *
 ******************************************************************************/
-module disc.basic.Any;
+module dlf.basic.Any;
 
 /**
 * Any Ptr Class

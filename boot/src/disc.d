@@ -16,19 +16,19 @@
 *    along with disc.  If not, see <http://www.gnu.org/licenses/>.
 *
 ******************************************************************************/
-module discompiler; 
+module disc; 
 
 import std.stdio;
 import date = std.date;
 
-import disc.basic.Log;
-import disc.basic.Source;
-import disc.ast.Printer;
-import disc.dis.Token;
-import disc.dis.Lexer;
-import disc.dis.Parser;
-import disc.gen.Semantic;
-import disc.gen.llvm.Compiler;
+import dlf.basic.Log;
+import dlf.basic.Source;
+import dlf.ast.Printer;
+import dlf.dis.Token;
+import dlf.dis.Lexer;
+import dlf.dis.Parser;
+import dlf.gen.Semantic;
+import dlf.gen.llvm.Compiler;
 
 /**
 * Main

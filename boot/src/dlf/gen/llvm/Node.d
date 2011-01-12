@@ -16,28 +16,67 @@
 *    along with disc.  If not, see <http://www.gnu.org/licenses/>.
 *
 ******************************************************************************/
-module disc.basic.Util;
+module dlf.gen.llvm.Node; 
 
+import dlf.ast.Node;
+import dlf.ast.Visitor;
+
+//LLVM OOP Wrapper
+import llvm = dlf.gen.llvm.LLVM;
 
 /**
-* Is in Array Function
+* LLVM Compiler Node Types
 */
-public static bool isIn(T)(T t, T[] arr)
+enum CompilerNodeType
 {
-    foreach(T ta; arr)
-        if(ta == t)
-            return true;
-    return false;
+    Context,
+    Module,
+    Type,
+    Value,
+    BasicBlock
 }
 
-
-version(unittest) import std.stdio;
-
-unittest
+/**
+* LLVM Compiler Nodes
+*/
+class CompilerNode : Node
 {
-    //test isIn
-    assert(isIn!int(3, [1, 2, 3, 4, 5]));
-    assert(!isIn!int(6, [1, 2, 3, 4, 5]));
+    //LLVM Context
+    //LLVM Module
+    //LLVM Type
+    //LLVM Value
+    //LLVM BasicBlock
 
-    writeln("[TEST] Util Tests passed");
+    CompilerNodeType CNType;
+
+    /**
+    * Create new CompilerNode
+    */
+    public this()
+    {
+        Type = NodeType.Special;
+    }
+
+
+    /**
+    * For Node Compatibility
+    */
+    public override void accept(Visitor v)
+    {
+        assert(true);
+    }
+
 }
+
+/**
+* Type Node
+*/ 
+class TypeNode : CompilerNode
+{
+    /// LLVM Type
+    llvm.Type LLVMType;
+
+    //OpaqueType?
+
+}
+

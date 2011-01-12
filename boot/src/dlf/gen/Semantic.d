@@ -16,13 +16,13 @@
 *    along with disc.  If not, see <http://www.gnu.org/licenses/>.
 *
 ******************************************************************************/
-module disc.gen.Semantic;
+module dlf.gen.Semantic;
 
-import disc.ast.Node;
-import disc.ast.Visitor;
-import disc.ast.Declaration;
-import disc.ast.Statement;
-import disc.ast.Expression;
+import dlf.ast.Node;
+import dlf.ast.Visitor;
+import dlf.ast.Declaration;
+import dlf.ast.Statement;
+import dlf.ast.Expression;
 
 import std.stdio;
 
