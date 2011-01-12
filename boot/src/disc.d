@@ -55,7 +55,7 @@ class CommandLineArg : ArgHelper
     */
     public string[] getSourceFiles()
     {
-        return Args[Pos..Args.length];
+        return Unparsed;
     }
 }
 

@@ -26,6 +26,7 @@ class ArgHelper
 {
     ///Actual position
     private int pos;
+
     /// Delegate Alias
     private alias void delegate() dgHandler;
 
@@ -35,6 +36,9 @@ class ArgHelper
     /// Save of Arguments
     protected string[] Args;
 
+    ///Unparsed elements
+    protected string[] Unparsed;
+
     /**
     * Parse command line arguments
     */
@@ -42,16 +46,17 @@ class ArgHelper
     {
         Args = args;
 
+        //go through the elements
         for(pos=0; pos < args.length; pos++)
-        {
+        {   
             auto hnd = (args[pos] in Options);
             
+            //TODO Option to break parsing
+            //look for handler or put it into unparsed
             if(hnd !is null)
                 (*hnd)();
             else
-               break;
-
-            //add elements not matched to a seperate unparsed list?
+               Unparsed ~= args[pos];
         }
     }
 
@@ -78,8 +83,11 @@ class ArgHelper
     */
     protected string getString()
     {
-        return Args[pos++];
+        return Args[++pos];
     }
+
+    //TODO getNumber
+    //TODO getValue(["foo", "bar"]) 
 
     /**
     * Elements left unparsed in Arg Array
@@ -97,8 +105,28 @@ version(unittest) import std.stdio;
 
 unittest
 {
-    auto arg = ["foo.src", "--enable-a", "-o", "test.o", "foo.src"];
+    auto arg = ["foo.src", "--enable-a", "-o", "test.o", "bar.src"];
 
+    class test : ArgHelper
+    {
+        public bool optA;
+        public string outFile;
+        
+        public this(string args[])
+        {
+            Options["--enable-a"] = (){ optA=true; };
+            Options["-o"] = (){ outFile = getString(); };
+            
+            parse(args);
+        }
+
+        public string[] sourceFiles() { return Unparsed; }
+    }
+
+    auto ta = new test(arg);
+    assert(ta.optA == true);
+    assert(ta.outFile == "test.o");
+    assert(ta.sourceFiles() == ["foo.src", "bar.src"]);
 
     writeln("[TEST] ArgHelper Tests passed");
 }
