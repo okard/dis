@@ -38,13 +38,15 @@ import dlf.gen.llvm.Compiler;
 class CommandLineArg : ArgHelper
 {
     //option
-    public bool doLex;
+    public bool printToken;  //print lexer tokens
+    public bool printAst;    //print ast
 
     //prepare
     public this(string[] args)
     {
         //prepare options
-        Options["--lex"] = (){ doLex = true; };
+        Options["--lex"] = (){ printToken = true; };
+        Options["--print-ast"] = (){ printAst = true; };
 
         //parse Options
         parse(args);
@@ -71,28 +73,28 @@ int main(string[] args)
 
     //parse arguments
     auto arguments = new CommandLineArg(args);
+    auto srcFiles = arguments.getSourceFiles();
 
-    if(args.length < 2)
+    if(srcFiles.length < 1)
     {
-        writeln("No Source File");
+        writeln("No Source Files");
         return 1;
     }
 
-
-    //Command Line Options:
-    // "--lex"          -> Print Tokens
-    // "--print-ast"    -> Print AST
-
     //Open Source
     auto src = new SourceFile();
-    src.open(args[1]);
+    src.open(srcFiles[1]);
 
-    auto lex = new Lexer();
-    lex.source = src;
-    dumpLexer(lex);
-    src.reset();
-    writeln("------- END LEXER DUMP ------------------------------");
-
+    //print token
+    if(arguments.printToken)
+    {
+        auto lex = new Lexer();
+        lex.source = src;
+        dumpLexer(lex);
+        src.reset();
+        writeln("------- END LEXER DUMP ------------------------------");
+    }
+   
     //Parser
     auto parser = new Parser();
     parser.source = src;
