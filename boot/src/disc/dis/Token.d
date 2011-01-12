@@ -51,6 +51,7 @@ enum TokenType : ubyte
     ACBracket,      // ] - Angled Close Bracket
     COBracket,      // { - Cambered Open Bracket
     CCBracket,      // } - Cambered Close Bracket
+    Annotation,     // @
 
     //Binary & Math Operator
     Add,            // +
@@ -63,8 +64,9 @@ enum TokenType : ubyte
     And,            // &
     Or,             // |
     Assign,         // =
+    LambdaAssign,   // ->
     //Double Operator
-    Power,          // ** e.g. 2²
+    Power,          // ** (4 ** 2 == 4²)
     LAnd,           // && Logic And
     LOr,            // || Logic Or
     Equal,          // ==
@@ -123,8 +125,10 @@ string toString(TokenType tok)
     case TokenType.COBracket:   return "{";
     case TokenType.CCBracket:   return "}";
     case TokenType.Assign:      return "=";
+    case TokenType.LambdaAssign:return "->";
     case TokenType.Mul:         return "*";
     case TokenType.MulAssign:   return "*=";
+    case TokenType.Annotation:  return "@";
     case TokenType.KwPackage:   return "package";
     case TokenType.KwDef:       return "def";
     case TokenType.KwClass:     return "class";

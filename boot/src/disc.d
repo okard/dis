@@ -45,6 +45,10 @@ int main(string[] args)
         return 1;
     }
 
+    //Command Line Options:
+    // "--lex"          -> Print Tokens
+    // "--print-ast"    -> Print AST
+
     //Open Source
     auto src = new SourceFile();
     src.open(args[1]);

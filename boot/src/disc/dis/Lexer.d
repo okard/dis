@@ -217,6 +217,7 @@ class Lexer
         case ']':  tok.type = TokenType.ACBracket; break;
         case '{':  tok.type = TokenType.COBracket; break;
         case '}':  tok.type = TokenType.CCBracket; break;
+        case '@':  tok.type = TokenType.Annotation; break;
         case '!':  tok.type = TokenType.Not; break;
         case '+':  tok.type = TokenType.Add; break;
         case '-':  tok.type = TokenType.Sub; break;

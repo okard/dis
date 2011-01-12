@@ -178,6 +178,9 @@ public LogSource.LogEvent.Dg FileListener(string file)
 version(unittest) import std.stdio;
 unittest
 {
+    //clear core log after test
+    scope(exit) Log().OnLog().clear();
+
     auto s = Log.Test; 
     s.OnLog() += (LogSource ls, d_time t, LogType ty,string msg){
         assert(ls.Name == "Test");
@@ -188,7 +191,5 @@ unittest
     s.log!(LogType.Verbose)("%s", "foo");
     Log().information("%s", "foo"); 
 
-    //clear log stuff after unittest
-    Log().OnLog().clear();
     writeln("[TEST] Log Tests passed");
 }
