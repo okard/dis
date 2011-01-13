@@ -153,6 +153,7 @@ class Compiler : public AbstractVisitor
         }
         
         auto f = new llvm.FunctionValue(mod, t, func.Name);
+        //f.setCallConv(llvm.LLVMCallConv.C);
         func.NodeStack.push(new ValueNode(f));
         
         //store created function

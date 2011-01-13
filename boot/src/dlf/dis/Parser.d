@@ -230,6 +230,9 @@ class Parser
         {
             next();
         }
+
+        //add to SymbolTable TODO look for doubles
+        mSymTbl[func.Name] = func;
         
         //Look for Basic Block here, ignore new lines and comments
         if(peekIgnore(1, [TokenType.EOL, TokenType.Comment]) == TokenType.COBracket)
@@ -440,13 +443,13 @@ class Parser
             case TokenType.Identifier:/*look under switch*/ break;
             // Literal Expressions
             case TokenType.String:
-                return new LiteralExpression(mToken.value, InternalTypes["char"]); 
+                return new LiteralExpression(mToken.value, CharType.Instance); 
             case TokenType.Integer: 
-                return new LiteralExpression(mToken.value, InternalTypes["int"]); 
+                return new LiteralExpression(mToken.value, IntType.Instance); 
             case TokenType.Float:
-                return new LiteralExpression(mToken.value, InternalTypes["float"]); 
+                return new LiteralExpression(mToken.value, FloatType.Instance); 
             case TokenType.Double:
-                return new LiteralExpression(mToken.value, InternalTypes["double"]); 
+                return new LiteralExpression(mToken.value, DoubleType.Instance); 
             default:
                 assert(true);
         }

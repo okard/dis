@@ -139,6 +139,8 @@ class FunctionType : DataType
     public bool mVarArgs;
     //Extensions Method
     public bool ExtensionMethod;
+    // Generic Method Type
+    public bool GenericMethod;
     //Calling Convention
     public CallingConvention mCallingConv;
 
@@ -172,16 +174,24 @@ class PointerType : DataType
     }
 }
 
-//String
-
 /**
-* CharType
+* Char Type
 */
 class CharType : DataType
 {
     //encoding???
     override string toString() { return "char"; }
     mixin Singleton!CharType;
+}
+
+/**
+* String Type aka ArrayType(CharType)?
+*/
+class StringType : DataType
+{ 
+    //encoding???
+    override string toString() { return "string"; }
+    mixin Singleton!StringType;
 }
 
 /**

@@ -52,6 +52,15 @@ class SymbolTable
     }
 
     /**
+    * Op Index Assign
+    */
+    public Declaration opIndexAssign(Declaration dec, string name)
+    {
+        mSymbols[name] = dec;
+        return dec;
+    }
+
+    /**
     * Creates a new SymbolTable
     */
     public SymbolTable push()
