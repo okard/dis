@@ -146,6 +146,9 @@ class Parser
 
         //Create new Package Declaration
         auto pkg = new PackageDeclaration(di.toString());
+        pkg.SymTable = new SymbolTable(null);
+        mSymTbl = pkg.SymTable;
+
         //add package to parse stack
         mAstStack.push(pkg);
 
@@ -182,8 +185,8 @@ class Parser
             
             switch(mToken.value)
             {
-            case "C": func.mType.mCallingConv = FunctionType.CallingConvention.C; break;
-            case "Dis": func.mType.mCallingConv = FunctionType.CallingConvention.Dis;break;
+            case "C": func.FuncType.mCallingConv = FunctionType.CallingConvention.C; break;
+            case "Dis": func.FuncType.mCallingConv = FunctionType.CallingConvention.Dis;break;
             default: error(mToken.loc, "Invalid CallingConvention");
             }
             
@@ -224,7 +227,7 @@ class Parser
         if(peek(1) == TokenType.Identifier)
         {
             next();
-            func.mType.mReturnType = resolveType(mToken.value);
+            func.FuncType.mReturnType = resolveType(mToken.value);
         }
 
         //if function declarations closes with ";" it is finished
@@ -279,7 +282,7 @@ class Parser
             //varargs
             if(list[list.length-1] == "...")
             {
-                fd.mType.mVarArgs = true;
+                fd.FuncType.mVarArgs = true;
 
                 if(list.length == 2)
                 {
@@ -290,8 +293,8 @@ class Parser
             //name and type
             else if(list.length == 2)
             {
-                fd.mType.mArguments ~= resolveType(cast(string)list[1]);
-                fd.mArgumentNames[cast(string)list[0]] = cast(ubyte)(fd.mType.mArguments.length-1);
+                fd.FuncType.mArguments ~= resolveType(cast(string)list[1]);
+                fd.mArgumentNames[cast(string)list[0]] = cast(ubyte)(fd.FuncType.mArguments.length-1);
             }
             //TODO 1 element, variablename or type (declaration with block or not) -> semantic?
         }
@@ -345,6 +348,8 @@ class Parser
 
         //TODO symbol table? each block has one?
         auto block = new BlockStatement();
+        block.SymTable = mSymTbl.push();
+        mSymTbl = block.SymTable;
         mAstStack.push(block);
 
         //parse until "}"
@@ -378,7 +383,10 @@ class Parser
 
         //pop block from stack
         if(mAstStack.top.Type == NodeType.BlockStatement)
+        {
             mAstStack.pop();
+            mSymTbl = block.SymTable.pop();
+        }
         
         //look for node before block
         auto node = mAstStack.top;

@@ -22,6 +22,8 @@ import dlf.ast.Node;
 import dlf.ast.Visitor;
 import dlf.ast.Type;
 import dlf.ast.Statement;
+import dlf.ast.Expression;
+import dlf.ast.SymbolTable;
 
 /**
 * Basic Class for Declaration
@@ -43,6 +45,8 @@ abstract class Declaration : Node
 */
 class PackageDeclaration : Declaration
 {
+    public SymbolTable SymTable;
+
     //Functions
     FunctionDeclaration[] mFunctions;
         
@@ -85,9 +89,9 @@ class FunctionDeclaration : Declaration
     bool isTemplate;
 
     ///Function Signature
-    public FunctionType mType;
+    public FunctionType FuncType;
     
-    ///Has a Body
+    ///Has a Body (only Statement, so can be Statement, StatementExpression or BlockStatement
     public BlockStatement Body;
 
     /**
@@ -96,7 +100,7 @@ class FunctionDeclaration : Declaration
     public this()
     {
         mixin(set_nodetype);
-        mType = new FunctionType(); 
+        FuncType = new FunctionType(); 
     }
 
     /**
@@ -114,11 +118,11 @@ class FunctionDeclaration : Declaration
 */
 class VariableDeclaration : Declaration
 {
-    //Variable Type
-    private DataType mDataType;
+    ///Variable Type
+    private DataType VarDataType;
 
-    //Initializer
-    //Expression mInitializer;
+    ///Initializer
+    Expression Initializer;
 
     /**
     * Ctor
@@ -127,7 +131,7 @@ class VariableDeclaration : Declaration
     {
         mixin(set_nodetype);
         this.Name = name;
-        this.mDataType = type;
+        this.VarDataType = type;
     }
 
     /**
@@ -135,7 +139,7 @@ class VariableDeclaration : Declaration
     */
     public DataType DataTyp()
     {
-        return mDataType;
+        return VarDataType;
     }
 }
 

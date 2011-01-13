@@ -43,8 +43,13 @@ class BlockStatement : Statement
 {
     mixin VisitorMixin;
 
+    ///Statements
     public Statement[] mStatements;
 
+    ///Symbol Table
+    public SymbolTable SymTable;
+
+    ///Create new BlockStatement
     this()
     {
         mixin(set_nodetype);

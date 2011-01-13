@@ -53,18 +53,18 @@ class Printer : public AbstractVisitor
     */
     public override void visit(FunctionDeclaration fd)
     {
-        writet("Function(%s): %s(", toString(fd.mType.mCallingConv), fd.Name);
+        writet("Function(%s): %s(", toString(fd.FuncType.mCallingConv), fd.Name);
 
         foreach(string key, ubyte index; fd.mArgumentNames)
         {
-            auto t = fd.mType.mArguments[index];
+            auto t = fd.FuncType.mArguments[index];
             writef("%s %s, ", key, t.toString()); 
         }
         
-        if(fd.mType.mVarArgs)
+        if(fd.FuncType.mVarArgs)
             writef("%s...", fd.mVarArgsName);
 
-        writefln(") %s", fd.mType.mReturnType.toString());
+        writefln(") %s", fd.FuncType.mReturnType.toString());
         //fd.mType.mReturnType
 
         if(fd.Body !is null)
