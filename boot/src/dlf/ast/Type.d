@@ -144,7 +144,7 @@ class FunctionType : DataType
 
     public this()
     {
-        ReturnType = new VoidType();
+        ReturnType = VoidType.Instance;
     }
 }
 

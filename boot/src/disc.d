@@ -103,11 +103,12 @@ int main(string[] args)
     //Print out
     auto printer = new Printer();
     printer.print(parser.ParseTree());
-     writeln("------- END PARSER DUMP ------------------------------");
+    writeln("------- END PARSER DUMP ------------------------------");
 
     //run semantics
     auto semantic = new Semantic();
     auto ast = semantic.run(parser.ParseTree());
+    writeln("------- END SEMANTIC ------------------------------");
 
     //Compiler
     auto compiler = new Compiler();

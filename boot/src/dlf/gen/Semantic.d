@@ -23,6 +23,7 @@ import dlf.ast.Visitor;
 import dlf.ast.Declaration;
 import dlf.ast.Statement;
 import dlf.ast.Expression;
+import dlf.ast.Type;
 
 import std.stdio;
 
@@ -72,6 +73,16 @@ class Semantic : AbstractVisitor
     */
     override void visit(FunctionDeclaration func)
     { 
+        writefln("Semantic FuncDcl %s", func.Name);
+
+        writefln("\t return type %s", func.FuncType.ReturnType.toString());
+        //resolve return value
+        if(func.FuncType.ReturnType is null || func.FuncType.ReturnType == OpaqueType.Instance)
+        {
+            writeln("resolve type");
+            func.FuncType.ReturnType = VoidType.Instance;
+        }
+
         if(func.Body !is null)
             func.Body.accept(this);
     }

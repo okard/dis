@@ -192,6 +192,7 @@ class Compiler : public AbstractVisitor
     */
     llvm.Type AstType2LLVMType(DataType t)
     {
+        //writefln("CodeGen: resolve type %s", t.toString());
         return mTypes.get(t, mTypes[OpaqueType.Instance]);
     }
 
