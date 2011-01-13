@@ -41,7 +41,7 @@ abstract class Node
     /// Create new Node
     public this()
     {
-        NodeStack = new Stack!Node;
+        NodeStack = Stack!Node(5);
     }
 
     /**
