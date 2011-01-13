@@ -434,8 +434,14 @@ class Parser
             case TokenType.KwIf: break;
             case TokenType.KwSwitch: break;
             case TokenType.KwThis: break;
-            case TokenType.ROBracket: break;
-            case TokenType.Identifier: break;
+            case TokenType.ROBracket: /*return parseExpression; assert(mToken.type == RCBracket);*/ break;
+            case TokenType.Identifier:/*look under switch*/ break;
+            // Literal Expressions
+            case TokenType.String:
+            case TokenType.Integer: 
+            case TokenType.Float:
+            case TokenType.Double:
+                 return new LiteralExpression(mToken.value);
             default:
                 assert(true);
         }
@@ -448,10 +454,18 @@ class Parser
         {
             next();
 
+            //Create Function Call
+            auto call = new FunctionCall();
+            call.mFunction = di;
+
             while(peek(1) != TokenType.RCBracket)
             {
                 //parse calling arguments
                 next();
+
+                //parse Expressions for arguments
+                auto arg = parseExpression();
+                call.Arguments ~= arg;
             }
             next();
 
@@ -459,8 +473,6 @@ class Parser
             if(peek(1) == TokenType.Semicolon)
                 next();
 
-            auto call = new FunctionCall();
-            call.mFunction = di;
             return call;
         }
 

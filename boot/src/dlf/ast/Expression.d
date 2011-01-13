@@ -42,8 +42,17 @@ final class LiteralExpression : Expression
     // Visitor Mixin
     mixin VisitorMixin;
 
-    // Value
+    // Type
+
+    /// Value
     public string Value;
+
+    /// Create new LiteralExpression
+    public this(string value)
+    {
+        mixin(set_nodetype);
+        Value = value;
+    }
 }
 
 //
@@ -105,7 +114,7 @@ final class FunctionCall : Expression
     Expression mFunction;
 
     /// Arguments for function call
-    Expression[] mArguments;
+    Expression[] Arguments;
 
     //return type is mFunction.solve().mReturnType
 

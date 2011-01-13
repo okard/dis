@@ -110,7 +110,14 @@ class Printer : public AbstractVisitor
     */
     public override void visit(FunctionCall call) 
     {
-        writetln(toString(call));
+        writet("%s(", call.mFunction.toString());
+
+        foreach(arg; call.Arguments)
+        {
+            write(toString(arg));
+        }
+
+        writeln(")");
     }
 
     /**
@@ -169,8 +176,9 @@ class Printer : public AbstractVisitor
     {
         switch(exp.Type)
         {
-            case NodeType.DotIdentifier: return toString(cast(DotIdentifier) exp);
+            case NodeType.DotIdentifier: return (cast(DotIdentifier) exp).toString();
             case NodeType.FunctionCall: return toString(cast(FunctionCall) exp);
+            case NodeType.LiteralExpression: return (cast(LiteralExpression)exp).Value;
             default: return "<unkown expression>";
         }
     }
