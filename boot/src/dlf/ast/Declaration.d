@@ -91,8 +91,8 @@ class FunctionDeclaration : Declaration
     ///Function Signature
     public FunctionType FuncType;
     
-    ///Has a Body (only Statement, so can be Statement, StatementExpression or BlockStatement
-    public BlockStatement Body;
+    ///Has a Body (BlockStatement, Statement, Expression)
+    public Statement Body;
 
     /**
     * Default Ctor
