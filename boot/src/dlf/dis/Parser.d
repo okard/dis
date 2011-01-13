@@ -222,7 +222,7 @@ class Parser
         if(peek(1) == TokenType.Identifier)
         {
             next();
-            func.FuncType.mReturnType = resolveType(mToken.value);
+            func.FuncType.ReturnType = resolveType(mToken.value);
         }
 
         //if function declarations closes with ";" it is finished
@@ -246,6 +246,7 @@ class Parser
         if(mAstStack.top.Type == NodeType.PackageDeclaration)
         {
             (cast(PackageDeclaration)mAstStack.top).mFunctions ~= func;
+            func.Parent = (cast(PackageDeclaration)mAstStack.top);
         }
     }
        
@@ -288,8 +289,8 @@ class Parser
             //name and type
             else if(list.length == 2)
             {
-                fd.FuncType.mArguments ~= resolveType(cast(string)list[1]);
-                fd.mArgumentNames[cast(string)list[0]] = cast(ubyte)(fd.FuncType.mArguments.length-1);
+                fd.FuncType.Arguments ~= resolveType(cast(string)list[1]);
+                fd.mArgumentNames[cast(string)list[0]] = cast(ubyte)(fd.FuncType.Arguments.length-1);
             }
             //TODO 1 element, variablename or type (declaration with block or not) -> semantic?
         }

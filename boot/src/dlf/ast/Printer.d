@@ -57,14 +57,14 @@ class Printer : public AbstractVisitor
 
         foreach(string key, ubyte index; fd.mArgumentNames)
         {
-            auto t = fd.FuncType.mArguments[index];
+            auto t = fd.FuncType.Arguments[index];
             writef("%s %s, ", key, t.toString()); 
         }
         
         if(fd.FuncType.mVarArgs)
             writef("%s...", fd.mVarArgsName);
 
-        writefln(") %s", fd.FuncType.mReturnType.toString());
+        writefln(") %s", fd.FuncType.ReturnType.toString());
         //fd.mType.mReturnType
 
         if(fd.Body !is null)

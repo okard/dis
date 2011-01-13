@@ -28,6 +28,8 @@ import dlf.ast.Type;
 import llvm = dlf.gen.llvm.LLVM;
 import dlf.gen.llvm.Node;
 
+//for debug
+import std.stdio;
 
 /**
 * LLVM based Dis Compiler
@@ -93,7 +95,7 @@ class Compiler : public AbstractVisitor
     {
         //Create Module for Package
         auto mod = new llvm.Module(mContext, pack.Name);
-        pack.NodeStack.push(new CompilerNode());
+        pack.NodeStack.push(new ModuleNode(mod));
         //pack.Store.Compiler(mod);
 
         //Create Functions
@@ -114,32 +116,42 @@ class Compiler : public AbstractVisitor
     override void visit(FunctionDeclaration func)
     {
         //TODO better check if always generated
-        //if(cast(ValueNode)func.NodeStack.top !is null)
-        //    return;
+        if(cnode!ValueNode(func) !is null)
+            return;
 
+
+        llvm.Type type;
         //generate FuncType
-        //if(cast(TypeNode)func.FuncType.NodeStack.top !is null)
-        //{
-            
-        //}
+        if(cnode!TypeNode(func.FuncType) is null)
+        {
+            type = Gen(func.FuncType);
+            func.FuncType.NodeStack.push(new TypeNode(type));
+        }
+        else
+            type = cnode!TypeNode(func.FuncType).LLVMType;
 
-        //already generated
-        //if(cast(llvm.FunctionValue)func.Store.Compiler())
-        //    return;
-
-        //generate Function Declaration
-        
-        //create function type
-        /*
-        //a function type -> function declarations?
-        
-        func.mType.Store.Compiler(new llvm.FunctionType(llvmBoolType, [llvmBoolType], false));
+       
 
         //create llvm function
-         auto f = new llvmFunctionValue(cast(Module)func.Parent.Store.Compiler(), 
-                                       cast(llvmFunctionType)func.mType.Store.Compiler(), 
-                                        func.mName);
-        */
+        auto mod = cnode!ModuleNode(func.Parent).LLVMModule;
+
+        if(mod is null)
+        {
+            writeln("Cant get module");
+            return;
+        }
+
+        auto t = cast(llvm.FunctionType)type;
+
+        if(t is null)
+        {
+            writeln("Cant get functype");
+            return;
+        }
+        
+        auto f = new llvm.FunctionValue(mod, t, func.Name);
+        func.NodeStack.push(new ValueNode(f));
+        
         //store created function
         //func.Store.Compiler(f);
         
@@ -186,23 +198,30 @@ class Compiler : public AbstractVisitor
     /**
     * CodeGen Function
     */
-    private llvm.Type Gen(FunctionType ft)
+    private llvm.FunctionType Gen(FunctionType ft)
     {
+        auto args = new llvm.Type[ft.Arguments.length];
 
-        
-        //new llvm.FunctionType(llvmBoolType, [llvmBoolType], false)
-        return null;
+        for(int i=0; i < ft.Arguments.length; i++)
+        {
+            args[i] = AstType2LLVMType(ft.Arguments[i]);
+        }
+
+        return new llvm.FunctionType(AstType2LLVMType(ft.ReturnType), args, ft.mVarArgs);
     }
     
     
     /**
     * extract compiler node
     */
-    private CompilerNode cnode(Node n)
+    private static T cnode(T)(Node n)
     {
-        //n.NodeStack.top.Type == Special
-        //auto cn = cast(CompilerNode)n.NodeStack.top;
-        //cn.CNType 
-        return null;
+        if(n.NodeStack.empty)
+            return null;
+
+        if(n.NodeStack.top.Type != NodeType.Special)
+            return null;
+
+        return cast(T)n.NodeStack.top;
     }
 } 

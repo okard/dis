@@ -132,9 +132,9 @@ class FunctionType : DataType
     public enum CallingConvention {None, C, Dis}
 
     //Arguments
-    public DataType[] mArguments;
+    public DataType[] Arguments;
     //Return Type
-    public DataType mReturnType;
+    public DataType ReturnType;
     //Varargs Function
     public bool mVarArgs;
     //Extensions Method
@@ -144,7 +144,7 @@ class FunctionType : DataType
 
     public this()
     {
-        mReturnType = new VoidType();
+        ReturnType = new VoidType();
     }
 }
 

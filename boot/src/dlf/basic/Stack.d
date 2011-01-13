@@ -67,6 +67,7 @@ struct Stack(T)
     @property
     T top()
     {
+
         return mStackArr[mCount-1];
     }
 
@@ -87,6 +88,16 @@ struct Stack(T)
     {
         return mStackArr.length;
     }
+
+    /**
+    * empty stack
+    */
+    @property
+    bool empty()
+    {
+        return (mCount <= 0);
+    }
+    
 } 
 
 // UnitTests ==================================================================

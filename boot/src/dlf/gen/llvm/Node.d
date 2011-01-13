@@ -69,6 +69,22 @@ class CompilerNode : Node
 }
 
 /**
+* ModuleNode
+*/
+class ModuleNode : CompilerNode
+{
+    /// LLVM Type
+    llvm.Module LLVMModule;
+
+    /// Create new Module Compiler Node
+    public this(llvm.Module mod)
+    {
+        CNType = CompilerNodeType.Module;
+        LLVMModule = mod;
+    }
+}
+
+/**
 * Type Node
 */ 
 class TypeNode : CompilerNode
