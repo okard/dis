@@ -87,7 +87,7 @@ class Parser
         InternalTypes["float"] = FloatType.Instance;
         InternalTypes["double"] = DoubleType.Instance;
         //special:
-        InternalTypes["char"] = new CharType();
+        InternalTypes["char"] = CharType.Instance;
     }
     
     /**

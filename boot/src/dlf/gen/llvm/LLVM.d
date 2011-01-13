@@ -190,22 +190,19 @@ public class Type
     opaque type
 */
 
-//Primary Types
-static Type llvmBoolType;
-static Type llvmInt8Type;
-static Type llvmInt16Type;
-static Type llvmInt32Type;
-static Type llvmInt64Type;
 
-//Create Primary Types
-static this()
+/**
+* Pointer Type
+*/
+class PointerType : Type
 {
-    llvmBoolType = new Type(LLVMInt1Type());
-    llvmInt8Type = new Type(LLVMInt8Type());
-    llvmInt16Type = new Type(LLVMInt16Type());
-    llvmInt32Type = new Type(LLVMInt32Type());
-    llvmInt64Type = new Type(LLVMInt64Type());
+    /// Create new PointerType
+    public this(Type type2point)
+    {
+        super(LLVMPointerType(type2point.llvmType,0));
+    }
 }
+
 
 /**
 * Function Type
@@ -489,11 +486,16 @@ class PassManager
 
         if(p <= PassType.Release)
         {
+            AddGlobalOptimizerPass();
             AddStripSymbolsPass();
+            AddDeadArgEliminationPass();
+            AddStripDeadPrototypesPass();
         }
 
         if(p <= PassType.Optimized)
         {
+            AddFunctionInliningPass();
+            AddCFGSimplificationPass();
         }
     }
 

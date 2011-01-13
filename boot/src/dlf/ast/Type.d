@@ -144,7 +144,7 @@ class FunctionType : DataType
 
     public this()
     {
-        ReturnType = VoidType.Instance;
+        ReturnType = OpaqueType.Instance;
     }
 }
 
@@ -155,18 +155,18 @@ class FunctionType : DataType
 class PointerType : DataType 
 {
     ///The Type this PointerType points to
-    public DataType mType;
+    public DataType PointType;
 
     ///Create new PointerType
     public this(DataType t)
     {
-        mType = t;
+        PointType = t;
     }
 
     ///toString
     override string toString() 
     { 
-        return mType.toString() ~ "*"; 
+        return PointType.toString() ~ "*"; 
     }
 }
 
@@ -178,8 +178,8 @@ class PointerType : DataType
 class CharType : DataType
 {
     //encoding???
-
-     override string toString() { return "char"; }
+    override string toString() { return "char"; }
+    mixin Singleton!CharType;
 }
 
 /**

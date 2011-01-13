@@ -77,6 +77,9 @@ class Compiler : public AbstractVisitor
         mTypes[ULongType.Instance] = new llvm.Type(llvm.LLVMInt64Type());
         mTypes[FloatType.Instance] = new llvm.Type(llvm.LLVMFloatType());
         mTypes[DoubleType.Instance] = new llvm.Type(llvm.LLVMDoubleType());
+
+        //At the moment char is same type as Byte
+        mTypes[CharType.Instance] = mTypes[ByteType.Instance];
     }
 
     /**
@@ -193,6 +196,24 @@ class Compiler : public AbstractVisitor
     llvm.Type AstType2LLVMType(DataType t)
     {
         //writefln("CodeGen: resolve type %s", t.toString());
+
+        //Gen PointerTypes?
+
+        
+        //Create Pointer Types
+        if(cast(PointerType)t !is null)
+        {
+            auto pt = cast(PointerType)t;
+            
+            //Already Known Type to point to
+            if(AstType2LLVMType(pt.PointType) !is null) 
+            {
+                return new llvm.PointerType(AstType2LLVMType(pt.PointType));
+            }
+            //gen PointType?
+        }
+
+        
         return mTypes.get(t, mTypes[OpaqueType.Instance]);
     }
 
@@ -224,5 +245,13 @@ class Compiler : public AbstractVisitor
             return null;
 
         return cast(T)n.NodeStack.top;
+    }
+
+    /**
+    * Has CompilerNode
+    */
+    private static bool hasCNode(Node n)
+    {
+        return (cnode!CompilerNode(n) !is null);
     }
 } 
