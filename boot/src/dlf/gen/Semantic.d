@@ -73,14 +73,17 @@ class Semantic : AbstractVisitor
     */
     override void visit(FunctionDeclaration func)
     { 
-        writefln("Semantic FuncDcl %s", func.Name);
+        Information("Semantic FuncDcl %s", func.Name);
 
-        writefln("\t return type %s", func.FuncType.ReturnType.toString());
+        Information("\t return type %s", func.FuncType.ReturnType.toString());
         //resolve return value
         if(func.FuncType.ReturnType is null || func.FuncType.ReturnType == OpaqueType.Instance)
         {
-            writeln("resolve type");
             func.FuncType.ReturnType = VoidType.Instance;
+            
+            //if has body look through all return statements
+
+            Information("\t Resolved ReturnType of '%s' is '%s'", func.Name, func.FuncType.ReturnType.toString());
         }
 
         if(func.Body !is null)
@@ -109,6 +112,8 @@ class Semantic : AbstractVisitor
     */
     override void visit(FunctionCall call)
     {
+        Information("Semantic FuncCall %s", call.Function.toString());
+        
         //check for function
         //call.mFunction.NType() == NodeType.DotIdentifier
         //Look for parameter type matching
@@ -142,4 +147,22 @@ class Semantic : AbstractVisitor
         astNode.accept(this);
         return astNode;
     }
+
+
+    /**
+    * Semantic Information Log
+    */
+    private void Information(T...)(string s, T args)
+    {
+        writefln(s, args);
+    }
+
+    /**
+    * Semantic Error Log
+    */
+    private void Error(T...)(string s, T args)
+    {
+        writefln(s, args);
+    }
+
 }

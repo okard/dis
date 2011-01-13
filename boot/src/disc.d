@@ -40,13 +40,15 @@ class CommandLineArg : ArgHelper
     //option
     public bool printToken;  //print lexer tokens
     public bool printAst;    //print ast
+    public bool printSem;    //print Semantic Log
 
     //prepare
     public this(string[] args)
     {
         //prepare options
-        Options["--lex"] = (){ printToken = true; };
+        Options["--print-lex"] = (){ printToken = true; };
         Options["--print-ast"] = (){ printAst = true; };
+        Options["--print-sem"] = (){ printSem = true; };
 
         //parse Options
         parse(args);

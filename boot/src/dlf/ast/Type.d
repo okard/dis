@@ -120,7 +120,7 @@ class DoubleType : DataType
 */
 class OpaqueType : DataType
 {
-    override string toString() { return "<unkown>"; }
+    override string toString() { return "<Opaque>"; }
     mixin Singleton!OpaqueType;
 }
 
@@ -141,6 +141,8 @@ class FunctionType : DataType
     public bool ExtensionMethod;
     //Calling Convention
     public CallingConvention mCallingConv;
+
+    //Generic FunctionTypes can have SubFunctionTypes?
 
     public this()
     {
@@ -197,6 +199,7 @@ class ArrayType : DataType
 class ClassType : DataType
 {
     //Class Declaration
+    //Template Classes can have subclasstypes?
 }
 
 /**
