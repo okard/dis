@@ -201,7 +201,7 @@ class Parser
             return;
         }
         
-        func.mName = cast(string)mToken.value;
+        func.Name = cast(string)mToken.value;
 
 
         //Parse Parameter if available
@@ -384,7 +384,7 @@ class Parser
         auto node = mAstStack.top;
         if(node.Type == NodeType.FunctionDeclaration)
         {
-            (cast(FunctionDeclaration)mAstStack.top).mBody = block;
+            (cast(FunctionDeclaration)mAstStack.top).Body = block;
         }
     }
 

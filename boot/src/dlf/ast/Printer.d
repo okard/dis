@@ -53,7 +53,7 @@ class Printer : public AbstractVisitor
     */
     public override void visit(FunctionDeclaration fd)
     {
-        writet("Function(%s): %s(", toString(fd.mType.mCallingConv), fd.mName);
+        writet("Function(%s): %s(", toString(fd.mType.mCallingConv), fd.Name);
 
         foreach(string key, ubyte index; fd.mArgumentNames)
         {
@@ -67,8 +67,8 @@ class Printer : public AbstractVisitor
         writefln(") %s", fd.mType.mReturnType.toString());
         //fd.mType.mReturnType
 
-        if(fd.mBody !is null)
-            fd.mBody.accept(this);
+        if(fd.Body !is null)
+            fd.Body.accept(this);
     }
 
     /**
@@ -76,7 +76,7 @@ class Printer : public AbstractVisitor
     */
     public override void visit(PackageDeclaration pd)
     {
-        writetln("%sPackage: %s",tabs(),  pd.mName);
+        writetln("%sPackage: %s",tabs(),  pd.Name);
 
         tabDeepness++;
         foreach(fd; pd.mFunctions)

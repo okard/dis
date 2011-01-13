@@ -80,7 +80,7 @@ class Compiler : public AbstractVisitor
     override void visit(PackageDeclaration pack)
     {
         //Create Module for Package
-        auto mod = new llvm.Module(mContext, pack.mName);
+        auto mod = new llvm.Module(mContext, pack.Name);
         pack.NodeStack.push(new CompilerNode());
         //pack.Store.Compiler(mod);
 
@@ -91,7 +91,7 @@ class Compiler : public AbstractVisitor
         }
         
         //Write Package LLVM Moduel to file
-        string filename = pack.mName ~ ".bc\0";
+        string filename = pack.Name ~ ".bc\0";
         mod.writeByteCode(filename);
         mod.dump();
     }
@@ -120,8 +120,8 @@ class Compiler : public AbstractVisitor
         //func.Store.Compiler(f);
         
         //block Statement
-        if(func.mBody !is null)
-            func.mBody.accept(this);
+        if(func.Body !is null)
+            func.Body.accept(this);
     }
 
     /**

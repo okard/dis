@@ -78,5 +78,43 @@ class TypeNode : CompilerNode
 
     //OpaqueType?
 
+    /// Create new Type Compiler Node
+    public this(llvm.Type type)
+    {
+        CNType = CompilerNodeType.Type;
+        LLVMType = type;
+    }
+
+}
+
+/**
+* Value Node
+*/
+class ValueNode : CompilerNode
+{
+    ///LLVM Value
+    llvm.Value LLVMValue;
+
+    /// Creates new Value Compiler Node
+    public this(llvm.Value value)
+    {
+        CNType = CompilerNodeType.Value;
+        LLVMValue = value;
+    }
+}
+
+/**
+* Basic Block Node
+*/
+class BasicBlockNode : CompilerNode
+{
+    llvm.BasicBlock LLVMBBlock;
+
+    /// Creates new Value Compiler Node
+    public this(llvm.BasicBlock block)
+    {
+        CNType = CompilerNodeType.BasicBlock;
+        LLVMBBlock = block;
+    }
 }
 

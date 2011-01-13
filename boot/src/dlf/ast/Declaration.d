@@ -32,7 +32,7 @@ abstract class Declaration : Node
     enum Modifiers : ushort { Private=1, Protected=2, Public=4, Package=8, Static=16, Final=32, Const=64 } 
 
     ///name
-    public string mName;
+    public string Name;
     
     //Visitor Mixin
     mixin VisitorMixin;   
@@ -61,7 +61,7 @@ class PackageDeclaration : Declaration
     public this(string name)
     {
         mixin(set_nodetype);
-        mName = name;
+        Name = name;
     }
 }
 
@@ -88,7 +88,7 @@ class FunctionDeclaration : Declaration
     public FunctionType mType;
     
     ///Has a Body
-    public BlockStatement mBody;
+    public BlockStatement Body;
 
     /**
     * Default Ctor
@@ -105,7 +105,7 @@ class FunctionDeclaration : Declaration
     public this(string name)
     {
         this();
-        this.mName = name;
+        this.Name = name;
     }   
 }
 
@@ -126,7 +126,7 @@ class VariableDeclaration : Declaration
     public this(string name, DataType type = new OpaqueType())
     {
         mixin(set_nodetype);
-        this.mName = name;
+        this.Name = name;
         this.mDataType = type;
     }
 

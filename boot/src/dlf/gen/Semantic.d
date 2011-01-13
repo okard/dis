@@ -72,8 +72,8 @@ class Semantic : AbstractVisitor
     */
     override void visit(FunctionDeclaration func)
     { 
-        if(func.mBody !is null)
-            func.mBody.accept(this);
+        if(func.Body !is null)
+            func.Body.accept(this);
     }
 
     /**
