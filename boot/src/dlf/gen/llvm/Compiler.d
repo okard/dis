@@ -81,7 +81,7 @@ class Compiler : public AbstractVisitor
     {
         //Create Module for Package
         auto mod = new llvm.Module(mContext, pack.mName);
-        //pack.NodeStack.push(new CompilerNode());
+        pack.NodeStack.push(new CompilerNode());
         //pack.Store.Compiler(mod);
 
         //Create Functions

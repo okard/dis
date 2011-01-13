@@ -38,6 +38,12 @@ abstract class Node
     ///mixin for type
     protected const string set_nodetype = "this.Type = mixin(\"NodeType.\" ~ typeof(this).stringof);";
     
+    /// Create new Node
+    public this()
+    {
+        NodeStack = new Stack!Node;
+    }
+
     /**
     * Visitor pattern
     */
