@@ -100,7 +100,26 @@ class Semantic : AbstractVisitor
     {
         //check for function
         //call.mFunction.NType() == NodeType.DotIdentifier
-        // Look for parameter type matching
+        //Look for parameter type matching
+        auto fexpr = call.Function;
+        
+        //Expression to Function
+
+        if(fexpr.Type == NodeType.DotIdentifier)
+        {
+            //get function declaration
+        }
+        
+        
+    }
+
+    /**
+    * Get the Declaration of a DotIdentifier
+    * e.g. "this.foo.bar.x" is a VariableDeclaration(int)
+    */
+    private Declaration resolve(DotIdentifier di)
+    {
+        return null;
     }
 
     /**

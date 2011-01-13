@@ -19,7 +19,7 @@
 module dlf.gen.llvm.LLVM;
 // This Module wraps LLVM C API back to Classes
 
-import llvm.c.Core;
+public import llvm.c.Core;
 import llvm.c.BitWriter;
 import llvm.c.transforms.IPO;
 import llvm.c.transforms.Scalar;
@@ -144,7 +144,7 @@ class Module
 /**
 * LLVM Type
 */
-class Type 
+public class Type 
 {
     /// LLVM Type
     private LLVMTypeRef mType;
@@ -152,7 +152,7 @@ class Type
     /**
     * Create type from type ref
     */
-    private this(LLVMTypeRef type)
+    public this(LLVMTypeRef type)
     {
         mType = type;
     }

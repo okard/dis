@@ -30,6 +30,30 @@ public static bool isIn(T)(T t, T[] arr)
     return false;
 }
 
+/**
+* Dummy Singleton Template for D stupity
+*/
+mixin template Singleton(T)
+{
+    ///Instance Variable
+    public static T _Instance;
+
+    /// Create Instance
+    static this()
+    {
+        _Instance = new T();
+    }
+
+    /// Get Instance
+    @property
+    static T Instance()
+    {
+        return _Instance;
+    }
+
+    ///Private Constructor
+    private this(){}
+}
 
 version(unittest) import std.stdio;
 

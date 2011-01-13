@@ -27,10 +27,10 @@ import dlf.ast.Type;
 */
 abstract class Expression : Node
 {
-    DataType mReturnType;
+    DataType ReturnType;
     mixin VisitorMixin;
 
-    alias mReturnType ReturnType;
+    alias ReturnType mReturnType;
 }
 
 
@@ -42,16 +42,15 @@ final class LiteralExpression : Expression
     // Visitor Mixin
     mixin VisitorMixin;
 
-    // Type
-
     /// Value
     public string Value;
 
     /// Create new LiteralExpression
-    public this(string value)
+    public this(string value, DataType returnType)
     {
         mixin(set_nodetype);
         Value = value;
+        ReturnType = returnType;
     }
 }
 
@@ -111,7 +110,7 @@ final class FunctionCall : Expression
     mixin VisitorMixin;
 
     ///Expression to retrieve a function type
-    Expression mFunction;
+    Expression Function;
 
     /// Arguments for function call
     Expression[] Arguments;

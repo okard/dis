@@ -58,9 +58,6 @@ class Parser
 
     ///Internal Types
     public static DataType[string] InternalTypes;
-    ///Opaque Type
-    public static DataType opaqueType;
-
 
     /**
     * Ctor
@@ -77,22 +74,20 @@ class Parser
     public static this()
     {
         //Primary
-        InternalTypes["void"] = new VoidType();
-        InternalTypes["bool"] = new BoolType();
-        InternalTypes["byte"] = new ByteType();
-        InternalTypes["ubyte"] = new UByteType();
-        InternalTypes["short"] = new ShortType();
-        InternalTypes["ushort"] = new UShortType();
-        InternalTypes["int"] = new IntType();
-        InternalTypes["uint"] = new UIntType();
-        InternalTypes["long"] = new LongType();
-        InternalTypes["ulong"] = new ULongType();
-        InternalTypes["float"] = new FloatType();
-        InternalTypes["double"] = new DoubleType();
+        InternalTypes["void"] = VoidType.Instance;
+        InternalTypes["bool"] = BoolType.Instance;
+        InternalTypes["byte"] = ByteType.Instance;
+        InternalTypes["ubyte"] = UByteType.Instance;
+        InternalTypes["short"] = ShortType.Instance;
+        InternalTypes["ushort"] = UShortType.Instance;
+        InternalTypes["int"] = IntType.Instance;
+        InternalTypes["uint"] = UIntType.Instance;
+        InternalTypes["long"] = LongType.Instance;
+        InternalTypes["ulong"] = ULongType.Instance;
+        InternalTypes["float"] = FloatType.Instance;
+        InternalTypes["double"] = DoubleType.Instance;
         //special:
         InternalTypes["char"] = new CharType();
-        //opaque
-        opaqueType = new OpaqueType();
     }
     
     /**
@@ -432,8 +427,6 @@ class Parser
     */
     private Expression parseExpression()
     {
-        writefln("Current Token: %s", dlf.dis.Token.toString(mToken.type));
-
         //Keyword Based
         //If-ElseIf-Else
         //Switch-Case
@@ -441,15 +434,18 @@ class Parser
         {
             case TokenType.KwIf: break;
             case TokenType.KwSwitch: break;
-            case TokenType.KwThis: break;
+            case TokenType.KwThis: /*identifier?*/break;
             case TokenType.ROBracket: /*return parseExpression; assert(mToken.type == RCBracket);*/ break;
             case TokenType.Identifier:/*look under switch*/ break;
             // Literal Expressions
             case TokenType.String:
+                return new LiteralExpression(mToken.value, InternalTypes["char"]); 
             case TokenType.Integer: 
+                return new LiteralExpression(mToken.value, InternalTypes["int"]); 
             case TokenType.Float:
+                return new LiteralExpression(mToken.value, InternalTypes["float"]); 
             case TokenType.Double:
-                 return new LiteralExpression(mToken.value);
+                return new LiteralExpression(mToken.value, InternalTypes["double"]); 
             default:
                 assert(true);
         }
@@ -457,14 +453,14 @@ class Parser
         //current is identifier?
         auto di = parseIdentifier();
 
-        //seems to be a function call
+        //seems to be a function call "(" after identifier
         if(peek(1) == TokenType.ROBracket)
         {
             next();
 
             //Create Function Call
             auto call = new FunctionCall();
-            call.mFunction = di;
+            call.Function = di;
 
             while(peek(1) != TokenType.RCBracket)
             {
@@ -549,10 +545,10 @@ class Parser
         {
             //pointer type
             identifier.length -= 1;
-            return new PointerType(InternalTypes.get(identifier, opaqueType));
+            return new PointerType(InternalTypes.get(identifier, OpaqueType.Instance));
         }
         else
-            return InternalTypes.get(identifier, opaqueType);
+            return InternalTypes.get(identifier, OpaqueType.Instance);
     }
 
     /**
@@ -598,8 +594,6 @@ class Parser
         return t;
     }
 
-
-
     /**
     * Error Event
     */
@@ -608,7 +602,6 @@ class Parser
         //TODO: Make error events, remove stupid writeln
         writefln("(%s): %s", mToken.loc.toString(), msg);
     }
-
 
     /**
     * Warning Event

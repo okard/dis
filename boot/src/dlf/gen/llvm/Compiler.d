@@ -46,7 +46,7 @@ class Compiler : public AbstractVisitor
     private llvm.Builder mBuilder;
 
     /// LLVM Types
-    private llvm.Type mTypes[astType];
+    private llvm.Type mTypes[DataType];
 
     ///Internal Types to LLVM Types
 
@@ -62,7 +62,19 @@ class Compiler : public AbstractVisitor
         mBuilder = new llvm.Builder(mContext);
 
         //Initialize types
-        //mTypes[Parser.InternalTypes["bool"]] = new Type(LLVMInt1Type())
+        mTypes[OpaqueType.Instance] = new llvm.Type(llvm.LLVMOpaqueType());
+        mTypes[VoidType.Instance] = new llvm.Type(llvm.LLVMVoidType());
+        mTypes[BoolType.Instance] = new llvm.Type(llvm.LLVMInt1Type());
+        mTypes[ByteType.Instance] = new llvm.Type(llvm.LLVMInt8Type());
+        mTypes[UByteType.Instance] = new llvm.Type(llvm.LLVMInt8Type());
+        mTypes[ShortType.Instance] = new llvm.Type(llvm.LLVMInt16Type());
+        mTypes[UShortType.Instance] = new llvm.Type(llvm.LLVMInt16Type());
+        mTypes[IntType.Instance] = new llvm.Type(llvm.LLVMInt32Type());
+        mTypes[UIntType.Instance] = new llvm.Type(llvm.LLVMInt32Type());
+        mTypes[LongType.Instance] = new llvm.Type(llvm.LLVMInt64Type());
+        mTypes[ULongType.Instance] = new llvm.Type(llvm.LLVMInt64Type());
+        mTypes[FloatType.Instance] = new llvm.Type(llvm.LLVMFloatType());
+        mTypes[DoubleType.Instance] = new llvm.Type(llvm.LLVMDoubleType());
     }
 
     /**
@@ -101,6 +113,16 @@ class Compiler : public AbstractVisitor
     */
     override void visit(FunctionDeclaration func)
     {
+        //TODO better check if always generated
+        //if(cast(ValueNode)func.NodeStack.top !is null)
+        //    return;
+
+        //generate FuncType
+        //if(cast(TypeNode)func.FuncType.NodeStack.top !is null)
+        //{
+            
+        //}
+
         //already generated
         //if(cast(llvm.FunctionValue)func.Store.Compiler())
         //    return;
@@ -109,6 +131,8 @@ class Compiler : public AbstractVisitor
         
         //create function type
         /*
+        //a function type -> function declarations?
+        
         func.mType.Store.Compiler(new llvm.FunctionType(llvmBoolType, [llvmBoolType], false));
 
         //create llvm function
@@ -154,12 +178,23 @@ class Compiler : public AbstractVisitor
     /**
     * Convert Ast Type to LLVM Type
     */
-    llvm.Type AstType2LLVMType(astType t)
+    llvm.Type AstType2LLVMType(DataType t)
     {
-        //lookup in mTypes
-        return null;
+        return mTypes.get(t, mTypes[OpaqueType.Instance]);
     }
 
+    /**
+    * CodeGen Function
+    */
+    private llvm.Type Gen(FunctionType ft)
+    {
+
+        
+        //new llvm.FunctionType(llvmBoolType, [llvmBoolType], false)
+        return null;
+    }
+    
+    
     /**
     * extract compiler node
     */

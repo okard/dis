@@ -127,7 +127,7 @@ class VariableDeclaration : Declaration
     /**
     * Ctor
     */
-    public this(string name, DataType type = new OpaqueType())
+    public this(string name, DataType type = OpaqueType.Instance)
     {
         mixin(set_nodetype);
         this.Name = name;

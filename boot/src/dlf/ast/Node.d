@@ -58,6 +58,7 @@ enum NodeType
 {
     Unknown,
     Special,
+    DataType,
     //Declarations
     PackageDeclaration,
     FunctionDeclaration,

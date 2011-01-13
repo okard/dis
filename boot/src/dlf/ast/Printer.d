@@ -110,7 +110,7 @@ class Printer : public AbstractVisitor
     */
     public override void visit(FunctionCall call) 
     {
-        writet("%s(", call.mFunction.toString());
+        writet("%s(", call.Function.toString());
 
         foreach(arg; call.Arguments)
         {
@@ -214,10 +214,10 @@ class Printer : public AbstractVisitor
     */
     public static string toString(FunctionCall fc)
     {
-        if(fc.mFunction is null) return "No function expression set";
+        if(fc.Function is null) return "No function expression set";
 
         //add arguments
-        return "Call: " ~ toString(fc.mFunction);
+        return "Call: " ~ toString(fc.Function);
     }
 
     /**
