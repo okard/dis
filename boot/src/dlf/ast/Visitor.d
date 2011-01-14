@@ -31,6 +31,10 @@ public interface Visitor
     //Declarations
     void visit(PackageDeclaration pack);
     void visit(FunctionDeclaration func);
+    void visit(ImportDeclaration);
+    void visit(VariableDeclaration);
+    void visit(ClassDeclaration);
+    void visit(TraitDeclaration);
     //Statements
     void visit(BlockStatement block);
     void visit(ExpressionStatement expr);
@@ -49,27 +53,5 @@ mixin template VisitorMixin()
 {
     /// Accept Visitor
     public override void accept(Visitor v) { v.visit(this); }
-}
-
-
-/**
-* Abstract Visitor
-* Does not work, ... 
-*/
-public abstract class AbstractVisitor : Visitor
-{
-    public{
-    //Declarations
-    void visit(PackageDeclaration pack){}
-    void visit(FunctionDeclaration func){}
-    //Statements
-    void visit(BlockStatement block){}
-    void visit(ExpressionStatement expr){}
-    void visit(FunctionCall call){}
-    //basic
-    void visit(Statement) {}
-    void visit(Expression) {}
-    void visit(Declaration) {}
-    }
 }
     

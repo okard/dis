@@ -152,6 +152,15 @@ class Parser
         if(mToken.type != TokenType.EOL && mToken.type != TokenType.Semicolon)
             error(mToken.loc, "Expected EOL or Semicolon after package declaration");
 
+
+        //Parse Loop
+        //ImportStatements (Event)
+        //DefDecl
+        //VarDecl
+        //ValDecl
+        //ClassDecl
+        //TraitDecl
+
         //dont pop from stack
     }
 
@@ -295,7 +304,15 @@ class Parser
                 fd.FuncType.Arguments ~= resolveType(cast(string)list[1]);
                 fd.mArgumentNames[cast(string)list[0]] = cast(ubyte)(fd.FuncType.Arguments.length-1);
             }
-            //TODO 1 element, variablename or type (declaration with block or not) -> semantic?
+
+            //one argument
+            if(list.length == 1)
+            {
+                //TODO 1 element, variablename or type (declaration with block or not) -> semantic?
+                error(mToken.loc, "Function Parameters must have 2 Identifier 'name type', one identifier is not yet supported");
+                assert(true);
+            }
+
         }
 
         //parse loop
@@ -374,7 +391,7 @@ class Parser
             auto stat = parseStatement();
             if(stat !is null)
             {
-                block.mStatements ~= stat;
+                block.Statements ~= stat;
             }
         }
         //go over } ?
@@ -406,12 +423,18 @@ class Parser
 
         switch(mToken.type)
         {
-        //for 
-        case TokenType.KwFor: break;
+        //for, foreach 
+        case TokenType.KwFor: 
+            break;
         //do-while
-        case TokenType.KwDo: break;
+        case TokenType.KwDo: 
+            break;
         //while
-        case TokenType.KwWhile: break;
+        case TokenType.KwWhile: 
+            break;
+        case TokenType.KwReturn:
+            //return ReturnStatement(parseExpression());
+            break;
         default:
         }
 
@@ -640,6 +663,7 @@ class Parser
     @property
     public Node ParseTree()
     {
+        //Root node with Multiple Package nodes?
         return mAstRoot;
     }
 } 

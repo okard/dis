@@ -44,7 +44,7 @@ class BlockStatement : Statement
     mixin VisitorMixin;
 
     ///Statements
-    public Statement[] mStatements;
+    public Statement[] Statements;
 
     ///Symbol Table
     public SymbolTable SymTable;
@@ -70,6 +70,21 @@ class ExpressionStatement : Statement
     {
         mixin(set_nodetype);
         mExpression = expr;
+    }
+}
+
+class ReturnStatement : Statement
+{
+    //Visitor Mixin
+    mixin VisitorMixin;
+    
+    /// The Return Expression
+    public Expression Expr;
+
+    /// Create new Return Statement
+    public this()
+    {
+        mixin(set_nodetype);
     }
 }
 

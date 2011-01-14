@@ -37,7 +37,9 @@ abstract class Declaration : Node
     public string Name;
     
     //Visitor Mixin
-    mixin VisitorMixin;   
+    mixin VisitorMixin;
+
+    //Location?
 }
 
 /**
@@ -53,7 +55,7 @@ class PackageDeclaration : Declaration
     //ClassDeclaration[] Classes;
     //VariableDeclaration[] Variables
 
-    //ImportStatement[] Imports;
+    //ImportDeclaration[] Imports;
     //TraitDeclaration[] Traits;
 
     //Visitor Mixin
@@ -68,6 +70,27 @@ class PackageDeclaration : Declaration
         Name = name;
     }
 }
+
+/**
+* Import Declaration
+*/
+public class ImportDeclaration : Declaration
+{
+    //Holds a PackageNode
+    //PackageDeclaration Package;
+}
+
+
+/// Function Parameter Helper 
+struct FunctionParameter
+{
+    //char[][]
+    //DataType
+    //Name
+    //Index
+    //Modifiers/Flags (ref, const, ...)
+}
+    
 
 /**
 * Function Declaration (def)

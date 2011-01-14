@@ -68,9 +68,6 @@ final class DotIdentifier : Expression
     ///parts of identifiers splitted with .
     char[][] mIdentifier;
 
-    //resolve type
-    //Type type;
-
     /**
     * Create dotted identifier
     */
@@ -78,6 +75,23 @@ final class DotIdentifier : Expression
     {
         mixin(set_nodetype);
         mIdentifier ~= identifier;
+    }
+
+    /**
+    * Index Access for parts of identifier
+    */
+    public char[] opIndex(int index)
+    {
+        return mIdentifier[index];
+    }
+
+    /**
+    * How many parts has this DotIdentifier
+    */
+    @property
+    public int length()
+    {
+        return mIdentifier.length;
     }
 
     /**
@@ -96,9 +110,8 @@ final class DotIdentifier : Expression
     */
     public static parse(string value)
     {
+        //split at "."
     }
-
-    
 }
 
 /**

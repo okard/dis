@@ -343,5 +343,6 @@ class Lexer
         mKeywords["while"] = TokenType.KwWhile;
         mKeywords["do"] = TokenType.KwDo;
         mKeywords["this"] = TokenType.KwThis;
+        mKeywords["return"] = TokenType.KwReturn;
     }
 } 

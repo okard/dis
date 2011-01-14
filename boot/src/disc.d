@@ -102,6 +102,11 @@ int main(string[] args)
     parser.source = src;
     parser.parse();
 
+    //Go through PackageDeclarations
+    // and import source files
+    // read config for places to look for imports
+    // prefer dis then dish (dis header files)
+
     //Print out
     auto printer = new Printer();
     printer.print(parser.ParseTree());

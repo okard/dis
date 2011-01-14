@@ -49,7 +49,7 @@ abstract class Node
     */
     public void accept(Visitor v);
     
-} 
+}
 
 /**
 * Node Types
@@ -66,6 +66,7 @@ enum NodeType
     //Statements
     BlockStatement,
     ExpressionStatement,
+    ReturnStatement,
     //Expressions
     DotIdentifier,
     FunctionCall,

@@ -31,7 +31,7 @@ import std.string;
 /**
 * AST Printer
 */
-class Printer : public AbstractVisitor
+class Printer : Visitor
 {
 
     /// Tab Count
@@ -51,7 +51,7 @@ class Printer : public AbstractVisitor
     /**
     * Visit FunctionDeclaration
     */
-    public override void visit(FunctionDeclaration fd)
+    public void visit(FunctionDeclaration fd)
     {
         writet("Function(%s): %s(", toString(fd.FuncType.mCallingConv), fd.Name);
 
@@ -74,7 +74,7 @@ class Printer : public AbstractVisitor
     /**
     * Visit Package Declaration
     */
-    public override void visit(PackageDeclaration pd)
+    public void visit(PackageDeclaration pd)
     {
         writetln("%sPackage: %s",tabs(),  pd.Name);
 
@@ -87,11 +87,11 @@ class Printer : public AbstractVisitor
     /**
     * Visit Block Statement
     */
-    public override void visit(BlockStatement bs)
+    public void visit(BlockStatement bs)
     {
         writetln("{");
         tabDeepness++;
-        foreach(stat; bs.mStatements)
+        foreach(stat; bs.Statements)
             stat.accept(this);
         tabDeepness--;
         writetln("}");
@@ -100,7 +100,7 @@ class Printer : public AbstractVisitor
     /**
     * Visit ExpressionStatement
     */
-    public override void visit(ExpressionStatement expr) 
+    public void visit(ExpressionStatement expr) 
     {
         expr.mExpression.accept(this);
     }
@@ -108,7 +108,7 @@ class Printer : public AbstractVisitor
     /**
     * FunctionCall
     */
-    public override void visit(FunctionCall call) 
+    public void visit(FunctionCall call) 
     {
         writet("%s(", call.Function.toString());
 
@@ -123,7 +123,7 @@ class Printer : public AbstractVisitor
     /**
     * Print Statement
     */
-    public override void visit(Statement stat)
+    public void visit(Statement stat)
     {
         writef(tabs());
         writeln(toString(stat));
@@ -132,13 +132,17 @@ class Printer : public AbstractVisitor
     /**
     * Visit Declaration
     */
-    override void visit(Declaration decl){}
+    void visit(Declaration decl){}
 
     /**
     * Visit Expression
     */
-    override void visit(Expression expr){}
+    void visit(Expression expr){}
 
+    void visit(ImportDeclaration){}
+    void visit(VariableDeclaration){}
+    void visit(ClassDeclaration){}
+    void visit(TraitDeclaration){}
 
     /**
     * Get Tabs

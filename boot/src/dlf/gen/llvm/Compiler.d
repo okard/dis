@@ -24,6 +24,7 @@ import dlf.ast.Declaration;
 import dlf.ast.Statement;
 import dlf.ast.Expression;
 import dlf.ast.Type;
+import dlf.ast.SymbolTable;
 
 import llvm = dlf.gen.llvm.LLVM;
 import dlf.gen.llvm.Node;
@@ -34,7 +35,7 @@ import std.stdio;
 /**
 * LLVM based Dis Compiler
 */
-class Compiler : public AbstractVisitor
+class Compiler : Visitor
 {
     alias dlf.ast.Type.DataType astType;
 
@@ -47,12 +48,15 @@ class Compiler : public AbstractVisitor
     /// LLVM Builder
     private llvm.Builder mBuilder;
 
+    ///Current LLVM Module
+    private llvm.Module mCurModule;
+
     /// LLVM Types
     private llvm.Type mTypes[DataType];
 
-    ///Internal Types to LLVM Types
+    /// Current SymbolTable
+    private SymbolTable mSymTbl;
 
-    //Current SymbolTable
 
     /**
     * Constructor
@@ -94,12 +98,12 @@ class Compiler : public AbstractVisitor
     * Generate Code for Package
     * Entry Point for generating code for a package
     */
-    override void visit(PackageDeclaration pack)
+    void visit(PackageDeclaration pack)
     {
         //Create Module for Package
         auto mod = new llvm.Module(mContext, pack.Name);
         pack.NodeStack.push(new ModuleNode(mod));
-        //pack.Store.Compiler(mod);
+        mCurModule = mod;
 
         //Create Functions
         foreach(func; pack.mFunctions)
@@ -116,27 +120,25 @@ class Compiler : public AbstractVisitor
     /**
     * Compile Function Declaration
     */
-    override void visit(FunctionDeclaration func)
+    void visit(FunctionDeclaration func)
     {
         //TODO better check if always generated
-        if(cnode!ValueNode(func) !is null)
+        if(CNode!ValueNode(func) !is null)
             return;
-
 
         llvm.Type type;
         //generate FuncType
-        if(cnode!TypeNode(func.FuncType) is null)
+        if(CNode!TypeNode(func.FuncType) is null)
         {
             type = Gen(func.FuncType);
+            //add type to type hashmap
             func.FuncType.NodeStack.push(new TypeNode(type));
         }
         else
-            type = cnode!TypeNode(func.FuncType).LLVMType;
-
-       
+            type = CNode!TypeNode(func.FuncType).LLVMType;
 
         //create llvm function
-        auto mod = cnode!ModuleNode(func.Parent).LLVMModule;
+        auto mod = CNode!ModuleNode(func.Parent).LLVMModule;
 
         if(mod is null)
         {
@@ -164,32 +166,39 @@ class Compiler : public AbstractVisitor
             func.Body.accept(this);
     }
 
+    void visit(ImportDeclaration){}
+    void visit(VariableDeclaration){}
+    void visit(ClassDeclaration){}
+    void visit(TraitDeclaration){}
+
     /**
     * Generate Block Statement
     */
-    override void visit(BlockStatement block)
+    void visit(BlockStatement block)
     {
         //value from parent node
         //auto bl = new llvm.BasicBlock(cast(llvm.Value)block.Parent.Store.Compiler(), "block");
     }
 
-    override void visit(ExpressionStatement expr){}
+    void visit(ExpressionStatement expr){}
     
     /**
     * Generate a Function Call
     */
-    override void visit(FunctionCall call)
+    void visit(FunctionCall call)
     {
         //semantic pass should have resolved the function
         //get function: auto f =  (cast(FunctionDeclaration)call.Store.Semantic()
         //get llvmValue auto llvmF = cast(llvmFunctionDeclaration)f.Store.Compiler();
         //if not created then create???
     }
+
+
     
     //Basics
-    override void visit(Declaration decl){}
-    override void visit(Statement stat){}
-    override void visit(Expression expr){}
+    void visit(Declaration decl){}
+    void visit(Statement stat){}
+    void visit(Expression expr){}
 
     /**
     * Convert Ast Type to LLVM Type
@@ -237,7 +246,7 @@ class Compiler : public AbstractVisitor
     /**
     * extract compiler node
     */
-    private static T cnode(T)(Node n)
+    private static T CNode(T)(Node n)
     {
         if(n.NodeStack.empty)
             return null;
@@ -253,6 +262,6 @@ class Compiler : public AbstractVisitor
     */
     private static bool hasCNode(Node n)
     {
-        return (cnode!CompilerNode(n) !is null);
+        return (CNode!CompilerNode(n) !is null);
     }
 } 

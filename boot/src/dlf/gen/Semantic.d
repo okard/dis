@@ -24,45 +24,53 @@ import dlf.ast.Declaration;
 import dlf.ast.Statement;
 import dlf.ast.Expression;
 import dlf.ast.Type;
+import dlf.ast.SymbolTable;
 
 import std.stdio;
 
 /**
 * Semantic Pass for AST
 */
-class Semantic : AbstractVisitor
+class Semantic : Visitor
 {
+    /// Current Symbol Table
+    private SymbolTable mSymTbl;
+
     //rules
     //semantic passes?
 
     //Type stack name -> Type 
     //Stack!(Type[char[]])
+
+    //Import external types into actual PackageDeclaration 
+    //Mark as external 
+    //error when a import isn't resolved
     
     /**
     * Visit Declaration
     */
-    override void visit(Declaration decl)
+    void visit(Declaration decl)
     {
     }
 
     /**
     * Visit Statement
     */
-    override void visit(Statement stat)
+    void visit(Statement stat)
     {
     }
 
     /**
     * Visit Expression
     */
-    override void visit(Expression expr)
+    void visit(Expression expr)
     {
     }
 
     /**
     * Visit PackageDeclaration
     */
-    override void visit(PackageDeclaration pack)
+    void visit(PackageDeclaration pack)
     {
         foreach(FunctionDeclaration f; pack.mFunctions)
             f.accept(this);  
@@ -71,7 +79,7 @@ class Semantic : AbstractVisitor
     /**
     * Visit FunctionDeclaration
     */
-    override void visit(FunctionDeclaration func)
+    void visit(FunctionDeclaration func)
     { 
         Information("Semantic FuncDcl %s", func.Name);
 
@@ -86,6 +94,11 @@ class Semantic : AbstractVisitor
             Information("\t Resolved ReturnType of '%s' is '%s'", func.Name, func.FuncType.ReturnType.toString());
         }
 
+        //check if no Body then do through parameters 
+        //Single Pairs are types
+
+        
+        //go into Body
         if(func.Body !is null)
             func.Body.accept(this);
     }
@@ -93,16 +106,16 @@ class Semantic : AbstractVisitor
     /**
     * Visit Block Statement
     */
-    override void visit(BlockStatement block)
+    void visit(BlockStatement block)
     {
-        foreach(stat; block.mStatements)
+        foreach(stat; block.Statements)
             stat.accept(this);
     }
 
     /**
     * Visit Expression Statement
     */
-    override void visit(ExpressionStatement expr)
+    void visit(ExpressionStatement expr)
     {
         expr.mExpression.accept(this);
     }
@@ -110,7 +123,7 @@ class Semantic : AbstractVisitor
     /**
     * Visit Function Call
     */
-    override void visit(FunctionCall call)
+    void visit(FunctionCall call)
     {
         Information("Semantic FuncCall %s", call.Function.toString());
         
@@ -125,9 +138,18 @@ class Semantic : AbstractVisitor
         {
             //get function declaration
         }
-        
-        
     }
+
+    /**
+    * Import Declaration
+    */
+    void visit(ImportDeclaration impDecl)
+    {
+    }
+
+    void visit(VariableDeclaration){}
+    void visit(ClassDeclaration){}
+    void visit(TraitDeclaration){}
 
     /**
     * Get the Declaration of a DotIdentifier
@@ -135,6 +157,8 @@ class Semantic : AbstractVisitor
     */
     private Declaration resolve(DotIdentifier di)
     {
+        //Symbol Table should not be null
+
         return null;
     }
 

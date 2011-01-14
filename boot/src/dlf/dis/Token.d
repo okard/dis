@@ -94,6 +94,7 @@ enum TokenType : ubyte
     KwWhile,
     KwDo,
     KwThis,
+    KwReturn,
 
     //Comment Tokens
     Comment
@@ -145,6 +146,7 @@ string toString(TokenType tok)
     case TokenType.KwWhile:     return "while";
     case TokenType.KwDo:        return "do";
     case TokenType.KwThis:      return "this";
+    case TokenType.KwReturn:    return "return";
     case TokenType.Comment:     return "<comment>";
     default: return "no token description";
     }
