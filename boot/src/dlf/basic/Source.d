@@ -197,6 +197,7 @@ class SourceString : Source
     public void reset()
     {
         mPos = 0;
+        mLoc.Col = mLoc.Line = 0;
     }
 
     /**

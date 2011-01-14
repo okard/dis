@@ -76,8 +76,8 @@ class PackageDeclaration : Declaration
 */
 public class ImportDeclaration : Declaration
 {
-    //Holds a PackageNode
-    //PackageDeclaration Package;
+    ///Holds a PackageNode
+    PackageDeclaration Package;
 }
 
 
@@ -142,10 +142,10 @@ class FunctionDeclaration : Declaration
 class VariableDeclaration : Declaration
 {
     ///Variable Type
-    private DataType VarDataType;
+    public DataType VarDataType;
 
     ///Initializer
-    Expression Initializer;
+    public Expression Initializer;
 
     /**
     * Ctor
@@ -155,14 +155,6 @@ class VariableDeclaration : Declaration
         mixin(set_nodetype);
         this.Name = name;
         this.VarDataType = type;
-    }
-
-    /**
-    * Get type
-    */
-    public DataType DataTyp()
-    {
-        return VarDataType;
     }
 }
 

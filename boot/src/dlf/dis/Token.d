@@ -157,10 +157,10 @@ public struct Token
 {
     public string toString()
     {
-        return dlf.dis.Token.toString(type);
+        return dlf.dis.Token.toString(Type);
     }
 
-    TokenType type;
-    Location loc;
-    string value;
+    TokenType Type;
+    Location Loc;
+    string Value;
 }

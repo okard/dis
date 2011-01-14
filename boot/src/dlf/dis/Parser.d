@@ -89,6 +89,14 @@ class Parser
         //special:
         InternalTypes["char"] = CharType.Instance;
     }
+
+    /**
+    * Parse a Source to Node
+    */
+    public Node parse(Source src)
+    {
+        return null;
+    }
     
     /**
     * Parse current Source File
@@ -98,9 +106,9 @@ class Parser
         mToken = mLex.getToken();
         
         //general parse loop (package scope)
-        while(mToken.type != TokenType.EOF)
+        while(mToken.Type != TokenType.EOF)
         {
-            switch(mToken.type)
+            switch(mToken.Type)
             {
             //Keywords
             case TokenType.KwPackage: parsePackage(); break;
@@ -129,11 +137,11 @@ class Parser
     private void parsePackage()
     {
         //package identifier;
-        assert(mToken.type == TokenType.KwPackage);
+        assert(mToken.Type == TokenType.KwPackage);
         
         //check for package identifier
         if(peek(1) != TokenType.Identifier)
-            error(mToken.loc, "Expected Identifier after package");
+            error(mToken.Loc, "Expected Identifier after package");
 
         //parse identifier for Package
         next();
@@ -149,8 +157,8 @@ class Parser
 
         //Look for semicolon or end of line
         mToken = mLex.getToken();
-        if(mToken.type != TokenType.EOL && mToken.type != TokenType.Semicolon)
-            error(mToken.loc, "Expected EOL or Semicolon after package declaration");
+        if(mToken.Type != TokenType.EOL && mToken.Type != TokenType.Semicolon)
+            error(mToken.Loc, "Expected EOL or Semicolon after package declaration");
 
 
         //Parse Loop
@@ -172,7 +180,7 @@ class Parser
         //top level node must be PackageDeclaration,(ClassDeclaration) 
         //def{(Calling Convention)} Identifier(Parameter) ReturnType
         // Block {}
-        assert(mToken.type == TokenType.KwDef);
+        assert(mToken.Type == TokenType.KwDef);
 
         auto func = new FunctionDeclaration();
         //add function declaration to stack
@@ -181,34 +189,34 @@ class Parser
         mToken = mLex.getToken();
 
         //Parse Calling Convention
-        if(mToken.type == TokenType.ROBracket)
+        if(mToken.Type == TokenType.ROBracket)
         {
             //identifier aka calling convention
             if(!expect(mToken,TokenType.Identifier))
-                error(mToken.loc, "parseDef: Expected Identifier for Calling Convention");
+                error(mToken.Loc, "parseDef: Expected Identifier for Calling Convention");
             
-            switch(mToken.value)
+            switch(mToken.Value)
             {
             case "C": func.FuncType.mCallingConv = FunctionType.CallingConvention.C; break;
             case "Dis": func.FuncType.mCallingConv = FunctionType.CallingConvention.Dis;break;
-            default: error(mToken.loc, "Invalid CallingConvention");
+            default: error(mToken.Loc, "Invalid CallingConvention");
             }
             
             //close )
             if(!expect(mToken, TokenType.RCBracket))
-                error(mToken.loc, "parseDef: Expected )");
+                error(mToken.Loc, "parseDef: Expected )");
 
             mToken = mLex.getToken();
         }
         
         //parse function name (identifier)
-        if(mToken.type != TokenType.Identifier)
+        if(mToken.Type != TokenType.Identifier)
         {
-            error(mToken.loc, "parseDef: expected identifier");
+            error(mToken.Loc, "parseDef: expected identifier");
             return;
         }
         
-        func.Name = cast(string)mToken.value;
+        func.Name = cast(string)mToken.Value;
 
 
         //Parse Parameter if available
@@ -223,15 +231,15 @@ class Parser
                 next();
 
             //after parsing parameters expects )
-            if(mToken.type != TokenType.RCBracket)
-                error(mToken.loc, "parseDef: expected ) after parameters");
+            if(mToken.Type != TokenType.RCBracket)
+                error(mToken.Loc, "parseDef: expected ) after parameters");
         }
 
         //look for return value
         if(peek(1) == TokenType.Identifier)
         {
             next();
-            func.FuncType.ReturnType = resolveType(mToken.value);
+            func.FuncType.ReturnType = resolveType(mToken.Value);
         }
 
         //if function declarations closes with ";" it is finished
@@ -247,7 +255,7 @@ class Parser
         if(peekIgnore(1, [TokenType.EOL, TokenType.Comment]) == TokenType.COBracket)
         {
             //goto "{"
-            while(mToken.type != TokenType.COBracket) 
+            while(mToken.Type != TokenType.COBracket) 
                 next();
             //parse the block
             parseBlock();
@@ -309,21 +317,21 @@ class Parser
             if(list.length == 1)
             {
                 //TODO 1 element, variablename or type (declaration with block or not) -> semantic?
-                error(mToken.loc, "Function Parameters must have 2 Identifier 'name type', one identifier is not yet supported");
+                error(mToken.Loc, "Function Parameters must have 2 Identifier 'name type', one identifier is not yet supported");
                 assert(true);
             }
 
         }
 
         //parse loop
-        while(mToken.type != TokenType.RCBracket)
+        while(mToken.Type != TokenType.RCBracket)
         {
             next();
 
-            switch(mToken.type)
+            switch(mToken.Type)
             {
             case TokenType.Identifier:
-                list  ~= cast(char[])mToken.value;
+                list  ~= cast(char[])mToken.Value;
                 break;
             case TokenType.Dot:
                 //todo dotted identifier
@@ -348,7 +356,7 @@ class Parser
                 break;
             
             default:
-                error(mToken.loc, format("Not expected Token in parseDefParams: %s", dlf.dis.Token.toString(mToken.type)) );
+                error(mToken.Loc, format("Not expected Token in parseDefParams: %s", dlf.dis.Token.toString(mToken.Type)) );
             }
         }     
     }
@@ -360,7 +368,7 @@ class Parser
     private void parseBlock()
     {
         //start token is "{"
-        assert(mToken.type == TokenType.COBracket);
+        assert(mToken.Type == TokenType.COBracket);
 
         //TODO symbol table? each block has one?
         auto block = new BlockStatement();
@@ -374,14 +382,14 @@ class Parser
             next();
             
             //ignore newlines
-            if(mToken.type == TokenType.EOL)
+            if(mToken.Type == TokenType.EOL)
                 continue;
 
             //a Block can only contain declarations and statements
 
             //Declarations:
             //var, val, def, class, trait, type
-            if(isIn!TokenType(mToken.type, [TokenType.KwVar, TokenType.KwVal, TokenType.KwDef, TokenType.KwClass]))
+            if(isIn!TokenType(mToken.Type, [TokenType.KwVar, TokenType.KwVal, TokenType.KwDef, TokenType.KwClass]))
             {
                 //parseDeclarations
                 continue;
@@ -421,7 +429,7 @@ class Parser
         //a Statement can be a statement
         //or a StatementExpression
 
-        switch(mToken.type)
+        switch(mToken.Type)
         {
         //for, foreach 
         case TokenType.KwFor: 
@@ -457,22 +465,22 @@ class Parser
         //Keyword Based
         //If-ElseIf-Else
         //Switch-Case
-        switch(mToken.type)
+        switch(mToken.Type)
         {
             case TokenType.KwIf: break;
             case TokenType.KwSwitch: break;
             case TokenType.KwThis: /*identifier?*/break;
-            case TokenType.ROBracket: /*return parseExpression; assert(mToken.type == RCBracket);*/ break;
+            case TokenType.ROBracket: /*return parseExpression; assert(mToken.Type == RCBracket);*/ break;
             case TokenType.Identifier:/*look under switch*/ break;
             // Literal Expressions
             case TokenType.String:
-                return new LiteralExpression(mToken.value, CharType.Instance); 
+                return new LiteralExpression(mToken.Value, CharType.Instance); 
             case TokenType.Integer: 
-                return new LiteralExpression(mToken.value, IntType.Instance); 
+                return new LiteralExpression(mToken.Value, IntType.Instance); 
             case TokenType.Float:
-                return new LiteralExpression(mToken.value, FloatType.Instance); 
+                return new LiteralExpression(mToken.Value, FloatType.Instance); 
             case TokenType.Double:
-                return new LiteralExpression(mToken.value, DoubleType.Instance); 
+                return new LiteralExpression(mToken.Value, DoubleType.Instance); 
             default:
                 assert(true);
         }
@@ -530,31 +538,31 @@ class Parser
     */
     private DotIdentifier parseIdentifier()
     {
-        assert(mToken.type == TokenType.Identifier);
+        assert(mToken.Type == TokenType.Identifier);
 
-        auto di = new DotIdentifier(cast(char[])mToken.value);
+        auto di = new DotIdentifier(cast(char[])mToken.Value);
         bool expDot = true;
 
         while((peek(1) == TokenType.Identifier) || (peek(1) == TokenType.Dot))
         {              
             next();
             //identifier
-            if(expDot && mToken.type == TokenType.Identifier)
+            if(expDot && mToken.Type == TokenType.Identifier)
             {
-                error(mToken.loc, "expected dot to seperate identifiers");
+                error(mToken.Loc, "expected dot to seperate identifiers");
                 break;
             }   
             //dot
-            if(!expDot && mToken.type == TokenType.Dot)
+            if(!expDot && mToken.Type == TokenType.Dot)
             {
-                error(mToken.loc, "expected identifier after dot");
+                error(mToken.Loc, "expected identifier after dot");
                 break;
             }
             
             expDot = !expDot;
             
-            if(mToken.type == TokenType.Identifier)
-                di.mIdentifier ~= cast(char[])mToken.value;
+            if(mToken.Type == TokenType.Identifier)
+                di.mIdentifier ~= cast(char[])mToken.Value;
             
         }
 
@@ -584,7 +592,7 @@ class Parser
     private bool expect(ref Token token, TokenType expected)
     {
         token = mLex.getToken();
-        return (token.type == expected);
+        return (token.Type == expected);
     }
 
     /**
@@ -600,7 +608,7 @@ class Parser
     */
     private TokenType peek(ushort lookahead = 1)
     {
-        return mLex.peekToken(lookahead).type;
+        return mLex.peekToken(lookahead).Type;
     }
 
     /**
@@ -613,7 +621,7 @@ class Parser
 
         do
         {
-            t = mLex.peekToken(lookahead).type;
+            t = mLex.peekToken(lookahead).Type;
             lookahead++;
         }
         while(isIn!TokenType(t, ignore));
@@ -627,7 +635,7 @@ class Parser
     private void error(Location loc, string msg)
     {
         //TODO: Make error events, remove stupid writeln
-        writefln("(%s): %s", mToken.loc.toString(), msg);
+        writefln("(%s): %s", loc, msg);
     }
 
     /**
@@ -636,7 +644,7 @@ class Parser
     private void warning(Location loc, string msg)
     {
         //TODO: Make error events, remove stupid writeln
-        writefln("(%s): %s", mToken.loc.toString(), msg);
+        writefln("(%s): %s", loc, msg);
     }
 
     /**

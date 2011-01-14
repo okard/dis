@@ -116,7 +116,7 @@ class Lexer
             ident ~= mC;
         }
 
-        te.value = cast(string)ident;
+        te.Value = cast(string)ident;
     }
 
     /**
@@ -124,7 +124,7 @@ class Lexer
     */
     private void scanString(ref Token te)
     {
-        te.type = TokenType.String;
+        te.Type = TokenType.String;
         
         char[] str;
 
@@ -138,7 +138,7 @@ class Lexer
         }
         while(mC != '"');
         
-        te.value = cast(string)str;
+        te.Value = cast(string)str;
     }
 
     /**
@@ -147,7 +147,7 @@ class Lexer
     private void scanNumber(ref Token te)
     {
         //TODO scanNumbers
-        te.type = TokenType.Integer;
+        te.Type = TokenType.Integer;
         //Integer, Float, Double
     }
 
@@ -158,7 +158,7 @@ class Lexer
     */
     private void scanComments(ref Token te)
     {
-        te.type = TokenType.Comment;
+        te.Type = TokenType.Comment;
         char c = mSrc.getChar();
 
         //line comment
@@ -195,58 +195,58 @@ class Lexer
         //look for file end and no valid chars
         if(mSrc.isEof() || !nextValidChar(mC))
         {
-            tok.type = TokenType.EOF;
+            tok.Type = TokenType.EOF;
             return tok;
         }   
 
         //writeln(mC == '\n' ? 'n' : mC);
 
-        tok.loc = mSrc.Loc;
+        tok.Loc = mSrc.Loc;
 
         //Check for special characters
         switch(mC)
         {
-        case '\n': tok.type = TokenType.EOL; break;
-        case ';':  tok.type = TokenType.Semicolon; break;
-        case ',':  tok.type = TokenType.Comma; break;
-        case '.':  tok.type = TokenType.Dot; break;
-        case ':':  tok.type = TokenType.Colon; break;
-        case '(':  tok.type = TokenType.ROBracket; break;
-        case ')':  tok.type = TokenType.RCBracket; break;
-        case '[':  tok.type = TokenType.AOBracket; break;
-        case ']':  tok.type = TokenType.ACBracket; break;
-        case '{':  tok.type = TokenType.COBracket; break;
-        case '}':  tok.type = TokenType.CCBracket; break;
-        case '@':  tok.type = TokenType.Annotation; break;
-        case '!':  tok.type = TokenType.Not; break;
-        case '+':  tok.type = TokenType.Add; break;
-        case '-':  tok.type = TokenType.Sub; break;
-        case '*':  tok.type = lookFor('=', TokenType.Mul, TokenType.MulAssign); break;
+        case '\n': tok.Type = TokenType.EOL; break;
+        case ';':  tok.Type = TokenType.Semicolon; break;
+        case ',':  tok.Type = TokenType.Comma; break;
+        case '.':  tok.Type = TokenType.Dot; break;
+        case ':':  tok.Type = TokenType.Colon; break;
+        case '(':  tok.Type = TokenType.ROBracket; break;
+        case ')':  tok.Type = TokenType.RCBracket; break;
+        case '[':  tok.Type = TokenType.AOBracket; break;
+        case ']':  tok.Type = TokenType.ACBracket; break;
+        case '{':  tok.Type = TokenType.COBracket; break;
+        case '}':  tok.Type = TokenType.CCBracket; break;
+        case '@':  tok.Type = TokenType.Annotation; break;
+        case '!':  tok.Type = TokenType.Not; break;
+        case '+':  tok.Type = TokenType.Add; break;
+        case '-':  tok.Type = TokenType.Sub; break;
+        case '*':  tok.Type = lookFor('=', TokenType.Mul, TokenType.MulAssign); break;
         //Can be Comments
         case '/':  if(mSrc.peekChar(1) == '/' || mSrc.peekChar(1) == '*') 
                         scanComments(tok);
                    else
-                        tok.type = TokenType.Div;
+                        tok.Type = TokenType.Div;
                    break;
 
-        case '&': tok.type = TokenType.And; break;
-        case '|': tok.type = TokenType.Or; break;
-        case '=': tok.type = TokenType.Assign; break;
+        case '&': tok.Type = TokenType.And; break;
+        case '|': tok.Type = TokenType.Or; break;
+        case '=': tok.Type = TokenType.Assign; break;
         case '"':  scanString(tok); break;
         default:
-            tok.type = TokenType.None;
+            tok.Type = TokenType.None;
         }
 
         //Handle Identifiers and Keywords
-        if(tok.type == TokenType.None && isAlpha(mC))
+        if(tok.Type == TokenType.None && isAlpha(mC))
         {
             scanIdentifier(tok);
             //keyword or identifier
-            tok.type = mKeywords.get(tok.value, TokenType.Identifier);
+            tok.Type = mKeywords.get(tok.Value, TokenType.Identifier);
         }
 
         //Handle Numbers
-        if(tok.type == TokenType.None && isNumeric(mC))
+        if(tok.Type == TokenType.None && isNumeric(mC))
         {
             scanNumber(tok);
         }
@@ -300,7 +300,7 @@ class Lexer
     @property
     string currentValue()
     {
-        return mTok.value;
+        return mTok.Value;
     }
 
     /**

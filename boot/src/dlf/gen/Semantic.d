@@ -145,9 +145,35 @@ class Semantic : Visitor
     */
     void visit(ImportDeclaration impDecl)
     {
+        //semantic check for available PackageDeclarations
     }
 
-    void visit(VariableDeclaration){}
+    /**
+    * Semantic Checks for Variables
+    */
+    void visit(VariableDeclaration var)
+    {
+        //Do Semantic Analysis for Initializer Expression if available
+        if(var.Initializer !is null)
+            var.Initializer.accept(this);
+
+        //Set Datatype for Variable
+        if(var.VarDataType == OpaqueType.Instance)
+        {
+            if(var.Initializer !is null)
+            {
+                var.VarDataType = var.Initializer.ReturnType;
+            }
+        }
+
+        //DataType of Variable and Initializer must match
+        if(var.Initializer !is null)
+        {   
+            //check for allowed conversions?
+            assert(var.VarDataType == var.Initializer.ReturnType);
+        }
+    }
+
     void visit(ClassDeclaration){}
     void visit(TraitDeclaration){}
 
