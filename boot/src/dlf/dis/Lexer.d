@@ -289,7 +289,7 @@ class Lexer
     * The current Token
     */
     @property
-    Token currentToken()
+    Token CurrentToken()
     {
        return mTok;
     }
@@ -298,7 +298,7 @@ class Lexer
     * Current Value for Token
     */
     @property
-    string currentValue()
+    string CurrentValue()
     {
         return mTok.Value;
     }
@@ -307,7 +307,7 @@ class Lexer
     * Set current Source
     */
     @property
-    void source(Source src)
+    void Src(Source src)
     {
         mSrc = src;
     }
@@ -316,7 +316,7 @@ class Lexer
     * Get current Source
     */
     @property
-    Source source()
+    Source Src()
     {
         return mSrc;
     }  

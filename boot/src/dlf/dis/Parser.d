@@ -651,18 +651,18 @@ class Parser
     * Set Source file for Lexer
     */
     @property
-    public void source(Source src)
+    public void Src(Source src)
     {
-        mLex.source = src;
+        mLex.Src = src;
     }
     
     /**
     * Get source 
     */
     @property 
-    public Source source()
+    public Source Src()
     {
-        return mLex.source;
+        return mLex.Src;
     }
 
     /**

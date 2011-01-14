@@ -91,7 +91,7 @@ int main(string[] args)
     if(arguments.printToken)
     {
         auto lex = new Lexer();
-        lex.source = src;
+        lex.Src = src;
         dumpLexer(lex);
         src.reset();
         writeln("------- END LEXER DUMP ------------------------------");
@@ -99,7 +99,7 @@ int main(string[] args)
    
     //Parser
     auto parser = new Parser();
-    parser.source = src;
+    parser.Src = src;
     parser.parse();
 
     //Go through PackageDeclarations
@@ -131,7 +131,7 @@ private void dumpLexer(Lexer lex)
 {
     while(lex.getToken().Type != TokenType.EOF)
     {
-        auto t = lex.currentToken;
+        auto t = lex.CurrentToken;
         if(t.Type == TokenType.Identifier)
             writefln("Identifier: %1$s", t.Value);
         else if (t.Type == TokenType.String)
