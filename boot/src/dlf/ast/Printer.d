@@ -79,7 +79,7 @@ class Printer : Visitor
         writetln("%sPackage: %s",tabs(),  pd.Name);
 
         tabDeepness++;
-        foreach(fd; pd.mFunctions)
+        foreach(fd; pd.Functions)
             fd.accept(this);
         tabDeepness--;
     }

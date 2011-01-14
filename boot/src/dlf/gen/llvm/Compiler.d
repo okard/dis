@@ -106,7 +106,7 @@ class Compiler : Visitor
         mCurModule = mod;
 
         //Create Functions
-        foreach(func; pack.mFunctions)
+        foreach(func; pack.Functions)
         {
             func.accept(this);
         }

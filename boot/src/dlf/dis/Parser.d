@@ -265,7 +265,7 @@ class Parser
         mAstStack.pop();
         if(mAstStack.top.Type == NodeType.PackageDeclaration)
         {
-            (cast(PackageDeclaration)mAstStack.top).mFunctions ~= func;
+            (cast(PackageDeclaration)mAstStack.top).Functions ~= func;
             func.Parent = (cast(PackageDeclaration)mAstStack.top);
         }
     }

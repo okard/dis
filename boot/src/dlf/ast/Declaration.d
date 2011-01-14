@@ -47,16 +47,18 @@ abstract class Declaration : Node
 */
 class PackageDeclaration : Declaration
 {
+    /// Symbol Table
     public SymbolTable SymTable;
-
-    //Functions
-    FunctionDeclaration[] mFunctions;
-        
-    //ClassDeclaration[] Classes;
-    //VariableDeclaration[] Variables
-
-    //ImportDeclaration[] Imports;
-    //TraitDeclaration[] Traits;
+    /// Imports
+    ImportDeclaration[] Imports;
+    /// Variables
+    VariableDeclaration[] Variables;
+    /// Functions
+    FunctionDeclaration[] Functions;
+    /// Classes
+    ClassDeclaration[] Classes;
+    /// Traits
+    TraitDeclaration[] Traits;
 
     //Visitor Mixin
     mixin VisitorMixin;
@@ -141,10 +143,10 @@ class FunctionDeclaration : Declaration
 */
 class VariableDeclaration : Declaration
 {
-    ///Variable Type
+    /// Variable Type
     public DataType VarDataType;
 
-    ///Initializer
+    /// Initializer
     public Expression Initializer;
 
     /**
