@@ -64,12 +64,14 @@ class ExpressionStatement : Statement
 {
     mixin VisitorMixin;
 
-    public Expression mExpression;
+    /// Expression
+    public Expression Expr;
 
+    ///Create new ExpressionStatement
     public this(Expression expr)
     {
         mixin(set_nodetype);
-        mExpression = expr;
+        Expr = expr;
     }
 }
 

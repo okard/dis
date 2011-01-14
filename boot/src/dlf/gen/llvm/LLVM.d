@@ -174,6 +174,17 @@ public class Type
     {
         return LLVMGetTypeKind(mType);
     }
+
+    /**
+    * Helper to get TypeArray
+    */
+    public static LLVMTypeRef[] convertArray(Type[] types)
+    {
+        auto t = new LLVMTypeRef[types.length];
+        for(int i = 0; i < types.length; i++)
+            t[i] = types[i].llvmType;
+        return t;
+    }
 }
 
 /*
@@ -205,6 +216,21 @@ class PointerType : Type
 
 
 /**
+* Struct Type
+*/
+class StructType : Type
+{
+    
+    /// Create a new Struct Type
+    public this(Type[] elements, bool packed)
+    {
+        auto p = convertArray(elements);
+        super(LLVMStructType(p.ptr, elements.length, packed));
+    }
+}
+
+
+/**
 * Function Type
 */
 class FunctionType : Type
@@ -215,10 +241,7 @@ class FunctionType : Type
     this(Type retType, Type[] params, bool varargs)
     {   
         //Create Array with primary llvm types
-        auto p = new LLVMTypeRef[params.length];
-        for(int i = 0; i < params.length; i++)
-            p[i] = params[i].llvmType;
-            
+        auto p = convertArray(params);
         super(LLVMFunctionType(retType.llvmType, p.ptr, params.length, varargs));
     }
 }
@@ -415,16 +438,49 @@ class Builder
     }
 
     /**
+    * Alloc memory for type
+    */
+    public Value Alloca(Type t, string name)
+    {
+        return new Value(LLVMBuildAlloca(mBuilder, t.llvmType, (cast(char[])name).ptr));
+    }
+
+    /**
+    * Get Element from Struct
+    */
+    public Value StructGEP(Value v, uint Index, string name)
+    {
+        return new Value(LLVMBuildStructGEP(mBuilder, v.llvmValue, Index, (cast(char[])name).ptr));
+    }
+
+    /**
+    * Store a Value at ptr-value
+    */
+    public void Store(Value ptr, Value val)
+    {
+        LLVMBuildStore(mBuilder, val.llvmValue, ptr.llvmValue);
+    }
+
+    /**
     * Create a Function Call
     */
-    public void Call(FunctionValue fn, Value[] args)
+    public Value Call(FunctionValue fn, Value[] args)
     {
         //Create array with primary llvm values
         auto argarr = new  LLVMValueRef[args.length];
         for(int i = 0; i < args.length; i++)
             argarr[i] = args[i].llvmValue;
 
-        auto v = LLVMBuildCall(mBuilder, fn.llvmValue(), argarr.ptr, argarr.length, (cast(char[])fn.Name).ptr);
+        return new Value(LLVMBuildCall(mBuilder, fn.llvmValue(), argarr.ptr, argarr.length, (cast(char[])fn.Name).ptr));
+    }
+
+    /**
+    * Get LLVMBuilder
+    */
+    @property
+    public LLVMBuilderRef llvmBuilder()
+    {
+        return mBuilder;
     }
 }
 

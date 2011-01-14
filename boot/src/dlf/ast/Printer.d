@@ -102,7 +102,7 @@ class Printer : Visitor
     */
     public void visit(ExpressionStatement expr) 
     {
-        expr.mExpression.accept(this);
+        expr.Expr.accept(this);
     }
 
     /**
@@ -194,7 +194,7 @@ class Printer : Visitor
     {
         switch(stat.Type)
         {
-            case NodeType.ExpressionStatement: return toString((cast(ExpressionStatement)stat).mExpression);
+            case NodeType.ExpressionStatement: return toString((cast(ExpressionStatement)stat).Expr);
             default: return "<unkown statement>";
         }
     }

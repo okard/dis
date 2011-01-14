@@ -122,6 +122,8 @@ class Compiler : Visitor
     */
     void visit(FunctionDeclaration func)
     {
+        //TODO look for Extension Methods
+        //TODO look for class functions
         //TODO better check if always generated
         if(CNode!ValueNode(func) !is null)
             return;
@@ -167,8 +169,24 @@ class Compiler : Visitor
     }
 
     void visit(ImportDeclaration){}
-    void visit(VariableDeclaration){}
-    void visit(ClassDeclaration){}
+
+    /**
+    * Generate Variables
+    */
+    void visit(VariableDeclaration)
+    {
+        //LLVM Values
+    }
+
+    /**
+    * Generate Classes
+    */
+    void visit(ClassDeclaration)
+    {
+        //Classes are a llvm struct type
+        
+    }
+
     void visit(TraitDeclaration){}
 
     /**
@@ -176,11 +194,21 @@ class Compiler : Visitor
     */
     void visit(BlockStatement block)
     {
+        //New Basic Block
+        foreach(s; block.Statements)
+            s.accept(this);
+    
         //value from parent node
         //auto bl = new llvm.BasicBlock(cast(llvm.Value)block.Parent.Store.Compiler(), "block");
     }
 
-    void visit(ExpressionStatement expr){}
+    /**
+    * Generate Expression Statement
+    */
+    void visit(ExpressionStatement stat)
+    {
+        stat.Expr.accept(this);
+    }
     
     /**
     * Generate a Function Call
