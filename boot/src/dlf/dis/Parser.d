@@ -416,7 +416,8 @@ class Parser
         auto node = mAstStack.top;
         if(node.Type == NodeType.FunctionDeclaration)
         {
-            (cast(FunctionDeclaration)mAstStack.top).Body = block;
+            (cast(FunctionDeclaration)node).Body = block;
+            block.Parent = node;
         }
     }
 

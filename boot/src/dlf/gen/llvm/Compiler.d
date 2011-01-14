@@ -194,12 +194,18 @@ class Compiler : Visitor
     */
     void visit(BlockStatement block)
     {
+        //Generate Entry BasicBlock
+        if(block.Parent.Type == NodeType.FunctionDeclaration)
+        {
+            auto bb = new llvm.BasicBlock(cast(llvm.FunctionValue)CNode!ValueNode(block.Parent).LLVMValue, "entry");
+            block.NodeStack.push(new BasicBlockNode(bb));
+        }
+
+        //For If, Switch, For, While, Do -> new BasicBlock(parent.basicblock)
+
         //New Basic Block
         foreach(s; block.Statements)
             s.accept(this);
-    
-        //value from parent node
-        //auto bl = new llvm.BasicBlock(cast(llvm.Value)block.Parent.Store.Compiler(), "block");
     }
 
     /**
