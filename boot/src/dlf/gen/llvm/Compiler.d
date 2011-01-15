@@ -282,6 +282,9 @@ class Compiler : Visitor
     */
     private static T CNode(T)(Node n)
     {
+        if(n is null)
+            return null;
+
         if(n.NodeStack.empty)
             return null;
 

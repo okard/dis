@@ -8,5 +8,11 @@ if [[ "$osbit" == "64" ]]; then
 	LD_LIBRARY_PATH=./lib/linux32/:$LD_LIBRARY_PATH
 fi
 
-./bin/disc $@
-#gdb --args ./bin/disc $@
+
+#check for debug
+if [ "$1" = "--debug" ] ; then
+    shift;
+    gdb --args ./bin/disc $@
+else
+    ./bin/disc $@
+fi

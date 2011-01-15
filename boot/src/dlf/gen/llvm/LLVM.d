@@ -458,6 +458,7 @@ class Builder
     */
     public void Store(Value ptr, Value val)
     {
+        //check if Value is a ptr value?
         LLVMBuildStore(mBuilder, val.llvmValue, ptr.llvmValue);
     }
 

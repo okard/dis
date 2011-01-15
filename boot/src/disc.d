@@ -25,6 +25,7 @@ import dlf.basic.Log;
 import dlf.basic.Source;
 import dlf.basic.ArgHelper;
 import dlf.ast.Printer;
+import dlf.ast.Node;
 import dlf.dis.Token;
 import dlf.dis.Lexer;
 import dlf.dis.Parser;
@@ -100,7 +101,10 @@ int main(string[] args)
     //Parser
     auto parser = new Parser();
     parser.Src = src;
-    parser.parse();
+    auto node = parser.parse();
+
+    //A new Source File have to result in a PackageNode
+    assert(node.Type == NodeType.PackageDeclaration);
 
     //Go through PackageDeclarations
     // and import source files
@@ -109,12 +113,12 @@ int main(string[] args)
 
     //Print out
     auto printer = new Printer();
-    printer.print(parser.ParseTree());
+    printer.print(node);
     writeln("------- END PARSER DUMP ------------------------------");
 
     //run semantics
     auto semantic = new Semantic();
-    auto ast = semantic.run(parser.ParseTree());
+    auto ast = semantic.run(node);
     writeln("------- END SEMANTIC ------------------------------");
 
     //Compiler

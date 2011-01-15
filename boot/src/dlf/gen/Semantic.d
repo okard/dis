@@ -71,6 +71,8 @@ class Semantic : Visitor
     */
     void visit(PackageDeclaration pack)
     {
+        Information("Semantic: PackageDcl");
+
         mSymTable = pack.SymTable;
 
         // Imports
@@ -124,6 +126,8 @@ class Semantic : Visitor
     */
     void visit(BlockStatement block)
     {
+        Information("Semantic: BlockStmt");
+
         mSymTable = block.SymTable;
 
         //check each statement
@@ -172,7 +176,6 @@ class Semantic : Visitor
             impDecl.Package.accept(this);
         }
 
-
         //when a type resolved from import package
         //generate missing declarations? compiler task?
         //Import external types into actual PackageDeclaration 
@@ -206,8 +209,19 @@ class Semantic : Visitor
         }
     }
 
-    void visit(ClassDeclaration){}
-    void visit(TraitDeclaration){}
+    /**
+    * Class Semantic Check
+    */
+    void visit(ClassDeclaration cls)
+    {
+    }
+
+    /**
+    * Trait Semantic
+    */
+    void visit(TraitDeclaration)
+    {
+    }
 
     /**
     * Get the Declaration of a DotIdentifier
