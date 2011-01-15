@@ -35,7 +35,7 @@ abstract class Node
     /// NodeStack for Additional Information Nodes
     public Stack!Node NodeStack;
 
-    ///mixin for type
+    /// Mixin for node type
     protected const string set_nodetype = "this.Type = mixin(\"NodeType.\" ~ typeof(this).stringof);";
     
     /// Create new Node

@@ -18,6 +18,8 @@
 ******************************************************************************/
 module dlf.basic.Util;
 
+import std.conv;
+version(linux) import core.sys.posix.unistd;
 
 /**
 * Is in Array Function
@@ -55,6 +57,43 @@ mixin template Singleton(T)
     private this(){}
 }
 
+
+/**
+*   ApplicationPath
+*/
+static class ApplicationPath
+{
+    const int BUFFER_SIZE = 2048;
+    //TODO Buffer Result
+    
+    version(Windows)
+    {
+        static string get()
+        {
+            wchar buf[BUFFER_SIZE];
+            auto bs = GetModuleFileNameW(GetModuleHandleW(null), buf.ptr, BUFFER_SIZE);
+            auto str = to!string(buf[0..bs]);
+            //str = Util.replace!(char)(str,'\\','/');
+            return str;
+        }
+    }           
+
+    version(linux)
+    {
+        static string get()
+        {
+            char buf[BUFFER_SIZE];
+            auto pid = getpid(); //pid_t = int
+            auto path = "/proc/" ~ to!string(pid) ~ "/exe\0";
+            auto bs = readlink(path.ptr, buf.ptr, BUFFER_SIZE-1);
+            buf[bs] = '\0';
+            auto c = new char[](bs);
+            c = buf[0..bs];
+            return to!string(c);
+        }
+    }
+}
+
 version(unittest) import std.stdio;
 
 unittest
@@ -62,6 +101,9 @@ unittest
     //test isIn
     assert(isIn!int(3, [1, 2, 3, 4, 5]));
     assert(!isIn!int(6, [1, 2, 3, 4, 5]));
+
+    auto app = ApplicationPath.get();
+    assert(app.length > 0);
 
     writeln("[TEST] Util Tests passed");
 }

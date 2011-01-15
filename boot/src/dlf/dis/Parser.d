@@ -434,6 +434,9 @@ class Parser
 
         switch(mToken.Type)
         {
+        //Block Statement
+        case TokenType.COBracket:
+            break;
         //for, foreach 
         case TokenType.KwFor: 
             break;

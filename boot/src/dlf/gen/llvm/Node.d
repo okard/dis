@@ -41,12 +41,7 @@ enum CompilerNodeType
 */
 class CompilerNode : Node
 {
-    //LLVM Context
-    //LLVM Module
-    //LLVM Type
-    //LLVM Value
-    //LLVM BasicBlock
-
+    /// CompilerNode Type
     CompilerNodeType CNType;
 
     /**
@@ -56,7 +51,6 @@ class CompilerNode : Node
     {
         Type = NodeType.Special;
     }
-
 
     /**
     * For Node Compatibility
@@ -108,7 +102,7 @@ class TypeNode : CompilerNode
 */
 class ValueNode : CompilerNode
 {
-    ///LLVM Value
+    /// LLVM Value
     llvm.Value LLVMValue;
 
     /// Creates new Value Compiler Node
@@ -124,6 +118,7 @@ class ValueNode : CompilerNode
 */
 class BasicBlockNode : CompilerNode
 {
+    /// LLVM Basic Block
     llvm.BasicBlock LLVMBBlock;
 
     /// Creates new Value Compiler Node

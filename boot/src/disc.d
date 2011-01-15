@@ -26,6 +26,7 @@ import dlf.basic.Source;
 import dlf.basic.ArgHelper;
 import dlf.ast.Printer;
 import dlf.ast.Node;
+import dlf.ast.Declaration;
 import dlf.dis.Token;
 import dlf.dis.Lexer;
 import dlf.dis.Parser;
@@ -78,6 +79,8 @@ int main(string[] args)
     auto arguments = new CommandLineArg(args);
     auto srcFiles = arguments.getSourceFiles();
 
+    //TODO Read Configuration
+
     if(srcFiles.length < 1)
     {
         writeln("No Source Files");
@@ -106,10 +109,8 @@ int main(string[] args)
     //A new Source File have to result in a PackageNode
     assert(node.Type == NodeType.PackageDeclaration);
 
-    //Go through PackageDeclarations
-    // and import source files
-    // read config for places to look for imports
-    // prefer dis then dish (dis header files)
+    //Parse Imports
+    handleImports(cast(PackageDeclaration)node);
 
     //Print out
     auto printer = new Printer();
@@ -127,6 +128,23 @@ int main(string[] args)
 
     return 0;
 }
+
+
+/**
+* Handle Imports
+*/
+private void handleImports(PackageDeclaration pack)
+{
+    //Look for Import Files
+    foreach(imp; pack.Imports)
+    {
+        // Search File
+        // Parse File
+        // Run Semantic 
+        // add to imp.Package 
+    }
+}
+
 
 /**
 * Debug Function that dumps out lexer output

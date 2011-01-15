@@ -47,6 +47,9 @@ abstract class Declaration : Node
 */
 class PackageDeclaration : Declaration
 {
+    //Visitor Mixin
+    mixin VisitorMixin;
+
     /// Symbol Table
     public SymbolTable SymTable;
     /// Imports
@@ -60,9 +63,6 @@ class PackageDeclaration : Declaration
     /// Traits
     TraitDeclaration[] Traits;
 
-    //Visitor Mixin
-    mixin VisitorMixin;
-    
     /**
     * Ctor
     */
@@ -78,6 +78,9 @@ class PackageDeclaration : Declaration
 */
 public class ImportDeclaration : Declaration
 {
+    //Visitor Mixin
+    mixin VisitorMixin;
+
     ///Holds a PackageNode
     PackageDeclaration Package;
 }
@@ -143,6 +146,9 @@ class FunctionDeclaration : Declaration
 */
 class VariableDeclaration : Declaration
 {
+    //Visitor Mixin
+    mixin VisitorMixin;
+
     /// Variable Type
     public DataType VarDataType;
 

@@ -27,10 +27,11 @@ import dlf.ast.Type;
 */
 abstract class Expression : Node
 {
-    DataType ReturnType;
+    //Visitor Mixin
     mixin VisitorMixin;
 
-    alias ReturnType mReturnType;
+    /// ReturnType of Expression
+    DataType ReturnType;
 }
 
 
@@ -142,6 +143,9 @@ final class FunctionCall : Expression
 */
 final class BinaryExpression : Expression
 {
+    //Visitor Mixin
+    mixin VisitorMixin;
+
     /// OP + - * / % ** ^ && ||
     enum Op {Add, Div, Mul}
 
