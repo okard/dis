@@ -209,6 +209,16 @@ class Semantic : Visitor
         }
     }
 
+
+    /**
+    * Semantic Pass for DotIdentifier
+    */
+    void visit(DotIdentifier di)
+    {
+        // resolve returntype 
+        // add node DotIdentifier pointo to Extend
+    }
+
     /**
     * Class Semantic Check
     */
@@ -244,6 +254,16 @@ class Semantic : Visitor
         return astNode;
     }
 
+    /**
+    * Assign a Node to Extend Property of Node
+    */
+    private static void assign(Node n, Node e)
+    {
+        if(n.Extend !is null)
+             e.Parent = n.Extend;
+
+        n.Extend = e;
+    }
 
     /**
     * Semantic Information Log

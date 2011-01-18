@@ -143,6 +143,7 @@ class Printer : Visitor
     void visit(VariableDeclaration){}
     void visit(ClassDeclaration){}
     void visit(TraitDeclaration){}
+    void visit(DotIdentifier){}
 
     /**
     * Get Tabs

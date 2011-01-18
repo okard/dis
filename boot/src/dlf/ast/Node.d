@@ -18,7 +18,6 @@
 ******************************************************************************/
 module dlf.ast.Node;
 
-import dlf.basic.Stack;
 import dlf.ast.Visitor;
 
 /**
@@ -32,8 +31,8 @@ abstract class Node
     /// Node Type
     public NodeType Type;
 
-    /// NodeStack for Additional Information Nodes
-    public Stack!Node NodeStack;
+    /// For Node Extensions in Semantic and Compiler Passes
+    public Node Extend;
 
     /// Mixin for node type
     protected const string set_nodetype = "this.Type = mixin(\"NodeType.\" ~ typeof(this).stringof);";
@@ -41,7 +40,6 @@ abstract class Node
     /// Create new Node
     public this()
     {
-        NodeStack = Stack!Node(5);
     }
 
     /**

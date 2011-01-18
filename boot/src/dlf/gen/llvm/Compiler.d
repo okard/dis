@@ -102,7 +102,7 @@ class Compiler : Visitor
     {
         //Create Module for Package
         auto mod = new llvm.Module(mContext, pack.Name);
-        pack.NodeStack.push(new ModuleNode(mod));
+        assign(pack, new ModuleNode(mod));
         mCurModule = mod;
 
         //Create Functions
@@ -134,7 +134,7 @@ class Compiler : Visitor
         {
             type = Gen(func.FuncType);
             //add type to type hashmap
-            func.FuncType.NodeStack.push(new TypeNode(type));
+            assign(func.FuncType, new TypeNode(type));
         }
         else
             type = CNode!TypeNode(func.FuncType).LLVMType;
@@ -158,7 +158,7 @@ class Compiler : Visitor
         
         auto f = new llvm.FunctionValue(mod, t, func.Name);
         //f.setCallConv(llvm.LLVMCallConv.C);
-        func.NodeStack.push(new ValueNode(f));
+        assign(func, new ValueNode(f));
         
         //store created function
         //func.Store.Compiler(f);
@@ -198,7 +198,7 @@ class Compiler : Visitor
         if(block.Parent.Type == NodeType.FunctionDeclaration)
         {
             auto bb = new llvm.BasicBlock(cast(llvm.FunctionValue)CNode!ValueNode(block.Parent).LLVMValue, "entry");
-            block.NodeStack.push(new BasicBlockNode(bb));
+            assign(block, new BasicBlockNode(bb));
         }
 
         //For If, Switch, For, While, Do -> new BasicBlock(parent.basicblock)
@@ -226,6 +226,9 @@ class Compiler : Visitor
         //get llvmValue auto llvmF = cast(llvmFunctionDeclaration)f.Store.Compiler();
         //if not created then create???
     }
+
+
+    void visit(DotIdentifier){}
 
 
     
@@ -285,13 +288,15 @@ class Compiler : Visitor
         if(n is null)
             return null;
 
-        if(n.NodeStack.empty)
+        if(n.Extend is null)
             return null;
 
-        if(n.NodeStack.top.Type != NodeType.Special)
+        if(n.Extend.Type != NodeType.Special)
             return null;
+        
+        //go through extend Parent?
 
-        return cast(T)n.NodeStack.top;
+        return cast(T)n.Extend;
     }
 
     /**
@@ -300,5 +305,16 @@ class Compiler : Visitor
     private static bool hasCNode(Node n)
     {
         return (CNode!CompilerNode(n) !is null);
+    }
+
+     /**
+    * Assign a Node to Extend Property of Node
+    */
+    private static void assign(Node n, Node e)
+    {
+        if(n.Extend !is null)
+             e.Parent = n.Extend;
+
+        n.Extend = e;
     }
 } 

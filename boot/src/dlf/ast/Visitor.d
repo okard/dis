@@ -38,7 +38,9 @@ public interface Visitor
     //Statements
     void visit(BlockStatement block);
     void visit(ExpressionStatement expr);
+    //Expressions
     void visit(FunctionCall call);
+    void visit(DotIdentifier);
     //basic 
     void visit(Statement);
     void visit(Expression);
