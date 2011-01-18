@@ -257,7 +257,7 @@ class Value
     /**
     * Creates Basic Value
     */
-    private this(LLVMValueRef v)
+    public this(LLVMValueRef v)
     {
        mValue = v;
     }
@@ -439,11 +439,19 @@ class Builder
     }
 
     /**
-    * Label Jump
+    * Simple Label Jump
     */
     public void Br(BasicBlock bb)
     {
         LLVMBuildBr(mBuilder, bb.llvmBasicBlock);
+    }
+
+    /**
+    * Conditional jumps
+    */
+    public void CondBr(Value cond, BasicBlock then, BasicBlock els)
+    {
+        LLVMBuildCondBr(mBuilder, cond.llvmValue, then.llvmBasicBlock, els.llvmBasicBlock);
     }
 
     /** 
