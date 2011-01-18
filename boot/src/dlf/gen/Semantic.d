@@ -175,6 +175,9 @@ class Semantic : Visitor
         {
             impDecl.Package.accept(this);
         }
+        else
+            Error("Import %s has not solved", impDecl.Name);
+
 
         //when a type resolved from import package
         //generate missing declarations? compiler task?

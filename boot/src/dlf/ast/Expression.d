@@ -67,7 +67,7 @@ final class DotIdentifier : Expression
     mixin VisitorMixin;
 
     ///parts of identifiers splitted with .
-    char[][] mIdentifier;
+    private char[][] mIdentifier;
 
     /**
     * Create dotted identifier
@@ -76,6 +76,15 @@ final class DotIdentifier : Expression
     {
         mixin(set_nodetype);
         mIdentifier ~= identifier;
+    }
+
+    /**
+    * Append
+    */
+    public void opOpAssign(string s)(char[] part)
+        if(s == "~")
+    {
+        mIdentifier ~= part;
     }
 
     /**

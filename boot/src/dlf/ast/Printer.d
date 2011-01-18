@@ -53,7 +53,7 @@ class Printer : Visitor
     */
     public void visit(FunctionDeclaration fd)
     {
-        writet("Function(%s): %s(", toString(fd.FuncType.mCallingConv), fd.Name);
+        writet("Function(%s): %s(", toString(fd.FuncType.CallingConv), fd.Name);
 
         foreach(string key, ubyte index; fd.mArgumentNames)
         {
@@ -207,10 +207,10 @@ class Printer : Visitor
     {
         char[] str;
 
-        for(int i=0; i < (di.mIdentifier.length-1); i++)
-            str ~= di.mIdentifier[i] ~ ".";
+        for(int i=0; i < (di.length-1); i++)
+            str ~= di[i] ~ ".";
 
-        str ~= di.mIdentifier[di.mIdentifier.length-1];
+        str ~= di[di.length-1];
         return cast(string)str;
     }
 

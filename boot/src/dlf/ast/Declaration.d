@@ -182,6 +182,12 @@ class ClassDeclaration : Declaration
 
     //VariableDeclaration[] Variables;
     //FunctionDeclaration[] Methods;
+
+    /// Save Class Type inner?
+    class ClassType : DataType
+    {
+        //mixinSIngleton
+    }
 }
 
 /**

@@ -187,6 +187,29 @@ public class Type
     }
 }
 
+/**
+* Integer Type
+*/
+class IntegerType : Type
+{
+    /**
+    * Create Integer Type
+    */
+    public this(uint bits)
+    {
+        super(LLVMIntType(bits));
+    }
+    
+    /**
+    * Create a const value of this Integer Type
+    */
+    public Value ConstValue(ulong value, bool signed)
+    {
+        return new Value(LLVMConstInt(llvmType(), value, signed));
+    }
+}
+
+
 /*
     integer type
     real type

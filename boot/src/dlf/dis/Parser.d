@@ -211,8 +211,8 @@ class Parser
             
             switch(mToken.Value)
             {
-            case "C": func.FuncType.mCallingConv = FunctionType.CallingConvention.C; break;
-            case "Dis": func.FuncType.mCallingConv = FunctionType.CallingConvention.Dis;break;
+            case "C": func.FuncType.CallingConv = FunctionType.CallingConvention.C; break;
+            case "Dis": func.FuncType.CallingConv = FunctionType.CallingConvention.Dis;break;
             default: error(mToken.Loc, "Invalid CallingConvention");
             }
             
@@ -569,7 +569,7 @@ class Parser
             expDot = !expDot;
             
             if(mToken.Type == TokenType.Identifier)
-                di.mIdentifier ~= cast(char[])mToken.Value;
+                di ~= cast(char[])mToken.Value;
             
         }
 

@@ -142,7 +142,7 @@ class FunctionType : DataType
     // Generic Method Type
     public bool GenericMethod;
     //Calling Convention
-    public CallingConvention mCallingConv;
+    public CallingConvention CallingConv;
 
     //Generic FunctionTypes can have SubFunctionTypes?
 
