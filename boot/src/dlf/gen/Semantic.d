@@ -217,6 +217,9 @@ class Semantic : Visitor
     {
         // resolve returntype 
         // add node DotIdentifier pointo to Extend
+        // auto decl = resolve(DotIdentifier di)
+        // -> assign(di, decl);
+        // di.ReturnType = decl.Type
     }
 
     /**

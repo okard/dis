@@ -197,8 +197,18 @@ class Compiler : Visitor
         //Generate Entry BasicBlock
         if(block.Parent.Type == NodeType.FunctionDeclaration)
         {
-            auto bb = new llvm.BasicBlock(cast(llvm.FunctionValue)CNode!ValueNode(block.Parent).LLVMValue, "entry");
+            auto func = cast(llvm.FunctionValue)CNode!ValueNode(block.Parent).LLVMValue;
+            auto bb = new llvm.BasicBlock(func, "entry");
             assign(block, new BasicBlockNode(bb));
+
+            auto b2 = new llvm.BasicBlock(func, "return");
+            mBuilder.PositionAtEnd(b2);
+            mBuilder.RetVoid();
+
+            mBuilder.PositionAtEnd(bb);
+            mBuilder.Br(b2);
+            //generate return label?
+            //generate return variable
         }
 
         //For If, Switch, For, While, Do -> new BasicBlock(parent.basicblock)
@@ -228,10 +238,13 @@ class Compiler : Visitor
     }
 
 
-    void visit(DotIdentifier){}
+    void visit(DotIdentifier)
+    {
+        //Look into type
+        //look wht to get here
+        
+    }
 
-
-    
     //Basics
     void visit(Declaration decl){}
     void visit(Statement stat){}
@@ -246,7 +259,6 @@ class Compiler : Visitor
 
         //Gen PointerTypes?
 
-        
         //Create Pointer Types
         if(cast(PointerType)t !is null)
         {
@@ -260,7 +272,6 @@ class Compiler : Visitor
             //gen PointType?
         }
 
-        
         return mTypes.get(t, mTypes[OpaqueType.Instance]);
     }
 
@@ -284,6 +295,7 @@ class Compiler : Visitor
     * extract compiler node
     */
     private static T CNode(T)(Node n)
+        if(is(T : CompilerNode))
     {
         if(n is null)
             return null;

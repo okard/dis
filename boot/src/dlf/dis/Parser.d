@@ -55,7 +55,6 @@ class Parser
     private Stack!Node mAstStack;
     ///Current SymbolTable
     private SymbolTable mSymTbl;
-
     ///Internal Types
     public static DataType[string] InternalTypes;
 
@@ -86,7 +85,9 @@ class Parser
         InternalTypes["ulong"] = ULongType.Instance;
         InternalTypes["float"] = FloatType.Instance;
         InternalTypes["double"] = DoubleType.Instance;
+        
         //special:
+        //InternalTypes["ptr"] = ;;
         InternalTypes["char"] = CharType.Instance;
     }
 

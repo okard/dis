@@ -35,6 +35,8 @@ abstract class Declaration : Node
 
     ///name
     public string Name;
+
+    //DataType DataType;
     
     //Visitor Mixin
     mixin VisitorMixin;
@@ -180,7 +182,6 @@ class ClassDeclaration : Declaration
 
     //VariableDeclaration[] Variables;
     //FunctionDeclaration[] Methods;
-    
 }
 
 /**

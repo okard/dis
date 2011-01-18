@@ -357,6 +357,14 @@ class BasicBlock
     }
 
     /**
+    * Create new Basic Block
+    */
+    public this(BasicBlock block, string name)
+    {
+        mBasicBlock = LLVMInsertBasicBlock(block.llvmBasicBlock, (cast(char[])name).ptr);
+    }
+
+    /**
     * Interfacing Existing BasicBLock
     */
     public this(LLVMBasicBlockRef block)
@@ -367,9 +375,18 @@ class BasicBlock
     /**
     * Get llvm basis block
     */
+    @property
     public LLVMBasicBlockRef llvmBasicBlock()
     {
         return mBasicBlock;
+    }
+    
+    /**
+    * Get Basic Block as Value
+    */
+    public LLVMValueRef llvmBBValue()
+    {
+        return LLVMBasicBlockAsValue(mBasicBlock);
     }
 
     /**
@@ -421,6 +438,14 @@ class Builder
         LLVMPositionBuilderAtEnd(mBuilder, block.llvmBasicBlock());
     }
 
+    /**
+    * Label Jump
+    */
+    public void Br(BasicBlock bb)
+    {
+        LLVMBuildBr(mBuilder, bb.llvmBasicBlock);
+    }
+
     /** 
     * Add Return Void Instruction
     */
@@ -453,7 +478,7 @@ class Builder
         return new Value(LLVMBuildStructGEP(mBuilder, v.llvmValue, Index, (cast(char[])name).ptr));
     }
 
-    /**
+    /**LLVMValueRef LLVMBuildBr(LLVMBuilderRef, LLVMBasicBlockRef Dest);
     * Store a Value at ptr-value
     */
     public void Store(Value ptr, Value val)
