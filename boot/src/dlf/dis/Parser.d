@@ -260,7 +260,6 @@ class Parser
             {
                 if(!expect(mToken, TokenType.Identifier))
                     Error(mToken.Loc, "Expect Identifier after ':' for function return type");
-                
             }
             func.FuncType.ReturnType = resolveType(mToken.Value);
         }

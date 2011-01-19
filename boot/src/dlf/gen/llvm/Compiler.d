@@ -76,15 +76,15 @@ class Compiler : Visitor
         //Initialize types
         mTypes[OpaqueType.Instance] = new llvm.Type(llvm.LLVMOpaqueType());
         mTypes[VoidType.Instance] = new llvm.Type(llvm.LLVMVoidType());
-        mTypes[BoolType.Instance] = new llvm.Type(llvm.LLVMInt1Type());
-        mTypes[ByteType.Instance] = new llvm.Type(llvm.LLVMInt8Type());
-        mTypes[UByteType.Instance] = new llvm.Type(llvm.LLVMInt8Type());
-        mTypes[ShortType.Instance] = new llvm.Type(llvm.LLVMInt16Type());
-        mTypes[UShortType.Instance] = new llvm.Type(llvm.LLVMInt16Type());
+        mTypes[BoolType.Instance] = new llvm.IntegerType(1);
+        mTypes[ByteType.Instance] = new llvm.IntegerType(8);
+        mTypes[UByteType.Instance] = new llvm.IntegerType(8);
+        mTypes[ShortType.Instance] = new llvm.IntegerType(16);
+        mTypes[UShortType.Instance] = new llvm.IntegerType(16);
         mTypes[IntType.Instance] = new llvm.IntegerType(32);
-        mTypes[UIntType.Instance] = new llvm.Type(llvm.LLVMInt32Type());
-        mTypes[LongType.Instance] = new llvm.Type(llvm.LLVMInt64Type());
-        mTypes[ULongType.Instance] = new llvm.Type(llvm.LLVMInt64Type());
+        mTypes[UIntType.Instance] = new llvm.IntegerType(32);
+        mTypes[LongType.Instance] = new llvm.IntegerType(64);
+        mTypes[ULongType.Instance] = new llvm.IntegerType(64);
         mTypes[FloatType.Instance] = new llvm.Type(llvm.LLVMFloatType());
         mTypes[DoubleType.Instance] = new llvm.Type(llvm.LLVMDoubleType());
 
@@ -154,15 +154,6 @@ class Compiler : Visitor
         else
             type = CNode!TypeNode(func.FuncType).LLVMType;
 
-        //create llvm function
-        auto mod = CNode!ModuleNode(func.Parent).LLVMModule;
-
-        if(mod is null)
-        {
-            writeln("Cant get module");
-            return;
-        }
-
         auto t = cast(llvm.FunctionType)type;
 
         if(t is null)
@@ -172,7 +163,7 @@ class Compiler : Visitor
         }
         
         //TODO: Function Name Mangling
-        auto f = new llvm.FunctionValue(mod, t, func.Name);
+        auto f = new llvm.FunctionValue(mCurModule, t, func.Name);
         //f.setCallConv(llvm.LLVMCallConv.C);
         assign(func, new ValueNode(f));
         
@@ -289,11 +280,8 @@ class Compiler : Visitor
             if(arg.Type == NodeType.LiteralExpression 
                 && (cast(Expression)arg).ReturnType == StringType.Instance)
             {
-                //this generates a GEP Instruction to Pointer
-                //require for string literals
                 auto val = CNode!ValueNode(arg).LLVMValue;
-                auto zero = (cast(llvm.IntegerType)mTypes[IntType.Instance]).ConstValue(0, true);
-                value = mBuilder.GEP(val, [zero, zero], "ptrToStr");
+                value = val;
             }
             
             callArgs ~= value;
@@ -341,7 +329,13 @@ class Compiler : Visitor
             llvm.LLVMSetGlobalConstant(val.llvmValue, true);
             llvm.LLVMSetLinkage(val.llvmValue, llvm.LLVMLinkage.Internal);
   
-            assign(le, new ValueNode(val));
+            //assign direct the right pointer
+            auto zero = (cast(llvm.IntegerType)mTypes[IntType.Instance]).ConstValue(0, true);
+
+            //it seems that GEP is really a value and isnt append zu current mBuilder Position
+            auto value = mBuilder.GEP(val, [zero, zero], "");
+
+            assign(le, new ValueNode(value));
         }
     }
 
