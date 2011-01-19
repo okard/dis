@@ -60,6 +60,23 @@ class SymbolTable
         return dec;
     }
 
+
+
+    int opApply(int delegate(ref Declaration) dg)
+    {   
+        int result = 0;
+    
+        foreach(string key, Declaration value; mSymbols)
+        {
+            result = dg(value);
+
+            if (result)
+                break;
+        }
+        return result;
+    }
+
+
     /**
     * Symbol Table contains entry
     */

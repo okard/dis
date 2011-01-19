@@ -164,6 +164,14 @@ class Lexer
         //TODO scanNumbers
         te.Type = TokenType.Integer;
         //Integer, Float, Double
+
+       te.Value ~= mC;
+
+        while(isNumeric(mSrc.peekChar(1)))
+        {
+            mC = mSrc.getChar();
+            te.Value ~= mC;
+        }
     }
 
 

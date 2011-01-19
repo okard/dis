@@ -86,12 +86,26 @@ class Printer : Visitor
     }
 
     /**
+    * Print Variable Declaration
+    */
+    void visit(VariableDeclaration vd)
+    {
+        writet("var %s : %s = ", vd.Name, vd.VarDataType.toString());
+        vd.Initializer.accept(this);
+        writeln();
+    }
+
+    /**
     * Visit Block Statement
     */
     public void visit(BlockStatement bs)
     {
         writetln("{");
         tabDeepness++;
+
+        foreach(Declaration sym; bs.SymTable)
+            sym.accept(this);
+
         foreach(stat; bs.Statements)
             stat.accept(this);
         tabDeepness--;
@@ -130,11 +144,13 @@ class Printer : Visitor
         {
             writef("\"%s\"", replace(le.Value, "\n", "\\n"));
         }
+        else
+            writef("%s", le.Value);
     }
 
 
     void visit(ImportDeclaration){}
-    void visit(VariableDeclaration){}
+
     void visit(ClassDeclaration){}
     void visit(TraitDeclaration){}
     void visit(DotIdentifier){}
