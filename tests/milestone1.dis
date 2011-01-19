@@ -1,6 +1,6 @@
 package milestone1;
 
-def(C) printf(format: char*, T...);
+def(C) printf(format: char*, T...) : void;
 
 def main
 {

@@ -81,7 +81,7 @@ class Compiler : Visitor
         mTypes[UByteType.Instance] = new llvm.Type(llvm.LLVMInt8Type());
         mTypes[ShortType.Instance] = new llvm.Type(llvm.LLVMInt16Type());
         mTypes[UShortType.Instance] = new llvm.Type(llvm.LLVMInt16Type());
-        mTypes[IntType.Instance] = new llvm.Type(llvm.LLVMInt32Type());
+        mTypes[IntType.Instance] = new llvm.IntegerType(32);
         mTypes[UIntType.Instance] = new llvm.Type(llvm.LLVMInt32Type());
         mTypes[LongType.Instance] = new llvm.Type(llvm.LLVMInt64Type());
         mTypes[ULongType.Instance] = new llvm.Type(llvm.LLVMInt64Type());
@@ -209,6 +209,8 @@ class Compiler : Visitor
     */
     void visit(BlockStatement block)
     {
+        //Variables, Inner Functions and classes
+
         //Generate Entry BasicBlock
         if(block.Parent.Type == NodeType.FunctionDeclaration)
         {
@@ -222,16 +224,24 @@ class Compiler : Visitor
             mBuilder.RetVoid();
 
             mBuilder.PositionAtEnd(bb);
+
+            foreach(s; block.Statements)
+                s.accept(this);
+
             mBuilder.Br(b2);
+            return;
             //generate return label?
             //generate return variable
         }
 
         //For If, Switch, For, While, Do -> new BasicBlock(parent.basicblock)
 
+        //Position mBuilder;
+
         //New Basic Block
         foreach(s; block.Statements)
             s.accept(this);
+
     }
 
     /**
@@ -248,6 +258,49 @@ class Compiler : Visitor
     void visit(FunctionCall call)
     {
         //semantic pass should have resolved the function
+        
+        //Require Function Declaration
+        FunctionDeclaration funcDecl;
+        
+        //check for dot identifier
+        if(cast(FunctionDeclaration)call.Function.Extend is null)
+        {
+            Error("FunctionCall has no Function to Call");
+            return;
+        }
+        else
+        {
+            funcDecl = cast(FunctionDeclaration)call.Function.Extend;
+        }
+        //call.Extend should be FunctionDeclaration
+        //generate calling expressions
+
+
+        llvm.Value[] callArgs;
+        foreach(arg; call.Arguments)
+        {
+            arg.accept(this);
+            
+            auto val = CNode!ValueNode(arg).LLVMValue;
+            auto zero = (cast(llvm.IntegerType)mTypes[IntType.Instance]).ConstValue(0, true);
+            auto ptrToStr = mBuilder.GEP(val, [zero, zero], "ptrToStr");
+            
+            //TODO require pointer type here
+            callArgs ~= ptrToStr;
+        }
+        
+        //get FunctionValue from Function Declaration
+        auto f = cast(llvm.FunctionValue)CNode!ValueNode(funcDecl).LLVMValue;
+
+        //Function Value to Call
+        if(f is null)
+        {
+            Error("Calling Function %s has not been generated", funcDecl.Name);
+            return;
+        }
+        
+        auto result = mBuilder.Call(f, callArgs, funcDecl.FuncType.ReturnType == VoidType.Instance ? "" : "test");
+        
         //get function: auto f =  (cast(FunctionDeclaration)call.Store.Semantic()
         //get llvmValue auto llvmF = cast(llvmFunctionDeclaration)f.Store.Compiler();
         //if not created then create???
@@ -261,6 +314,26 @@ class Compiler : Visitor
         
     }
 
+    /**
+    * Literal Expression
+    */
+    void visit(LiteralExpression le)
+    {
+        //Generate Constant Values
+        if(le.ReturnType == CharType.Instance)
+        {
+            auto str = llvm.Value.ConstString(le.Value);
+            //TODO generate ids
+            auto val = mCurModule.AddGlobal(str.TypeOf(), "str_001");
+            llvm.LLVMSetInitializer(val.llvmValue, str.llvmValue);
+            llvm.LLVMSetGlobalConstant(val.llvmValue, true);
+            llvm.LLVMSetLinkage(val.llvmValue, llvm.LLVMLinkage.Internal);
+  
+            assign(le, new ValueNode(val));
+        }
+    }
+
+
     void visit(Annotation){}
 
     //Basics
@@ -270,6 +343,7 @@ class Compiler : Visitor
 
     /**
     * Convert Ast Type to LLVM Type
+    * Look for always generated, basic types, pointer types
     */
     llvm.Type AstType2LLVMType(DataType t)
     {
@@ -302,6 +376,7 @@ class Compiler : Visitor
 
     /**
     * CodeGen Function
+    * Generates a LLVM FunctionType from a AST FunctionType
     */
     private llvm.FunctionType Gen(FunctionType ft)
     {
@@ -316,7 +391,7 @@ class Compiler : Visitor
             auto t = AstType2LLVMType(ft.Arguments[i]);
             
             //check for opaque types as parameters
-            if(t is mTypes[OpaqueType.Instance])
+            if(ft.Arguments[i] == OpaqueType.Instance)
                 Error("Opaque Parameter Type in Function Type Generation");
             
             args[i] = t;

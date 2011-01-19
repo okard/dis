@@ -309,6 +309,26 @@ class Value
     {
         return mValue;
     }
+
+    /**
+    * Generate a constant string
+    */
+    public static Value ConstString(string str)
+    {
+        return new Value(LLVMConstString(cast(char*)str.ptr, str.length, false));
+    }
+
+
+    /**
+    * Helper to get TypeArray
+    */
+    public static LLVMValueRef[] convertArray(Value[] vals)
+    {
+        auto t = new LLVMValueRef[vals.length];
+        for(int i = 0; i < vals.length; i++)
+            t[i] = vals[i].llvmValue;
+        return t;
+    }
 }
 
 /** 
@@ -502,6 +522,16 @@ class Builder
     }
 
     /**
+    * Build GEP Instruction
+    */
+    public Value GEP(Value v, Value[] val, string name)
+    {
+        auto valptr = Value.convertArray(val);
+
+        return new Value(LLVMBuildGEP(mBuilder, v.llvmValue, valptr.ptr, val.length, (cast(char[])name).ptr));
+    }
+
+    /**
     * Get Element from Struct
     */
     public Value StructGEP(Value v, uint Index, string name)
@@ -521,14 +551,14 @@ class Builder
     /**
     * Create a Function Call
     */
-    public Value Call(FunctionValue fn, Value[] args)
+    public Value Call(FunctionValue fn, Value[] args, string name)
     {
         //Create array with primary llvm values
         auto argarr = new  LLVMValueRef[args.length];
         for(int i = 0; i < args.length; i++)
             argarr[i] = args[i].llvmValue;
 
-        return new Value(LLVMBuildCall(mBuilder, fn.llvmValue(), argarr.ptr, argarr.length, (cast(char[])fn.Name).ptr));
+        return new Value(LLVMBuildCall(mBuilder, fn.llvmValue(), argarr.ptr, argarr.length, (cast(char[])name).ptr));
     }
 
     /**

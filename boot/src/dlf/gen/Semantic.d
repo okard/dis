@@ -162,6 +162,14 @@ class Semantic : Visitor
 
         if(fexpr.Type == NodeType.DotIdentifier)
         {
+            Information("\t try to resolve type");
+            auto resolve = resolve(cast(DotIdentifier)fexpr);
+
+            Information("\t resolve type: %s", resolve);
+
+            if(resolve !is null)
+                assign(call.Function, resolve);
+            //look foreach
             //get function declaration
         }
     }
@@ -229,6 +237,8 @@ class Semantic : Visitor
         // di.ReturnType = decl.Type
     }
 
+    void visit(LiteralExpression){}
+
     /**
     * Class Semantic Check
     */
@@ -252,6 +262,33 @@ class Semantic : Visitor
     private Declaration resolve(DotIdentifier di)
     {
         //Symbol Table should not be null
+        if(mSymTable is null)
+        {
+            Error("\t Resolve DotIdentifier: SymbolTable is null");
+            return null;
+        }
+
+        auto elements = di.length;
+        if(elements == 1)
+        {
+            //search up
+            auto sym = mSymTable;
+
+            do
+            {
+                if(sym.contains(cast(string)di[0]))
+                    return sym[cast(string)di[0]];
+            
+                sym = sym.pop();
+            }
+            while(sym !is null)
+        }
+        else
+        {
+            //go up 
+            //search down
+        }
+        
 
         return null;
     }

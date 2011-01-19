@@ -18,6 +18,8 @@
 ******************************************************************************/
 module dlf.gen.Mangle;
 
+import dlf.ast.Declaration;
+
 /**
 * Class for generate mangling names
 */
@@ -30,4 +32,19 @@ class Mangle
     //_Disdlf.gen.Mangle_clsMangle_this_
     //
 
+    /**
+    * Get mangled name for declaration 
+    */
+    string mangle(Declaration decl)
+    {
+        return "";
+    }
+
+    /**
+    * Convert mangled string into readable string
+    */
+    string demangle(string mangled)
+    {
+        return "";
+    }
 }

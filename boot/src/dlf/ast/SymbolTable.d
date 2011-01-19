@@ -61,6 +61,14 @@ class SymbolTable
     }
 
     /**
+    * Symbol Table contains entry
+    */
+    public bool contains(string value)
+    {
+        return cast(bool)(value in mSymbols);
+    }
+
+    /**
     * Creates a new SymbolTable
     */
     public SymbolTable push()

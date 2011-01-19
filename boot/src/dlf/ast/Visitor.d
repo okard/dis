@@ -30,17 +30,18 @@ public interface Visitor
 {
     public {
     //Declarations
-    void visit(PackageDeclaration pack);
-    void visit(FunctionDeclaration func);
+    void visit(PackageDeclaration);
+    void visit(FunctionDeclaration);
     void visit(ImportDeclaration);
     void visit(VariableDeclaration);
     void visit(ClassDeclaration);
     void visit(TraitDeclaration);
     //Statements
-    void visit(BlockStatement block);
-    void visit(ExpressionStatement expr);
+    void visit(BlockStatement);
+    void visit(ExpressionStatement);
     //Expressions
-    void visit(FunctionCall call);
+    void visit(LiteralExpression);
+    void visit(FunctionCall);
     void visit(DotIdentifier);
     //Annotations:
     void visit(Annotation);

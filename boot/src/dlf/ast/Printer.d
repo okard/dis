@@ -121,6 +121,8 @@ class Printer : Visitor
         writeln(")");
     }
 
+    void visit(LiteralExpression){}
+
     /**
     * Print Statement
     */

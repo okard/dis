@@ -252,9 +252,15 @@ class Parser
         }
 
         //look for return value
-        if(peek(1) == TokenType.Identifier)
+        if(peek(1) == TokenType.Identifier || peek(1) == TokenType.Colon)
         {
             next();
+            if(mToken.Type == TokenType.Colon)
+            {
+                if(!expect(mToken, TokenType.Identifier))
+                    Error(mToken.Loc, "Expect Identifier after ':' for function return type");
+                
+            }
             func.FuncType.ReturnType = resolveType(mToken.Value);
         }
 
