@@ -78,23 +78,24 @@ enum TokenType : ubyte
     DivAssign,      // /=
 
     //Keywords
-    KwPackage,
-    KwDef,
-    KwClass,
-    KwVar,
-    KwVal,
-    KwTrait,
-    KwType,
-    KwImport,
-    KwIf,
-    KwElse,
-    KwSwitch,
-    KwCase,
-    KwFor,
-    KwWhile,
-    KwDo,
-    KwThis,
-    KwReturn,
+    KwPackage,      // package
+    KwDef,          // def
+    KwClass,        // class
+    KwVar,          // var
+    KwVal,          // val
+    KwTrait,        // trait
+    KwType,         // type
+    KwImport,       // import
+    KwIf,           // if
+    KwElse,         // else
+    KwSwitch,       // switch
+    KwCase,         // case
+    KwFor,          // for
+    KwWhile,        // while
+    KwDo,           // do
+    KwThis,         // this
+    KwReturn,       // return
+    KwNull,         // null
 
     //Comment Tokens
     Comment
@@ -147,6 +148,7 @@ string toString(TokenType tok)
     case TokenType.KwDo:        return "do";
     case TokenType.KwThis:      return "this";
     case TokenType.KwReturn:    return "return";
+    case TokenType.KwNull:      return "null";
     case TokenType.Comment:     return "<comment>";
     default: return "no token description";
     }

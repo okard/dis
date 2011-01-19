@@ -151,7 +151,7 @@ class Semantic : Visitor
     void visit(FunctionCall call)
     {
         //TODO class Function Calls
-        Information("Semantic FuncCall %s", call.Function.toString());
+        Information("Semantic: FuncCall %s", call.Function.toString());
         
         //check for function
         //call.mFunction.NType() == NodeType.DotIdentifier
@@ -171,13 +171,16 @@ class Semantic : Visitor
     */
     void visit(ImportDeclaration impDecl)
     {
+        // Info
+        Information("Semantic: ImportDecl %s", impDecl.Name);
+
         //semantic check for available PackageDeclarations
         if(impDecl.Package !is null)
         {
             impDecl.Package.accept(this);
         }
         else
-            Error("Import %s has not solved", impDecl.Name);
+            Error("\tImport %s has not solved", impDecl.Name);
 
 
         //when a type resolved from import package

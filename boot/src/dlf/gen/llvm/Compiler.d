@@ -275,6 +275,13 @@ class Compiler : Visitor
     {
         //writefln("CodeGen: resolve type %s", t.toString());
 
+        //type has generated node
+        if(hasCNode(t))
+        {
+            auto type = CNode!TypeNode(t);
+            return type.LLVMType;
+        }
+
         //Gen PointerTypes?
 
         //Create Pointer Types
@@ -300,12 +307,38 @@ class Compiler : Visitor
     {
         auto args = new llvm.Type[ft.Arguments.length];
 
+        if(ft.ReturnType == OpaqueType.Instance)
+            Error("Opaque Return Type");
+
+        //add types
         for(int i=0; i < ft.Arguments.length; i++)
         {
-            args[i] = AstType2LLVMType(ft.Arguments[i]);
+            auto t = AstType2LLVMType(ft.Arguments[i]);
+            
+            //check for opaque types as parameters
+            if(t is mTypes[OpaqueType.Instance])
+                Error("Opaque Parameter Type in Function Type Generation");
+            
+            args[i] = t;
         }
 
         return new llvm.FunctionType(AstType2LLVMType(ft.ReturnType), args, ft.mVarArgs);
+    }
+
+    /**
+    * Information Log
+    */
+    private void Information(T...)(string s, T args)
+    {
+        writefln(s, args);
+    }
+
+    /**
+    * Error Log
+    */
+    private void Error(T...)(string s, T args)
+    {
+        writefln(s, args);
     }
     
     

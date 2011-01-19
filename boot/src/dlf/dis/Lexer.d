@@ -218,9 +218,10 @@ class Lexer
         case '{':  tok.Type = TokenType.COBracket; break;
         case '}':  tok.Type = TokenType.CCBracket; break;
         case '@':  tok.Type = TokenType.Annotation; break;
-        case '!':  tok.Type = TokenType.Not; break;
-        case '+':  tok.Type = TokenType.Add; break;
-        case '-':  tok.Type = TokenType.Sub; break;
+        case '!':  tok.Type = lookFor('=', TokenType.Not, TokenType.NotEqual); break;
+        case '+':  tok.Type = lookFor('=', TokenType.Add, TokenType.AddAssign); break;
+        case '-':  tok.Type = lookFor('=', TokenType.Sub, TokenType.SubAssign); break;
+        case '=':  tok.Type = lookFor('=', TokenType.Assign, TokenType.Equal); break;
         case '*':  tok.Type = lookFor('=', TokenType.Mul, TokenType.MulAssign); break;
         //Can be Comments
         case '/':  if(mSrc.peekChar(1) == '/' || mSrc.peekChar(1) == '*') 
@@ -231,8 +232,9 @@ class Lexer
 
         case '&': tok.Type = TokenType.And; break;
         case '|': tok.Type = TokenType.Or; break;
-        case '=': tok.Type = TokenType.Assign; break;
+
         case '"':  scanString(tok); break;
+        //case '\'': scanChar(); break; 
         default:
             tok.Type = TokenType.None;
         }
@@ -344,5 +346,6 @@ class Lexer
         mKeywords["do"] = TokenType.KwDo;
         mKeywords["this"] = TokenType.KwThis;
         mKeywords["return"] = TokenType.KwReturn;
+        mKeywords["null"] = TokenType.KwNull;
     }
 } 

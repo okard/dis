@@ -142,7 +142,7 @@ class Parser
         
         //check for package identifier
         if(peek(1) != TokenType.Identifier)
-            error(mToken.Loc, "Expected Identifier after package");
+            Error(mToken.Loc, "Expected Identifier after package");
 
         //parse identifier for Package
         next();
@@ -159,7 +159,7 @@ class Parser
         //Look for semicolon or end of line
         mToken = mLex.getToken();
         if(mToken.Type != TokenType.EOL && mToken.Type != TokenType.Semicolon)
-            error(mToken.Loc, "Expected EOL or Semicolon after package declaration");
+            Error(mToken.Loc, "Expected EOL or Semicolon after package declaration");
 
         //general parse loop (package scope)
         while(mToken.Type != TokenType.EOF)
@@ -209,18 +209,18 @@ class Parser
         {
             //identifier aka calling convention
             if(!expect(mToken,TokenType.Identifier))
-                error(mToken.Loc, "parseDef: Expected Identifier for Calling Convention");
+                Error(mToken.Loc, "parseDef: Expected Identifier for Calling Convention");
             
             switch(mToken.Value)
             {
             case "C": func.FuncType.CallingConv = FunctionType.CallingConvention.C; break;
             case "Dis": func.FuncType.CallingConv = FunctionType.CallingConvention.Dis;break;
-            default: error(mToken.Loc, "Invalid CallingConvention");
+            default: Error(mToken.Loc, "Invalid CallingConvention");
             }
             
             //close )
             if(!expect(mToken, TokenType.RCBracket))
-                error(mToken.Loc, "parseDef: Expected )");
+                Error(mToken.Loc, "parseDef: Expected )");
 
             mToken = mLex.getToken();
         }
@@ -228,7 +228,7 @@ class Parser
         //parse function name (identifier)
         if(mToken.Type != TokenType.Identifier)
         {
-            error(mToken.Loc, "parseDef: expected identifier");
+            Error(mToken.Loc, "parseDef: expected identifier");
             return null;
         }
         
@@ -248,7 +248,7 @@ class Parser
 
             //after parsing parameters expects )
             if(mToken.Type != TokenType.RCBracket)
-                error(mToken.Loc, "parseDef: expected ) after parameters");
+                Error(mToken.Loc, "parseDef: expected ) after parameters");
         }
 
         //look for return value
@@ -330,7 +330,7 @@ class Parser
             if(list.length == 1)
             {
                 //TODO 1 element, variablename or type (declaration with block or not) -> semantic?
-                error(mToken.Loc, "Function Parameters must have 2 Identifier 'name type', one identifier is not yet supported");
+                Error(mToken.Loc, "Function Parameters must have 2 Identifier 'name type', one identifier is not yet supported");
                 assert(true);
             }
 
@@ -369,7 +369,7 @@ class Parser
                 break;
             
             default:
-                error(mToken.Loc, format("Not expected Token in parseDefParams: %s", dlf.dis.Token.toString(mToken.Type)) );
+                Error(mToken.Loc, format("Not expected Token in parseDefParams: %s", dlf.dis.Token.toString(mToken.Type)) );
             }
         }     
     }
@@ -549,7 +549,7 @@ class Parser
         
         if(peek(1) != TokenType.Identifier)
         {
-            error(mToken.Loc, "Error: Expected Identifier after @ for Annotations");
+            Error(mToken.Loc, "Error: Expected Identifier after @ for Annotations");
         }
         
         return null;
@@ -571,13 +571,13 @@ class Parser
             //identifier
             if(expDot && mToken.Type == TokenType.Identifier)
             {
-                error(mToken.Loc, "expected dot to seperate identifiers");
+                Error(mToken.Loc, "expected dot to seperate identifiers");
                 break;
             }   
             //dot
             if(!expDot && mToken.Type == TokenType.Dot)
             {
-                error(mToken.Loc, "expected identifier after dot");
+                Error(mToken.Loc, "expected identifier after dot");
                 break;
             }
             
@@ -655,7 +655,7 @@ class Parser
     /**
     * Error Event
     */
-    private void error(Location loc, string msg)
+    private void Error(Location loc, string msg)
     {
         //TODO: Make error events, remove stupid writeln
         writefln("(%s): %s", loc, msg);
@@ -664,7 +664,7 @@ class Parser
     /**
     * Warning Event
     */
-    private void warning(Location loc, string msg)
+    private void Warning(Location loc, string msg)
     {
         //TODO: Make error events, remove stupid writeln
         writefln("(%s): %s", loc, msg);
