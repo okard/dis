@@ -100,7 +100,7 @@ class Semantic : Visitor
     { 
         Information("Semantic FuncDcl %s", func.Name);
 
-        Information("\t return type %s", func.FuncType.ReturnType.toString());
+       
         //resolve return value
         if(func.FuncType.ReturnType is null || func.FuncType.ReturnType == OpaqueType.Instance)
         {
@@ -110,6 +110,8 @@ class Semantic : Visitor
 
             Information("\t Resolved ReturnType of '%s' is '%s'", func.Name, func.FuncType.ReturnType.toString());
         }
+        else
+             Information("\t return type %s", func.FuncType.ReturnType.toString());
 
         //check if no Body then do through parameters 
         //Single Pairs are types

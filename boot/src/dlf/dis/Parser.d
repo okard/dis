@@ -113,7 +113,7 @@ class Parser
         //get first token
         next();
 
-        while(mToken.Type == TokenType.Comment)
+        while(mToken.Type == TokenType.Comment || mToken.Type == TokenType.EOL)
             next();
 
         writeln(mToken.toString());

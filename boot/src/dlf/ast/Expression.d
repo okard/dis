@@ -111,7 +111,7 @@ final class DotIdentifier : Expression
     {
         string s;
         foreach(ps; mIdentifier)
-            s ~= ps;
+            s ~= ps ~ ".";
         return s;
     }
 
