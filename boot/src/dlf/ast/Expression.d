@@ -110,8 +110,9 @@ final class DotIdentifier : Expression
     override string toString() 
     {
         string s;
-        foreach(ps; mIdentifier)
-            s ~= ps ~ ".";
+        for(int i=0; i < mIdentifier.length; i++)
+            s ~= cast(string)mIdentifier[i] ~ (i == (mIdentifier.length-1) ? "" :".");
+           
         return s;
     }
 
