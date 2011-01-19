@@ -30,8 +30,8 @@ import dlf.ast.SymbolTable;
 */
 abstract class Declaration : Node
 {
-    ///Modifiers
-    enum Modifiers : ushort { Private=1, Protected=2, Public=4, Package=8, Static=16, Final=32, Const=64 } 
+    /// Flags for Declaration
+    enum Flags : ushort { Private=1, Protected=2, Public=4, Package=8, Static=16, Final=32, Const=64, Extern=128 } 
 
     ///name
     public string Name;

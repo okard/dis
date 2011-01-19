@@ -54,7 +54,7 @@ class Parser
     ///AST Parser Stack
     private Stack!Node mAstStack;
     ///Current SymbolTable
-    private SymbolTable mSymTbl;
+    private SymbolTable mSymTable;
     ///Internal Types
     public static DataType[string] InternalTypes;
 
@@ -150,7 +150,7 @@ class Parser
         //Create new Package Declaration
         auto pkg = new PackageDeclaration(di.toString());
         pkg.SymTable = new SymbolTable(null);
-        mSymTbl = pkg.SymTable;
+        mSymTable = pkg.SymTable;
 
         //add package to parse stack
         mAstStack.push(pkg);
@@ -171,7 +171,8 @@ class Parser
             case TokenType.KwDef:
                     auto f = parseDef(); 
                     f.Parent = pkg;
-                    pkg.Functions ~= f; 
+                    pkg.Functions ~= f;
+                    mSymTable[f.Name] = f;
                 break;
             case TokenType.KwImport: break;
             //DefDecl
@@ -261,9 +262,6 @@ class Parser
         {
             next();
         }
-
-        //add to SymbolTable TODO look for doubles
-        mSymTbl[func.Name] = func;
         
         //Look for Basic Block here, ignore new lines and comments
         if(peekIgnore(1, [TokenType.EOL, TokenType.Comment]) == TokenType.COBracket)
@@ -386,8 +384,8 @@ class Parser
 
         //TODO symbol table? each block has one?
         auto block = new BlockStatement();
-        block.SymTable = mSymTbl.push();
-        mSymTbl = block.SymTable;
+        block.SymTable = mSymTable.push();
+        mSymTable = block.SymTable;
         mAstStack.push(block);
 
         //parse until "}"
@@ -419,7 +417,7 @@ class Parser
         //go over } ?
         next();
 
-        mSymTbl = block.SymTable.pop();
+        mSymTable = block.SymTable.pop();
         
         return block;
     }

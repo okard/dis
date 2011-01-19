@@ -32,6 +32,10 @@ import dlf.gen.llvm.Node;
 //for debug
 import std.stdio;
 
+//NOTICE:  llc -filetype=obj foobar.bc; gcc foobar.o
+//         llc -filetype=asm foobar.bc; gcc foobar.s
+
+
 /**
 * LLVM based Dis Compiler
 */

@@ -79,7 +79,9 @@ int main(string[] args)
     auto arguments = new CommandLineArg(args);
     auto srcFiles = arguments.getSourceFiles();
 
-    //TODO Read Configuration
+    //TODO Read Configuration (std.file.isfile(path))
+    //Linux:    bindir, ~/.disc, /etc/disc
+    //Windows:  bindir, %APPDATA%/disc.conf %ALLUSERSPROFILE%/Application Data
 
     if(srcFiles.length < 1)
     {

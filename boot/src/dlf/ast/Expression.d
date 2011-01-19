@@ -163,7 +163,21 @@ final class BinaryExpression : Expression
     
 }
 
-//AssignExpression
+/**
+* Assign Expression
+*/
+final class AssignExpression : Expression
+{
+    //Visitor Mixin
+    mixin VisitorMixin;
+
+    /// The Target
+    Expression Target;
+
+    /// The Value assigning to target
+    Expression Value;
+}
+
 //Binary/Unary
 //if/else
 //switch/case
