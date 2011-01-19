@@ -116,6 +116,7 @@ int main(string[] args)
 
     //Print out
     auto printer = new Printer();
+    writeln("------- START PARSER DUMP ----------------------------");
     printer.print(node);
     writeln("------- END PARSER DUMP ------------------------------");
 

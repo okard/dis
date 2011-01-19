@@ -115,8 +115,6 @@ class Parser
 
         while(mToken.Type == TokenType.Comment || mToken.Type == TokenType.EOL)
             next();
-
-        writeln(mToken.toString());
         
         //Supported Token as EntryPoint
         switch(mToken.Type)
@@ -378,6 +376,16 @@ class Parser
                 Error(mToken.Loc, format("Not expected Token in parseDefParams: %s", dlf.dis.Token.toString(mToken.Type)) );
             }
         }     
+    }
+
+    /**
+    * Parse Variables
+    */
+    private VariableDeclaration parseVar()
+    {
+        assert(mToken.Type == TokenType.KwVar);
+
+        
     }
 
     /**

@@ -115,32 +115,23 @@ class Printer : Visitor
 
         foreach(arg; call.Arguments)
         {
-            write(toString(arg));
+            arg.accept(this);
         }
 
         writeln(")");
     }
 
-    void visit(LiteralExpression){}
-
     /**
-    * Print Statement
+    * Print Literals
     */
-    public void visit(Statement stat)
+    void visit(LiteralExpression le)
     {
-        writef(tabs());
-        writeln(toString(stat));
+        if(le.ReturnType == StringType.Instance)
+        {
+            writef("\"%s\"", replace(le.Value, "\n", "\\n"));
+        }
     }
 
-    /**
-    * Visit Declaration
-    */
-    void visit(Declaration decl){}
-
-    /**
-    * Visit Expression
-    */
-    void visit(Expression expr){}
 
     void visit(ImportDeclaration){}
     void visit(VariableDeclaration){}
@@ -149,6 +140,32 @@ class Printer : Visitor
     void visit(DotIdentifier){}
     void visit(Annotation){}
     void visit(ReturnStatement){}
+
+
+
+    /**
+    * Base Statement
+    */
+    public void visit(Statement stat)
+    {
+        writefln("TODO: Print: %s", stat.toString());
+    }
+
+    /**
+    * Base Declaration
+    */
+    void visit(Declaration decl)
+    {
+        writefln("TODO: Print: %s", decl.toString());
+    }
+
+    /**
+    * Base Expression
+    */
+    void visit(Expression expr)
+    {
+        writefln("TODO: Print: %s", expr.toString());
+    }
 
     /**
     * Get Tabs
