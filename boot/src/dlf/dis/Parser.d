@@ -385,7 +385,47 @@ class Parser
     {
         assert(mToken.Type == TokenType.KwVar);
 
+        //expect Identifier after var
+        if(!expect(mToken, TokenType.Identifier))
+        {
+            Error(mToken.Loc, "Expect Identifer after var keyword");
+            return null;
+        }
         
+        //create new variable delclaration at the moment with opaque type
+        auto var = new VariableDeclaration(mToken.Value);
+
+        //check for type Information
+        if(peek(1) == TokenType.Identifier || peek(1) == TokenType.Colon)
+        {
+            //Type Information
+            if(peek(1) == TokenType.Colon)
+                next();
+            
+            if(!expect(mToken, TokenType.Identifier))
+            {
+                Error(mToken.Loc, "Expected Identifer as type information for variable");
+                return null;
+            }
+
+            //parseIdentifier()
+            var.VarDataType = resolveType(mToken.Value);
+        }
+        
+        //check for initalizer
+        if(peek(1) == TokenType.Assign)
+        {
+            next(); //oken is now "="-Assign
+            next(); //now its start of expression
+
+            var.Initializer = parseExpression();
+        }
+
+        //skip semicolon at end
+        if(peek(1) == TokenType.Semicolon)
+            next();
+
+        return var;
     }
 
     /**
@@ -404,25 +444,33 @@ class Parser
         mAstStack.push(block);
 
         //parse until "}"
-        while(peek(1) != TokenType.CCBracket)
+        while(mToken.Type != TokenType.CCBracket && peek(1) != TokenType.CCBracket)
         {
             next();
             
-            //ignore newlines
-            if(mToken.Type == TokenType.EOL)
+            //ignore newlines, comments
+            if(mToken.Type == TokenType.EOL || mToken.Type == TokenType.Comment || mToken.Type == TokenType.Semicolon)
                 continue;
 
             //a Block can only contain declarations and statements
 
+            if(mToken.Type == TokenType.KwVar)
+            {
+                auto var = parseVar();
+                mSymTable[var.Name] = var;
+                continue;
+            }
+
             //Declarations:
             //var, val, def, class, trait, type
-            if(isIn!TokenType(mToken.Type, [TokenType.KwVar, TokenType.KwVal, TokenType.KwDef, TokenType.KwClass]))
+            if(isIn!TokenType(mToken.Type, [TokenType.KwVal, TokenType.KwDef, TokenType.KwClass]))
             {
                 //parseDeclarations
                 continue;
             }
 
-            //Parse statements
+   
+            //Whens here try to be statment
             auto stat = parseStatement();
             if(stat !is null)
             {

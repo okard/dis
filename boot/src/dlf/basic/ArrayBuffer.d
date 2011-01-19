@@ -58,8 +58,11 @@ struct ArrayBuffer(T)
     */
     public T popFront()
     {
+        assert(!empty);
+        assert(mStartIndex < mArr.length);
+
         auto t = mArr[mStartIndex];
-        mStartIndex++;
+        mStartIndex = mStartIndex == (mArr.length-1) ? 0 : ++mStartIndex;
         mCount--;
         return t;
     }
@@ -106,6 +109,7 @@ struct ArrayBuffer(T)
 // UnitTests ==================================================================
 
 version(unittest) import std.stdio;
+version(unittest) import std.conv;
 
 unittest
 {
@@ -122,6 +126,7 @@ unittest
     ab.popFront();
     ab.popFront(); 
     assert(ab.length() == 0);
+    assert(ab.empty());
     
     for(int i = 4; i < 12; i++)
         ab.addAfter(i);
