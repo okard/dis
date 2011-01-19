@@ -280,13 +280,22 @@ class Compiler : Visitor
         foreach(arg; call.Arguments)
         {
             arg.accept(this);
+            llvm.Value value;
+
+            //TODO Right Handling for Types
+
+            //string  literal handling
+            if(arg.Type == NodeType.LiteralExpression 
+                && (cast(Expression)arg).ReturnType == CharType.Instance)
+            {
+                //this generates a GEP Instruction to Pointer
+                //require for string literals
+                auto val = CNode!ValueNode(arg).LLVMValue;
+                auto zero = (cast(llvm.IntegerType)mTypes[IntType.Instance]).ConstValue(0, true);
+                value = mBuilder.GEP(val, [zero, zero], "ptrToStr");
+            }
             
-            auto val = CNode!ValueNode(arg).LLVMValue;
-            auto zero = (cast(llvm.IntegerType)mTypes[IntType.Instance]).ConstValue(0, true);
-            auto ptrToStr = mBuilder.GEP(val, [zero, zero], "ptrToStr");
-            
-            //TODO require pointer type here
-            callArgs ~= ptrToStr;
+            callArgs ~= value;
         }
         
         //get FunctionValue from Function Declaration
@@ -322,8 +331,11 @@ class Compiler : Visitor
         //Generate Constant Values
         if(le.ReturnType == CharType.Instance)
         {
+            //TODO this is not a char its an string 
+            //string stored at global context
             auto str = llvm.Value.ConstString(le.Value);
-            //TODO generate ids
+            
+            //TODO generate ids to store the strings
             auto val = mCurModule.AddGlobal(str.TypeOf(), "str_001");
             llvm.LLVMSetInitializer(val.llvmValue, str.llvmValue);
             llvm.LLVMSetGlobalConstant(val.llvmValue, true);

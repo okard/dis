@@ -133,6 +133,21 @@ class Lexer
         do
         { 
             mC = mSrc.getChar();
+            
+            //escape chars
+            if(mC == '\\')
+            {
+                mC = mSrc.getChar();
+                switch(mC)
+                {
+                case 'n': str ~= '\n'; break;
+                case 'r': str ~= '\r'; break;
+                case 't': str ~= '\t'; break;
+                default:
+                }
+                continue;
+            }
+        
             if(mC != '"')
                 str ~= mC;
         }

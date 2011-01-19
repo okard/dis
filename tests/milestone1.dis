@@ -4,6 +4,6 @@ def(C) printf(format: char*, T...) : void;
 
 def main
 {
-    printf("Hello World");
+    printf("Hello World\n");
 }
 
