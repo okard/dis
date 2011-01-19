@@ -29,6 +29,7 @@ import dlf.ast.SymbolTable;
 
 import llvm = dlf.gen.llvm.LLVM;
 import dlf.gen.llvm.Node;
+import dlf.gen.llvm.IdGen;
 import dlf.gen.Mangle;
 
 //for debug
@@ -62,6 +63,9 @@ class Compiler : Visitor
 
     /// Current SymbolTable
     private SymbolTable mSymTbl;
+
+    /// Id generator
+    private IdGen mIdGen;
 
 
     /**
@@ -203,23 +207,29 @@ class Compiler : Visitor
     {
         //Variables, Inner Functions and classes
 
-        //Generate Entry BasicBlock
+        //Function Basic Blocks
         if(block.Parent.Type == NodeType.FunctionDeclaration)
         {
-            
             auto func = cast(llvm.FunctionValue)CNode!ValueNode(block.Parent).LLVMValue;
+
+            // entry block
             auto bb = new llvm.BasicBlock(func, "entry");
             assign(block, new BasicBlockNode(bb));
 
+            //gen return value
+
+            //return block
             auto b2 = new llvm.BasicBlock(func, "return");
             mBuilder.PositionAtEnd(b2);
             mBuilder.RetVoid();
 
             mBuilder.PositionAtEnd(bb);
 
+            //Build Statements for Function
             foreach(s; block.Statements)
                 s.accept(this);
 
+            //jump to return label
             mBuilder.Br(b2);
             return;
             //generate return label?
@@ -242,6 +252,15 @@ class Compiler : Visitor
     void visit(ExpressionStatement stat)
     {
         stat.Expr.accept(this);
+    }
+
+    /**
+    * Visit ReturnStatement
+    */
+    void visit(ReturnStatement rs)
+    {
+        //assign to variable retval the expression result
+        //jump to label return
     }
     
     /**
@@ -297,7 +316,7 @@ class Compiler : Visitor
             return;
         }
         
-        auto result = mBuilder.Call(f, callArgs, funcDecl.FuncType.ReturnType == VoidType.Instance ? "" : "test");
+        auto result = mBuilder.Call(f, callArgs, funcDecl.FuncType.ReturnType == VoidType.Instance ? "" : mIdGen.GenVar);
         
         //get function: auto f =  (cast(FunctionDeclaration)call.Store.Semantic()
         //get llvmValue auto llvmF = cast(llvmFunctionDeclaration)f.Store.Compiler();
@@ -324,7 +343,7 @@ class Compiler : Visitor
             auto str = llvm.Value.ConstString(le.Value);
             
             //TODO generate ids to store the strings
-            auto val = mCurModule.AddGlobal(str.TypeOf(), "str_001");
+            auto val = mCurModule.AddGlobal(str.TypeOf(), mIdGen.GenConstString);
             llvm.LLVMSetInitializer(val.llvmValue, str.llvmValue);
             llvm.LLVMSetGlobalConstant(val.llvmValue, true);
             llvm.LLVMSetLinkage(val.llvmValue, llvm.LLVMLinkage.Internal);

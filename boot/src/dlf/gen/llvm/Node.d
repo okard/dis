@@ -129,3 +129,10 @@ class BasicBlockNode : CompilerNode
     }
 }
 
+/// Utility Class
+class FunctionBlockNode : CompilerNode
+{
+    //Basic Block entry
+    //Basic Block return
+    //Value retval
+}

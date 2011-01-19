@@ -486,6 +486,7 @@ class Parser
             case TokenType.Identifier:/*look under switch*/ break;
             // Literal Expressions
             case TokenType.String:
+                //TODO Fix it, a String Literal is a pointer to string
                 return new LiteralExpression(mToken.Value, StringType.Instance); 
             case TokenType.Integer: 
                 return new LiteralExpression(mToken.Value, IntType.Instance); 
@@ -557,6 +558,9 @@ class Parser
         {
             Error(mToken.Loc, "Error: Expected Identifier after @ for Annotations");
         }
+
+        next();
+        
         
         return null;
     }

@@ -100,7 +100,6 @@ class Semantic : Visitor
     { 
         Information("Semantic FuncDcl %s", func.Name);
 
-       
         //resolve return value
         if(func.FuncType.ReturnType is null || func.FuncType.ReturnType == OpaqueType.Instance)
         {
@@ -108,10 +107,10 @@ class Semantic : Visitor
             
             //if has body look through all return statements
 
-            Information("\t Resolved ReturnType of '%s' is '%s'", func.Name, func.FuncType.ReturnType.toString());
+            Information("\t Resolved ReturnType is '%s'", func.FuncType.ReturnType.toString());
         }
         else
-             Information("\t return type %s", func.FuncType.ReturnType.toString());
+            Information("\t ReturnType is %s", func.FuncType.ReturnType.toString());
 
         //check if no Body then do through parameters 
         //Single Pairs are types
@@ -148,6 +147,14 @@ class Semantic : Visitor
     }
 
     /**
+    * Visit ReturnStatement
+    */
+    void visit(ReturnStatement rs)
+    {
+        //check rs.Expr returntype must match parent return type
+    }
+
+    /**
     * Visit Function Call
     */
     void visit(FunctionCall call)
@@ -164,13 +171,14 @@ class Semantic : Visitor
 
         if(fexpr.Type == NodeType.DotIdentifier)
         {
-            Information("\t try to resolve type");
+            Information("\t Is DotIdentifier -> Try to resolve type");
             auto resolve = resolve(cast(DotIdentifier)fexpr);
 
-            Information("\t resolve type: %s", resolve);
-
             if(resolve !is null)
+            {
+                Information("\t Resolve type: %s", resolve);
                 assign(call.Function, resolve);
+            }
             //look foreach
             //get function declaration
         }
@@ -269,6 +277,8 @@ class Semantic : Visitor
             Error("\t Resolve DotIdentifier: SymbolTable is null");
             return null;
         }
+
+        //TODO Detect this at front
 
         auto elements = di.length;
         if(elements == 1)

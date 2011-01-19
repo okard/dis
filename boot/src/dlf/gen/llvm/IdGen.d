@@ -16,21 +16,33 @@
 *    along with disc.  If not, see <http://www.gnu.org/licenses/>.
 *
 ******************************************************************************/
-module dlf.ast.Annotation;
+module dlf.gen.llvm.IdGen;
 
-
-import dlf.ast.Node;
-import dlf.ast.Visitor;
+import std.conv;
 
 /**
-* Annotation Base Class
+* IdGenerator
 */
-abstract class Annotation : Node
+struct IdGen
 {
-    //Visitor Mixin
-    mixin VisitorMixin;
+    // for global constant strings
+    private uint _GenConstString = 0;
+    string GenConstString()
+    {
+        return "_str_" ~ to!string(_GenConstString++);
+    }
 
-    /// Annotation Name
-    string Name;
+    // gen var name
+    private uint _GenVar = 0;
+    string GenVar()
+    {
+        return "_var_" ~ to!string(_GenVar++);
+    }
 
+    // gen basic block name
+    private uint _GenBBName = 0;
+    string GenBBName()
+    {
+        return "bb" ~ to!string(_GenBBName++);
+    }
 }

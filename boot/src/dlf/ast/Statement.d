@@ -75,6 +75,9 @@ class ExpressionStatement : Statement
     }
 }
 
+/**
+* Return Statement
+*/
 class ReturnStatement : Statement
 {
     //Visitor Mixin

@@ -148,6 +148,7 @@ class Printer : Visitor
     void visit(TraitDeclaration){}
     void visit(DotIdentifier){}
     void visit(Annotation){}
+    void visit(ReturnStatement){}
 
     /**
     * Get Tabs
