@@ -31,6 +31,7 @@ import dlf.ast.Type;
 import dlf.ast.Declaration;
 import dlf.ast.Statement;
 import dlf.ast.Expression;
+import dlf.ast.Annotation;
 import dlf.ast.Printer;
 import dlf.ast.SymbolTable;
 
@@ -535,6 +536,22 @@ class Parser
         //Literal -> Char, String, Integer, Float, Double, Array, Lambda
 
         //starts with "(" ?
+        return null;
+    }
+
+    /**
+    * Parse Annotation
+    */
+    private Annotation parseAnnotation()
+    {
+        // Annotions: @identifier
+        assert(mToken.Type == TokenType.Annotation);
+        
+        if(peek(1) != TokenType.Identifier)
+        {
+            error(mToken.Loc, "Error: Expected Identifier after @ for Annotations");
+        }
+        
         return null;
     }
 

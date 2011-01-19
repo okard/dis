@@ -23,11 +23,13 @@ import dlf.ast.Visitor;
 import dlf.ast.Declaration;
 import dlf.ast.Statement;
 import dlf.ast.Expression;
+import dlf.ast.Annotation;
 import dlf.ast.Type;
 import dlf.ast.SymbolTable;
 
 import llvm = dlf.gen.llvm.LLVM;
 import dlf.gen.llvm.Node;
+import dlf.gen.Mangle;
 
 //for debug
 import std.stdio;
@@ -132,6 +134,14 @@ class Compiler : Visitor
         if(CNode!ValueNode(func) !is null)
             return;
 
+        // template functions
+        if(func.isTemplate)
+        {
+            //template functions can not generated
+            //but has subtypes after semantic pass
+            return;
+        }
+
         llvm.Type type;
         //generate FuncType
         if(CNode!TypeNode(func.FuncType) is null)
@@ -160,6 +170,7 @@ class Compiler : Visitor
             return;
         }
         
+        //TODO: Function Name Mangling
         auto f = new llvm.FunctionValue(mod, t, func.Name);
         //f.setCallConv(llvm.LLVMCallConv.C);
         assign(func, new ValueNode(f));
@@ -201,6 +212,7 @@ class Compiler : Visitor
         //Generate Entry BasicBlock
         if(block.Parent.Type == NodeType.FunctionDeclaration)
         {
+            
             auto func = cast(llvm.FunctionValue)CNode!ValueNode(block.Parent).LLVMValue;
             auto bb = new llvm.BasicBlock(func, "entry");
             assign(block, new BasicBlockNode(bb));
@@ -248,6 +260,8 @@ class Compiler : Visitor
         //look wht to get here
         
     }
+
+    void visit(Annotation){}
 
     //Basics
     void visit(Declaration decl){}

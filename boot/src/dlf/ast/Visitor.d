@@ -21,6 +21,7 @@ module dlf.ast.Visitor;
 import dlf.ast.Declaration;
 import dlf.ast.Statement;
 import dlf.ast.Expression;
+import dlf.ast.Annotation;
 
 /**
 * AST Visitor
@@ -41,6 +42,8 @@ public interface Visitor
     //Expressions
     void visit(FunctionCall call);
     void visit(DotIdentifier);
+    //Annotations:
+    void visit(Annotation);
     //basic 
     void visit(Statement);
     void visit(Expression);

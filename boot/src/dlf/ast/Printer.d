@@ -24,6 +24,7 @@ import dlf.ast.Type;
 import dlf.ast.Declaration;
 import dlf.ast.Statement;
 import dlf.ast.Expression;
+import dlf.ast.Annotation;
 
 import std.stdio;
 import std.string;
@@ -144,6 +145,7 @@ class Printer : Visitor
     void visit(ClassDeclaration){}
     void visit(TraitDeclaration){}
     void visit(DotIdentifier){}
+    void visit(Annotation){}
 
     /**
     * Get Tabs

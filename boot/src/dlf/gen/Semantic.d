@@ -23,6 +23,7 @@ import dlf.ast.Visitor;
 import dlf.ast.Declaration;
 import dlf.ast.Statement;
 import dlf.ast.Expression;
+import dlf.ast.Annotation;
 import dlf.ast.Type;
 import dlf.ast.SymbolTable;
 
@@ -238,6 +239,8 @@ class Semantic : Visitor
     void visit(TraitDeclaration)
     {
     }
+
+    void visit(Annotation){}
 
     /**
     * Get the Declaration of a DotIdentifier
