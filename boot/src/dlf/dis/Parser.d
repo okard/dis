@@ -90,6 +90,7 @@ class Parser
         //special:
         //InternalTypes["ptr"] = ;;
         InternalTypes["char"] = CharType.Instance;
+        InternalTypes["string"] = StringType.Instance;
     }
 
     /**
@@ -486,7 +487,7 @@ class Parser
             case TokenType.Identifier:/*look under switch*/ break;
             // Literal Expressions
             case TokenType.String:
-                return new LiteralExpression(mToken.Value, CharType.Instance); 
+                return new LiteralExpression(mToken.Value, StringType.Instance); 
             case TokenType.Integer: 
                 return new LiteralExpression(mToken.Value, IntType.Instance); 
             case TokenType.Float:

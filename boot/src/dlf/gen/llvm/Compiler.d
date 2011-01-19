@@ -90,6 +90,7 @@ class Compiler : Visitor
 
         //At the moment char is same type as Byte
         mTypes[CharType.Instance] = mTypes[ByteType.Instance];
+        mTypes[StringType.Instance] = mTypes[ByteType.Instance];
     }
 
     /**
@@ -286,7 +287,7 @@ class Compiler : Visitor
 
             //string  literal handling
             if(arg.Type == NodeType.LiteralExpression 
-                && (cast(Expression)arg).ReturnType == CharType.Instance)
+                && (cast(Expression)arg).ReturnType == StringType.Instance)
             {
                 //this generates a GEP Instruction to Pointer
                 //require for string literals
@@ -329,9 +330,8 @@ class Compiler : Visitor
     void visit(LiteralExpression le)
     {
         //Generate Constant Values
-        if(le.ReturnType == CharType.Instance)
+        if(le.ReturnType == StringType.Instance)
         {
-            //TODO this is not a char its an string 
             //string stored at global context
             auto str = llvm.Value.ConstString(le.Value);
             
