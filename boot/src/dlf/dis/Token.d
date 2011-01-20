@@ -34,6 +34,7 @@ enum TokenType : ubyte
     EOF,
     //Values/Literals & Identifier
     Identifier,
+    Char,
     String,
     Integer,
     Float,
@@ -96,6 +97,8 @@ enum TokenType : ubyte
     KwThis,         // this
     KwReturn,       // return
     KwNull,         // null
+    KwTrue,         // true
+    KwFalse,        // false
 
     //Comment Tokens
     Comment
@@ -149,6 +152,8 @@ string toString(TokenType tok)
     case TokenType.KwThis:      return "this";
     case TokenType.KwReturn:    return "return";
     case TokenType.KwNull:      return "null";
+    case TokenType.KwTrue:      return "true";
+    case TokenType.KwFalse:     return "false";
     case TokenType.Comment:     return "<comment>";
     default: return "no token description";
     }

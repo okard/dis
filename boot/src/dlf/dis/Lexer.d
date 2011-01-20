@@ -25,6 +25,7 @@ import dlf.dis.Token;
 
 //phobos imports
 //import std.container;
+import std.conv;
 
 //debug
 import std.stdio;
@@ -157,7 +158,29 @@ class Lexer
     }
 
     /**
-    * TODO Read Numbers
+    * Scan Char
+    */
+    private void scanChar(ref Token te)
+    {
+        te.Type = TokenType.Char;
+
+        mC = mSrc.getChar();
+        if(mC == '\\')
+        {
+        }
+
+        te.Value = to!string(mC);
+        
+        mC = mSrc.getChar();
+        if(mC != '\'')
+        {
+            //error
+        }
+    }
+
+    /**
+    * Read Numbers
+    * TODO Improve
     */
     private void scanNumber(ref Token te)
     {
@@ -165,11 +188,13 @@ class Lexer
         te.Type = TokenType.Integer;
         //Integer, Float, Double
 
-       te.Value ~= mC;
+        te.Value ~= mC;
 
-        while(isNumeric(mSrc.peekChar(1)))
+        while(isNumeric(mSrc.peekChar(1)) || mSrc.peekChar(1) == '.')
         {
             mC = mSrc.getChar();
+            if(mC == '.')
+                te.Type = TokenType.Float;
             te.Value ~= mC;
         }
     }
@@ -257,7 +282,7 @@ class Lexer
         case '|': tok.Type = TokenType.Or; break;
 
         case '"':  scanString(tok); break;
-        //case '\'': scanChar(); break; 
+        case '\'': scanChar(tok); break; 
         default:
             tok.Type = TokenType.None;
         }
@@ -370,5 +395,7 @@ class Lexer
         mKeywords["this"] = TokenType.KwThis;
         mKeywords["return"] = TokenType.KwReturn;
         mKeywords["null"] = TokenType.KwNull;
+        mKeywords["true"] = TokenType.KwTrue;
+        mKeywords["false"] = TokenType.KwFalse;
     }
 } 

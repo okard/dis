@@ -115,18 +115,26 @@ class Parser
 
         while(mToken.Type == TokenType.Comment || mToken.Type == TokenType.EOL)
             next();
-        
-        //Supported Token as EntryPoint
-        switch(mToken.Type)
+        try
         {
-            case TokenType.KwPackage: return parsePackage(); 
-            case TokenType.KwClass: break;
-            case TokenType.KwDef: break;
-            case TokenType.KwTrait: break;
-            case TokenType.KwType: break;
-            case TokenType.Identifier: return parseExpression();
-            default: return null;
+            //Supported Token as EntryPoint
+            switch(mToken.Type)
+            {
+                case TokenType.KwPackage: return parsePackage(); 
+                case TokenType.KwClass: break;
+                case TokenType.KwDef: break;
+                case TokenType.KwTrait: break;
+                case TokenType.KwType: break;
+                case TokenType.Identifier: return parseExpression();
+                default: return null;
+            }
         }
+        catch(Object o)
+        {
+            Error(mToken.Loc, "Exception in Parser"); 
+            throw o;
+        }
+
 
         return null;
     }
@@ -544,12 +552,17 @@ class Parser
             case TokenType.String:
                 //TODO Fix it, a String Literal is a pointer to a char[] array
                 return new LiteralExpression(mToken.Value, StringType.Instance); 
+            case TokenType.Char:
+                return new LiteralExpression(mToken.Value, CharType.Instance); 
             case TokenType.Integer: 
                 return new LiteralExpression(mToken.Value, IntType.Instance); 
             case TokenType.Float:
                 return new LiteralExpression(mToken.Value, FloatType.Instance); 
             case TokenType.Double:
-                return new LiteralExpression(mToken.Value, DoubleType.Instance); 
+                return new LiteralExpression(mToken.Value, DoubleType.Instance);
+            case TokenType.KwTrue:
+            case TokenType.KwFalse:
+                return new LiteralExpression(mToken.Value, BoolType.Instance);
             default:
                 assert(true);
         }

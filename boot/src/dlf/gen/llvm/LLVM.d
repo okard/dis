@@ -697,6 +697,22 @@ class Builder
     }
 
     /**
+    * Global String
+    */
+    public Value GlobalString(string str, string name)
+    {
+         return new Value(LLVMBuildGlobalString(mBuilder, (cast(char[])str).ptr, (cast(char[])name).ptr));
+    }
+
+    /**
+    * Global String Ptr
+    */
+    public Value GlobalStringPtr(string str, string name)
+    {
+        return new Value(LLVMBuildGlobalStringPtr(mBuilder, (cast(char[])str).ptr, (cast(char[])name).ptr));
+    }
+   
+    /**
     * Simple Label Jump
     */
     public void Br(BasicBlock bb)
