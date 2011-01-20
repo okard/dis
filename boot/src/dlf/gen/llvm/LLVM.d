@@ -176,6 +176,14 @@ public class Type
     }
 
     /**
+    * Get Null Value for Type
+    */
+    public Value Null()
+    {
+        return new Value(LLVMConstNull(mType));
+    }
+   
+    /**
     * Helper to get TypeArray
     */
     public static LLVMTypeRef[] convertArray(Type[] types)
@@ -192,12 +200,15 @@ public class Type
 */
 class IntegerType : Type
 {
+    private Value mZero;
+
     /**
     * Create Integer Type
     */
     public this(uint bits)
     {
         super(LLVMIntType(bits));
+        mZero = ConstValue(0, true);
     }
     
     /**
@@ -206,6 +217,15 @@ class IntegerType : Type
     public Value ConstValue(ulong value, bool signed)
     {
         return new Value(LLVMConstInt(llvmType(), value, signed));
+    }
+
+    /**
+    * Zero Value
+    */
+    @property
+    public Value Zero()
+    {
+        return mZero;
     }
 }
 
@@ -235,6 +255,8 @@ class PointerType : Type
     {
         super(LLVMPointerType(type2point.llvmType,0));
     }
+
+    //to value?
 }
 
 
@@ -252,6 +274,29 @@ class StructType : Type
     }
 }
 
+/**
+* Array Type
+*/
+class ArrayType : Type
+{
+    /// Create new ArrayType
+    public this(Type type, uint count)
+    {
+        super(LLVMArrayType(type.llvmType, count));
+    }
+}
+
+/**
+* Vector Type
+*/
+class VectorType : Type
+{
+    /// Create new VectorType
+    public this(Type type, uint count)
+    {
+        super(LLVMVectorType(type.llvmType, count));
+    }
+}
 
 /**
 * Function Type
@@ -329,6 +374,82 @@ class Value
             t[i] = vals[i].llvmValue;
         return t;
     }
+
+    //get pointer to
+}
+
+/**
+* Const Value
+*/
+class ConstValue : Value
+{
+    /// Is Constant Value
+    public this(LLVMValueRef value)
+    {
+        assert(LLVMIsConstant(value));
+        super(value);
+    }
+}
+
+/**
+* Global Constant
+*/
+class GlobalConstant : Value
+{
+    public this(LLVMValueRef value)
+    {
+        assert(LLVMIsGlobalConstant(value));
+        LLVMSetGlobalConstant(value, true);
+        super(value);
+    }
+
+    /**
+    * Get Linkage
+    */
+    public LLVMLinkage GetLinkage()
+    {
+        return LLVMGetLinkage(mValue);
+    }
+
+    /**
+    * Set Linkage
+    */
+    public void SetLinkage(LLVMLinkage link)
+    {
+        LLVMSetLinkage(mValue, link);
+    }
+
+    /**
+    * Get Initializer
+    */
+    public Value GetInitializer()
+    {
+        return new Value(LLVMGetInitializer(mValue));
+    }
+    
+    /**
+    * Set Initializer
+    */
+    public void SetInitializer(Value val)
+    {
+        LLVMSetInitializer(mValue, val.llvmValue);
+    }
+
+    /**
+    * Is Thread Local
+    */
+    public bool IsThreadLocal()
+    {
+        return cast(bool)LLVMIsThreadLocal(mValue);
+    }
+
+    /**
+    * Set Thread Local
+    */
+    public void SetThreadLocal(bool isLocal)
+    {
+        LLVMSetThreadLocal(mValue, isLocal);
+    }
 }
 
 /** 
@@ -365,11 +486,43 @@ class FunctionValue : Value
     }
 
     /**
+    * Get Calling Convention
+    */
+    public LLVMCallConv getCallConv()
+    {
+        return cast(LLVMCallConv)LLVMGetFunctionCallConv(mValue);
+    }
+
+    /**
     * Add Function Attribute
     */
     public void addFunctionAttr(LLVMAttribute PA)
     {
         LLVMAddFunctionAttr(mValue, PA);
+    }
+
+    /**
+    * Remove a function attribute
+    */
+    public void removeFunctionAttr(LLVMAttribute PA)
+    {
+        LLVMRemoveFunctionAttr(mValue, PA);
+    }
+
+    /**
+    * Get Linkage
+    */
+    public LLVMLinkage GetLinkage()
+    {
+        return LLVMGetLinkage(mValue);
+    }
+
+    /**
+    * Set Linkage
+    */
+    public void SetLinkage(LLVMLinkage link)
+    {
+        LLVMSetLinkage(mValue, link);
     }
 
     /**
@@ -379,7 +532,32 @@ class FunctionValue : Value
     {
         return new BasicBlock(LLVMGetFirstBasicBlock(mValue));
     }
+
+    /**
+    * Get Address of BasisBlock in Function
+    */
+    public Value AddressOf(BasicBlock bb)
+    {
+        return new Value(LLVMBlockAddress(mValue, bb.llvmBasicBlock));
+    }
+
+    /**
+    * Get Parameter
+    */
+    public Value GetParam(uint index)
+    {
+        return new Value(LLVMGetParam(mValue, index));
+    }
 }
+
+
+/**
+* Struct Value
+*/
+/*class StructValue : Value
+{
+    //Helper for GEP
+}*/
 
 /**
 * Basic Block
@@ -447,6 +625,8 @@ class BasicBlock
     {
         return new BasicBlock(LLVMGetPreviousBasicBlock(mBasicBlock));
     }
+
+
 }
 
 /**
@@ -514,11 +694,19 @@ class Builder
     }
 
     /**
-    * Alloc memory for type
+    * Stack Allocation for Type
     */
     public Value Alloca(Type t, string name)
     {
         return new Value(LLVMBuildAlloca(mBuilder, t.llvmType, (cast(char[])name).ptr));
+    }
+
+    /**
+    * Memory Allocation for Type
+    */
+    public Value Malloc(Type t, string name)
+    {
+        return new Value(LLVMBuildMalloc(mBuilder, t.llvmType, (cast(char[])name).ptr));
     }
 
     /**
@@ -549,6 +737,30 @@ class Builder
     }
 
     /**
+    * Loads the Value from a Pointer
+    */
+    public Value Load(Value val, string name)
+    {
+        return new Value(LLVMBuildLoad(mBuilder, val.llvmValue,(cast(char[])name).ptr));
+    }
+
+    /**
+    * Unwind Instruction
+    */
+    public void Unwind()
+    {
+        LLVMBuildUnwind(mBuilder);
+    }
+
+    /**
+    * Unreachable instruction
+    */
+    public void Unreachable()
+    {
+        LLVMBuildUnreachable(mBuilder);
+    }
+
+    /**
     * Create a Function Call
     */
     public Value Call(FunctionValue fn, Value[] args, string name)
@@ -559,6 +771,16 @@ class Builder
             argarr[i] = args[i].llvmValue;
 
         return new Value(LLVMBuildCall(mBuilder, fn.llvmValue(), argarr.ptr, argarr.length, (cast(char[])name).ptr));
+    }
+
+    /**
+    * Invoke a Function
+    */
+    public Value Invoke(FunctionValue fn, Value[] args, BasicBlock thn, BasicBlock catc, string name)
+    {
+        auto callArg = Value.convertArray(args);
+        
+        return new Value(LLVMBuildInvoke(mBuilder, fn.llvmValue, callArg.ptr, args.length, thn.llvmBasicBlock, catc.llvmBasicBlock, (cast(char[])name).ptr)); 
     }
 
     /**

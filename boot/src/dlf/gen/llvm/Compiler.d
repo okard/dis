@@ -349,7 +349,7 @@ class Compiler : Visitor
             llvm.LLVMSetLinkage(val.llvmValue, llvm.LLVMLinkage.Internal);
   
             //assign direct the right pointer
-            auto zero = (cast(llvm.IntegerType)mTypes[IntType.Instance]).ConstValue(0, true);
+            auto zero = (cast(llvm.IntegerType)mTypes[IntType.Instance]).Zero;
 
             //it seems that GEP is really a value and isnt append zu current mBuilder Position
             auto value = mBuilder.GEP(val, [zero, zero], "");

@@ -542,7 +542,7 @@ class Parser
             case TokenType.Identifier:/*look under switch*/ break;
             // Literal Expressions
             case TokenType.String:
-                //TODO Fix it, a String Literal is a pointer to string
+                //TODO Fix it, a String Literal is a pointer to a char[] array
                 return new LiteralExpression(mToken.Value, StringType.Instance); 
             case TokenType.Integer: 
                 return new LiteralExpression(mToken.Value, IntType.Instance); 
