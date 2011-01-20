@@ -343,10 +343,10 @@ class Compiler : Visitor
             auto str = llvm.Value.ConstString(le.Value);
             
             //TODO generate ids to store the strings
-            auto val = mCurModule.AddGlobal(str.TypeOf(), mIdGen.GenConstString);
-            llvm.LLVMSetInitializer(val.llvmValue, str.llvmValue);
+            auto val = mCurModule.AddGlobalConstant(str.TypeOf(), mIdGen.GenConstString);
+            val.SetInitializer(str);
             llvm.LLVMSetGlobalConstant(val.llvmValue, true);
-            llvm.LLVMSetLinkage(val.llvmValue, llvm.LLVMLinkage.Internal);
+            val.SetLinkage(llvm.LLVMLinkage.Internal);
   
             //assign direct the right pointer
             auto zero = (cast(llvm.IntegerType)mTypes[IntType.Instance]).Zero;

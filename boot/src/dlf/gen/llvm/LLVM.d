@@ -139,6 +139,16 @@ class Module
     {
         return new Value(LLVMAddGlobal(mModule, t.llvmType, (cast(char[])name).ptr));
     }
+
+    /**
+    * Create new global constant
+    */
+    public GlobalConstant AddGlobalConstant(Type t, string name)
+    {
+        auto val = LLVMAddGlobal(mModule, t.llvmType, (cast(char[])name).ptr);
+        LLVMSetGlobalConstant(val, true);
+        return new GlobalConstant(val);
+    }
 }
 
 /**
@@ -208,15 +218,15 @@ class IntegerType : Type
     public this(uint bits)
     {
         super(LLVMIntType(bits));
-        mZero = ConstValue(0, true);
+        mZero = ConstInt(0, true);
     }
     
     /**
     * Create a const value of this Integer Type
     */
-    public Value ConstValue(ulong value, bool signed)
+    public ConstValue ConstInt(ulong value, bool signed)
     {
-        return new Value(LLVMConstInt(llvmType(), value, signed));
+        return new ConstValue(LLVMConstInt(llvmType(), value, signed));
     }
 
     /**
@@ -358,9 +368,9 @@ class Value
     /**
     * Generate a constant string
     */
-    public static Value ConstString(string str)
+    public static ConstValue ConstString(string str)
     {
-        return new Value(LLVMConstString(cast(char*)str.ptr, str.length, false));
+        return new ConstValue(LLVMConstString(cast(char*)str.ptr, str.length, false));
     }
 
 
@@ -396,10 +406,12 @@ class ConstValue : Value
 */
 class GlobalConstant : Value
 {
+    /**
+    * New Global Constant
+    */
     public this(LLVMValueRef value)
     {
         assert(LLVMIsGlobalConstant(value));
-        LLVMSetGlobalConstant(value, true);
         super(value);
     }
 
@@ -422,15 +434,15 @@ class GlobalConstant : Value
     /**
     * Get Initializer
     */
-    public Value GetInitializer()
+    public ConstValue GetInitializer()
     {
-        return new Value(LLVMGetInitializer(mValue));
+        return new ConstValue(LLVMGetInitializer(mValue));
     }
     
     /**
     * Set Initializer
     */
-    public void SetInitializer(Value val)
+    public void SetInitializer(ConstValue val)
     {
         LLVMSetInitializer(mValue, val.llvmValue);
     }
