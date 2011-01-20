@@ -135,9 +135,9 @@ class Module
     /**
     * New Global Variable
     */
-    public Value AddGlobal(Type t, string name)
+    public GlobalVariable AddGlobal(Type t, string name)
     {
-        return new Value(LLVMAddGlobal(mModule, t.llvmType, (cast(char[])name).ptr));
+        return new GlobalVariable(LLVMAddGlobal(mModule, t.llvmType, (cast(char[])name).ptr));
     }
 
     /**
@@ -357,6 +357,14 @@ class Value
     }
 
     /**
+    * Return the LLVM Type Kind
+    */
+    public LLVMTypeKind llvmTypeKind()
+    {
+        return LLVMGetTypeKind(llvmTypeOf);
+    }
+
+    /**
     * Get LLVM Value
     */
     @property
@@ -402,19 +410,18 @@ class ConstValue : Value
 }
 
 /**
-* Global Constant
+* Global Value Class
 */
-class GlobalConstant : Value
+abstract class GlobalValue : Value
 {
     /**
-    * New Global Constant
+    * Create global value
     */
-    public this(LLVMValueRef value)
+    public this(LLVMValueRef val)
     {
-        assert(LLVMIsGlobalConstant(value));
-        super(value);
+        super(val);
     }
-
+    
     /**
     * Get Linkage
     */
@@ -429,6 +436,23 @@ class GlobalConstant : Value
     public void SetLinkage(LLVMLinkage link)
     {
         LLVMSetLinkage(mValue, link);
+    }
+
+    //LLVMVisibility LLVMGetVisibility(LLVMValueRef Global);
+    //void LLVMSetVisibility(LLVMValueRef Global, LLVMVisibility Viz);
+}
+
+/**
+* Global Variable
+*/
+class GlobalVariable : GlobalValue
+{
+    /**
+    * New Global Variable
+    */
+    public this(LLVMValueRef value)
+    {
+        super(value);
     }
 
     /**
@@ -464,10 +488,25 @@ class GlobalConstant : Value
     }
 }
 
+/**
+* Global Constant
+*/
+class GlobalConstant : GlobalVariable
+{
+    /**
+    * New Global Constant
+    */
+    public this(LLVMValueRef value)
+    {
+        assert(LLVMIsGlobalConstant(value));
+        super(value);
+    }
+}
+
 /** 
 * FunctionValue
 */
-class FunctionValue : Value
+class FunctionValue : GlobalValue
 {
     private string mFnName;
 
@@ -519,22 +558,6 @@ class FunctionValue : Value
     public void removeFunctionAttr(LLVMAttribute PA)
     {
         LLVMRemoveFunctionAttr(mValue, PA);
-    }
-
-    /**
-    * Get Linkage
-    */
-    public LLVMLinkage GetLinkage()
-    {
-        return LLVMGetLinkage(mValue);
-    }
-
-    /**
-    * Set Linkage
-    */
-    public void SetLinkage(LLVMLinkage link)
-    {
-        LLVMSetLinkage(mValue, link);
     }
 
     /**
