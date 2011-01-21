@@ -27,9 +27,6 @@ import dlf.ast.Type;
 */
 abstract class Expression : Node
 {
-    //Visitor Mixin
-    //mixin VisitorMixin;
-
     /// ReturnType of Expression
     DataType ReturnType;
 }

@@ -30,7 +30,6 @@ import dlf.ast.SymbolTable;
 */
 abstract class Statement : Node
 {
-    //mixin VisitorMixin;
 } 
 
 /**
@@ -39,8 +38,9 @@ abstract class Statement : Node
 * Has a SymbolTable?
 * Can have classes, functions, ...
 */
-class BlockStatement : Statement
+final class BlockStatement : Statement
 {
+    //Visitor Mixin
     mixin VisitorMixin;
 
     ///Statements
@@ -60,8 +60,9 @@ class BlockStatement : Statement
 * A Expression Statement
 * e.g. Function Call, Assign Expression
 */
-class ExpressionStatement : Statement
+final class ExpressionStatement : Statement
 {
+    //Visitor Mixin
     mixin VisitorMixin;
 
     /// Expression
@@ -78,7 +79,7 @@ class ExpressionStatement : Statement
 /**
 * Return Statement
 */
-class ReturnStatement : Statement
+final class ReturnStatement : Statement
 {
     //Visitor Mixin
     mixin VisitorMixin;

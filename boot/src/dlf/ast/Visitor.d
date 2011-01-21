@@ -47,11 +47,6 @@ public interface Visitor
     void visit(AssignExpression);
     void visit(BinaryExpression);
     //Annotations:
-    void visit(Annotation);
-    //basic 
-    //void visit(Statement);
-    //void visit(Expression);
-    //void visit(Declaration);
     }
 }
 

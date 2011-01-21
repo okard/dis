@@ -24,7 +24,7 @@ import dlf.ast.Declaration;
 /**
 * SymbolTable
 */
-class SymbolTable
+final class SymbolTable
 {
     /// Prev Symbol Table
     private SymbolTable mPrev;
@@ -61,7 +61,10 @@ class SymbolTable
     }
 
 
-
+    /**
+    * Apply Operator
+    * Allow foreach iteration over symboltable
+    */
     int opApply(int delegate(ref Declaration) dg)
     {   
         int result = 0;
@@ -75,7 +78,6 @@ class SymbolTable
         }
         return result;
     }
-
 
     /**
     * Symbol Table contains entry

@@ -32,84 +32,84 @@ abstract class DataType : Node
 }
 
 /// Void
-class VoidType : DataType
+final class VoidType : DataType
 {
     override string toString() { return "void"; }
     mixin Singleton!VoidType;
 }
 
 /// 1 Bit Type
-class BoolType : DataType
+final class BoolType : DataType
 {
     override string toString() { return "bool"; }
     mixin Singleton!BoolType;
 }
 
 /// 8 Bit signed
-class ByteType : DataType
+final class ByteType : DataType
 {
     override string toString() { return "byte"; }
     mixin Singleton!ByteType;
 }
 
 /// 8 Bit unsigned
-class UByteType : DataType
+final class UByteType : DataType
 {
     override string toString() { return "ubyte"; }
     mixin Singleton!UByteType;
 }
 
 /// 16 Bit
-class ShortType : DataType
+final class ShortType : DataType
 {
     override string toString() { return "short"; }
     mixin Singleton!ShortType;
 }
 
 /// 16 Bit
-class UShortType : DataType
+final class UShortType : DataType
 {
     override string toString() { return "ushort"; }
     mixin Singleton!UShortType;
 }
 
 /// 32 Bit
-class IntType : DataType
+final class IntType : DataType
 {
     override string toString() { return "int"; }
     mixin Singleton!IntType;
 }
 
 /// 32 Bit
-class UIntType : DataType
+final class UIntType : DataType
 {
     override string toString() { return "uint"; }
     mixin Singleton!UIntType;
 }
 
 /// 64 Bit
-class LongType : DataType
+final class LongType : DataType
 {
     override string toString() { return "long"; }
     mixin Singleton!LongType;
 }
 
 /// 64 Bit
-class ULongType : DataType
+final class ULongType : DataType
 {
     override string toString() { return "ushort"; }
     mixin Singleton!ULongType;
 }
 
 /// 32 Bit Float 
-class FloatType : DataType
+final class FloatType : DataType
 {
     override string toString() { return "float"; }
     mixin Singleton!FloatType;
 }
 
 /// 64 Bit
-class DoubleType : DataType
+final class DoubleType : DataType
 {
     override string toString() { return "double"; }
     mixin Singleton!DoubleType;
@@ -118,7 +118,7 @@ class DoubleType : DataType
 /**
 * Not yet resolved type
 */
-class OpaqueType : DataType
+final class OpaqueType : DataType
 {
     override string toString() { return "<Opaque>"; }
     mixin Singleton!OpaqueType;

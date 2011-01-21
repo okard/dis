@@ -37,9 +37,6 @@ abstract class Declaration : Node
     public string Name;
 
     //DataType DataType;
-    
-    //Visitor Mixin
-    //mixin VisitorMixin;
 
     //Location?
 }
@@ -47,7 +44,7 @@ abstract class Declaration : Node
 /**
 * Package
 */
-class PackageDeclaration : Declaration
+final class PackageDeclaration : Declaration
 {
     //Visitor Mixin
     mixin VisitorMixin;
@@ -78,7 +75,7 @@ class PackageDeclaration : Declaration
 /**
 * Import Declaration
 */
-public class ImportDeclaration : Declaration
+final class ImportDeclaration : Declaration
 {
     //Visitor Mixin
     mixin VisitorMixin;
@@ -102,7 +99,7 @@ struct FunctionParameter
 /**
 * Function Declaration (def)
 */
-class FunctionDeclaration : Declaration
+final class FunctionDeclaration : Declaration
 {
     //Visitor Mixin
     mixin VisitorMixin;
@@ -146,7 +143,7 @@ class FunctionDeclaration : Declaration
 /**
 * Variable Declaration (var)
 */
-class VariableDeclaration : Declaration
+final class VariableDeclaration : Declaration
 {
     //Visitor Mixin
     mixin VisitorMixin;
@@ -171,29 +168,36 @@ class VariableDeclaration : Declaration
 /**
 * Class Declaration
 */
-class ClassDeclaration : Declaration
+final class ClassDeclaration : Declaration
 {
     //Visitor Mixin
-    //mixin VisitorMixin;
+    mixin VisitorMixin;
 
     //ClassType?
     //BaseClass
     //Traits
 
+
     //VariableDeclaration[] Variables;
     //FunctionDeclaration[] Methods;
 
+
+    public this()
+    {
+        mixin(set_nodetype);
+    }
+
     /// Save Class Type inner?
-    class ClassType : DataType
+    /*class ClassType : DataType
     {
         //mixinSIngleton
-    }
+    }*/
 }
 
 /**
 * Trait Declaration
 */
-class TraitDeclaration : Declaration
+final class TraitDeclaration : Declaration
 {
     //Visitor Mixin
     //mixin VisitorMixin;

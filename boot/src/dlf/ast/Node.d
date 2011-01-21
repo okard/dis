@@ -59,6 +59,8 @@ enum NodeType
     DataType,
     //Declarations
     PackageDeclaration,
+    TraitDeclaration,
+    ClassDeclaration,
     FunctionDeclaration,
     VariableDeclaration,
     //Statements
