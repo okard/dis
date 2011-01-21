@@ -144,6 +144,7 @@ class Compiler : Visitor
         {
             //template functions can not generated
             //but has subtypes after semantic pass
+            //generate required function instances here
             return;
         }
 
@@ -179,14 +180,20 @@ class Compiler : Visitor
             func.Body.accept(this);
     }
 
+    /**
+    * Import Declaration does not require compiler action?
+    */
     void visit(ImportDeclaration){}
 
     /**
     * Generate Variables
     */
-    void visit(VariableDeclaration)
+    void visit(VariableDeclaration var)
     {
         //LLVM Values
+        //Create new Var 
+        mBuilder.Alloca(AstType2LLVMType(var.VarDataType), "_var_"~var.Name);
+        //TODO Initialize Variable
     }
 
     /**
@@ -198,7 +205,12 @@ class Compiler : Visitor
         
     }
 
-    void visit(TraitDeclaration){}
+    /**
+    * Traits are also more semantic stuff?
+    */
+    void visit(TraitDeclaration)
+    {
+    }
 
     /**
     * Generate Block Statement
@@ -224,6 +236,10 @@ class Compiler : Visitor
             mBuilder.RetVoid();
 
             mBuilder.PositionAtEnd(bb);
+
+            //Build Variables on Stack
+            foreach(Declaration sym; block.SymTable)
+                sym.accept(this);
 
             //Build Statements for Function
             foreach(s; block.Statements)
@@ -358,6 +374,8 @@ class Compiler : Visitor
         }
     }
 
+    void visit(AssignExpression){}
+    void visit(BinaryExpression){}
 
     void visit(Annotation){}
 

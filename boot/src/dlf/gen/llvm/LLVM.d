@@ -835,6 +835,14 @@ class Builder
     }
 
     /**
+    * Compare Integer Types
+    */
+    public Value CompareInt(LLVMIntPredicate op, Value lhs, Value rhs, string name)
+    {
+        return new Value(LLVMBuildICmp(mBuilder, op, lhs.llvmValue, rhs.llvmValue, (cast(char[])name).ptr));
+    }
+
+    /**
     * Get LLVMBuilder
     */
     @property

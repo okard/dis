@@ -132,6 +132,10 @@ class Semantic : Visitor
 
         mSymTable = block.SymTable;
 
+        //analyze the declarations inside of blockstatement
+        foreach(Declaration sym; block.SymTable)
+            sym.accept(this);
+
         //check each statement
         foreach(stat; block.Statements)
             stat.accept(this);
@@ -213,6 +217,8 @@ class Semantic : Visitor
     */
     void visit(VariableDeclaration var)
     {
+        Information("Semantic: VarDecl %s", var.Name);
+
         //Do Semantic Analysis for Initializer Expression if available
         if(var.Initializer !is null)
             var.Initializer.accept(this);
@@ -223,6 +229,7 @@ class Semantic : Visitor
             if(var.Initializer !is null)
             {
                 var.VarDataType = var.Initializer.ReturnType;
+                Information("\tResolved var type: %s", var.VarDataType);
             }
         }
 
@@ -230,7 +237,9 @@ class Semantic : Visitor
         if(var.Initializer !is null)
         {   
             //check for allowed conversions?
-            assert(var.VarDataType == var.Initializer.ReturnType);
+            // implicit casts check
+            Information("\tVarType: %s, InitType: %s", var.VarDataType,var.Initializer.ReturnType); 
+            //assert(var.VarDataType == var.Initializer.ReturnType);
         }
     }
 
@@ -248,6 +257,10 @@ class Semantic : Visitor
     }
 
     void visit(LiteralExpression){}
+
+
+    void visit(AssignExpression){}
+    void visit(BinaryExpression){}
 
     /**
     * Class Semantic Check
@@ -331,6 +344,7 @@ class Semantic : Visitor
     */
     private void Information(T...)(string s, T args)
     {
+        //TODO Change to Events
         writefln(s, args);
     }
 
@@ -339,6 +353,7 @@ class Semantic : Visitor
     */
     private void Error(T...)(string s, T args)
     {
+        //TODO Change to Events
         writefln(s, args);
     }
 

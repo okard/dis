@@ -517,8 +517,7 @@ class Parser
         case TokenType.KwWhile: 
             break;
         case TokenType.KwReturn:
-            //return ReturnStatement(parseExpression());
-            break;
+            return new ReturnStatement(parseExpression());
         default:
         }
 
@@ -538,46 +537,74 @@ class Parser
     */
     private Expression parseExpression()
     {
+        //parse one expression
+        Expression expr = null;
+
+        writefln("Loc: %s, Tok: %s", mToken.Loc, mToken);
+
         //Keyword Based
         //If-ElseIf-Else
         //Switch-Case
         switch(mToken.Type)
         {
-            case TokenType.KwIf: break;
-            case TokenType.KwSwitch: break;
-            case TokenType.KwThis: /*identifier?*/break;
-            case TokenType.ROBracket: /*return parseExpression; assert(mToken.Type == RCBracket);*/ break;
-            case TokenType.Identifier:/*look under switch*/ break;
+            case TokenType.KwIf: 
+                expr = parseIfExpression();
+                break;
+            case TokenType.KwSwitch: 
+                expr = parseSwitchExpression();
+                break;
+            case TokenType.KwThis: 
+                 /*identifier?*/
+                //expr = parseIdentifier();
+                break;
+            case TokenType.ROBracket: 
+                //return parseExpression; 
+                //assert(mToken.Type == RCBracket);
+                break;
+            case TokenType.Identifier:
+                /*look under switch*/ 
+                expr = parseIdentifier();
+                break;
+
             // Literal Expressions
+            //TODO Pay Attention for next Token when it is an op
             case TokenType.String:
                 //TODO Fix it, a String Literal is a pointer to a char[] array
-                return new LiteralExpression(mToken.Value, StringType.Instance); 
+                expr = new LiteralExpression(mToken.Value, StringType.Instance);
+                break;
             case TokenType.Char:
-                return new LiteralExpression(mToken.Value, CharType.Instance); 
-            case TokenType.Integer: 
-                return new LiteralExpression(mToken.Value, IntType.Instance); 
+                expr =  new LiteralExpression(mToken.Value, CharType.Instance); 
+                break;
+            case TokenType.Integer:
+                expr = new LiteralExpression(mToken.Value, IntType.Instance); 
+                break;
             case TokenType.Float:
-                return new LiteralExpression(mToken.Value, FloatType.Instance); 
+                expr = new LiteralExpression(mToken.Value, FloatType.Instance); 
+                 break;
             case TokenType.Double:
-                return new LiteralExpression(mToken.Value, DoubleType.Instance);
+                expr = new LiteralExpression(mToken.Value, DoubleType.Instance);
+                break;
             case TokenType.KwTrue:
             case TokenType.KwFalse:
-                return new LiteralExpression(mToken.Value, BoolType.Instance);
+                expr = new LiteralExpression(mToken.Value, BoolType.Instance);
+                break;
             default:
+                Error(mToken.Loc, "No right Token for parse a Expression");
                 assert(true);
         }
 
-        //current is identifier?
-        auto di = parseIdentifier();
+        //here it can be KwThis
+        //ROBracket
+        //Identifier
 
-        //seems to be a function call "(" after identifier
-        if(peek(1) == TokenType.ROBracket)
+        //seems to be a function call "(" after expression/identifier
+        if(expr.Type == NodeType.DotIdentifier && peek(1) == TokenType.ROBracket)
         {
             next();
 
             //Create Function Call
             auto call = new FunctionCall();
-            call.Function = di;
+            call.Function = expr;
 
             while(peek(1) != TokenType.RCBracket)
             {
@@ -594,8 +621,39 @@ class Parser
             if(peek(1) == TokenType.Semicolon)
                 next();
 
-            return call;
+            //return call;
+            expr = call;
         }
+
+        
+        //check next token for concat expressions
+        switch(peek(1))
+        {
+            case TokenType.Semicolon:
+                return expr;
+            //Assign Expression:
+            case TokenType.Assign:
+                auto a = new AssignExpression();
+                a.Target = expr;
+                next; next;
+                a.Value = parseExpression();
+                return a;
+
+            //Binary Expressions
+            case TokenType.Add:
+            case TokenType.Sub:
+            case TokenType.Mul:
+            case TokenType.Div:
+                auto a = new BinaryExpression();
+                a.Left = expr;
+                next; next;
+                a.Right = parseExpression();
+                return a;
+    
+            default:
+                return expr;
+        }
+        
 
         //array access [
         //operator? =, ==, !=, +, - , 
@@ -612,6 +670,26 @@ class Parser
         //Literal -> Char, String, Integer, Float, Double, Array, Lambda
 
         //starts with "(" ?
+        //return expr;
+    }
+
+    /**
+    * Parse If Expression
+    */
+    private Expression parseIfExpression()
+    {
+        assert(mToken.Type == TokenType.KwIf);
+        Error(mToken.Loc, "TODO: Can't parse If Expressions yet");
+        return null;
+    }
+
+    /**
+    * Parse Switch Expression
+    */
+    private Expression parseSwitchExpression()
+    {
+        assert(mToken.Type == TokenType.KwSwitch);
+        Error(mToken.Loc, "TODO: Can't parse Switch Expressions yet");
         return null;
     }
 

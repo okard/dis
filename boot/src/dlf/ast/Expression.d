@@ -28,7 +28,7 @@ import dlf.ast.Type;
 abstract class Expression : Node
 {
     //Visitor Mixin
-    mixin VisitorMixin;
+    //mixin VisitorMixin;
 
     /// ReturnType of Expression
     DataType ReturnType;
@@ -157,7 +157,7 @@ final class BinaryExpression : Expression
     mixin VisitorMixin;
 
     /// OP + - * / % ** ^ && ||
-    enum Op {Add, Div, Mul}
+    enum Op {Add, Sub, Div, Mul}
 
     Expression Left;
     Expression Right;

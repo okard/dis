@@ -39,7 +39,7 @@ abstract class Declaration : Node
     //DataType DataType;
     
     //Visitor Mixin
-    mixin VisitorMixin;
+    //mixin VisitorMixin;
 
     //Location?
 }
@@ -174,7 +174,7 @@ class VariableDeclaration : Declaration
 class ClassDeclaration : Declaration
 {
     //Visitor Mixin
-    mixin VisitorMixin;
+    //mixin VisitorMixin;
 
     //ClassType?
     //BaseClass
@@ -196,7 +196,7 @@ class ClassDeclaration : Declaration
 class TraitDeclaration : Declaration
 {
     //Visitor Mixin
-    mixin VisitorMixin;
+    //mixin VisitorMixin;
 
     //TraitType?
     //Variables, Methods, Properties

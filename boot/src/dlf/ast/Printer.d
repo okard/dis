@@ -117,7 +117,9 @@ class Printer : Visitor
     */
     public void visit(ExpressionStatement expr) 
     {
+        writet("");
         expr.Expr.accept(this);
+        writeln();
     }
 
     /**
@@ -148,12 +150,35 @@ class Printer : Visitor
             writef("%s", le.Value);
     }
 
+    /**
+    * Print Assign Expression
+    */
+    void visit(AssignExpression ae)
+    {
+        ae.Target.accept(this);
+        write(" = ");
+        ae.Value.accept(this);
+    }
+
+    /**
+    * Print Binary Expression
+    */
+    void visit(BinaryExpression be)
+    {
+        be.Left.accept(this);
+        write(" <op> ");
+        be.Right.accept(this);
+    }
+
 
     void visit(ImportDeclaration){}
 
     void visit(ClassDeclaration){}
     void visit(TraitDeclaration){}
-    void visit(DotIdentifier){}
+    void visit(DotIdentifier di)
+    {
+        write(di.toString());
+    }
     void visit(Annotation){}
     void visit(ReturnStatement){}
 

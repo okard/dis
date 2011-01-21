@@ -28,7 +28,7 @@ import dlf.ast.Visitor;
 abstract class Annotation : Node
 {
     //Visitor Mixin
-    mixin VisitorMixin;
+    //mixin VisitorMixin;
 
     /// Annotation Name
     string Name;

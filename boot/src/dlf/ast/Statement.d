@@ -30,7 +30,7 @@ import dlf.ast.SymbolTable;
 */
 abstract class Statement : Node
 {
-    mixin VisitorMixin;
+    //mixin VisitorMixin;
 } 
 
 /**
@@ -87,9 +87,10 @@ class ReturnStatement : Statement
     public Expression Expr;
 
     /// Create new Return Statement
-    public this()
+    public this(Expression expr)
     {
         mixin(set_nodetype);
+        Expr = expr;
     }
 }
 

@@ -45,7 +45,7 @@ abstract class Node
     /**
     * Visitor pattern
     */
-    public void accept(Visitor v);
+    public abstract void accept(Visitor v);
     
 }
 
