@@ -44,27 +44,13 @@ class Semantic : Visitor
     //Stack!(Type[char[]])
 
     /**
-    * Visit Declaration
+    * Run semantic passes 
+    * Parse Tree -> AST
     */
-    void visit(Declaration decl)
+    public Node run(Node astNode)
     {
-        assert(true);
-    }
-
-    /**
-    * Visit Statement
-    */
-    void visit(Statement stat)
-    {
-          assert(true);
-    }
-
-    /**
-    * Visit Expression
-    */
-    void visit(Expression expr)
-    {
-          assert(true);
+        astNode.accept(this);
+        return astNode;
     }
 
     /**
@@ -287,6 +273,7 @@ class Semantic : Visitor
         //rewrite Binary Expression for none math types
         // a + b ->
         // a.opAdd(b);
+        //TODO requires function to replace nodes 
     }
 
     /**
@@ -297,11 +284,12 @@ class Semantic : Visitor
         //look for string value?
     }
 
-
     /**
-    * Semantic Pass for Annotations
+    * Visit CallConv Annotation
     */
-    void visit(Annotation){}
+    void visit(CallConvAnnotation)
+    {
+    }
 
     /**
     * Get the Declaration of a DotIdentifier
@@ -343,26 +331,7 @@ class Semantic : Visitor
         return null;
     }
 
-    /**
-    * Run semantic passes 
-    * Parse Tree -> AST
-    */
-    public Node run(Node astNode)
-    {
-        astNode.accept(this);
-        return astNode;
-    }
 
-    /**
-    * Assign a Node to Extend Property of Node
-    */
-    private static void assign(Node n, Node e)
-    {
-        if(n.Extend !is null)
-             e.Parent = n.Extend;
-
-        n.Extend = e;
-    }
 
     /**
     * Semantic Information Log
@@ -382,4 +351,45 @@ class Semantic : Visitor
         writefln(s, args);
     }
 
+    /**
+    * Replace nodes with an another one?
+    */
+    private void replace(Node n, Node e)
+    {
+        //check for parent
+        if(n.Parent !is null)
+        {
+            Error("Parent is null, can't replace Node %s", n.toString);
+            return;
+        }
+
+        //right handling
+        switch(n.Parent.Type)
+        {
+            case NodeType.ExpressionStatement:
+                (cast(ExpressionStatement)n.Parent).Expr = cast(Expression)e;
+                break;
+            case NodeType.AssignExpression:
+                break;
+            case NodeType.BinaryExpression:
+                break;
+
+            case NodeType.BlockStatement:
+                // find right statement
+                break;
+            default:
+                Error("Can't replace Node %s with Node %s", n, e);
+        }
+    }
+
+    /**
+    * Assign a Node to Extend Property of Node
+    */
+    private static void assign(Node n, Node e)
+    {
+        if(n.Extend !is null)
+             e.Parent = n.Extend;
+
+        n.Extend = e;
+    }
 }

@@ -70,5 +70,7 @@ enum NodeType
     //Expressions
     DotIdentifier,
     FunctionCall,
-    LiteralExpression
+    LiteralExpression,
+    AssignExpression,
+    BinaryExpression
 }

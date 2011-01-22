@@ -18,6 +18,7 @@
 ******************************************************************************/
 module dlf.gen.Mangle;
 
+import dlf.ast.Node;
 import dlf.ast.Declaration;
 
 /**
@@ -37,7 +38,38 @@ class Mangle
     */
     string mangle(Declaration decl)
     {
-        return "";
+        string name = decl.Name;
+
+        //Functions have Parameters
+        if(decl.Type == NodeType.FunctionDeclaration)
+        {
+           //TODO function append parameter
+           //TODO right Function Types
+        }
+
+        //look backwards and add prefixes
+        Node n = decl;
+        while(decl.Parent !is null)
+        {
+            switch(n.Type)
+            {
+                case NodeType.PackageDeclaration:
+                    name = (cast(Declaration)n).Name ~ "_" ~ name;
+                    break;
+                case NodeType.ClassDeclaration:
+                    name = "cls" ~ (cast(Declaration)n).Name ~ "_" ~ name;
+                    break;
+                case NodeType.FunctionDeclaration:
+                    name = "fcn" ~ (cast(Declaration)n).Name ~ "_" ~ name;
+                default:
+            }
+    
+            n = n.Parent;
+        }
+
+        name = "_Dis" ~ name;
+        
+        return name;
     }
 
     /**

@@ -402,12 +402,12 @@ class Compiler : Visitor
         }
     }
 
-
     /**
-    * Create Annotation class types
+    * Visit CallConv Annotation
     */
-    void visit(Annotation){}
-
+    void visit(CallConvAnnotation)
+    {
+    }
 
     /**
     * Convert Ast Type to LLVM Type

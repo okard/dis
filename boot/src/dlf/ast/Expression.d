@@ -138,6 +138,7 @@ final class FunctionCall : Expression
 
     //return type is mFunction.solve().mReturnType
 
+    /// Create new FunctionCall Expression
     this()
     {
         mixin(set_nodetype);
@@ -163,6 +164,12 @@ final class BinaryExpression : Expression
 
     /// Right Expression
     Expression Right;
+
+    /// Create new Binary Expression
+    this()
+    {
+        mixin(set_nodetype);
+    }
     
 }
 
@@ -179,6 +186,12 @@ final class AssignExpression : Expression
 
     /// The Value assigning to target
     Expression Value;
+
+    /// Create new AssignExpression
+    this()
+    {
+        mixin(set_nodetype);
+    }
 }
 
 

@@ -49,6 +49,20 @@ class Printer : Visitor
     //=========================================================================
     //== Visitor Implementation
 
+
+    /**
+    * Visit Package Declaration
+    */
+    public void visit(PackageDeclaration pd)
+    {
+        writetln("%sPackage: %s",tabs(),  pd.Name);
+
+        tabDeepness++;
+        foreach(fd; pd.Functions)
+            fd.accept(this);
+        tabDeepness--;
+    }
+
     /**
     * Visit FunctionDeclaration
     */
@@ -72,18 +86,9 @@ class Printer : Visitor
             fd.Body.accept(this);
     }
 
-    /**
-    * Visit Package Declaration
-    */
-    public void visit(PackageDeclaration pd)
-    {
-        writetln("%sPackage: %s",tabs(),  pd.Name);
-
-        tabDeepness++;
-        foreach(fd; pd.Functions)
-            fd.accept(this);
-        tabDeepness--;
-    }
+    void visit(ImportDeclaration){}
+    void visit(ClassDeclaration){}
+    void visit(TraitDeclaration){}
 
     /**
     * Print Variable Declaration
@@ -170,16 +175,20 @@ class Printer : Visitor
         be.Right.accept(this);
     }
 
-
-    void visit(ImportDeclaration){}
-
-    void visit(ClassDeclaration){}
-    void visit(TraitDeclaration){}
+    /**
+    * Visit Dot Identifier
+    */
     void visit(DotIdentifier di)
     {
         write(di.toString());
     }
-    void visit(Annotation){}
+
+
+    /**
+    * Visit CallConv Annotation
+    */
+    void visit(CallConvAnnotation) {}
+
     void visit(ReturnStatement){}
 
 

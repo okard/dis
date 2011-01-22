@@ -47,6 +47,7 @@ public interface Visitor
     void visit(AssignExpression);
     void visit(BinaryExpression);
     //Annotations:
+    void visit(CallConvAnnotation);
     }
 }
 

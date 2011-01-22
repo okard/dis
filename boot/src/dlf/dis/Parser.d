@@ -638,8 +638,11 @@ class Parser
             case TokenType.Assign:
                 auto a = new AssignExpression();
                 a.Target = expr;
+                expr.Parent = a;
                 next; next;
-                a.Value = parseExpression();
+                auto b = parseExpression();
+                a.Value = b;
+                b.Parent = a;
                 return a;
 
             //Binary Expressions
@@ -649,8 +652,11 @@ class Parser
             case TokenType.Div:
                 auto a = new BinaryExpression();
                 a.Left = expr;
+                expr.Parent = a;
                 next; next;
-                a.Right = parseExpression();
+                auto b = parseExpression();
+                a.Right = b;
+                b.Parent = a;
                 return a;
     
             default:
@@ -747,6 +753,11 @@ class Parser
 
         next();
         
+        //Special Annotations
+        if(mToken.Value == "CallConv")
+        {
+            return new CallConvAnnotation();
+        }
         
         return null;
     }

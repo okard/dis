@@ -30,3 +30,20 @@ abstract class Annotation : Node
     /// Annotation Name
     string Name;
 }
+
+/**
+* Annotation @CallConv for Calling Conventions
+*/
+final class CallConvAnnotation : Annotation
+{
+    //Visitor Mixin
+    mixin VisitorMixin;
+    
+    enum CC : ubyte { C, Dis }
+
+    public this()
+    {
+         Name = "CallConv";
+    }
+
+}
