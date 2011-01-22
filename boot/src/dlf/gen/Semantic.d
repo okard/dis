@@ -94,6 +94,44 @@ class Semantic : Visitor
     }
 
     /**
+    * Import Declaration
+    */
+    void visit(ImportDeclaration impDecl)
+    {
+        // Info
+        Information("Semantic: ImportDecl %s", impDecl.Name);
+
+        //semantic check for available PackageDeclarations
+        if(impDecl.Package !is null)
+        {
+            impDecl.Package.accept(this);
+        }
+        else
+            Error("\tImport %s has not solved", impDecl.Name);
+
+
+        //when a type resolved from import package
+        //generate missing declarations? compiler task?
+        //Import external types into actual PackageDeclaration 
+        //Mark as external 
+        //error when a import isn't resolved
+    }
+
+    /**
+    * Class Semantic Check
+    */
+    void visit(ClassDeclaration cls)
+    {
+    }
+
+    /**
+    * Trait Semantic
+    */
+    void visit(TraitDeclaration)
+    {
+    }
+
+    /**
     * Visit FunctionDeclaration
     */
     void visit(FunctionDeclaration func)
@@ -121,6 +159,37 @@ class Semantic : Visitor
         //go into Body
         if(func.Body !is null)
             func.Body.accept(this);
+    }
+
+     /**
+    * Semantic Checks for Variables
+    */
+    void visit(VariableDeclaration var)
+    {
+        Information("Semantic: VarDecl %s", var.Name);
+
+        //Do Semantic Analysis for Initializer Expression if available
+        if(var.Initializer !is null)
+            var.Initializer.accept(this);
+
+        //Set Datatype for Variable
+        if(var.VarDataType == OpaqueType.Instance)
+        {
+            if(var.Initializer !is null)
+            {
+                var.VarDataType = var.Initializer.ReturnType;
+                Information("\tResolved var type: %s", var.VarDataType);
+            }
+        }
+
+        //DataType of Variable and Initializer must match
+        if(var.Initializer !is null)
+        {   
+            //check for allowed conversions?
+            // implicit casts check
+            Information("\tVarType: %s, InitType: %s", var.VarDataType,var.Initializer.ReturnType); 
+            //assert(var.VarDataType == var.Initializer.ReturnType);
+        }
     }
 
     /**
@@ -189,62 +258,6 @@ class Semantic : Visitor
     }
 
     /**
-    * Import Declaration
-    */
-    void visit(ImportDeclaration impDecl)
-    {
-        // Info
-        Information("Semantic: ImportDecl %s", impDecl.Name);
-
-        //semantic check for available PackageDeclarations
-        if(impDecl.Package !is null)
-        {
-            impDecl.Package.accept(this);
-        }
-        else
-            Error("\tImport %s has not solved", impDecl.Name);
-
-
-        //when a type resolved from import package
-        //generate missing declarations? compiler task?
-        //Import external types into actual PackageDeclaration 
-        //Mark as external 
-        //error when a import isn't resolved
-    }
-
-    /**
-    * Semantic Checks for Variables
-    */
-    void visit(VariableDeclaration var)
-    {
-        Information("Semantic: VarDecl %s", var.Name);
-
-        //Do Semantic Analysis for Initializer Expression if available
-        if(var.Initializer !is null)
-            var.Initializer.accept(this);
-
-        //Set Datatype for Variable
-        if(var.VarDataType == OpaqueType.Instance)
-        {
-            if(var.Initializer !is null)
-            {
-                var.VarDataType = var.Initializer.ReturnType;
-                Information("\tResolved var type: %s", var.VarDataType);
-            }
-        }
-
-        //DataType of Variable and Initializer must match
-        if(var.Initializer !is null)
-        {   
-            //check for allowed conversions?
-            // implicit casts check
-            Information("\tVarType: %s, InitType: %s", var.VarDataType,var.Initializer.ReturnType); 
-            //assert(var.VarDataType == var.Initializer.ReturnType);
-        }
-    }
-
-
-    /**
     * Semantic Pass for DotIdentifier
     */
     void visit(DotIdentifier di)
@@ -256,26 +269,38 @@ class Semantic : Visitor
         // di.ReturnType = decl.Type
     }
 
-    void visit(LiteralExpression){}
-
-
-    void visit(AssignExpression){}
-    void visit(BinaryExpression){}
-
     /**
-    * Class Semantic Check
+    * Semantic Pass for Assign Expression
     */
-    void visit(ClassDeclaration cls)
+    void visit(AssignExpression ae)
     {
+        //look for Target must be a declared value?
+        //look for type match
+    }
+    
+    /**
+    * Semantic Pass for BinaryExpression
+    */
+    void visit(BinaryExpression be)
+    {
+        //look for type match
+        //rewrite Binary Expression for none math types
+        // a + b ->
+        // a.opAdd(b);
     }
 
     /**
-    * Trait Semantic
+    * Semantic Pass for Literal Expression
     */
-    void visit(TraitDeclaration)
+    void visit(LiteralExpression)
     {
+        //look for string value?
     }
 
+
+    /**
+    * Semantic Pass for Annotations
+    */
     void visit(Annotation){}
 
     /**

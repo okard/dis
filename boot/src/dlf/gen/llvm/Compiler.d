@@ -129,6 +129,29 @@ class Compiler : Visitor
     }
 
     /**
+    * Import Declaration does not require compiler action?
+    */
+    void visit(ImportDeclaration)
+    {
+    }
+
+    /**
+    * Generate Classes
+    */
+    void visit(ClassDeclaration)
+    {
+        //Classes are a llvm struct type
+        //Create Struct
+    }
+
+    /**
+    * Traits are also more semantic stuff?
+    */
+    void visit(TraitDeclaration)
+    {
+    }
+
+    /**
     * Compile Function Declaration
     */
     void visit(FunctionDeclaration func)
@@ -181,11 +204,6 @@ class Compiler : Visitor
     }
 
     /**
-    * Import Declaration does not require compiler action?
-    */
-    void visit(ImportDeclaration){}
-
-    /**
     * Generate Variables
     */
     void visit(VariableDeclaration var)
@@ -194,22 +212,6 @@ class Compiler : Visitor
         //Create new Var 
         mBuilder.Alloca(AstType2LLVMType(var.VarDataType), "_var_"~var.Name);
         //TODO Initialize Variable
-    }
-
-    /**
-    * Generate Classes
-    */
-    void visit(ClassDeclaration)
-    {
-        //Classes are a llvm struct type
-        
-    }
-
-    /**
-    * Traits are also more semantic stuff?
-    */
-    void visit(TraitDeclaration)
-    {
     }
 
     /**
@@ -259,7 +261,6 @@ class Compiler : Visitor
         //New Basic Block
         foreach(s; block.Statements)
             s.accept(this);
-
     }
 
     /**
@@ -339,7 +340,9 @@ class Compiler : Visitor
         //if not created then create???
     }
 
-
+    /**
+    * Dot Identifier 
+    */
     void visit(DotIdentifier)
     {
         //Look into type
@@ -374,15 +377,37 @@ class Compiler : Visitor
         }
     }
 
-    void visit(AssignExpression){}
-    void visit(BinaryExpression){}
+    /**
+    * Create Assign Expression
+    */
+    void visit(AssignExpression ae)
+    {
+        //store or load right value into
+        // the variable
+    }
 
+    /**
+    * Create Binary Expression
+    */
+    void visit(BinaryExpression be)
+    {
+        //instructions for real and integer?
+        //check return type
+        
+        switch(be.Op)
+        {
+            case BinaryExpression.Operator.Add:
+                break;
+            default:
+        }
+    }
+
+
+    /**
+    * Create Annotation class types
+    */
     void visit(Annotation){}
 
-    //Basics
-    void visit(Declaration decl){}
-    void visit(Statement stat){}
-    void visit(Expression expr){}
 
     /**
     * Convert Ast Type to LLVM Type

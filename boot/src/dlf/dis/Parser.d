@@ -437,6 +437,45 @@ class Parser
     }
 
     /**
+    * Parse Statement
+    */
+    private Statement parseStatement()
+    {
+
+        //a Statement can be a statement
+        //or a StatementExpression
+
+        switch(mToken.Type)
+        {
+        //Block Statement
+        case TokenType.COBracket:
+            break;
+        //for, foreach 
+        case TokenType.KwFor: 
+            break;
+        //do-while
+        case TokenType.KwDo: 
+            break;
+        //while
+        case TokenType.KwWhile: 
+            break;
+        case TokenType.KwReturn:
+            return new ReturnStatement(parseExpression());
+        default:
+        }
+
+        //parse Statement-Expression
+        auto exp = parseExpression();
+        if(exp !is null)
+        {
+            auto es =  new ExpressionStatement(exp);
+            exp.Parent = es;
+        }
+
+        return null;
+    }
+
+    /**
     * Parse Block {}
     * Parse Complete Block
     */
@@ -466,6 +505,7 @@ class Parser
             {
                 auto var = parseVar();
                 mSymTable[var.Name] = var;
+                var.Parent = block;
                 continue;
             }
 
@@ -483,6 +523,7 @@ class Parser
             if(stat !is null)
             {
                 block.Statements ~= stat;
+                stat.Parent = block;
             }
         }
         //go over } ?
@@ -493,44 +534,6 @@ class Parser
         return block;
     }
 
-    /**
-    * Parse Statement
-    */
-    private Statement parseStatement()
-    {
-
-        //a Statement can be a statement
-        //or a StatementExpression
-
-        switch(mToken.Type)
-        {
-        //Block Statement
-        case TokenType.COBracket:
-            break;
-        //for, foreach 
-        case TokenType.KwFor: 
-            break;
-        //do-while
-        case TokenType.KwDo: 
-            break;
-        //while
-        case TokenType.KwWhile: 
-            break;
-        case TokenType.KwReturn:
-            return new ReturnStatement(parseExpression());
-        default:
-        }
-
-
-        //parse Statement-Expression
-        auto exp = parseExpression();
-        if(exp !is null)
-        {
-            return new ExpressionStatement(exp);
-        }
-
-        return null;
-    }
 
     /**
     * Parse Expressions
@@ -694,25 +697,6 @@ class Parser
     }
 
     /**
-    * Parse Annotation
-    */
-    private Annotation parseAnnotation()
-    {
-        // Annotions: @identifier
-        assert(mToken.Type == TokenType.Annotation);
-        
-        if(peek(1) != TokenType.Identifier)
-        {
-            Error(mToken.Loc, "Error: Expected Identifier after @ for Annotations");
-        }
-
-        next();
-        
-        
-        return null;
-    }
-
-    /**
     * Parse Identifier
     */
     private DotIdentifier parseIdentifier()
@@ -746,6 +730,25 @@ class Parser
         }
 
         return di;
+    }
+
+    /**
+    * Parse Annotation
+    */
+    private Annotation parseAnnotation()
+    {
+        // Annotions: @identifier
+        assert(mToken.Type == TokenType.Annotation);
+        
+        if(peek(1) != TokenType.Identifier)
+        {
+            Error(mToken.Loc, "Error: Expected Identifier after @ for Annotations");
+        }
+
+        next();
+        
+        
+        return null;
     }
 
     /**

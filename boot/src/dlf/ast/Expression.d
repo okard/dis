@@ -154,9 +154,14 @@ final class BinaryExpression : Expression
     mixin VisitorMixin;
 
     /// OP + - * / % ** ^ && ||
-    enum Op {Add, Sub, Div, Mul}
+    public enum Operator : ubyte { Add, Sub, Div, Mul, Mod, Power, And, Or, Xor }
 
+    /// Operator
+    Operator Op; 
+    /// Left Expression
     Expression Left;
+
+    /// Right Expression
     Expression Right;
     
 }
@@ -176,6 +181,6 @@ final class AssignExpression : Expression
     Expression Value;
 }
 
-//Binary/Unary
+
 //if/else
 //switch/case
