@@ -206,4 +206,39 @@ final class TraitDeclaration : Declaration
     //Variables, Methods, Properties
 }
 
-//Type Declarations: Struct, Enum, Alias, Delegate 
+/**
+* Type Declaration Base Class
+* For Struct, Enum, Alias, Delegates
+*/
+abstract class TypeDeclaration : Declaration
+{
+}
+
+/**
+* Structure Type
+*/
+final class StructDeclaration : TypeDeclaration
+{
+}
+
+/**
+* Enum Type
+*/
+final class EnumDeclaration : TypeDeclaration
+{
+}
+
+/**
+* Alias Declaration
+*/
+final class AliasDeclaration : TypeDeclaration
+{
+}
+
+/**
+* Delegate Declaration
+*/
+final class DelegateDeclaration : TypeDeclaration
+{
+}
+
