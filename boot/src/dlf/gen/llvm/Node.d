@@ -49,7 +49,7 @@ class CompilerNode : Node
     */
     public this()
     {
-        Type = NodeType.Special;
+       NodeType = Node.Type.Special;
     }
 
     /**

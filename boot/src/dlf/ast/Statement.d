@@ -30,6 +30,23 @@ import dlf.ast.SymbolTable;
 */
 abstract class Statement : Node
 {
+    /// Statement Types
+    enum Type
+    {
+        Block,
+        Expression,
+        Return
+    }
+
+    /// Statement Type
+    public Type StmtType;
+
+    /// Create new Statement
+    public this()
+    {
+        NodeType = Node.Type.Statement;
+    }
+
 } 
 
 /**
@@ -52,7 +69,7 @@ final class BlockStatement : Statement
     ///Create new BlockStatement
     this()
     {
-        mixin(set_nodetype);
+        StmtType = Type.Block;
     }
 }
 
@@ -71,7 +88,7 @@ final class ExpressionStatement : Statement
     ///Create new ExpressionStatement
     public this(Expression expr)
     {
-        mixin(set_nodetype);
+        StmtType = Type.Expression;
         Expr = expr;
     }
 }
@@ -90,7 +107,7 @@ final class ReturnStatement : Statement
     /// Create new Return Statement
     public this(Expression expr)
     {
-        mixin(set_nodetype);
+        StmtType = Type.Return;
         Expr = expr;
     }
 }

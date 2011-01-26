@@ -251,11 +251,11 @@ class Printer : Visitor
     */
     public static string toString(Expression exp)
     {
-        switch(exp.Type)
+        switch(exp.ExprType)
         {
-            case NodeType.DotIdentifier: return (cast(DotIdentifier) exp).toString();
-            case NodeType.FunctionCall: return toString(cast(FunctionCall) exp);
-            case NodeType.LiteralExpression: return (cast(LiteralExpression)exp).Value;
+            case Expression.Type.Identifier: return (cast(DotIdentifier) exp).toString();
+            case Expression.Type.Call: return toString(cast(FunctionCall) exp);
+            case Expression.Type.Literal: return (cast(LiteralExpression)exp).Value;
             default: return "<unkown expression>";
         }
     }
@@ -265,9 +265,9 @@ class Printer : Visitor
     */
     public static string toString(Statement stat)
     {
-        switch(stat.Type)
+        switch(stat.StmtType)
         {
-            case NodeType.ExpressionStatement: return toString((cast(ExpressionStatement)stat).Expr);
+            case Statement.Type.Expression: return toString((cast(ExpressionStatement)stat).Expr);
             default: return "<unkown statement>";
         }
     }

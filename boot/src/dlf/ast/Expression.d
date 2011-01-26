@@ -27,8 +27,27 @@ import dlf.ast.Type;
 */
 abstract class Expression : Node
 {
+    /// Expression Types
+    enum Type
+    {
+        Literal,
+        Identifier,
+        Call,
+        Binary,
+        Assign
+    }
+
+    /// Expression Type
+    Type ExprType;
+
     /// ReturnType of Expression
     DataType ReturnType;
+
+    /// Create Expression
+    public this()
+    {
+        NodeType = Node.Type.Expression;
+    }
 }
 
 
@@ -46,7 +65,7 @@ final class LiteralExpression : Expression
     /// Create new LiteralExpression
     public this(string value, DataType returnType)
     {
-        mixin(set_nodetype);
+        ExprType = Type.Literal;
         Value = value;
         ReturnType = returnType;
     }
@@ -71,7 +90,7 @@ final class DotIdentifier : Expression
     */
     public this(char[] identifier)
     {
-        mixin(set_nodetype);
+        ExprType = Type.Identifier;
         mIdentifier ~= identifier;
     }
 
@@ -141,7 +160,7 @@ final class FunctionCall : Expression
     /// Create new FunctionCall Expression
     this()
     {
-        mixin(set_nodetype);
+        ExprType = Type.Call;
     }
 }
 
@@ -168,7 +187,7 @@ final class BinaryExpression : Expression
     /// Create new Binary Expression
     this()
     {
-        mixin(set_nodetype);
+        ExprType = Type.Binary;
     }
     
 }
@@ -190,7 +209,7 @@ final class AssignExpression : Expression
     /// Create new AssignExpression
     this()
     {
-        mixin(set_nodetype);
+        ExprType = Type.Assign;
     }
 }
 

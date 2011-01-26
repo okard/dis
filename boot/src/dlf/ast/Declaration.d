@@ -30,15 +30,33 @@ import dlf.ast.SymbolTable;
 */
 abstract class Declaration : Node
 {
+    enum Type
+    {
+        Package,
+        Import,
+        Variable,
+        Function,
+        Class,
+        Struct,
+        Enum,
+        Alias,
+        Delegate
+    }
+
     /// Flags for Declaration
     enum Flags : ushort { Private=1, Protected=2, Public=4, Package=8, Static=16, Final=32, Const=64, Extern=128 } 
 
+    //Type
+    public Type DeclType;
+    
     ///name
     public string Name;
 
-    //DataType DataType;
-
-    //Location?
+    //ctor declaration
+    public this()
+    {
+        NodeType = Node.Type.Declaration;
+    }
 }
 
 /**
@@ -67,7 +85,7 @@ final class PackageDeclaration : Declaration
     */
     public this(string name)
     {
-        mixin(set_nodetype);
+        DeclType = Type.Package;
         Name = name;
     }
 }
@@ -126,7 +144,7 @@ final class FunctionDeclaration : Declaration
     */
     public this()
     {
-        mixin(set_nodetype);
+        DeclType = Type.Function;
         FuncType = new FunctionType(); 
     }
 
@@ -159,9 +177,9 @@ final class VariableDeclaration : Declaration
     */
     public this(string name, DataType type = OpaqueType.Instance)
     {
-        mixin(set_nodetype);
-        this.Name = name;
-        this.VarDataType = type;
+        DeclType = Type.Variable;
+        Name = name;
+        VarDataType = type;
     }
 }
 
@@ -184,7 +202,7 @@ final class ClassDeclaration : Declaration
 
     public this()
     {
-        mixin(set_nodetype);
+        DeclType = Type.Class;
     }
 
     /// Save Class Type inner?

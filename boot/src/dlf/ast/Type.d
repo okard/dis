@@ -27,7 +27,7 @@ import dlf.basic.Util;
 */
 abstract class DataType : Node
 {
-     public this() { mixin(set_nodetype); }
+     public this() { NodeType = Node.Type.DataType; }
      public override void accept(Visitor v){}
 }
 

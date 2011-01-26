@@ -41,7 +41,7 @@ class Mangle
         string name = decl.Name;
 
         //Functions have Parameters
-        if(decl.Type == NodeType.FunctionDeclaration)
+        if(decl.DeclType == Declaration.Type.Function)
         {
            //TODO function append parameter
            //TODO right Function Types
@@ -51,15 +51,18 @@ class Mangle
         Node n = decl;
         while(decl.Parent !is null)
         {
-            switch(n.Type)
+            if(n.NodeType != Node.Type.Declaration)
+                continue;
+            
+            switch(n.to!Declaration().DeclType)
             {
-                case NodeType.PackageDeclaration:
+                case Declaration.Type.Package:
                     name = (cast(Declaration)n).Name ~ "_" ~ name;
                     break;
-                case NodeType.ClassDeclaration:
+                case Declaration.Type.Class:
                     name = "cls" ~ (cast(Declaration)n).Name ~ "_" ~ name;
                     break;
-                case NodeType.FunctionDeclaration:
+                case Declaration.Type.Function:
                     name = "fcn" ~ (cast(Declaration)n).Name ~ "_" ~ name;
                 default:
             }

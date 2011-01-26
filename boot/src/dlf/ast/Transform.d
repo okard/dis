@@ -16,44 +16,53 @@
 *    along with disc.  If not, see <http://www.gnu.org/licenses/>.
 *
 ******************************************************************************/
-module dlf.ast.Annotation;
-
+module dlf.ast.Transform;
 
 import dlf.ast.Node;
-import dlf.ast.Visitor;
+import dlf.ast.Declaration;
+import dlf.ast.Statement;
+import dlf.ast.Expression;
+import dlf.ast.Type;
+
+//AST Transformation Utils
+
+//Extend
+//Replace
 
 /**
-* Annotation Base Class
+* Replace nodes with an another one?
 */
-abstract class Annotation : Node
+public void replace(Node n, Node e)
 {
-    /// Annotation Types
-    enum Type
+    //check for parent
+    if(n.Parent !is null)
     {
-        CallConv,
-        Custom
+        return;
     }
 
-    /// Annotation Type
-    public Type AnotType;
-
-    /// Annotation Name
-    string Name;
-}
-
-/**
-* Annotation @CallConv for Calling Conventions
-*/
-final class CallConvAnnotation : Annotation
-{
-    //Visitor Mixin
-    mixin VisitorMixin;
-    
-    enum CC : ubyte { C, Dis }
-
-    public this()
+    //right handling
+    switch(n.Parent.NodeType)
     {
-         Name = "CallConv";
-    }
+        
+        case Node.Type.Declaration:
+            break;
 
+        case Node.Type.Statement:
+            auto stmt = n.Parent.to!Statement();
+
+            switch(stmt.StmtType)
+            {
+                case Statement.Type.Expression:
+                    assert(e.NodeType == Node.Type.Expression);
+                    stmt.to!ExpressionStatement().Expr = cast(Expression)e;
+                    break;
+                default:
+            }
+            break;
+
+        case Node.Type.Expression:
+            break;
+        default:
+    }
 }
+

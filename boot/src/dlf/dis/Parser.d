@@ -601,7 +601,7 @@ class Parser
         //Identifier
 
         //seems to be a function call "(" after expression/identifier
-        if(expr.Type == NodeType.DotIdentifier && peek(1) == TokenType.ROBracket)
+        if(expr.ExprType == Expression.Type.Identifier && peek(1) == TokenType.ROBracket)
         {
             next();
 

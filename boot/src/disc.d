@@ -109,7 +109,7 @@ int main(string[] args)
     auto node = parser.parse();
 
     //A new Source File have to result in a PackageNode
-    assert(node.Type == NodeType.PackageDeclaration);
+    //assert(node.NodeType == Node.Type.Declaration);
 
     //Parse Imports
     handleImports(cast(PackageDeclaration)node);

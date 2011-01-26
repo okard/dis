@@ -25,17 +25,28 @@ import dlf.ast.Visitor;
 */
 abstract class Node
 {
+    /// Node Types
+    enum Type
+    {
+        Declaration,
+        Statement,
+        Expression,
+        DataType,
+        Annotation,
+        Special
+    }
+
     /// parent node
     public Node Parent;
 
     /// Node Type
-    public NodeType Type;
+    public Type NodeType;
 
     /// For Node Extensions in Semantic and Compiler Passes
     public Node Extend;
 
     /// Mixin for node type
-    protected const string set_nodetype = "this.Type = mixin(\"NodeType.\" ~ typeof(this).stringof);";
+    protected const string set_nodetype = "this.Type = mixin(\"Node.Type.\" ~ typeof(this).stringof);";
     
     /// Create new Node
     public this()
@@ -46,31 +57,12 @@ abstract class Node
     * Visitor pattern
     */
     public abstract void accept(Visitor v);
-    
-}
 
-/**
-* Node Types
-*/
-enum NodeType
-{
-    Unknown,
-    Special,
-    DataType,
-    //Declarations
-    PackageDeclaration,
-    TraitDeclaration,
-    ClassDeclaration,
-    FunctionDeclaration,
-    VariableDeclaration,
-    //Statements
-    BlockStatement,
-    ExpressionStatement,
-    ReturnStatement,
-    //Expressions
-    DotIdentifier,
-    FunctionCall,
-    LiteralExpression,
-    AssignExpression,
-    BinaryExpression
+    /**
+    * Cast Helper
+    */
+    public T to(T)()
+    {
+        return cast(T)this;
+    }
 }

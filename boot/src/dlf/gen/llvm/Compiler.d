@@ -222,7 +222,8 @@ class Compiler : Visitor
         //Variables, Inner Functions and classes
 
         //Function Basic Blocks
-        if(block.Parent.Type == NodeType.FunctionDeclaration)
+        if(block.Parent.NodeType == Node.Type.Declaration 
+        && block.Parent.to!Declaration().DeclType == Declaration.Type.Function)
         {
             auto func = cast(llvm.FunctionValue)CNode!ValueNode(block.Parent).LLVMValue;
 
@@ -313,8 +314,9 @@ class Compiler : Visitor
             //TODO Right Handling for Types
 
             //string  literal handling
-            if(arg.Type == NodeType.LiteralExpression 
-                && (cast(Expression)arg).ReturnType == StringType.Instance)
+            if(arg.NodeType == Node.Type.Expression
+            && arg.ExprType == Expression.Type.Literal
+            && (cast(Expression)arg).ReturnType == StringType.Instance)
             {
                 auto val = CNode!ValueNode(arg).LLVMValue;
                 value = val;
@@ -497,7 +499,7 @@ class Compiler : Visitor
         if(n.Extend is null)
             return null;
 
-        if(n.Extend.Type != NodeType.Special)
+        if(n.Extend.NodeType != Node.Type.Special)
             return null;
         
         //go through extend Parent?

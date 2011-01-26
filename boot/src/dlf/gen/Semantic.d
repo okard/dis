@@ -228,7 +228,7 @@ class Semantic : Visitor
         
         //Expression to Function
 
-        if(fexpr.Type == NodeType.DotIdentifier)
+        if(fexpr.ExprType == Expression.Type.Identifier)
         {
             Information("\t Is DotIdentifier -> Try to resolve type");
             auto resolve = resolve(cast(DotIdentifier)fexpr);
@@ -349,37 +349,6 @@ class Semantic : Visitor
     {
         //TODO Change to Events
         writefln(s, args);
-    }
-
-    /**
-    * Replace nodes with an another one?
-    */
-    private void replace(Node n, Node e)
-    {
-        //check for parent
-        if(n.Parent !is null)
-        {
-            Error("Parent is null, can't replace Node %s", n.toString);
-            return;
-        }
-
-        //right handling
-        switch(n.Parent.Type)
-        {
-            case NodeType.ExpressionStatement:
-                (cast(ExpressionStatement)n.Parent).Expr = cast(Expression)e;
-                break;
-            case NodeType.AssignExpression:
-                break;
-            case NodeType.BinaryExpression:
-                break;
-
-            case NodeType.BlockStatement:
-                // find right statement
-                break;
-            default:
-                Error("Can't replace Node %s with Node %s", n, e);
-        }
     }
 
     /**
