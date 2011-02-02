@@ -30,10 +30,32 @@ import dlf.ast.Type;
 */
 public static void extend(Node n, Node e)
 {
+    //if already extended add to bottom extended nodes
     if(n.Extend !is null)
             e.Parent = n.Extend;
 
     n.Extend = e;
+}
+
+
+/*
+* Helper to make possible foreach over extension nodes
+* TODO Generate lightweight iterable structure?
+*/
+public Node[] extensions(Node n)
+{
+    if(n.Extend is null)
+        return null;
+
+    Node[] list;
+    do
+    {
+        list ~= n.Extend;
+        n = n.Extend;
+    }
+    while(n.Extend !is null);
+
+    return list;
 }
 
 

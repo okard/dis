@@ -143,6 +143,9 @@ class FunctionBlockNode : CompilerNode
     /// A ReturnValue Variable in Function
     llvm.Value retVal;
 
+    //FuncDecl
+    //FuncValue
+
     /// Creates new Function Block Node
     public this()
     {

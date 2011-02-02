@@ -110,6 +110,7 @@ int main(string[] args)
 
     //A new Source File have to result in a PackageNode
     //assert(node.NodeType == Node.Type.Declaration);
+    assert(node.NodeType == Node.Type.Declaration && node.to!Declaration().DeclType == Declaration.Type.Package);
 
     //Parse Imports
     handleImports(cast(PackageDeclaration)node);

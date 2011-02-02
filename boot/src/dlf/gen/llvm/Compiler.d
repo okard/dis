@@ -226,23 +226,25 @@ class Compiler : Visitor
         if(block.Parent.NodeType == Node.Type.Declaration 
         && block.Parent.to!Declaration().DeclType == Declaration.Type.Function)
         {
-            auto func = cast(llvm.FunctionValue)CNode!ValueNode(block.Parent).LLVMValue;
+            auto funcDecl = block.Parent.to!FunctionDeclaration();
+            auto funcCNode = CNode!ValueNode(funcDecl);
+            auto funcVal = cast(llvm.FunctionValue)funcCNode.LLVMValue;
             auto fbb = new FunctionBlockNode();
             extend(block, fbb);
             
             // entry block
-            fbb.entry = new llvm.BasicBlock(func, "entry");
+            fbb.entry = new llvm.BasicBlock(funcVal, "entry");
             
             //TODO gen return value
             mBuilder.PositionAtEnd(fbb.entry);
 
-            if(block.Parent.to!FunctionDeclaration().FuncType.ReturnType != VoidType.Instance)
+            if(funcDecl.FuncType.ReturnType != VoidType.Instance)
             {
                 //fbb.retValue = mBuilder.Alloca(func.returnType
             }
 
             //return block
-            fbb.ret = new llvm.BasicBlock(func, "return");
+            fbb.ret = new llvm.BasicBlock(funcVal, "return");
             mBuilder.PositionAtEnd(fbb.ret);
             
             mBuilder.RetVoid();
