@@ -26,6 +26,7 @@ import dlf.ast.Expression;
 import dlf.ast.Annotation;
 import dlf.ast.Type;
 import dlf.ast.SymbolTable;
+import dlf.ast.Transform;
 
 import std.stdio;
 
@@ -236,7 +237,7 @@ class Semantic : Visitor
             if(resolve !is null)
             {
                 Information("\t Resolve type: %s", resolve);
-                assign(call.Function, resolve);
+                extend(call.Function, resolve);
             }
             //look foreach
             //get function declaration
@@ -351,14 +352,4 @@ class Semantic : Visitor
         writefln(s, args);
     }
 
-    /**
-    * Assign a Node to Extend Property of Node
-    */
-    private static void assign(Node n, Node e)
-    {
-        if(n.Extend !is null)
-             e.Parent = n.Extend;
-
-        n.Extend = e;
-    }
 }

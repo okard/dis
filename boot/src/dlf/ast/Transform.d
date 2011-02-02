@@ -24,10 +24,18 @@ import dlf.ast.Statement;
 import dlf.ast.Expression;
 import dlf.ast.Type;
 
-//AST Transformation Utils
 
-//Extend
-//Replace
+/**
+* extend a Node with appending an another one
+*/
+public static void extend(Node n, Node e)
+{
+    if(n.Extend !is null)
+            e.Parent = n.Extend;
+
+    n.Extend = e;
+}
+
 
 /**
 * Replace nodes with an another one?

@@ -26,6 +26,7 @@ import dlf.ast.Expression;
 import dlf.ast.Annotation;
 import dlf.ast.Type;
 import dlf.ast.SymbolTable;
+import dlf.ast.Transform;
 
 import llvm = dlf.gen.llvm.LLVM;
 import dlf.gen.llvm.Node;
@@ -113,7 +114,7 @@ class Compiler : Visitor
     {
         //Create Module for Package
         auto mod = new llvm.Module(mContext, pack.Name);
-        assign(pack, new ModuleNode(mod));
+        extend(pack, new ModuleNode(mod));
         mCurModule = mod;
 
         //Create Functions
@@ -177,7 +178,7 @@ class Compiler : Visitor
         {
             type = Gen(func.FuncType);
             //add type to type hashmap
-            assign(func.FuncType, new TypeNode(type));
+            extend(func.FuncType, new TypeNode(type));
         }
         else
             type = CNode!TypeNode(func.FuncType).LLVMType;
@@ -193,7 +194,7 @@ class Compiler : Visitor
         //TODO: Function Name Mangling
         auto f = new llvm.FunctionValue(mCurModule, t, func.Name);
         //f.setCallConv(llvm.LLVMCallConv.C);
-        assign(func, new ValueNode(f));
+        extend(func, new ValueNode(f));
         
         //store created function
         //func.Store.Compiler(f);
@@ -229,7 +230,7 @@ class Compiler : Visitor
 
             // entry block
             auto bb = new llvm.BasicBlock(func, "entry");
-            assign(block, new BasicBlockNode(bb));
+            extend(block, new BasicBlockNode(bb));
 
             //gen return value
 
@@ -375,7 +376,7 @@ class Compiler : Visitor
             //it seems that GEP is really a value and isnt append zu current mBuilder Position
             auto value = mBuilder.GEP(val, [zero, zero], "");
 
-            assign(le, new ValueNode(value));
+            extend(le, new ValueNode(value));
         }
     }
 
@@ -513,16 +514,5 @@ class Compiler : Visitor
     private static bool hasCNode(Node n)
     {
         return (CNode!CompilerNode(n) !is null);
-    }
-
-     /**
-    * Assign a Node to Extend Property of Node
-    */
-    private static void assign(Node n, Node e)
-    {
-        if(n.Extend !is null)
-             e.Parent = n.Extend;
-
-        n.Extend = e;
     }
 } 
