@@ -38,8 +38,7 @@ static class Mangle
     */
     static string mangle(Declaration decl)
     {
-        string name = decl.Name;
-
+        string name = "";
         //Functions have Parameters
         if(decl.DeclType == Declaration.Type.Function)
         {
@@ -49,7 +48,8 @@ static class Mangle
 
         //look backwards and add prefixes
         Node n = decl;
-        while(n.Parent !is null)
+        
+        while(true)
         {
             if(n.NodeType != Node.Type.Declaration)
                 continue;
@@ -57,17 +57,20 @@ static class Mangle
             switch(n.to!Declaration().DeclType)
             {
                 case Declaration.Type.Package:
-                    name = (cast(Declaration)n).Name ~ "_" ~ name;
+                    name = (cast(Declaration)n).Name ~ name;
                     break;
                 case Declaration.Type.Class:
-                    name = "cls" ~ (cast(Declaration)n).Name ~ "_" ~ name;
+                    name = "_cls" ~ (cast(Declaration)n).Name ~ name;
                     break;
                 case Declaration.Type.Function:
-                    name = "fcn" ~ (cast(Declaration)n).Name ~ "_" ~ name;
+                    name = "_fcn" ~ (cast(Declaration)n).Name ~ name;
                 default:
             }
     
             n = n.Parent;
+
+            if(n is null)
+                break;
         }
 
         name = "_Dis" ~ name;

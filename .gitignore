@@ -5,7 +5,7 @@ boot/bin/disc
 # llvm
 *.bc
 *.o
-a.out
+*.bin
 
 # general
 *.log

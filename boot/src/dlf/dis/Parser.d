@@ -196,6 +196,20 @@ class Parser
     }
 
     /**
+    * Parse a Class
+    */
+    private ClassDeclaration parseClass()
+    {
+        //must be class class
+        assert(mToken.Type == TokenType.KwClass);
+
+        // class identifier(template args) : inherits {
+
+
+        return null;
+    }
+
+    /**
     * Parse Method Definitions
     */
     private FunctionDeclaration parseDef()
@@ -795,6 +809,18 @@ class Parser
     private void next()
     {
         mToken = mLex.getToken();
+    }
+
+    /**
+    * next n token
+    */
+    private void next(uint n)
+    {
+        while(n > 0)
+        {
+            mToken = mLex.getToken();
+            n--;
+        }
     }
 
     /**

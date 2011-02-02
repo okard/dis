@@ -79,6 +79,8 @@ final class PackageDeclaration : Declaration
     ClassDeclaration[] Classes;
     /// Traits
     TraitDeclaration[] Traits;
+    /// Runtime enabled
+    bool RuntimeEnabled;
 
     /**
     * Ctor
