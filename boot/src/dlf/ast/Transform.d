@@ -51,7 +51,7 @@ public void replace(Node n, Node e)
     //right handling
     switch(n.Parent.NodeType)
     {
-        
+        // Declarations =======================================================
         case Node.Type.Declaration:
             break;
 
@@ -68,7 +68,18 @@ public void replace(Node n, Node e)
             }
             break;
 
+        // Expressions ========================================================
         case Node.Type.Expression:
+            auto expr = n.Parent.to!Expression();
+
+            switch(expr.ExprType)
+            {
+                case Expression.Type.Binary:
+                    break;
+                case Expression.Type.Assign:
+                    break;
+                default:
+            }
             break;
         default:
     }

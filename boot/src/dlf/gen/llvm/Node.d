@@ -33,7 +33,9 @@ enum CompilerNodeType
     Module,
     Type,
     Value,
-    BasicBlock
+    BasicBlock,
+
+    FunctionBlock
 }
 
 /**
@@ -132,7 +134,18 @@ class BasicBlockNode : CompilerNode
 /// Utility Class
 class FunctionBlockNode : CompilerNode
 {
-    //Basic Block entry
-    //Basic Block return
-    //Value retval
+    /// Entry Basic Block
+    llvm.BasicBlock entry;
+
+    /// Return Basic Block
+    llvm.BasicBlock ret;
+    
+    /// A ReturnValue Variable in Function
+    llvm.Value retVal;
+
+    /// Creates new Function Block Node
+    public this()
+    {
+        CNType = CompilerNodeType.FunctionBlock;
+    }
 }

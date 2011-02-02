@@ -45,9 +45,6 @@ abstract class Node
     /// For Node Extensions in Semantic and Compiler Passes
     public Node Extend;
 
-    /// Mixin for node type
-    protected const string set_nodetype = "this.Type = mixin(\"Node.Type.\" ~ typeof(this).stringof);";
-    
     /// Create new Node
     public this()
     {

@@ -227,19 +227,28 @@ class Compiler : Visitor
         && block.Parent.to!Declaration().DeclType == Declaration.Type.Function)
         {
             auto func = cast(llvm.FunctionValue)CNode!ValueNode(block.Parent).LLVMValue;
-
+            auto fbb = new FunctionBlockNode();
+            extend(block, fbb);
+            
             // entry block
-            auto bb = new llvm.BasicBlock(func, "entry");
-            extend(block, new BasicBlockNode(bb));
+            fbb.entry = new llvm.BasicBlock(func, "entry");
+            
+            //TODO gen return value
+            mBuilder.PositionAtEnd(fbb.entry);
 
-            //gen return value
+            if(block.Parent.to!FunctionDeclaration().FuncType.ReturnType != VoidType.Instance)
+            {
+                //fbb.retValue = mBuilder.Alloca(func.returnType
+            }
 
             //return block
-            auto b2 = new llvm.BasicBlock(func, "return");
-            mBuilder.PositionAtEnd(b2);
+            fbb.ret = new llvm.BasicBlock(func, "return");
+            mBuilder.PositionAtEnd(fbb.ret);
+            
             mBuilder.RetVoid();
 
-            mBuilder.PositionAtEnd(bb);
+            //go to entry block
+            mBuilder.PositionAtEnd(fbb.entry);
 
             //Build Variables on Stack
             foreach(Declaration sym; block.SymTable)
@@ -250,10 +259,8 @@ class Compiler : Visitor
                 s.accept(this);
 
             //jump to return label
-            mBuilder.Br(b2);
+            mBuilder.Br(fbb.ret);
             return;
-            //generate return label?
-            //generate return variable
         }
 
         //For If, Switch, For, While, Do -> new BasicBlock(parent.basicblock)
