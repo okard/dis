@@ -24,7 +24,7 @@ import dlf.ast.Declaration;
 /**
 * Class for generate mangling names
 */
-class Mangle
+static class Mangle
 {
     //ideas: package_class_method_param
     //example: dlf.gen.Mangle_clsMangle_this_v
@@ -36,7 +36,7 @@ class Mangle
     /**
     * Get mangled name for declaration 
     */
-    string mangle(Declaration decl)
+    static string mangle(Declaration decl)
     {
         string name = decl.Name;
 
@@ -49,7 +49,7 @@ class Mangle
 
         //look backwards and add prefixes
         Node n = decl;
-        while(decl.Parent !is null)
+        while(n.Parent !is null)
         {
             if(n.NodeType != Node.Type.Declaration)
                 continue;
@@ -78,7 +78,7 @@ class Mangle
     /**
     * Convert mangled string into readable string
     */
-    string demangle(string mangled)
+    static string demangle(string mangled)
     {
         return "";
     }

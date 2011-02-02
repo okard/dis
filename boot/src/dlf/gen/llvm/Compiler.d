@@ -190,15 +190,16 @@ class Compiler : Visitor
             writeln("Cant get functype");
             return;
         }
-        
+
+        // Generate Value
+
         //TODO: Function Name Mangling
+        auto mangledName = Mangle.mangle(func);
+        Information("Mangled Name: %s", mangledName);
         auto f = new llvm.FunctionValue(mCurModule, t, func.Name);
         //f.setCallConv(llvm.LLVMCallConv.C);
         extend(func, new ValueNode(f));
-        
-        //store created function
-        //func.Store.Compiler(f);
-        
+       
         //block Statement
         if(func.Body !is null)
             func.Body.accept(this);
@@ -229,6 +230,19 @@ class Compiler : Visitor
             auto funcDecl = block.Parent.to!FunctionDeclaration();
             auto funcCNode = CNode!ValueNode(funcDecl);
             auto funcVal = cast(llvm.FunctionValue)funcCNode.LLVMValue;
+
+            //check for function Template
+            //semantic should have removed body and add seperated typed functions
+            if(funcDecl.isTemplate)
+            {
+                Information("Skip %s is Function Template", funcDecl.Name);
+            }
+
+            assert(funcDecl !is null);
+            assert(funcCNode !is null);
+            assert(funcVal !is null);
+
+            //generate Function Block Node
             auto fbb = new FunctionBlockNode();
             extend(block, fbb);
             
@@ -427,7 +441,7 @@ class Compiler : Visitor
     */
     llvm.Type AstType2LLVMType(DataType t)
     {
-        //writefln("CodeGen: resolve type %s", t.toString());
+        //Information("CodeGen: resolve type %s", t.toString());
 
         //type has generated node
         if(hasCNode(t))

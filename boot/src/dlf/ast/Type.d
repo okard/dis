@@ -28,7 +28,23 @@ import dlf.basic.Util;
 abstract class DataType : Node
 {
      public this() { NodeType = Node.Type.DataType; }
-     public override void accept(Visitor v){}
+     public override void accept(Visitor v){};
+
+     protected mixin template PtrTypeSingleton()
+     {
+        private static PointerType _PtrInstance;
+
+        static this()
+        {
+            _PtrInstance  = new PointerType(Instance);
+        }
+
+        @property
+        public static PointerType PtrInstance()
+        {
+            return _PtrInstance;
+        }
+     }
 }
 
 /// Void
@@ -36,6 +52,7 @@ final class VoidType : DataType
 {
     override string toString() { return "void"; }
     mixin Singleton!VoidType;
+    mixin PtrTypeSingleton;
 }
 
 /// 1 Bit Type
@@ -43,6 +60,7 @@ final class BoolType : DataType
 {
     override string toString() { return "bool"; }
     mixin Singleton!BoolType;
+    mixin PtrTypeSingleton;
 }
 
 /// 8 Bit signed
@@ -50,6 +68,7 @@ final class ByteType : DataType
 {
     override string toString() { return "byte"; }
     mixin Singleton!ByteType;
+    mixin PtrTypeSingleton;
 }
 
 /// 8 Bit unsigned
@@ -57,6 +76,7 @@ final class UByteType : DataType
 {
     override string toString() { return "ubyte"; }
     mixin Singleton!UByteType;
+    mixin PtrTypeSingleton;
 }
 
 /// 16 Bit
@@ -64,6 +84,7 @@ final class ShortType : DataType
 {
     override string toString() { return "short"; }
     mixin Singleton!ShortType;
+    mixin PtrTypeSingleton;
 }
 
 /// 16 Bit
@@ -71,6 +92,7 @@ final class UShortType : DataType
 {
     override string toString() { return "ushort"; }
     mixin Singleton!UShortType;
+    mixin PtrTypeSingleton;
 }
 
 /// 32 Bit
@@ -78,6 +100,7 @@ final class IntType : DataType
 {
     override string toString() { return "int"; }
     mixin Singleton!IntType;
+    mixin PtrTypeSingleton;
 }
 
 /// 32 Bit
@@ -85,6 +108,7 @@ final class UIntType : DataType
 {
     override string toString() { return "uint"; }
     mixin Singleton!UIntType;
+    mixin PtrTypeSingleton;
 }
 
 /// 64 Bit
@@ -92,6 +116,7 @@ final class LongType : DataType
 {
     override string toString() { return "long"; }
     mixin Singleton!LongType;
+    mixin PtrTypeSingleton;
 }
 
 /// 64 Bit
@@ -99,6 +124,7 @@ final class ULongType : DataType
 {
     override string toString() { return "ushort"; }
     mixin Singleton!ULongType;
+    mixin PtrTypeSingleton;
 }
 
 /// 32 Bit Float 
@@ -106,6 +132,7 @@ final class FloatType : DataType
 {
     override string toString() { return "float"; }
     mixin Singleton!FloatType;
+    mixin PtrTypeSingleton;
 }
 
 /// 64 Bit
@@ -113,6 +140,7 @@ final class DoubleType : DataType
 {
     override string toString() { return "double"; }
     mixin Singleton!DoubleType;
+    mixin PtrTypeSingleton;
 }
 
 /**
