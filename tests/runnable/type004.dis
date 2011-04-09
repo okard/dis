@@ -1,0 +1,14 @@
+//testing variant type
+
+
+type number = byte | short | int | long | float | double;
+
+
+def main()
+{
+    var i : number;
+
+    i = 5;
+    i = 5.0; 
+
+} 

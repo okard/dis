@@ -1,0 +1,19 @@
+//testing function template
+
+
+
+def sqr(x) = x ** 2;
+
+
+def main()
+{
+    //integer
+    var i : int = 5;
+    assert(sqr(i) == 25);
+
+    //double
+    var d : double = 3.0;
+    assert(sqr(d) == 9.0);
+    
+
+}
