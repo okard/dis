@@ -1,4 +1,4 @@
-\documentclass[9pt,a4paper]{article}
+\documentclass[a4paper]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[english]{babel}
@@ -37,7 +37,7 @@ morestring=[b]"
 }%
   
 \title{Dis Language Specification}
-\date{2010-11-17}
+\date{\today}
 \author{}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -49,7 +49,7 @@ morestring=[b]"
 \newpage
 
 \section{Introduction}
-This Document describes the Dis programming language.
+This Document describes the Dis programming language, these document is licensed under Creative Commons Attribution-NoDerivs 3.0 Unported License.
 
 \section{About}
 The dis programming language is a multi paradigm programming language, designed with following paradigm in mind:
@@ -69,8 +69,6 @@ Other concepts:
 \end{itemize}
 
 \section{Lexical}
-Keywords:
-package trait class def var val type for while do if switch as
 Basic:
 
 \begin{itemize}
@@ -79,7 +77,27 @@ Basic:
 \item $Identifier \rightarrow Alpha (Alpha / Number)+$
 \end{itemize}
 
-\section{Types}
+A Identifier can be one of following keywords:
+\begin{multicols}{4}
+\begin{itemize}
+\item package 
+\item trait 
+\item class 
+\item def 
+\item var 
+\item val 
+\item type 
+\item for 
+\item while 
+\item do 
+\item if 
+\item switch 
+\item as
+\end{itemize}
+\end{multicols}
+
+A identifier can also be one of the following built in types
+\subsection{Types}
 Built-in:
 
 \begin{multicols}{4}
@@ -97,32 +115,51 @@ Built-in:
 \item double 
 \item ptr 
 \item char 
-\item string
 \end{itemize}
 \end{multicols}
 
+User defined types:
 
-(Classes, Functions, Traits, Structures, Enums, Delegates,)
+\begin{itemize}
+\item Classes, 
+\item Functions, 
+\item Traits, 
+\item Structures
+\item Enums
+\item Delegates
 
-\section{Declarations}
+\end{itemize}
 
-\subsection*{Packages}
-package 
+
+\section{Grammar}
+
+\subsection{Declarations}
+
+\subsubsection*{Packages}
 \[PackageDeclaration \rightarrow "package" identifier;\]
 
-\subsection*{Variables \& Values}
+\subsubsection*{Variables \& Values}
+\[VariableDeclaration \rightarrow "var" identfifier [":" identifier] ["=" Literal] (";" | CRLF)\]
+\[VariableDeclaration \rightarrow "val" identfifier [":" identifier] ["=" Literal] (";" | CRLF)\]
+
 var val
 \lstinline!var i : int = 5;!
 
-\subsection*{Functions}
+\subsubsection*{Functions}
 def
 \lstinline!def square(x) = x**2;!
+
+calling convention
 
 \subsubsection*{Classes}
 class
 \lstinline!class foo {}!
+calling convention
+constructor
+destructor
+operator overloading
 
-\subsection*{Traits}
+\subsubsection*{Traits}
 trait
 \begin{lstlisting}
 trait printable
@@ -139,26 +176,39 @@ class foo
 (foo() as printable).print();
 \end{lstlisting}
 
-\subsection*{Enums, Structure, Delegates, Alias}
-type
+\subsubsection*{Enums, Structure, Delegates, Alias, Variant}
+The type keyword is used to declare utility types, a dis program isn't based on these types but can use them as utility.
 
 \begin{lstlisting}
 type myInteger int
 type point { x: int; y : int; }
 type myBoolean = {True, False}
 type dgTest (int) => bool
+type Number = byte | short | int | long | float | double;
 \end{lstlisting}
 
 
-\section{Statements}
-for while do (mixins)
+\subsection{Statements}
+for while do (mixins) try catch finally
 
-\section{Expression}
+\subsection{Expression}
 \begin{itemize}
-\item Binary: \& | + - * ** / \% \textasciicircum{} 
-\item Logical: \&\&  ||
+\item BinaryOperator: \& | + - * ** / \% \textasciicircum{} 
+\item LogicalOperator: \&\&  ||
 \end{itemize}
 if 
 switch
+
+\section{Semantic}
+Default Runtime and Standard Library Imports
+Operator Overloading
+
+\section{Name Mangeling}
+
+\section{Runtime}
+
+\section{Standard Library}
+std.io;
+std.string;
 
 \end{document} 
