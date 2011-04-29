@@ -1,0 +1,43 @@
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{amsmath}
+\usepackage{mathptmx}
+\usepackage{multicol}
+\usepackage{environ}
+
+\usepackage{listings}
+\usepackage[usenames,dvipsnames]{color} 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Lang Spec
+\lstdefinelanguage{Dis}
+{morekeywords={package, import, class, trait, def, var, val, type, return, this, if, else, switch, case, for,
+void, bool, int, uint, string},
+sensitive=true,
+morecomment=[l]{//},
+morecomment=[s]{/*}{*/},
+morestring=[b]"
+}
+\lstset{%
+  language=Dis,
+  basicstyle=\tiny\ttfamily,
+  commentstyle=\itshape\color{green},
+  keywordstyle=\bfseries\color{blue},
+  stringstyle=\color{red},
+  showspaces=false,
+  showtabs=false,
+  columns=fixed,
+  numbers=left,
+  frame=single,
+  numberstyle=\tiny,
+  breaklines=true,
+  showstringspaces=false,
+  xleftmargin=1cm
+}%
+
+\NewEnviron{ebnf}{%
+\begin{equation*}\begin{split}
+  \BODY
+\end{split}\end{equation*}
+}
