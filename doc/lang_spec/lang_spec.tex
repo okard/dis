@@ -5,6 +5,7 @@
 \usepackage{amsmath}
 \usepackage{mathptmx}
 \usepackage{multicol}
+\usepackage{environ}
 
 \usepackage{listings}
 \usepackage[usenames,dvipsnames]{color} 
@@ -35,6 +36,13 @@ morestring=[b]"
   showstringspaces=false,
   xleftmargin=1cm
 }%
+
+\NewEnviron{ebnf}{%
+\begin{equation*}\begin{split}
+  \BODY
+\end{split}\end{equation*}
+}
+  
   
 \title{Dis Language Specification}
 \date{\today}
@@ -124,7 +132,7 @@ Built-in:
 \end{multicols}
 
 User defined types:
-
+Standard Library
 \begin{itemize}
 \item Classes, 
 \item Functions, 
@@ -136,7 +144,7 @@ User defined types:
 \end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Grammar
+%% GrammarStandard Library
 \section{Grammar}
 
 \subsection{Declarations}
@@ -145,8 +153,12 @@ User defined types:
 \[PackageDeclaration \rightarrow "package" identifier;\]
 
 \subsubsection*{Variables \& Values}
-\[VariableDeclaration \rightarrow "var" identfifier [":" identifier] ["=" Literal] (";" | CRLF)\]
-\[VariableDeclaration \rightarrow "val" identfifier [":" identifier] ["=" Literal] (";" | CRLF)\]
+\begin{ebnf}
+	VariableDecl & \rightarrow "var"\; identfifier\; [":" identifier] ["=" Literal] (";" | CRLF) \\
+	ValueDecl & \rightarrow "val"\; identfifier\; [":" identifier] ["=" Literal] (";" | CRLF)
+\end{ebnf}
+
+
 
 var val
 \lstinline!var i : int = 5;!
@@ -212,7 +224,7 @@ Default Runtime and Standard Library Imports
 Operator Overloading
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Name Mangling
+%% Name Mangarationarationling
 \section{Name Mangeling}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -224,5 +236,11 @@ Operator Overloading
 \section{Standard Library}
 std.io;
 std.string;
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Standard Library
+\section{Future}
+Domain Specific Language
+
 
 \end{document} 
