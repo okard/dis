@@ -1,0 +1,58 @@
+\documentclass{article}
+\usepackage[a4paper]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{amsmath}
+\usepackage{mathptmx} %times font
+ 
+\title{Dis - EBNF}
+\author{tg}
+\date{\today}
+
+\newcommand{\is}[0]{{$\rightarrow$ }}
+
+\begin{document}
+
+\begin{list}{}{}
+\item id \is 
+\item num \is
+\item DotId \is id \{"." id\}
+
+\item PackageDecl \is "package" id;
+
+%% DECLARATIONS %%
+\item Declaration \is ValDecl | VarDecl | TypeDecl | FuncDecl | ClassDecl;
+
+\item CallConv \is "[" ( "C" | "Dis" ) "]";
+\item FuncParam \is id [ ":" ] [ DotId ];
+
+\item ValDecl \is "val" id;
+\item VarDecl \is "var" id;
+\item FuncDecl \is "def" [  CallConv ] id "(" [ FuncParam  \{ "," FuncParam \} ] ")";
+\item ClassDecl \is "class" id;
+
+
+\item TypeDecl \is AliasDecl | EnumDecl | StructDecl | VariantDecl;
+\item AliasDecl \is "type" id DotId;
+\item EnumDecl  \is "type" id = "\{" id \{"," id\} "\}";
+\item StructDecl \is  "type" id "\{" [ StructField \{ "," StructField \} ] "\}";
+\item VariantDecl \is "type" id = id \{ "|" id \};
+
+\item StructField \is id [ ":" ] DotId;
+
+%% STATEMENTS %%
+\item Statement \is ForStmt | WhileStmt | ExprStmt;
+\item ForStmt \is "for"
+\item WhileStmt \is "while" | "do"
+\item ExprStmt \is Expression
+
+
+%% EXPRESSIONS %%
+\item Expression \is CallExpr | BinaryExpr | AssignExpr
+
+
+\end{list}
+
+
+\end{document}
