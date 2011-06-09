@@ -19,37 +19,51 @@
 \item num \is
 \item DotId \is id \{"." id\}
 
-\item PackageDecl \is "package" id;
+%% NoRuntime
+\item PackageDecl \is "package" [ "[" id "]" ] id;
 
 %% DECLARATIONS %%
 \item Declaration \is ValDecl | VarDecl | TypeDecl | FuncDecl | ClassDecl;
 
-\item CallConv \is "[" ( "C" | "Dis" ) "]";
+
+\item ValDecl \is "val" id [ [":"] DotId ] [ "=" Expression ];
+\item VarDecl \is "var" id [ [":"] DotId ] [ "=" Expression ];
+\item FuncDecl \is "def" [  CallConv ] id "(" [ FuncParam  \{ "," FuncParam \} ] ")";
+\item CallConv \is "[" id "]"; %C,Dis
 \item FuncParam \is id [ ":" ] [ DotId ];
 
-\item ValDecl \is "val" id;
-\item VarDecl \is "var" id;
-\item FuncDecl \is "def" [  CallConv ] id "(" [ FuncParam  \{ "," FuncParam \} ] ")";
-\item ClassDecl \is "class" id;
+\item ClassDecl \is "class" id  [ClassDef];
+\item ClassDef \is "{" \{ VarDecl | ValDecl | FuncDecl | ClassDecl | TraitDecl \} "}"
 
+\item TraitDecl \is "trait" id;
 
 \item TypeDecl \is AliasDecl | EnumDecl | StructDecl | VariantDecl;
 \item AliasDecl \is "type" id DotId;
-\item EnumDecl  \is "type" id = "\{" id \{"," id\} "\}";
 \item StructDecl \is  "type" id "\{" [ StructField \{ "," StructField \} ] "\}";
+\item EnumDecl  \is "type" id = "\{" id \{"," id\} "\}";
 \item VariantDecl \is "type" id = id \{ "|" id \};
 
 \item StructField \is id [ ":" ] DotId;
 
 %% STATEMENTS %%
-\item Statement \is ForStmt | WhileStmt | ExprStmt;
-\item ForStmt \is "for"
+\item Statement \is ForStmt | WhileStmt | Expression;
+\item ForStmt \is "for" "(" (id "in" Expression | id ";" Expression ";" Expression ) ")"
 \item WhileStmt \is "while" | "do"
-\item ExprStmt \is Expression
 
 
 %% EXPRESSIONS %%
-\item Expression \is CallExpr | BinaryExpr | AssignExpr
+\item Expression \is CallExpr | BinaryExpr | AssignExpr | DotId
+
+\item IfExpr \is
+\item SwitchExpr \is
+
+\item CallExpr \is DotId "(" [ Expression \{"," Expression \} ] ")"
+
+\item AssignExpr \is id AssignOp Expression;
+\item AssignOp \is "=" | "+=" | "-=" | "*=" | "/=" | "%=";
+
+\item BinaryExpression \is Expression BinOp Expression;
+\item BinOp \is "+" | "-" | "*" | "/" | "\%" | "**";
 
 
 \end{list}
