@@ -60,7 +60,7 @@ enum TokenType : ubyte
     Mul,            // *
     Div,            // /
     Mod,            // %
-    Not,            // !
+    Not,            // ! Prefix Not, Postfix Tmpl Instance
     Xor,            // ^
     And,            // &
     Or,             // |
@@ -78,6 +78,18 @@ enum TokenType : ubyte
     MulAssign,      // *=
     DivAssign,      // /=
 
+    // <-
+    // ~>
+    // <~
+    //=>
+    //#>
+    //<#
+    //+>
+    //<+
+    //#  <-- Singleton object? Const? static?
+    //$
+    //.. //DotDot Slice Expression
+
     //Keywords
     KwPackage,      // package
     KwDef,          // def
@@ -94,6 +106,8 @@ enum TokenType : ubyte
     KwFor,          // for
     KwWhile,        // while
     KwDo,           // do
+    KwBreak,        // break
+    KwContinue,     // continue
     KwThis,         // this
     KwReturn,       // return
     KwNull,         // null

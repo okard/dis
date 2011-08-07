@@ -16,25 +16,23 @@
 *    along with disc.  If not, see <http://www.gnu.org/licenses/>.
 *
 ******************************************************************************/
-module dlf.gen.CodeGen;
+module dlf.gen.c.CCodeGen;
 
-
-/**
-* Codegen Context
-*/
-struct Context
-{
-    //obj dir
-    //target dir?
-    //target type -> StaticLib, SharedLib, Executable (WinExecutable?)
-}
-
+import dlf.ast.Visitor;
+import dlf.gen.CodeGen;
 
 /**
-* CodeGen Interface
+* C Code Generator
 */
-interface CodeGen
+class CCodeGen : CodeGen
 {
-    //void compile(PackageDeclaration, ref Context);
+    //package -> c package (header, src)
+
+    // Steps:
+    //1. package -> *.c, *.h -> List of c files (Path: .objdis/src/*.c,*.h)
+    //2. *.c -> *.obj -> List of Objects (Compiler Options)
+    //3. *.obj -> binary (Linker Options)
+
+    //debug infos with #line
 
 }

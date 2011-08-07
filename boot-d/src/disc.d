@@ -30,8 +30,8 @@ import dlf.ast.Declaration;
 import dlf.dis.Token;
 import dlf.dis.Lexer;
 import dlf.dis.Parser;
-import dlf.gen.Semantic;
-import dlf.gen.llvm.Compiler;
+import dlf.sem.Semantic;
+import dlf.gen.c.CCodeGen;
 
 
 /**
@@ -52,9 +52,9 @@ class CommandLineArg : ArgHelper
         Options["--print-ast"] = (){ printAst = true; };
         Options["--print-sem"] = (){ printSem = true; };
 
-        //obj directory
+        //obj directory ".objdis"
         //log level
-        //import dirs
+        //import dirs -> "%apppath%/../lib"
 
         //parse Options
         parse(args);
@@ -78,16 +78,17 @@ int main(string[] args)
     auto log = Log("disc");
 
     log.OnLog += LevelConsoleListener(LogType.Information);
-
     log.information("Dis Compiler V0.01");
+
+
+    //TODO Read Configuration (std.file.isfile(path))
+    //Linux:    bindir, ~/.disc, /etc/disc
+    //Windows:  bindir, %APPDATA%/disc.conf %ALLUSERSPROFILE%/Application Data
 
     //parse arguments
     auto arguments = new CommandLineArg(args);
     auto srcFiles = arguments.getSourceFiles();
 
-    //TODO Read Configuration (std.file.isfile(path))
-    //Linux:    bindir, ~/.disc, /etc/disc
-    //Windows:  bindir, %APPDATA%/disc.conf %ALLUSERSPROFILE%/Application Data
 
     if(srcFiles.length < 1)
     {
@@ -131,9 +132,10 @@ int main(string[] args)
     auto ast = semantic.run(node);
     writeln("------- END SEMANTIC ------------------------------");
 
-    //Compiler
-    auto compiler = new Compiler();
-    compiler.compile(ast);
+    //C CodeGen
+    auto cgen = new CCodeGen();
+    
+
 
     return 0;
 }
@@ -144,6 +146,7 @@ int main(string[] args)
 */
 private void handleImports(PackageDeclaration pack)
 {
+    //TODO paths as parameter
     //Look for Import Files
     foreach(imp; pack.Imports)
     {

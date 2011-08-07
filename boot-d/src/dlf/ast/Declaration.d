@@ -44,7 +44,8 @@ abstract class Declaration : Node
     }
 
     /// Flags for Declaration
-    enum Flags : ushort { Private=1, Protected=2, Public=4, Package=8, Static=16, Final=32, Const=64, Extern=128 } 
+    enum Flags : ushort { Private=1, Protected=2, Public=4, Package=8, 
+                          Static=16, Final=32, Const=64, Extern=128 } 
 
     //Type
     public Type DeclType;

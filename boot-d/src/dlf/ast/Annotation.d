@@ -30,7 +30,6 @@ abstract class Annotation : Node
     /// Annotation Types
     enum Type
     {
-        CallConv,
         Custom
     }
 
@@ -40,3 +39,5 @@ abstract class Annotation : Node
     /// Annotation Name
     string Name;
 }
+
+//Test Annotation

@@ -32,55 +32,25 @@ public interface Visitor
     public 
     {
     //Declarations
-    void visit(PackageDeclaration);
-    void visit(FunctionDeclaration);
-    void visit(ImportDeclaration);
-    void visit(VariableDeclaration);
-    void visit(ClassDeclaration);
-    void visit(TraitDeclaration);
+    Node visit(PackageDeclaration);
+    Node visit(FunctionDeclaration);
+    Node visit(ImportDeclaration);
+    Node visit(VariableDeclaration);
+    Node visit(ClassDeclaration);
+    Node visit(TraitDeclaration);
     //Statements
-    void visit(BlockStatement);
-    void visit(ExpressionStatement);
-    void visit(ReturnStatement);
+    Node visit(BlockStatement);
+    Node visit(ExpressionStatement);
+    Node visit(ReturnStatement);
     //Expressions
-    void visit(LiteralExpression);
-    void visit(FunctionCall);
-    void visit(DotIdentifier);
-    void visit(AssignExpression);
-    void visit(BinaryExpression);
+    Node visit(LiteralExpression);
+    Node visit(FunctionCall);
+    Node visit(DotIdentifier);
+    Node visit(AssignExpression);
+    Node visit(BinaryExpression);
     //Annotations:
     }
 }
-
-
-/**
-* Abstract AST Visitor
-*/
-public abstract class AbstractVisitor : Visitor
-{
-    public 
-    {
-    //Declarations
-    void visit(PackageDeclaration){}
-    void visit(FunctionDeclaration){}
-    void visit(ImportDeclaration){}
-    void visit(VariableDeclaration){}
-    void visit(ClassDeclaration){}
-    void visit(TraitDeclaration){}
-    //Statements
-    void visit(BlockStatement){}
-    void visit(ExpressionStatement){}
-    void visit(ReturnStatement){}
-    //Expressions
-    void visit(LiteralExpression){}
-    void visit(FunctionCall){}
-    void visit(DotIdentifier){}
-    void visit(AssignExpression){}
-    void visit(BinaryExpression){}
-    //Annotations:
-    }
-}
-
 
 /**
 * Dispatch Function Declaration
@@ -109,7 +79,7 @@ auto dispatch(Declaration d, Visitor v)
 /**
 * Dispatch Function Statement
 */
-auto dispatch(Statement s, Visitor v)
+Node dispatch(Statement s, Visitor v)
 {
     switch(s.StmtType)
     {
@@ -121,7 +91,7 @@ auto dispatch(Statement s, Visitor v)
 /**
 * Dispatch Function Expression
 */
-auto dispatch(Expression e, Visitor v)
+Node dispatch(Expression e, Visitor v)
 {
     switch(e.ExprType)
     {
@@ -133,7 +103,7 @@ auto dispatch(Expression e, Visitor v)
 /**
 * Dispatch Function General
 */
-auto dispatch(Node n, Visitor v)
+Node dispatch(Node n, Visitor v)
 {
     assert(n !is null);
     assert(v !is null);

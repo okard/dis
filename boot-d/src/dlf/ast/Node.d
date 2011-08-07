@@ -18,6 +18,8 @@
 ******************************************************************************/
 module dlf.ast.Node;
 
+//Location Info? file, line, column
+
 /**
 * Base Class for AST Nodes
 */

@@ -54,6 +54,7 @@ abstract class Statement : Node
 * Is more Declaration?
 * Has a SymbolTable?
 * Can have classes, functions, ...
+* Occurs in Functions, Loops, LambdaExpressions, ...
 */
 final class BlockStatement : Statement
 {
@@ -103,6 +104,36 @@ final class ReturnStatement : Statement
     }
 }
 
-//For
-//ForEach
-//While
+/**
+* For Statement
+*/
+final class ForStatement : Statement
+{
+    /// Initialization Statements
+    public Statement[] InitializerStmts;
+    /// Break Condition
+    public Expression ConditionExpr;
+    /// Statements done after a run
+    public Statement[] RunStmts;
+
+    /// The Block Statement
+    public BlockStatement Block;
+}
+
+/**
+* For-Each Statement
+*/
+final class ForEachStatement : Statement
+{
+    //public VariableDeclaration Var;
+    public Expression List;
+}
+
+/**
+* While Statement
+* Do-While Statement
+*/
+final class WhileStatement : Statement
+{
+    
+}
