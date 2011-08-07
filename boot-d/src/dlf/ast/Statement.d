@@ -57,9 +57,6 @@ abstract class Statement : Node
 */
 final class BlockStatement : Statement
 {
-    //Visitor Mixin
-    mixin VisitorMixin;
-
     ///Statements
     public Statement[] Statements;
 
@@ -79,9 +76,6 @@ final class BlockStatement : Statement
 */
 final class ExpressionStatement : Statement
 {
-    //Visitor Mixin
-    mixin VisitorMixin;
-
     /// Expression
     public Expression Expr;
 
@@ -98,9 +92,6 @@ final class ExpressionStatement : Statement
 */
 final class ReturnStatement : Statement
 {
-    //Visitor Mixin
-    mixin VisitorMixin;
-    
     /// The Return Expression
     public Expression Expr;
 

@@ -19,7 +19,7 @@
 module disc; 
 
 import std.stdio;
-import date = std.date;
+import std.datetime;
 
 import dlf.basic.Log;
 import dlf.basic.Source;
@@ -52,6 +52,10 @@ class CommandLineArg : ArgHelper
         Options["--print-ast"] = (){ printAst = true; };
         Options["--print-sem"] = (){ printSem = true; };
 
+        //obj directory
+        //log level
+        //import dirs
+
         //parse Options
         parse(args);
     }
@@ -71,9 +75,11 @@ class CommandLineArg : ArgHelper
 */
 int main(string[] args)
 {
-    Log().OnLog() += LevelConsoleListener(LogType.Information);
+    auto log = Log("disc");
 
-    Log().information("Dis Compiler V0.01");
+    log.OnLog += LevelConsoleListener(LogType.Information);
+
+    log.information("Dis Compiler V0.01");
 
     //parse arguments
     auto arguments = new CommandLineArg(args);
@@ -85,7 +91,7 @@ int main(string[] args)
 
     if(srcFiles.length < 1)
     {
-        writeln("No Source Files");
+        log.error("No Source Files");
         return 1;
     }
 
@@ -106,14 +112,13 @@ int main(string[] args)
     //Parser
     auto parser = new Parser();
     parser.Src = src;
-    auto node = parser.parse();
+    auto node = cast(PackageDeclaration)parser.parse();
 
     //A new Source File have to result in a PackageNode
-    //assert(node.NodeType == Node.Type.Declaration);
-    assert(node.NodeType == Node.Type.Declaration && node.to!Declaration().DeclType == Declaration.Type.Package);
+    assert(node !is null);
 
     //Parse Imports
-    handleImports(cast(PackageDeclaration)node);
+    handleImports(node);
 
     //Print out
     auto printer = new Printer();
@@ -173,7 +178,7 @@ private void dumpLexer(Lexer lex)
 */
 public LogSource.LogEvent.Dg LevelConsoleListener(LogType minimal)
 {
-    return (LogSource ls, date.d_time t, LogType ty, string msg)
+    return (LogSource ls, SysTime t, LogType ty, string msg)
     {
         if(ty >= minimal)
             writefln(ls.Name == "" ? "%s%s" : "%s: %s" , ls.Name, msg);

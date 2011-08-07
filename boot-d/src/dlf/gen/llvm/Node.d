@@ -53,15 +53,6 @@ class CompilerNode : Node
     {
        NodeType = Node.Type.Special;
     }
-
-    /**
-    * For Node Compatibility
-    */
-    public override void accept(Visitor v)
-    {
-        assert(true);
-    }
-
 }
 
 /**

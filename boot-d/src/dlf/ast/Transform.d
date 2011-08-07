@@ -25,6 +25,7 @@ import dlf.ast.Expression;
 import dlf.ast.Type;
 
 
+
 /**
 * extend a Node with appending an another one
 */
@@ -62,8 +63,9 @@ public Node[] extensions(Node n)
 /**
 * Replace nodes with an another one?
 */
-public void replace(Node n, Node e)
+ /*public void replace(Node n, Node e)
 {
+   
     //check for parent
     if(n.Parent !is null)
     {
@@ -105,5 +107,6 @@ public void replace(Node n, Node e)
             break;
         default:
     }
-}
 
+}
+*/

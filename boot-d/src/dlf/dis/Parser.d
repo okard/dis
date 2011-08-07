@@ -129,7 +129,7 @@ class Parser
                 default: return null;
             }
         }
-        catch(Object o)
+        catch(Throwable o)
         {
             Error(mToken.Loc, "Exception in Parser"); 
             throw o;
@@ -768,10 +768,10 @@ class Parser
         next();
         
         //Special Annotations
-        if(mToken.Value == "CallConv")
+        /*if(mToken.Value == "CallConv")
         {
             return new CallConvAnnotation();
-        }
+        }*/
         
         return null;
     }

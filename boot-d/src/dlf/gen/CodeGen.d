@@ -16,27 +16,24 @@
 *    along with disc.  If not, see <http://www.gnu.org/licenses/>.
 *
 ******************************************************************************/
-module dlf.ast.Annotation;
+module dlf.gen.CodeGen;
 
-
-import dlf.ast.Node;
-import dlf.ast.Visitor;
 
 /**
-* Annotation Base Class
+* Codegen Context
 */
-abstract class Annotation : Node
+struct Context
 {
-    /// Annotation Types
-    enum Type
-    {
-        CallConv,
-        Custom
-    }
+    //obj dir
+    //target dir?
+}
 
-    /// Annotation Type
-    public Type AnotType;
 
-    /// Annotation Name
-    string Name;
+/**
+* CodeGen Interface
+*/
+interface CodeGen
+{
+
+
 }

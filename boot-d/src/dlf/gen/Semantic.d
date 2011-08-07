@@ -33,7 +33,7 @@ import std.stdio;
 /**
 * Semantic Pass for AST
 */
-class Semantic : Visitor
+class Semantic : AbstractVisitor
 {
     /// Current Symbol Table
     private SymbolTable mSymTable;
@@ -50,14 +50,14 @@ class Semantic : Visitor
     */
     public Node run(Node astNode)
     {
-        astNode.accept(this);
-        return astNode;
+        dispatch(astNode, this);
+        return null;
     }
 
     /**
     * Visit PackageDeclaration
     */
-    void visit(PackageDeclaration pack)
+    override void visit(PackageDeclaration pack)
     {
         Information("Semantic: PackageDcl");
 
@@ -65,25 +65,25 @@ class Semantic : Visitor
 
         // Imports
         foreach(ImportDeclaration i; pack.Imports)
-            i.accept(this);
+            dispatch(i, this);
 
         // Variables
         foreach(VariableDeclaration v; pack.Variables)
-            v.accept(this);
+            dispatch(v, this);
 
         // Functions
         foreach(FunctionDeclaration f; pack.Functions)
-            f.accept(this);  
+            dispatch(f, this); 
 
         //Classes
         foreach(ClassDeclaration c; pack.Classes)
-            c.accept(this);
+            dispatch(c, this);
     }
 
     /**
     * Import Declaration
     */
-    void visit(ImportDeclaration impDecl)
+    override void visit(ImportDeclaration impDecl)
     {
         // Info
         Information("Semantic: ImportDecl %s", impDecl.Name);
@@ -91,10 +91,10 @@ class Semantic : Visitor
         //semantic check for available PackageDeclarations
         if(impDecl.Package !is null)
         {
-            impDecl.Package.accept(this);
+            dispatch(impDecl.Package, this);
         }
         else
-            Error("\tImport %s has not solved", impDecl.Name);
+            Error("\tImport %s has not been solved", impDecl.Name);
 
 
         //when a type resolved from import package
@@ -107,21 +107,21 @@ class Semantic : Visitor
     /**
     * Class Semantic Check
     */
-    void visit(ClassDeclaration cls)
+    override void visit(ClassDeclaration cls)
     {
     }
 
     /**
     * Trait Semantic
     */
-    void visit(TraitDeclaration)
+    override void visit(TraitDeclaration)
     {
     }
 
     /**
     * Visit FunctionDeclaration
     */
-    void visit(FunctionDeclaration func)
+    override void visit(FunctionDeclaration func)
     { 
         Information("Semantic FuncDcl %s", func.Name);
 
@@ -145,19 +145,19 @@ class Semantic : Visitor
         
         //go into Body
         if(func.Body !is null)
-            func.Body.accept(this);
+            dispatch(func.Body, this);
     }
 
      /**
     * Semantic Checks for Variables
     */
-    void visit(VariableDeclaration var)
+    override void visit(VariableDeclaration var)
     {
         Information("Semantic: VarDecl %s", var.Name);
 
         //Do Semantic Analysis for Initializer Expression if available
         if(var.Initializer !is null)
-            var.Initializer.accept(this);
+            dispatch(var.Initializer, this);
 
         //Set Datatype for Variable
         if(var.VarDataType == OpaqueType.Instance)
@@ -182,7 +182,7 @@ class Semantic : Visitor
     /**
     * Visit Block Statement
     */
-    void visit(BlockStatement block)
+    override void visit(BlockStatement block)
     {
         Information("Semantic: BlockStmt");
 
@@ -190,26 +190,26 @@ class Semantic : Visitor
 
         //analyze the declarations inside of blockstatement
         foreach(Declaration sym; block.SymTable)
-            sym.accept(this);
+            dispatch(sym, this);
 
         //check each statement
         foreach(stat; block.Statements)
-            stat.accept(this);
+            dispatch(stat, this);
     }
 
     /**
     * Visit Expression Statement
     */
-    void visit(ExpressionStatement expr)
+    override void visit(ExpressionStatement expr)
     {
         //visit Expression
-        expr.Expr.accept(this);
+        dispatch(expr.Expr, this);
     }
 
     /**
     * Visit ReturnStatement
     */
-    void visit(ReturnStatement rs)
+    override void visit(ReturnStatement rs)
     {
         //check rs.Expr returntype must match parent return type
     }
@@ -217,7 +217,7 @@ class Semantic : Visitor
     /**
     * Visit Function Call
     */
-    void visit(FunctionCall call)
+    override void visit(FunctionCall call)
     {
         //TODO class Function Calls
         Information("Semantic: FuncCall %s", call.Function.toString());
@@ -247,7 +247,7 @@ class Semantic : Visitor
     /**
     * Semantic Pass for DotIdentifier
     */
-    void visit(DotIdentifier di)
+    override void visit(DotIdentifier di)
     {
         // resolve returntype 
         // add node DotIdentifier pointo to Extend
@@ -259,7 +259,7 @@ class Semantic : Visitor
     /**
     * Semantic Pass for Assign Expression
     */
-    void visit(AssignExpression ae)
+    override void visit(AssignExpression ae)
     {
         //look for Target must be a declared value?
         //look for type match
@@ -268,7 +268,7 @@ class Semantic : Visitor
     /**
     * Semantic Pass for BinaryExpression
     */
-    void visit(BinaryExpression be)
+    override void visit(BinaryExpression be)
     {
         //look for type match
         //rewrite Binary Expression for none math types
@@ -280,16 +280,9 @@ class Semantic : Visitor
     /**
     * Semantic Pass for Literal Expression
     */
-    void visit(LiteralExpression)
+    override void visit(LiteralExpression)
     {
         //look for string value?
-    }
-
-    /**
-    * Visit CallConv Annotation
-    */
-    void visit(CallConvAnnotation)
-    {
     }
 
     /**

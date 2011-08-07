@@ -64,6 +64,7 @@ interface Source
 class SourceFile : File, Source
 {
     //TODO Implement a double buffer?
+    //TODO Options for mmap files?
 
     /// Current Location
     private Location mLoc;

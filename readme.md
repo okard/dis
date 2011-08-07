@@ -3,7 +3,7 @@
 
 ## Repository Structure
 
-* boot/
+* boot-d/
 
     Bootstrap Compiler written in D
     

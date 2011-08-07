@@ -83,8 +83,7 @@ static class ApplicationPath
         static string get()
         {
             char buf[BUFFER_SIZE];
-            auto pid = getpid(); //pid_t = int
-            auto path = "/proc/" ~ to!string(pid) ~ "/exe\0";
+            auto path = "/proc/self/exe\0";
             auto bs = readlink(path.ptr, buf.ptr, BUFFER_SIZE-1);
             buf[bs] = '\0';
             auto c = new char[](bs);

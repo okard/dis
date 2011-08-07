@@ -28,6 +28,7 @@ import dlf.ast.Annotation;
 
 import std.stdio;
 import std.string;
+import std.array;
 
 /**
 * AST Printer
@@ -43,7 +44,7 @@ class Printer : Visitor
     */
     public void print(Node astNode)
     {
-        astNode.accept(this);
+        dispatch(astNode, this);
     }
 
     //=========================================================================
@@ -53,20 +54,20 @@ class Printer : Visitor
     /**
     * Visit Package Declaration
     */
-    public void visit(PackageDeclaration pd)
+    public override void visit(PackageDeclaration pd)
     {
         writetln("%sPackage: %s",tabs(),  pd.Name);
 
         tabDeepness++;
         foreach(fd; pd.Functions)
-            fd.accept(this);
+            dispatch(fd, this);
         tabDeepness--;
     }
 
     /**
     * Visit FunctionDeclaration
     */
-    public void visit(FunctionDeclaration fd)
+    public override void visit(FunctionDeclaration fd)
     {
         writet("Function(%s): %s(", toString(fd.FuncType.CallingConv), fd.Name);
 
@@ -83,36 +84,43 @@ class Printer : Visitor
         //fd.mType.mReturnType
 
         if(fd.Body !is null)
-            fd.Body.accept(this);
+            dispatch(fd.Body, this);
     }
 
-    void visit(ImportDeclaration){}
-    void visit(ClassDeclaration){}
-    void visit(TraitDeclaration){}
+
+    void visit(ImportDeclaration imp)
+    {
+    }
+    
 
     /**
     * Print Variable Declaration
     */
-    void visit(VariableDeclaration vd)
+    public void visit(VariableDeclaration vd)
     {
         writet("var %s : %s = ", vd.Name, vd.VarDataType.toString());
-        vd.Initializer.accept(this);
+        dispatch(vd.Initializer, this);
         writeln();
     }
+
+
+    void visit(ClassDeclaration){}
+    void visit(TraitDeclaration){}
 
     /**
     * Visit Block Statement
     */
-    public void visit(BlockStatement bs)
+    public override void visit(BlockStatement bs)
     {
         writetln("{");
         tabDeepness++;
 
         foreach(Declaration sym; bs.SymTable)
-            sym.accept(this);
+            dispatch(sym, this);
 
         foreach(stat; bs.Statements)
-            stat.accept(this);
+            dispatch(stat, this);
+
         tabDeepness--;
         writetln("}");
     }
@@ -120,23 +128,25 @@ class Printer : Visitor
     /**
     * Visit ExpressionStatement
     */
-    public void visit(ExpressionStatement expr) 
+    public override void visit(ExpressionStatement expr) 
     {
         writet("");
-        expr.Expr.accept(this);
+        dispatch(expr.Expr, this);
         writeln();
     }
+
+    void visit(ReturnStatement){}
 
     /**
     * FunctionCall
     */
-    public void visit(FunctionCall call) 
+    public override void visit(FunctionCall call) 
     {
         writet("%s(", call.Function.toString());
 
         foreach(arg; call.Arguments)
         {
-            arg.accept(this);
+            dispatch(arg, this);
         }
 
         writeln(")");
@@ -145,7 +155,7 @@ class Printer : Visitor
     /**
     * Print Literals
     */
-    void visit(LiteralExpression le)
+    override void visit(LiteralExpression le)
     {
         if(le.ReturnType == StringType.Instance)
         {
@@ -158,40 +168,30 @@ class Printer : Visitor
     /**
     * Print Assign Expression
     */
-    void visit(AssignExpression ae)
+    override void visit(AssignExpression ae)
     {
-        ae.Target.accept(this);
+        dispatch(ae.Target, this);
         write(" = ");
-        ae.Value.accept(this);
+        dispatch(ae.Value, this);
     }
 
     /**
     * Print Binary Expression
     */
-    void visit(BinaryExpression be)
+    override void visit(BinaryExpression be)
     {
-        be.Left.accept(this);
+        dispatch(be.Left, this);
         write(" <op> ");
-        be.Right.accept(this);
+        dispatch(be.Right, this);
     }
 
     /**
     * Visit Dot Identifier
     */
-    void visit(DotIdentifier di)
+    override void visit(DotIdentifier di)
     {
         write(di.toString());
     }
-
-
-    /**
-    * Visit CallConv Annotation
-    */
-    void visit(CallConvAnnotation) {}
-
-    void visit(ReturnStatement){}
-
-
 
     /**
     * Base Statement

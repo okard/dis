@@ -64,9 +64,6 @@ abstract class Declaration : Node
 */
 final class PackageDeclaration : Declaration
 {
-    //Visitor Mixin
-    mixin VisitorMixin;
-
     /// Symbol Table
     public SymbolTable SymTable;
     /// Imports
@@ -97,8 +94,9 @@ final class PackageDeclaration : Declaration
 */
 final class ImportDeclaration : Declaration
 {
-    //Visitor Mixin
-    mixin VisitorMixin;
+
+    ///Name
+    string Name;
 
     ///Holds a PackageNode
     PackageDeclaration Package;
@@ -121,9 +119,6 @@ struct FunctionParameter
 */
 final class FunctionDeclaration : Declaration
 {
-    //Visitor Mixin
-    mixin VisitorMixin;
-
     //flags: public, private, protected, package, static
 
     //parameter names? index of parameter type
@@ -140,6 +135,8 @@ final class FunctionDeclaration : Declaration
     
     ///Has a Body (BlockStatement, Statement, Expression)
     public Statement Body;
+
+    //Instancen?
 
     /**
     * Default Ctor
@@ -165,9 +162,6 @@ final class FunctionDeclaration : Declaration
 */
 final class VariableDeclaration : Declaration
 {
-    //Visitor Mixin
-    mixin VisitorMixin;
-
     /// Variable Type
     public DataType VarDataType;
 
@@ -190,9 +184,6 @@ final class VariableDeclaration : Declaration
 */
 final class ClassDeclaration : Declaration
 {
-    //Visitor Mixin
-    mixin VisitorMixin;
-
     //ClassType?
     //BaseClass
     //Traits

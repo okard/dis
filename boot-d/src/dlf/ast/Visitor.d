@@ -18,6 +18,7 @@
 ******************************************************************************/
 module dlf.ast.Visitor;
 
+import dlf.ast.Node;
 import dlf.ast.Declaration;
 import dlf.ast.Statement;
 import dlf.ast.Expression;
@@ -28,7 +29,8 @@ import dlf.ast.Annotation;
 */
 public interface Visitor
 {
-    public {
+    public 
+    {
     //Declarations
     void visit(PackageDeclaration);
     void visit(FunctionDeclaration);
@@ -47,16 +49,109 @@ public interface Visitor
     void visit(AssignExpression);
     void visit(BinaryExpression);
     //Annotations:
-    void visit(CallConvAnnotation);
+    }
+}
+
+
+/**
+* Abstract AST Visitor
+*/
+public abstract class AbstractVisitor : Visitor
+{
+    public 
+    {
+    //Declarations
+    void visit(PackageDeclaration){}
+    void visit(FunctionDeclaration){}
+    void visit(ImportDeclaration){}
+    void visit(VariableDeclaration){}
+    void visit(ClassDeclaration){}
+    void visit(TraitDeclaration){}
+    //Statements
+    void visit(BlockStatement){}
+    void visit(ExpressionStatement){}
+    void visit(ReturnStatement){}
+    //Expressions
+    void visit(LiteralExpression){}
+    void visit(FunctionCall){}
+    void visit(DotIdentifier){}
+    void visit(AssignExpression){}
+    void visit(BinaryExpression){}
+    //Annotations:
+    }
+}
+
+
+/**
+* Dispatch Function Declaration
+*/
+auto dispatch(Declaration d, Visitor v)
+{
+    assert(d !is null);
+    assert(v !is null);
+
+    switch(d.DeclType)
+    {
+        case Declaration.Type.Package: return v.visit(cast(PackageDeclaration)d);
+        case Declaration.Type.Import: return v.visit(cast(ImportDeclaration)d);
+        case Declaration.Type.Variable: return v.visit(cast(VariableDeclaration)d);
+        case Declaration.Type.Function: return v.visit(cast(FunctionDeclaration)d);
+        case Declaration.Type.Class: return v.visit(cast(ClassDeclaration)d);
+        //case Declaration.Type.Struct: return v.visit(cast(StructDeclaration)d);
+        //case Declaration.Type.Enum: return v.visit(cast(EnumDeclaration)d);
+        //case Declaration.Type.Alias: return v.visit(cast(AliasDeclaration)d);
+        //case Declaration.Type.Delegate: return v.visit(cast(DelegateDeclaration)d);
+        default: assert(false);
+    }
+
+}
+
+/**
+* Dispatch Function Statement
+*/
+auto dispatch(Statement s, Visitor v)
+{
+    switch(s.StmtType)
+    {
+
+        default: assert(false);
     }
 }
 
 /**
-* Visitor Mixin
+* Dispatch Function Expression
 */
-mixin template VisitorMixin()
+auto dispatch(Expression e, Visitor v)
 {
-    /// Accept Visitor
-    public override void accept(Visitor v) { v.visit(this); }
+    switch(e.ExprType)
+    {
+
+        default: assert(false);
+    }
 }
+
+/**
+* Dispatch Function General
+*/
+auto dispatch(Node n, Visitor v)
+{
+    assert(n !is null);
+    assert(v !is null);
+
+    switch(n.NodeType)
+    {
+        case Node.Type.Declaration: return dispatch(cast(Declaration)n, v);
+        case Node.Type.Statement: return dispatch(cast(Statement)n, v);
+        case Node.Type.Expression: return dispatch(cast(Expression)n, v);
+        //case Node.Type.DataType: return dispatch(cast(DataType)n, v);
+        //case Node.Type.Annotation: return dispatch(cast(Annotation)n, v);
+        //case Node.Type.Special: return dispatch(cast(Special)n, v);
+        default: assert(false);
+    }
+}
+
+
+
+
+//Expression dispatch(Expression n, Visitor v)
     

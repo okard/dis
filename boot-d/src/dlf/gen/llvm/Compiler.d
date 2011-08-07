@@ -43,7 +43,7 @@ import std.stdio;
 /**
 * LLVM based Dis Compiler
 */
-class Compiler : Visitor
+class Compiler : AbstractVisitor
 {
     alias dlf.ast.Type.DataType astType;
 
@@ -103,14 +103,14 @@ class Compiler : Visitor
     */
     public void compile(Node ast)
     {
-        ast.accept(this);
+        dispatch(ast, this);
     }
 
     /**
     * Generate Code for Package
     * Entry Point for generating code for a package
     */
-    void visit(PackageDeclaration pack)
+    override void visit(PackageDeclaration pack)
     {
         //Create Module for Package
         auto mod = new llvm.Module(mContext, pack.Name);
@@ -120,7 +120,7 @@ class Compiler : Visitor
         //Create Functions
         foreach(func; pack.Functions)
         {
-            func.accept(this);
+            dispatch(func, this);
         }
         
         //Write Package LLVM Moduel to file
@@ -132,14 +132,14 @@ class Compiler : Visitor
     /**
     * Import Declaration does not require compiler action?
     */
-    void visit(ImportDeclaration)
+    override void visit(ImportDeclaration)
     {
     }
 
     /**
     * Generate Classes
     */
-    void visit(ClassDeclaration)
+    override void visit(ClassDeclaration)
     {
         //Classes are a llvm struct type
         //Create Struct
@@ -148,14 +148,14 @@ class Compiler : Visitor
     /**
     * Traits are also more semantic stuff?
     */
-    void visit(TraitDeclaration)
+    override void visit(TraitDeclaration)
     {
     }
 
     /**
     * Compile Function Declaration
     */
-    void visit(FunctionDeclaration func)
+    override void visit(FunctionDeclaration func)
     {
         //TODO look for Extension Methods
         //TODO look for class functions
@@ -202,13 +202,13 @@ class Compiler : Visitor
        
         //block Statement
         if(func.Body !is null)
-            func.Body.accept(this);
+            dispatch(func.Body, this);
     }
 
     /**
     * Generate Variables
     */
-    void visit(VariableDeclaration var)
+    override void visit(VariableDeclaration var)
     {
         //LLVM Values
         //Create new Var 
@@ -219,15 +219,15 @@ class Compiler : Visitor
     /**
     * Generate Block Statement
     */
-    void visit(BlockStatement block)
+    override void visit(BlockStatement block)
     {
         //Variables, Inner Functions and classes
 
         //Function Basic Blocks
         if(block.Parent.NodeType == Node.Type.Declaration 
-        && block.Parent.to!Declaration().DeclType == Declaration.Type.Function)
+        && (cast(Declaration)block.Parent).DeclType == Declaration.Type.Function)
         {
-            auto funcDecl = block.Parent.to!FunctionDeclaration();
+            auto funcDecl = cast(FunctionDeclaration)block.Parent;
             auto funcCNode = CNode!ValueNode(funcDecl);
             auto funcVal = cast(llvm.FunctionValue)funcCNode.LLVMValue;
 
@@ -268,11 +268,11 @@ class Compiler : Visitor
 
             //Build Variables on Stack
             foreach(Declaration sym; block.SymTable)
-                sym.accept(this);
+                dispatch(sym, this);
 
             //Build Statements for Function
             foreach(s; block.Statements)
-                s.accept(this);
+                dispatch(s, this);
 
             //jump to return label
             mBuilder.Br(fbb.ret);
@@ -285,21 +285,21 @@ class Compiler : Visitor
 
         //New Basic Block
         foreach(s; block.Statements)
-            s.accept(this);
+            dispatch(s, this);
     }
 
     /**
     * Generate Expression Statement
     */
-    void visit(ExpressionStatement stat)
+    override void visit(ExpressionStatement stat)
     {
-        stat.Expr.accept(this);
+        dispatch(stat.Expr, this);
     }
 
     /**
     * Visit ReturnStatement
     */
-    void visit(ReturnStatement rs)
+    override void visit(ReturnStatement rs)
     {
         //assign to variable retval the expression result
         //jump to label return
@@ -308,7 +308,7 @@ class Compiler : Visitor
     /**
     * Generate a Function Call
     */
-    void visit(FunctionCall call)
+    override void visit(FunctionCall call)
     {
         //semantic pass should have resolved the function
         
@@ -332,7 +332,7 @@ class Compiler : Visitor
         llvm.Value[] callArgs;
         foreach(arg; call.Arguments)
         {
-            arg.accept(this);
+            dispatch(arg, this);
             llvm.Value value;
 
             //TODO Right Handling for Types
@@ -369,7 +369,7 @@ class Compiler : Visitor
     /**
     * Dot Identifier 
     */
-    void visit(DotIdentifier)
+    override void visit(DotIdentifier)
     {
         //Look into type
         //look wht to get here
@@ -379,7 +379,7 @@ class Compiler : Visitor
     /**
     * Literal Expression
     */
-    void visit(LiteralExpression le)
+    override void visit(LiteralExpression le)
     {
         //Generate Constant Values
         if(le.ReturnType == StringType.Instance)
@@ -406,7 +406,7 @@ class Compiler : Visitor
     /**
     * Create Assign Expression
     */
-    void visit(AssignExpression ae)
+    override void visit(AssignExpression ae)
     {
         //store or load right value into
         // the variable
@@ -415,7 +415,7 @@ class Compiler : Visitor
     /**
     * Create Binary Expression
     */
-    void visit(BinaryExpression be)
+    override void visit(BinaryExpression be)
     {
         //instructions for real and integer?
         //check return type
@@ -426,13 +426,6 @@ class Compiler : Visitor
                 break;
             default:
         }
-    }
-
-    /**
-    * Visit CallConv Annotation
-    */
-    void visit(CallConvAnnotation)
-    {
     }
 
     /**

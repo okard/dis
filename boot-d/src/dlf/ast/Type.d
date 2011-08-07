@@ -28,7 +28,6 @@ import dlf.basic.Util;
 abstract class DataType : Node
 {
      public this() { NodeType = Node.Type.DataType; }
-     public override void accept(Visitor v){};
 
      protected mixin template PtrTypeSingleton()
      {

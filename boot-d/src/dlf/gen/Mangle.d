@@ -54,16 +54,19 @@ static class Mangle
             if(n.NodeType != Node.Type.Declaration)
                 continue;
             
-            switch(n.to!Declaration().DeclType)
+            auto d = cast(Declaration)n;
+
+            switch(d.DeclType)
             {
                 case Declaration.Type.Package:
-                    name = (cast(Declaration)n).Name ~ name;
+                    name = d.Name ~ name;
                     break;
                 case Declaration.Type.Class:
-                    name = "_cls" ~ (cast(Declaration)n).Name ~ name;
+                    name = "_cls" ~ d.Name ~ name;
                     break;
                 case Declaration.Type.Function:
-                    name = "_fcn" ~ (cast(Declaration)n).Name ~ name;
+                    name = "_fcn" ~ d.Name ~ name;
+                    break;
                 default:
             }
     

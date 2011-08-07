@@ -19,7 +19,7 @@
 module dlf.basic.Log;
 
 import std.string;
-import std.date;
+import std.datetime;
 
 import dlf.basic.Signal;
 
@@ -41,7 +41,7 @@ enum LogType : ubyte
 class LogSource
 {
     //Log Event Definition
-    public alias Signal!(LogSource, d_time, LogType, string) LogEvent;
+    public alias Signal!(LogSource, SysTime, LogType, string) LogEvent;
     
     // Log Source Name
     private string mName;
@@ -63,7 +63,7 @@ class LogSource
     public void log(LogType type, T...)(T args)
     {
         auto str = format(args);
-        evLog(this, getUTCtime(), type, str);
+        evLog(this, Clock.currTime(UTC()), type, str);
     }
 
     /**
@@ -72,6 +72,14 @@ class LogSource
     public void information(T...)(T args)
     {
        log!(LogType.Information)(args);
+    }
+
+    /**
+    * Error Logging
+    */
+    public void error(T...)(T args)
+    {
+       log!(LogType.Error)(args);
     }
 
     /**
@@ -147,7 +155,7 @@ final static class Log
 /**
 * Console Log Listener
 */
-public void ConsoleListener(LogSource ls, d_time t, LogType ty, string msg)
+public void ConsoleListener(LogSource ls, SysTime t, LogType ty, string msg)
 {
     string type;
     switch(ty) {
@@ -167,7 +175,7 @@ public void ConsoleListener(LogSource ls, d_time t, LogType ty, string msg)
 */
 public LogSource.LogEvent.Dg FileListener(string file)
 {
-    return (LogSource ls, d_time t, LogType ty,string msg)
+    return (LogSource ls, SysTime t, LogType ty,string msg)
     {
         auto f = File(file, "a");
         f.writefln("%1$s: %2$s", ls.Name, msg);
@@ -182,7 +190,7 @@ unittest
     scope(exit) Log().OnLog().clear();
 
     auto s = Log.Test; 
-    s.OnLog() += (LogSource ls, d_time t, LogType ty,string msg){
+    s.OnLog += (LogSource ls, SysTime t, LogType ty,string msg){
         assert(ls.Name == "Test");
         assert(msg == "foo");
     };

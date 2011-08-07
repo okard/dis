@@ -56,9 +56,6 @@ abstract class Expression : Node
 */
 final class LiteralExpression : Expression
 {
-    // Visitor Mixin
-    mixin VisitorMixin;
-
     /// Value
     public string Value;
 
@@ -79,9 +76,6 @@ final class LiteralExpression : Expression
 */
 final class DotIdentifier : Expression
 {
-    //Visitor Mixin
-    mixin VisitorMixin;
-
     ///parts of identifiers splitted with .
     private char[][] mIdentifier;
 
@@ -146,9 +140,6 @@ final class DotIdentifier : Expression
 */
 final class FunctionCall : Expression
 {
-    //Visitor Mixin
-    mixin VisitorMixin;
-
     ///Expression to retrieve a function type
     Expression Function;
 
@@ -170,9 +161,6 @@ final class FunctionCall : Expression
 */
 final class BinaryExpression : Expression
 {
-    //Visitor Mixin
-    mixin VisitorMixin;
-
     /// OP + - * / % ** ^ && ||
     public enum Operator : ubyte { Add, Sub, Div, Mul, Mod, Power, And, Or, Xor }
 
@@ -197,9 +185,6 @@ final class BinaryExpression : Expression
 */
 final class AssignExpression : Expression
 {
-    //Visitor Mixin
-    mixin VisitorMixin;
-
     /// The Target
     Expression Target;
 

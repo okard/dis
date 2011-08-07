@@ -18,15 +18,13 @@
 ******************************************************************************/
 module dlf.ast.Node;
 
-import dlf.ast.Visitor;
-
 /**
 * Base Class for AST Nodes
 */
 abstract class Node
 {
     /// Node Types
-    enum Type
+    public enum Type
     {
         Declaration,
         Statement,
@@ -36,7 +34,7 @@ abstract class Node
         Special
     }
 
-    /// parent node
+    /// Parent node
     public Node Parent;
 
     /// Node Type
@@ -44,22 +42,4 @@ abstract class Node
 
     /// For Node Extensions in Semantic and Compiler Passes
     public Node Extend;
-
-    /// Create new Node
-    public this()
-    {
-    }
-
-    /**
-    * Visitor pattern
-    */
-    public abstract void accept(Visitor v);
-
-    /**
-    * Cast Helper
-    */
-    public T to(T)()
-    {
-        return cast(T)this;
-    }
 }
