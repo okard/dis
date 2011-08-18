@@ -28,7 +28,7 @@ http://d.puremagic.com/issues/show_bug.cgi?id=4423
 /**
 * Token
 */
-enum TokenType : ubyte
+enum TokenType : ubyte//c main
 {
     None,
     EOF,

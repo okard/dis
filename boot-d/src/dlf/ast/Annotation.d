@@ -27,15 +27,6 @@ import dlf.ast.Visitor;
 */
 abstract class Annotation : Node
 {
-    /// Annotation Types
-    enum Type
-    {
-        Custom
-    }
-
-    /// Annotation Type
-    public Type AnotType;
-
     /// Annotation Name
     string Name;
 }

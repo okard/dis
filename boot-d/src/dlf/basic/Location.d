@@ -25,10 +25,14 @@ import std.conv;
 */
 struct Location
 {
-    ///Line starts with 0
-    uint Line; 
-    ///Column starts with 0
+    /// Line starts with 0
+    uint Line;
+ 
+    /// Column starts with 0
     uint Col; 	
+
+    /// Name or File
+    string Name;
     
     /*
     * Create Loc

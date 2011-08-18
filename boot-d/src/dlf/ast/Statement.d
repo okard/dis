@@ -30,22 +30,6 @@ import dlf.ast.SymbolTable;
 */
 abstract class Statement : Node
 {
-    /// Statement Types
-    enum Type
-    {
-        Block,
-        Expression,
-        Return
-    }
-
-    /// Statement Type
-    public Type StmtType;
-
-    /// Create new Statement
-    public this()
-    {
-        NodeType = Node.Type.Statement;
-    }
 
 } 
 
@@ -64,11 +48,8 @@ final class BlockStatement : Statement
     ///Symbol Table
     public SymbolTable SymTable;
 
-    ///Create new BlockStatement
-    this()
-    {
-        StmtType = Type.Block;
-    }
+
+    @property public override NodeKind Kind(){ return NodeKind.BlockStatement; }
 }
 
 /**
@@ -83,9 +64,10 @@ final class ExpressionStatement : Statement
     ///Create new ExpressionStatement
     public this(Expression expr)
     {
-        StmtType = Type.Expression;
         Expr = expr;
     }
+
+    @property public override NodeKind Kind(){ return NodeKind.ExpressionStatement; }
 }
 
 /**
@@ -99,9 +81,10 @@ final class ReturnStatement : Statement
     /// Create new Return Statement
     public this(Expression expr)
     {
-        StmtType = Type.Return;
         Expr = expr;
     }
+
+    @property public override NodeKind Kind(){ return NodeKind.ReturnStatement; }
 }
 
 /**
@@ -118,6 +101,8 @@ final class ForStatement : Statement
 
     /// The Block Statement
     public BlockStatement Block;
+
+    @property public override NodeKind Kind(){ return NodeKind.ForStatement; }
 }
 
 /**
@@ -127,6 +112,8 @@ final class ForEachStatement : Statement
 {
     //public VariableDeclaration Var;
     public Expression List;
+
+    @property public override NodeKind Kind(){ return NodeKind.ForEachStatement; }
 }
 
 /**
@@ -135,5 +122,11 @@ final class ForEachStatement : Statement
 */
 final class WhileStatement : Statement
 {
+    ///Loop Condition
+    public Expression Condition;
+
+    /// Block Statement
+    public BlockStatement Block;
     
+    @property public override NodeKind Kind(){ return NodeKind.WhileStatement; }
 }

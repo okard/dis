@@ -27,27 +27,8 @@ import dlf.ast.Type;
 */
 abstract class Expression : Node
 {
-    /// Expression Types
-    enum Type
-    {
-        Literal,
-        Identifier,
-        Call,
-        Binary,
-        Assign
-    }
-
-    /// Expression Type
-    Type ExprType;
-
     /// ReturnType of Expression
     DataType ReturnType;
-
-    /// Create Expression
-    public this()
-    {
-        NodeType = Node.Type.Expression;
-    }
 }
 
 
@@ -62,10 +43,11 @@ final class LiteralExpression : Expression
     /// Create new LiteralExpression
     public this(string value, DataType returnType)
     {
-        ExprType = Type.Literal;
         Value = value;
         ReturnType = returnType;
     }
+
+    @property public override NodeKind Kind(){ return NodeKind.LiteralExpression; }
 }
 
 //
@@ -84,7 +66,6 @@ final class DotIdentifier : Expression
     */
     public this(char[] identifier)
     {
-        ExprType = Type.Identifier;
         mIdentifier ~= identifier;
     }
 
@@ -133,6 +114,8 @@ final class DotIdentifier : Expression
     {
         //split at "."
     }
+
+    @property public override NodeKind Kind(){ return NodeKind.DotIdentifier; }
 }
 
 /**
@@ -148,11 +131,7 @@ final class FunctionCall : Expression
 
     //return type is mFunction.solve().mReturnType
 
-    /// Create new FunctionCall Expression
-    this()
-    {
-        ExprType = Type.Call;
-    }
+    @property public override NodeKind Kind(){ return NodeKind.FunctionCall; }
 }
 
 
@@ -172,12 +151,8 @@ final class BinaryExpression : Expression
     /// Right Expression
     Expression Right;
 
-    /// Create new Binary Expression
-    this()
-    {
-        ExprType = Type.Binary;
-    }
-    
+ 
+    @property public override NodeKind Kind(){ return NodeKind.BinaryExpression; }
 }
 
 /**
@@ -191,11 +166,8 @@ final class AssignExpression : Expression
     /// The Value assigning to target
     Expression Value;
 
-    /// Create new AssignExpression
-    this()
-    {
-        ExprType = Type.Assign;
-    }
+
+    @property public override NodeKind Kind(){ return NodeKind.AssignExpression; }
 }
 
 

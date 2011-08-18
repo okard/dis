@@ -40,8 +40,9 @@ static class Mangle
     {
         string name = "";
         //Functions have Parameters
-        if(decl.DeclType == Declaration.Type.Function)
+        if(decl.Kind == NodeKind.FunctionDeclaration)
         {
+            //Require name for instance!!!
            //TODO function append parameter
            //TODO right Function Types
         }
@@ -51,20 +52,20 @@ static class Mangle
         
         while(true)
         {
-            if(n.NodeType != Node.Type.Declaration)
+            if(!isDeclaration(n))
                 continue;
             
             auto d = cast(Declaration)n;
 
-            switch(d.DeclType)
+            switch(d.Kind)
             {
-                case Declaration.Type.Package:
+                case NodeKind.PackageDeclaration:
                     name = d.Name ~ name;
                     break;
-                case Declaration.Type.Class:
+                case NodeKind.ClassDeclaration:
                     name = "_cls" ~ d.Name ~ name;
                     break;
-                case Declaration.Type.Function:
+                case NodeKind.FunctionDeclaration:
                     name = "_fcn" ~ d.Name ~ name;
                     break;
                 default:

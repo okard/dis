@@ -101,6 +101,8 @@ class Semantic : Visitor
         //Mark as external 
         //error when a import isn't resolved
 
+        //Remove not required imports
+
         return impDecl;
     }
 
@@ -240,7 +242,7 @@ class Semantic : Visitor
         
         //Expression to Function
 
-        if(fexpr.ExprType == Expression.Type.Identifier)
+        if(fexpr.Kind == NodeKind.DotIdentifier)
         {
             Information("\t Is DotIdentifier -> Try to resolve type");
             auto resolve = resolve(cast(DotIdentifier)fexpr);
@@ -253,6 +255,8 @@ class Semantic : Visitor
             //look foreach
             //get function declaration
         }
+
+        //check if Function exist
 
         return call;
     }

@@ -52,53 +52,6 @@ public interface Visitor
     }
 }
 
-/**
-* Dispatch Function Declaration
-*/
-auto dispatch(Declaration d, Visitor v)
-{
-    assert(d !is null);
-    assert(v !is null);
-
-    switch(d.DeclType)
-    {
-        case Declaration.Type.Package: return v.visit(cast(PackageDeclaration)d);
-        case Declaration.Type.Import: return v.visit(cast(ImportDeclaration)d);
-        case Declaration.Type.Variable: return v.visit(cast(VariableDeclaration)d);
-        case Declaration.Type.Function: return v.visit(cast(FunctionDeclaration)d);
-        case Declaration.Type.Class: return v.visit(cast(ClassDeclaration)d);
-        //case Declaration.Type.Struct: return v.visit(cast(StructDeclaration)d);
-        //case Declaration.Type.Enum: return v.visit(cast(EnumDeclaration)d);
-        //case Declaration.Type.Alias: return v.visit(cast(AliasDeclaration)d);
-        //case Declaration.Type.Delegate: return v.visit(cast(DelegateDeclaration)d);
-        default: assert(false);
-    }
-
-}
-
-/**
-* Dispatch Function Statement
-*/
-Node dispatch(Statement s, Visitor v)
-{
-    switch(s.StmtType)
-    {
-
-        default: assert(false);
-    }
-}
-
-/**
-* Dispatch Function Expression
-*/
-Node dispatch(Expression e, Visitor v)
-{
-    switch(e.ExprType)
-    {
-
-        default: assert(false);
-    }
-}
 
 /**
 * Dispatch Function General
@@ -108,20 +61,20 @@ Node dispatch(Node n, Visitor v)
     assert(n !is null);
     assert(v !is null);
 
-    switch(n.NodeType)
-    {
-        case Node.Type.Declaration: return dispatch(cast(Declaration)n, v);
-        case Node.Type.Statement: return dispatch(cast(Statement)n, v);
-        case Node.Type.Expression: return dispatch(cast(Expression)n, v);
-        //case Node.Type.DataType: return dispatch(cast(DataType)n, v);
-        //case Node.Type.Annotation: return dispatch(cast(Annotation)n, v);
-        //case Node.Type.Special: return dispatch(cast(Special)n, v);
+    switch(n.Kind)
+    {   
+        //Declarations
+        case NodeKind.PackageDeclaration: return v.visit(cast(PackageDeclaration)n);
+        case NodeKind.ImportDeclaration: return v.visit(cast(ImportDeclaration)n);
+        case NodeKind.VariableDeclaration: return v.visit(cast(VariableDeclaration)n);
+        case NodeKind.FunctionDeclaration: return v.visit(cast(FunctionDeclaration)n);
+        case NodeKind.ClassDeclaration: return v.visit(cast(ClassDeclaration)n);
+        
+        //Statements
+
+        //Expressions
+    
         default: assert(false);
     }
 }
-
-
-
-
-//Expression dispatch(Expression n, Visitor v)
     

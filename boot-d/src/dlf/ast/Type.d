@@ -27,8 +27,10 @@ import dlf.basic.Util;
 */
 abstract class DataType : Node
 {
-     public this() { NodeType = Node.Type.DataType; }
+     /// is Runtime Type
+     public bool isRuntimeType = false;
 
+     /// Pointer Singleton Mixin
      protected mixin template PtrTypeSingleton()
      {
         private static PointerType _PtrInstance;
@@ -44,6 +46,8 @@ abstract class DataType : Node
             return _PtrInstance;
         }
      }
+
+    @property public override NodeKind Kind(){ return NodeKind.DataType; }
 }
 
 /// Void
@@ -152,34 +156,6 @@ final class OpaqueType : DataType
 }
 
 /**
-* Defines a Function Signature
-*/
-class FunctionType : DataType
-{
-    public enum CallingConvention {None, C, Dis}
-
-    //Arguments
-    public DataType[] Arguments;
-    //Return Type
-    public DataType ReturnType;
-    //Varargs Function
-    public bool mVarArgs;
-    //Extensions Method
-    public bool ExtensionMethod;
-    // Generic Method Type
-    public bool GenericMethod;
-    //Calling Convention
-    public CallingConvention CallingConv;
-
-    //Generic FunctionTypes can have SubFunctionTypes?
-
-    public this()
-    {
-        ReturnType = OpaqueType.Instance;
-    }
-}
-
-/**
 * PointerType 
 * Ptr to a type
 */
@@ -209,10 +185,12 @@ class CharType : DataType
     //encoding???
     override string toString() { return "char"; }
     mixin Singleton!CharType;
+    mixin PtrTypeSingleton;
 }
 
 /**
 * String Type aka ArrayType(CharType)?
+* Runtime Type
 */
 class StringType : DataType
 { 
@@ -226,9 +204,38 @@ class StringType : DataType
 */
 class ArrayType : DataType
 {
-    //DataType type
-    //Size 
+    public DataType ArrType;
+    public uint Size;
 }
+
+/**
+* Defines a Function Signature
+*/
+class FunctionType : DataType
+{
+    public enum CallingConvention {None, C, Dis}
+
+    //Arguments
+    public DataType[] Arguments;
+    //Return Type
+    public DataType ReturnType;
+    //Varargs Function
+    public bool mVarArgs;
+    //Extensions Method
+    public bool ExtensionMethod;
+    // Generic Method Type
+    public bool GenericMethod;
+    //Calling Convention
+    public CallingConvention CallingConv;
+
+    //Generic FunctionTypes can have SubFunctionTypes?
+
+    public this()
+    {
+        ReturnType = OpaqueType.Instance;
+    }
+}
+
 
 /**
 * Class Type
@@ -237,6 +244,7 @@ class ClassType : DataType
 {
     //Class Declaration
     //Template Classes can have subclasstypes?
+    //Parent Class
 }
 
 /**

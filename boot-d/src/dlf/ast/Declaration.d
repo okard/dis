@@ -30,34 +30,14 @@ import dlf.ast.SymbolTable;
 */
 abstract class Declaration : Node
 {
-    enum Type
-    {
-        Package,
-        Import,
-        Variable,
-        Function,
-        Class,
-        Struct,
-        Enum,
-        Alias,
-        Delegate
-    }
-
     /// Flags for Declaration
     enum Flags : ushort { Private=1, Protected=2, Public=4, Package=8, 
                           Static=16, Final=32, Const=64, Extern=128 } 
-
-    //Type
-    public Type DeclType;
     
-    ///name
+    /// Name
     public string Name;
 
-    //ctor declaration
-    public this()
-    {
-        NodeType = Node.Type.Declaration;
-    }
+    // FQN ??
 }
 
 /**
@@ -85,9 +65,10 @@ final class PackageDeclaration : Declaration
     */
     public this(string name)
     {
-        DeclType = Type.Package;
         Name = name;
     }
+
+    @property public override NodeKind Kind(){ return NodeKind.PackageDeclaration; }
 }
 
 /**
@@ -95,12 +76,13 @@ final class PackageDeclaration : Declaration
 */
 final class ImportDeclaration : Declaration
 {
-
     ///Name
     string Name;
 
     ///Holds a PackageNode
     PackageDeclaration Package;
+
+    @property public override NodeKind Kind(){ return NodeKind.ImportDeclaration; }
 }
 
 
@@ -137,14 +119,16 @@ final class FunctionDeclaration : Declaration
     ///Has a Body (BlockStatement, Statement, Expression)
     public Statement Body;
 
-    //Instancen?
+    //Parameter Array
+
+    ///Instancen?
+    public FunctionType[] Instances;
 
     /**
     * Default Ctor
     */
     public this()
     {
-        DeclType = Type.Function;
         FuncType = new FunctionType(); 
     }
 
@@ -156,6 +140,9 @@ final class FunctionDeclaration : Declaration
         this();
         this.Name = name;
     }   
+
+    //
+    @property public override NodeKind Kind(){ return NodeKind.FunctionDeclaration; }
 }
 
 /**
@@ -174,10 +161,11 @@ final class VariableDeclaration : Declaration
     */
     public this(string name, DataType type = OpaqueType.Instance)
     {
-        DeclType = Type.Variable;
         Name = name;
         VarDataType = type;
     }
+
+    @property public override NodeKind Kind(){ return NodeKind.VariableDeclaration; }
 }
 
 /**
@@ -185,25 +173,21 @@ final class VariableDeclaration : Declaration
 */
 final class ClassDeclaration : Declaration
 {
-    //ClassType?
+    /// The declared class type
+    public ClassType ClsType;
+    
     //BaseClass
     //Traits
-
+    //Mixins
 
     //VariableDeclaration[] Variables;
     //FunctionDeclaration[] Methods;
 
+    public ClassType[] Instances;
 
-    public this()
-    {
-        DeclType = Type.Class;
-    }
 
-    /// Save Class Type inner?
-    /*class ClassType : DataType
-    {
-        //mixinSIngleton
-    }*/
+
+    @property public override NodeKind Kind(){ return NodeKind.VariableDeclaration; }
 }
 
 /**
@@ -216,6 +200,8 @@ final class TraitDeclaration : Declaration
 
     //TraitType?
     //Variables, Methods, Properties
+
+    @property public override NodeKind Kind(){ return NodeKind.TraitDeclaration; }
 }
 
 /**

@@ -16,42 +16,50 @@
 *    along with disc.  If not, see <http://www.gnu.org/licenses/>.
 *
 ******************************************************************************/
-module dlf.gen.CodeGen;
+module dlf.gen.c.CCodeWriter;
 
-import dlf.ast.Node;
-import dlf.ast.Declaration;
-
-
-/// Target Type
-enum TargetType { Executable, StaticLib, SharedLib }
-
-/// Target Platform
-enum TargetPlatform { Linux, MacOSX, Windows }
-
-/// Target Arch
-enum TargetArch { x86_32, x86_64, ARM }
-
+import std.stdio;
 
 /**
-* Codegen Context
+* ANSI C Code Writer
 */
-struct Context
+class CCodeWriter
 {
-    //obj dir
-    //target dir?
-    //target type -> StaticLib, SharedLib, Executable (WinExecutable?)
 
-    TargetType Type;
-    TargetPlatform Platform;
-    TargetArch Arch;
-}
+    /**
+    * A Package
+    */
+    public class CPackage
+    {
+        /// Header File
+        public File Header;
+        
+        /// Source File
+        public File Source;
+   
+
+        //start
+        //close
+
+        //state 
+        //create variable
+
+        //openBlock
+        //closeBlock
+
+        //openStruct
+        //addField()
+        //closeStruct
+    }
 
 
-/**
-* CodeGen Interface
-*/
-interface CodeGen
-{
-    //compile Package, result? 
-    void compile(PackageDeclaration pd);
+    // auto f = File("test.txt", "w");
+
+    CPackage createPackage(string dir, string name)
+    {
+        //dir/name.h
+        //dir/name.c
+        return new CPackage();
+    }
+
 }

@@ -31,6 +31,7 @@ import dlf.dis.Token;
 import dlf.dis.Lexer;
 import dlf.dis.Parser;
 import dlf.sem.Semantic;
+import dlf.gen.CodeGen;
 import dlf.gen.c.CCodeGen;
 
 
@@ -113,28 +114,32 @@ int main(string[] args)
     //Parser
     auto parser = new Parser();
     parser.Src = src;
-    auto node = cast(PackageDeclaration)parser.parse();
+    auto pack = cast(PackageDeclaration)parser.parse();
 
     //A new Source File have to result in a PackageNode
-    assert(node !is null);
+    assert(pack !is null);
 
     //Parse Imports
-    handleImports(node);
+    handleImports(pack);
 
     //Print out
     auto printer = new Printer();
     writeln("------- START PARSER DUMP ----------------------------");
-    printer.print(node);
+    printer.print(pack);
     writeln("------- END PARSER DUMP ------------------------------");
 
     //run semantics
     auto semantic = new Semantic();
-    auto ast = semantic.run(node);
+    pack = cast(PackageDeclaration)semantic.run(pack);
     writeln("------- END SEMANTIC ------------------------------");
 
+    //succesful semantic run result in a package declaration
+    assert(pack !is null);
+
     //C CodeGen
-    auto cgen = new CCodeGen();
-    
+    Context ctx;
+    auto cgen = new CCodeGen(ctx);
+    cgen.compile(pack);
 
 
     return 0;

@@ -60,7 +60,6 @@ final class SymbolTable
         return dec;
     }
 
-
     /**
     * Apply Operator
     * Allow foreach iteration over symboltable

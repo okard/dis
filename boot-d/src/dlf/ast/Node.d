@@ -18,30 +18,81 @@
 ******************************************************************************/
 module dlf.ast.Node;
 
-//Location Info? file, line, column
+import dlf.basic.Location;
+
+/**
+* All kinds of ast nodes
+*/
+public enum NodeKind : uint
+{
+    Unkown,
+
+    //Declaration
+    Declaration,
+    PackageDeclaration,
+    ImportDeclaration,
+    FunctionDeclaration,
+    VariableDeclaration,
+    ClassDeclaration,
+    TraitDeclaration,
+    StructDeclaration,
+    EnumDeclaration,
+    AliasDeclaration,
+    VariantDeclaration,
+    DelegateDeclaration,
+
+    //Statement
+    Statement,
+    BlockStatement,
+    ExpressionStatement,
+    ReturnStatement,
+    ForStatement,
+    ForEachStatement,
+    WhileStatement,
+
+    //Expression
+    Expression,
+    LiteralExpression,
+    DotIdentifier,
+    FunctionCall,
+    BinaryExpression,
+    AssignExpression,
+    
+    //DataType
+    DataType,
+    //Annotation
+    //CodeGen?
+}
 
 /**
 * Base Class for AST Nodes
 */
 abstract class Node
 {
-    /// Node Types
-    public enum Type
-    {
-        Declaration,
-        Statement,
-        Expression,
-        DataType,
-        Annotation,
-        Special
-    }
-
     /// Parent node
     public Node Parent;
 
-    /// Node Type
-    public Type NodeType;
+    /// Kind (immutable)? function?
+    //public NodeKind Kind;
+    @property public abstract NodeKind Kind();
+
+    /// Location
+    public Location Loc;
 
     /// For Node Extensions in Semantic and Compiler Passes
     public Node Extend;
 }
+
+//TODO Mixin for Node.Kind
+
+//0xFFFF_FFFF
+//0x0000_0001
+//0x1
+
+bool isDeclaration(Node n) { return n.Kind >= NodeKind.Declaration && n.Kind < NodeKind.Statement; }
+bool isStatement(Node n) { return n.Kind >= NodeKind.Statement && n.Kind < NodeKind.Expression; }
+bool isExpression(Node n) { return n.Kind >= NodeKind.Expression && n.Kind < NodeKind.DataType; }
+//isStatement
+//isExpression
+//isDataType
+//isAnnotation

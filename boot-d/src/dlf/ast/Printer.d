@@ -63,7 +63,7 @@ class Printer : Visitor
             dispatch(fd, this);
         tabDeepness--;
 
-        return null;
+        return pd;
     }
 
     /**
@@ -88,13 +88,13 @@ class Printer : Visitor
         if(fd.Body !is null)
             dispatch(fd.Body, this);
 
-        return null;
+        return fd;
     }
 
 
     Node visit(ImportDeclaration imp)
     {
-        return null;
+        return imp;
     }
     
 
@@ -107,12 +107,12 @@ class Printer : Visitor
         dispatch(vd.Initializer, this);
         writeln();
 
-        return null;
+        return vd;
     }
 
 
-    Node visit(ClassDeclaration){ return null;}
-    Node visit(TraitDeclaration){ return null;}
+    Node visit(ClassDeclaration cd){ return cd;}
+    Node visit(TraitDeclaration td){ return td;}
 
     /**
     * Visit Block Statement
@@ -131,7 +131,7 @@ class Printer : Visitor
         tabDeepness--;
         writetln("}");
 
-        return null;
+        return bs;
     }
 
     /**
@@ -143,10 +143,10 @@ class Printer : Visitor
         dispatch(expr.Expr, this);
         writeln();
 
-        return null;
+        return expr;
     }
 
-    Node visit(ReturnStatement){ return null; }
+    Node visit(ReturnStatement rs){ return rs; }
 
     /**
     * FunctionCall
@@ -162,7 +162,7 @@ class Printer : Visitor
 
         writeln(")");
 
-        return null;
+        return call;
     }
 
     /**
@@ -177,7 +177,7 @@ class Printer : Visitor
         else
             writef("%s", le.Value);
 
-        return null;
+        return le;
     }
 
     /**
@@ -189,7 +189,7 @@ class Printer : Visitor
         write(" = ");
         dispatch(ae.Value, this);
 
-        return null;
+        return ae;
     }
 
     /**
@@ -201,7 +201,7 @@ class Printer : Visitor
         write(" <op> ");
         dispatch(be.Right, this);
 
-        return null;
+        return be;
     }
 
     /**
@@ -210,7 +210,7 @@ class Printer : Visitor
     Node visit(DotIdentifier di)
     {
         write(di.toString());
-        return null;
+        return di;
     }
 
     /**
@@ -247,11 +247,11 @@ class Printer : Visitor
     */
     public static string toString(Expression exp)
     {
-        switch(exp.ExprType)
+        switch(exp.Kind)
         {
-            case Expression.Type.Identifier: return (cast(DotIdentifier) exp).toString();
-            case Expression.Type.Call: return toString(cast(FunctionCall) exp);
-            case Expression.Type.Literal: return (cast(LiteralExpression)exp).Value;
+            case NodeKind.DotIdentifier: return (cast(DotIdentifier) exp).toString();
+            case NodeKind.FunctionCall: return toString(cast(FunctionCall) exp);
+            case NodeKind.LiteralExpression: return (cast(LiteralExpression)exp).Value;
             default: return "<unkown expression>";
         }
     }
@@ -261,9 +261,9 @@ class Printer : Visitor
     */
     public static string toString(Statement stat)
     {
-        switch(stat.StmtType)
+        switch(stat.Kind)
         {
-            case Statement.Type.Expression: return toString((cast(ExpressionStatement)stat).Expr);
+            case NodeKind.ExpressionStatement: return toString((cast(ExpressionStatement)stat).Expr);
             default: return "<unkown statement>";
         }
     }

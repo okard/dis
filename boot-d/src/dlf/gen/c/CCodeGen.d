@@ -19,13 +19,47 @@
 module dlf.gen.c.CCodeGen;
 
 import dlf.ast.Visitor;
+import dlf.ast.Declaration;
 import dlf.gen.CodeGen;
 
 /**
 * C Code Generator
 */
-class CCodeGen : CodeGen
+class CCodeGen : CodeGen//, Visitor
 {
+    ///Compile Context
+    private Context ctx;
+
+    ///Compiler Flags
+    private string[] compilerFlags = [ "-std=c99", "-c", "-Wall", "-g" ];
+
+    //Linker Flags
+
+    /**
+    * Ctor
+    */
+    this(Context ctx)
+    {
+        this.ctx = ctx;
+    }
+
+    /**
+    * Compile Package
+    */
+    void compile(PackageDeclaration pd)
+    {
+        //compile imports?
+        //create a CModule
+        //include default header dish.h
+
+        //resulting c files
+
+        //if executable, create c main 
+        //embed runtime etc
+
+        //def(C) declarations???? create definitions
+    }
+
     //package -> c package (header, src)
 
     // Steps:

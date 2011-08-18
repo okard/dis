@@ -115,6 +115,7 @@ class Parser
 
         while(mToken.Type == TokenType.Comment || mToken.Type == TokenType.EOL)
             next();
+
         try
         {
             //Supported Token as EntryPoint
@@ -615,7 +616,7 @@ class Parser
         //Identifier
 
         //seems to be a function call "(" after expression/identifier
-        if(expr.ExprType == Expression.Type.Identifier && peek(1) == TokenType.ROBracket)
+        if(expr.Kind == NodeKind.DotIdentifier && peek(1) == TokenType.ROBracket)
         {
             next();
 
