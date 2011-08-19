@@ -37,7 +37,7 @@ abstract class Declaration : Node
     /// Name
     public string Name;
 
-    // FQN ??
+    // FQN ?? Full Qualified Name
 }
 
 /**
@@ -86,14 +86,23 @@ final class ImportDeclaration : Declaration
 }
 
 
-/// Function Parameter Helper 
+/**
+* Function Parameter 
+*/
 struct FunctionParameter
 {
-    //char[][]
-    //DataType
-    //Name
-    //Index
-    //Modifiers/Flags (ref, const, ...)
+    ///String Definition
+    char[][] Definition;
+    /// DatatType of Parameter
+    DataType Type;
+    /// Parameter Name
+    string Name;
+    /// Vararg
+    bool Vararg;
+    /// Index, Position of Parameter
+    ushort Index;
+
+    //Modifiers/Flags (ref, const, ..., vararg)
 }
     
 
@@ -102,27 +111,32 @@ struct FunctionParameter
 */
 final class FunctionDeclaration : Declaration
 {
+    /// The Function Parameters
+    public FunctionParameter[] Parameter;
+
+    /// Instancen? generated at semantic step
+    public FunctionType[] Instances;
+
+    ///Has a Body (BlockStatement, Statement, Expression)
+    public Statement Body;
+
+    /// Is Template Function (here?)
+    bool isTemplate;
+
+    //calling conventions are part of declartion not of type
     //flags: public, private, protected, package, static
 
     //parameter names? index of parameter type
     //map the names to the datatyps index of FunctionType
-    public ubyte[string] mArgumentNames;
-    //If VarArgs Function the Parameter Name for VarArgs
-    public string mVarArgsName;
-
-    /// Is Template Function
-    bool isTemplate;
-
-    ///Function Signature
-    public FunctionType FuncType;
     
-    ///Has a Body (BlockStatement, Statement, Expression)
-    public Statement Body;
+    //OLD:
 
-    //Parameter Array
+    public ubyte[string] mArgumentNames; //DELETE
+    //If VarArgs Function the Parameter Name for VarArgs
+    public string mVarArgsName; //DELETE
 
-    ///Instancen?
-    public FunctionType[] Instances;
+    ///Function Signature (DELETE)
+    public FunctionType FuncType;
 
     /**
     * Default Ctor
@@ -168,15 +182,16 @@ final class VariableDeclaration : Declaration
     @property public override NodeKind Kind(){ return NodeKind.VariableDeclaration; }
 }
 
+//value declaration
+
+//class template parameter?
+
 /**
 * Class Declaration
 */
 final class ClassDeclaration : Declaration
 {
-    /// The declared class type
-    public ClassType ClsType;
-    
-    //BaseClass
+    //BaseClass / Parent Class
     //Traits
     //Mixins
 
@@ -184,7 +199,6 @@ final class ClassDeclaration : Declaration
     //FunctionDeclaration[] Methods;
 
     public ClassType[] Instances;
-
 
 
     @property public override NodeKind Kind(){ return NodeKind.VariableDeclaration; }
@@ -238,5 +252,13 @@ final class AliasDeclaration : TypeDeclaration
 */
 final class DelegateDeclaration : TypeDeclaration
 {
+}
+
+/**
+* Variant Declaration
+*/
+final class VariantDeclaration : TypeDeclaration
+{
+
 }
 

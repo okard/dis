@@ -54,7 +54,7 @@ class Semantic : Visitor
         return dispatch(astNode, this);
     }
 
-    /**
+    /**new CPackage()
     * Visit PackageDeclaration
     */
     Node visit(PackageDeclaration pack)
@@ -64,6 +64,7 @@ class Semantic : Visitor
         mSymTable = pack.SymTable;
 
         // Imports
+        //add default runtime imports when not available
         mapDispatch(pack.Imports);
 
         // Variables
@@ -93,6 +94,7 @@ class Semantic : Visitor
         }
         else
             Error("\tImport %s has not been solved", impDecl.Name);
+
 
 
         //when a type resolved from import package
@@ -230,10 +232,12 @@ class Semantic : Visitor
     /**
     * Visit Function Call
     */
-    Node visit(FunctionCall call)
+    Node visit(CallExpression call)
     {
         //TODO class Function Calls
         Information("Semantic: FuncCall %s", call.Function.toString());
+
+        //Create Function instances here
         
         //check for function
         //call.mFunction.NType() == NodeType.DotIdentifier

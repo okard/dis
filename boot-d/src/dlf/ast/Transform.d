@@ -42,6 +42,7 @@ public static void extend(Node n, Node e)
 /*
 * Helper to make possible foreach over extension nodes
 * TODO Generate lightweight iterable structure?
+* TODO type filter template
 */
 public Node[] extensions(Node n)
 {
@@ -58,55 +59,3 @@ public Node[] extensions(Node n)
 
     return list;
 }
-
-
-/**
-* Replace nodes with an another one?
-*/
- /*public void replace(Node n, Node e)
-{
-   
-    //check for parent
-    if(n.Parent !is null)
-    {
-        return;
-    }
-
-    //right handling
-    switch(n.Parent.NodeType)
-    {
-        // Declarations =======================================================
-        case Node.Type.Declaration:
-            break;
-
-        case Node.Type.Statement:
-            auto stmt = n.Parent.to!Statement();
-
-            switch(stmt.StmtType)
-            {
-                case Statement.Type.Expression:
-                    assert(e.NodeType == Node.Type.Expression);
-                    stmt.to!ExpressionStatement().Expr = cast(Expression)e;
-                    break;
-                default:
-            }
-            break;
-
-        // Expressions ========================================================
-        case Node.Type.Expression:
-            auto expr = n.Parent.to!Expression();
-
-            switch(expr.ExprType)
-            {
-                case Expression.Type.Binary:
-                    break;
-                case Expression.Type.Assign:
-                    break;
-                default:
-            }
-            break;
-        default:
-    }
-
-}
-*/

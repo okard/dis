@@ -19,16 +19,32 @@
 module dlf.gen.c.CCodeGen;
 
 import dlf.ast.Visitor;
+import dlf.ast.Node;
 import dlf.ast.Declaration;
+import dlf.ast.Statement;
+import dlf.ast.Expression;
+import dlf.ast.Type;
+
 import dlf.gen.CodeGen;
+import dlf.gen.HeaderGen;
+import dlf.gen.c.CCodeWriter;
 
 /**
 * C Code Generator
 */
-class CCodeGen : CodeGen//, Visitor
+class CCodeGen : CodeGen, Visitor
 {
-    ///Compile Context
+    /// Compile Context
     private Context ctx;
+
+    /// Header generator
+    private HeaderGen hdrgen;
+
+    /// Code Writer
+    private CCodeWriter writer;
+
+    /// Current C Package
+    private CCodeWriter.CPackage p;
 
     ///Compiler Flags
     private string[] compilerFlags = [ "-std=c99", "-c", "-Wall", "-g" ];
@@ -41,6 +57,7 @@ class CCodeGen : CodeGen//, Visitor
     this(Context ctx)
     {
         this.ctx = ctx;
+        hdrgen = new HeaderGen();
     }
 
     /**
@@ -48,6 +65,20 @@ class CCodeGen : CodeGen//, Visitor
     */
     void compile(PackageDeclaration pd)
     {
+        p = writer.Package("", "");
+
+        //if library compile header
+        //compile other packages first or look if they already compiled
+
+        dispatchAuto(pd);
+
+        //p.start
+
+        //check package imports they should go in first
+        
+
+        //p.close
+        
         //compile imports?
         //create a CModule
         //include default header dish.h
@@ -68,5 +99,63 @@ class CCodeGen : CodeGen//, Visitor
     //3. *.obj -> binary (Linker Options)
 
     //debug infos with #line
+
+
+    /**
+    * Compile Package Declaration
+    */
+    Node visit(PackageDeclaration pd)
+    { 
+        //Imports
+        
+        return pd; 
+    }
+
+    /**
+    * Compile Import Declarations
+    */
+    Node visit(ImportDeclaration id)
+    {
+        //imports are includes
+        //get compile header name
+        
+        return id; 
+    }
+
+    Node visit(FunctionDeclaration fd){ return fd; }
+
+    Node visit(VariableDeclaration vd){ return vd;}
+    Node visit(ClassDeclaration cd){ return cd; }
+    Node visit(TraitDeclaration td){ return td; }
+    //Statements
+    Node visit(BlockStatement bs){ return bs; }
+    Node visit(ExpressionStatement es){ return es; }
+    Node visit(ReturnStatement rt){ return rt; }
+    //Expressions
+    Node visit(LiteralExpression le){ return le; }
+    Node visit(CallExpression fc){ return fc; }
+    Node visit(DotIdentifier di){ return di; }
+    Node visit(AssignExpression ae){ return ae; }
+    Node visit(BinaryExpression be){ return be; }
+
+
+    /**
+    * Auto Dispatch
+    */
+    private T dispatchAuto(T)(T e)
+    {
+        return cast(T)dispatch(e, this);
+    }
+
+    /**
+    * Map Dispatch to Arrays
+    */
+    private void mapDispatch(T)(T[] elements)
+    {
+        for(int i=0; i < elements.length; i++)
+        {
+            /*elements[i] =*/ dispatchAuto(elements[i]);
+        }
+    }
 
 }

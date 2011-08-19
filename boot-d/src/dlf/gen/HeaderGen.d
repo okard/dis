@@ -16,42 +16,32 @@
 *    along with disc.  If not, see <http://www.gnu.org/licenses/>.
 *
 ******************************************************************************/
-module dlf.gen.CodeGen;
+module dlf.gen.HeaderGen;
 
-import dlf.ast.Node;
-import dlf.ast.Declaration;
-
-
-/// Target Type
-enum TargetType { Executable, StaticLib, SharedLib }
-
-/// Target Platform
-enum TargetPlatform { Linux, MacOSX, Windows }
-
-/// Target Arch
-enum TargetArch { x86_32, x86_64, ARM }
+import dlf.ast.Visitor;
 
 
 /**
-* Codegen Context
+* Generate Dis Header
 */
-struct Context
+class HeaderGen : Visitor
 {
-    //obj dir
-    //target dir?
-    //header dir
-    //target type -> StaticLib, SharedLib, Executable (WinExecutable?)
 
-    TargetType Type;
-    TargetPlatform Platform;
-    TargetArch Arch;
-}
-
-/**
-* CodeGen Interface
-*/
-interface CodeGen
-{
-    //compile Package, result? 
-    void compile(PackageDeclaration pd);
+    //Declarations
+    Node visit(PackageDeclaration pd){ return pd; }
+    Node visit(ImportDeclaration id){ return id; }
+    Node visit(FunctionDeclaration fd){ return fd; }
+    Node visit(VariableDeclaration vd){ return vd; }
+    Node visit(ClassDeclaration cd){ return cd; }
+    Node visit(TraitDeclaration td){ return td; }
+    //Statements
+    Node visit(BlockStatement bs){ return bs; }
+    Node visit(ExpressionStatement es){ return es; }
+    Node visit(ReturnStatement rs){ return rs; }
+    //Expressions
+    Node visit(LiteralExpression le){ return le; }
+    Node visit(CallExpression ce){ return ce; }
+    Node visit(DotIdentifier di){ return di; }
+    Node visit(AssignExpression ae){ return ae; }
+    Node visit(BinaryExpression be){ return be; }
 }

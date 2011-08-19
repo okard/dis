@@ -20,6 +20,7 @@ module dlf.gen.Mangle;
 
 import dlf.ast.Node;
 import dlf.ast.Declaration;
+import dlf.ast.Type;
 
 /**
 * Class for generate mangling names
@@ -27,11 +28,15 @@ import dlf.ast.Declaration;
 static class Mangle
 {
     //ideas: package_class_method_param
+    //templates?
     //example: dlf.gen.Mangle_clsMangle_this_v
     //for param language types
 
     //_Disdlf.gen.Mangle_clsMangle_this_
     //
+
+    //mangle datatype?
+    //static string mangle(DatatType type)
 
     /**
     * Get mangled name for declaration 

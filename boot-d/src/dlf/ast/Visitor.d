@@ -18,11 +18,11 @@
 ******************************************************************************/
 module dlf.ast.Visitor;
 
-import dlf.ast.Node;
-import dlf.ast.Declaration;
-import dlf.ast.Statement;
-import dlf.ast.Expression;
-import dlf.ast.Annotation;
+public import dlf.ast.Node;
+public import dlf.ast.Declaration;
+public import dlf.ast.Statement;
+public import dlf.ast.Expression;
+public import dlf.ast.Annotation;
 
 /**
 * AST Visitor
@@ -33,8 +33,8 @@ public interface Visitor
     {
     //Declarations
     Node visit(PackageDeclaration);
-    Node visit(FunctionDeclaration);
     Node visit(ImportDeclaration);
+    Node visit(FunctionDeclaration);
     Node visit(VariableDeclaration);
     Node visit(ClassDeclaration);
     Node visit(TraitDeclaration);
@@ -44,7 +44,7 @@ public interface Visitor
     Node visit(ReturnStatement);
     //Expressions
     Node visit(LiteralExpression);
-    Node visit(FunctionCall);
+    Node visit(CallExpression);
     Node visit(DotIdentifier);
     Node visit(AssignExpression);
     Node visit(BinaryExpression);
@@ -61,7 +61,7 @@ Node dispatch(Node n, Visitor v)
     assert(n !is null);
     assert(v !is null);
 
-    switch(n.Kind)
+    /*final*/ switch(n.Kind)
     {   
         //Declarations
         case NodeKind.PackageDeclaration: return v.visit(cast(PackageDeclaration)n);
@@ -69,10 +69,19 @@ Node dispatch(Node n, Visitor v)
         case NodeKind.VariableDeclaration: return v.visit(cast(VariableDeclaration)n);
         case NodeKind.FunctionDeclaration: return v.visit(cast(FunctionDeclaration)n);
         case NodeKind.ClassDeclaration: return v.visit(cast(ClassDeclaration)n);
-        
-        //Statements
+        case NodeKind.TraitDeclaration: return v.visit(cast(TraitDeclaration)n);
 
+        //Statements
+        case NodeKind.BlockStatement: return v.visit(cast(BlockStatement)n);
+        case NodeKind.ExpressionStatement: return v.visit(cast(ExpressionStatement)n);
+        case NodeKind.ReturnStatement: return v.visit(cast(ReturnStatement)n);
+        
         //Expressions
+        case NodeKind.LiteralExpression: return v.visit(cast(LiteralExpression)n);
+        case NodeKind.CallExpression: return v.visit(cast(CallExpression)n);
+        case NodeKind.DotIdentifier: return v.visit(cast(DotIdentifier)n);
+        case NodeKind.AssignExpression: return v.visit(cast(AssignExpression)n);
+        case NodeKind.BinaryExpression: return v.visit(cast(BinaryExpression)n);
     
         default: assert(false);
     }

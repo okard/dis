@@ -52,6 +52,13 @@ interface Source
     */
     public bool isEof();
 
+
+    /**
+    * name of source
+    */
+    @property
+    public string name();
+    
     //TODO Slice & Index Operator 
     //char opIndex(int pos);
     //char[] opSlice(int start, int end);
@@ -83,6 +90,16 @@ class SourceFile : File, Source
     {
         mLoc = Location(0, 0);
     }
+
+    /**
+    * Open file
+    */
+    public override void open(string filename, FileMode mode = (FileMode).In)
+    {
+        mLoc.Name = filename;
+        super.open(filename, mode);
+    }
+
 
     /**
     * Get current location
@@ -142,6 +159,15 @@ class SourceFile : File, Source
     public bool isEof()
     {
         return eof();
+    }
+
+    /**
+    * name of source
+    */
+    @property
+    public string name()
+    {
+        return mLoc.Name;
     }
 }
 
@@ -209,6 +235,15 @@ class SourceString : Source
     public bool isEof()
     {
         return mPos == mStr.length;
+    }
+
+    /**
+    * name of source
+    */
+    @property
+    public string name()
+    {
+        return mLoc.Name;
     }
 }
 

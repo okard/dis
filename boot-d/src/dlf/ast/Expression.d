@@ -121,7 +121,7 @@ final class DotIdentifier : Expression
 /**
 * A Function Call
 */
-final class FunctionCall : Expression
+final class CallExpression : Expression
 {
     ///Expression to retrieve a function type
     Expression Function;
@@ -131,7 +131,7 @@ final class FunctionCall : Expression
 
     //return type is mFunction.solve().mReturnType
 
-    @property public override NodeKind Kind(){ return NodeKind.FunctionCall; }
+    @property public override NodeKind Kind(){ return NodeKind.CallExpression; }
 }
 
 

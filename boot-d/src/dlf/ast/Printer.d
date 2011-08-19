@@ -151,7 +151,7 @@ class Printer : Visitor
     /**
     * FunctionCall
     */
-    Node visit(FunctionCall call) 
+    Node visit(CallExpression call) 
     {
         writet("%s(", call.Function.toString());
 
@@ -250,7 +250,7 @@ class Printer : Visitor
         switch(exp.Kind)
         {
             case NodeKind.DotIdentifier: return (cast(DotIdentifier) exp).toString();
-            case NodeKind.FunctionCall: return toString(cast(FunctionCall) exp);
+            case NodeKind.CallExpression: return toString(cast(CallExpression) exp);
             case NodeKind.LiteralExpression: return (cast(LiteralExpression)exp).Value;
             default: return "<unkown expression>";
         }
@@ -285,7 +285,7 @@ class Printer : Visitor
     /**
     * FunctionCall to string
     */
-    public static string toString(FunctionCall fc)
+    public static string toString(CallExpression fc)
     {
         if(fc.Function is null) return "No function expression set";
 

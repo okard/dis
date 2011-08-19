@@ -23,8 +23,10 @@ import std.stdio;
 /**
 * ANSI C Code Writer
 */
-class CCodeWriter
+struct CCodeWriter
 {
+    //TODO CPackage[] list; // list of generated cpackages???
+    //TODO Parameter?
 
     /**
     * A Package
@@ -36,13 +38,45 @@ class CCodeWriter
         
         /// Source File
         public File Source;
-   
 
-        //start
-        //close
+        /**
+        * Private Ctor
+        */
+        private this()
+        {
+        }
+   
+        //include guards
+
+        /**
+        * Start a package
+        */
+        public void start()
+        {
+            //write include guards
+        }
+
+        /**
+        * Close Package
+        */
+        public void close()
+        {
+            //end include guards
+        }
+
+        /**
+        *  Write Include to Header File
+        */
+        public void include(string filename)
+        {
+            Header.writefln("#include \"%s\"", filename);
+        }
 
         //state 
         //create variable
+
+        //Create function declaration
+        //Create struct declaration 
 
         //openBlock
         //closeBlock
@@ -53,13 +87,16 @@ class CCodeWriter
     }
 
 
-    // auto f = File("test.txt", "w");
+    //internal classes for functions and structs
+  
 
-    CPackage createPackage(string dir, string name)
+    CPackage Package(string dir, string name)
     {
+        auto pack = new CPackage();
+        // auto f = File("test.txt", "w");
         //dir/name.h
         //dir/name.c
-        return new CPackage();
+        return pack;
     }
 
 }

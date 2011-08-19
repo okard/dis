@@ -20,6 +20,7 @@ module dlf.ast.Type;
 
 import dlf.ast.Node;
 import dlf.ast.Visitor;
+import dlf.ast.Declaration;
 import dlf.basic.Util;
 
 /**
@@ -217,18 +218,28 @@ class FunctionType : DataType
 
     //Arguments
     public DataType[] Arguments;
+
     //Return Type
     public DataType ReturnType;
+
     //Varargs Function
     public bool mVarArgs;
+
     //Extensions Method
     public bool ExtensionMethod;
+
     // Generic Method Type
     public bool GenericMethod;
+
     //Calling Convention
     public CallingConvention CallingConv;
 
+    //mangled name?
+
     //Generic FunctionTypes can have SubFunctionTypes?
+
+    //Function Declaration //parent?
+    //match?
 
     public this()
     {
@@ -245,6 +256,7 @@ class ClassType : DataType
     //Class Declaration
     //Template Classes can have subclasstypes?
     //Parent Class
+    //template arguments specifications
 }
 
 /**

@@ -621,7 +621,7 @@ class Parser
             next();
 
             //Create Function Call
-            auto call = new FunctionCall();
+            auto call = new CallExpression();
             call.Function = expr;
 
             while(peek(1) != TokenType.RCBracket)

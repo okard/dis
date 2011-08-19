@@ -45,6 +45,8 @@ class CommandLineArg : ArgHelper
     public bool printAst;    //print ast
     public bool printSem;    //print Semantic Log
 
+    //compile context
+
     //prepare
     public this(string[] args)
     {
@@ -122,6 +124,9 @@ int main(string[] args)
     //Parse Imports
     handleImports(pack);
 
+    //prepare code before semantic
+    //add default version flags and so on
+
     //Print out
     auto printer = new Printer();
     writeln("------- START PARSER DUMP ----------------------------");
@@ -152,6 +157,7 @@ int main(string[] args)
 private void handleImports(PackageDeclaration pack)
 {
     //TODO paths as parameter
+    //TODO handle import foo.* (this modifies the ast)
     //Look for Import Files
     foreach(imp; pack.Imports)
     {
