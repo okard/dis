@@ -43,6 +43,7 @@ public static void extend(Node n, Node e)
 * Helper to make possible foreach over extension nodes
 * TODO Generate lightweight iterable structure?
 * TODO type filter template
+* TODO parameter unique to generate errors if multiple instances of one type exist
 */
 public Node[] extensions(Node n)
 {

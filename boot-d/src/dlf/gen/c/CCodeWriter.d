@@ -84,6 +84,10 @@ struct CCodeWriter
         //openStruct
         //addField()
         //closeStruct
+
+        //buffer for other declaration if at the moment is one opened
+        //so it can be appended when possible
+        //add temp headers?
     }
 
 

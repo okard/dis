@@ -187,7 +187,7 @@ version(unittest) import std.stdio;
 unittest
 {
     //clear core log after test
-    scope(exit) Log().OnLog().clear();
+    scope(exit) Log().OnLog.clear();
 
     auto s = Log.Test; 
     s.OnLog += (LogSource ls, SysTime t, LogType ty,string msg){

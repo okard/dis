@@ -114,7 +114,9 @@ enum TokenType : ubyte//c main
     KwTrue,         // true
     KwFalse,        // false
 
-    //Comment Tokens
+    //To think about: op, obj, 
+
+    //Comment Tokens, DocComments
     Comment
 }
 

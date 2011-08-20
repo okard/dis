@@ -20,6 +20,11 @@ module dlf.ast.Node;
 
 import dlf.basic.Location;
 
+//ids to split kind groups
+//0xFFFF_FFFF
+//0x0000_0001
+//0x1
+
 /**
 * All kinds of ast nodes
 */
@@ -39,7 +44,6 @@ public enum NodeKind : uint
     EnumDeclaration,
     AliasDeclaration,
     VariantDeclaration,
-    DelegateDeclaration,
 
     //Statement
     Statement,
@@ -57,6 +61,8 @@ public enum NodeKind : uint
     CallExpression,
     BinaryExpression,
     AssignExpression,
+    IfExpression,
+    SwitchExpression,
     
     //DataType
     DataType,
@@ -86,11 +92,14 @@ abstract class Node
     public Node Extend;
 }
 
-//TODO Mixin for Node.Kind
+/**
+* Mixin for Node Kind Declaration
+*/
+string IsKind(string name)
+{
+    return "@property public override NodeKind Kind(){ return NodeKind."~name~"; }";
+}
 
-//0xFFFF_FFFF
-//0x0000_0001
-//0x1
 
 /// Is Declaration
 bool isDeclaration(Node n) { return n.Kind >= NodeKind.Declaration && n.Kind < NodeKind.Statement; }

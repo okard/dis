@@ -214,32 +214,31 @@ class ArrayType : DataType
 */
 class FunctionType : DataType
 {
-    public enum CallingConvention {None, C, Dis}
+    /// The base function declaration of this type
+    public FunctionDeclaration FuncDecl;
 
-    //Arguments
+    /// The function type arguments
     public DataType[] Arguments;
 
-    //Return Type
+    /// The return type of function
     public DataType ReturnType;
 
-    //Varargs Function
+    /// is a varargs function
     public bool mVarArgs;
 
-    //Extensions Method
-    public bool ExtensionMethod;
-
-    // Generic Method Type
+    //(DELETE) isTemplate at declaration Generic Method Type
     public bool GenericMethod;
 
-    //Calling Convention
+
+    //move this to declaration
+    public enum CallingConvention {None, C, Dis}
+
+    //Calling Convention defined in declaration??
     public CallingConvention CallingConv;
 
     //mangled name?
 
-    //Generic FunctionTypes can have SubFunctionTypes?
-
-    //Function Declaration //parent?
-    //match?
+    //match helper function?
 
     public this()
     {
@@ -257,6 +256,7 @@ class ClassType : DataType
     //Template Classes can have subclasstypes?
     //Parent Class
     //template arguments specifications
+    //classname!(datatypes, ...)
 }
 
 /**

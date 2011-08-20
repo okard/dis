@@ -303,6 +303,8 @@ class Semantic : Visitor
         //detect build in math types
         // a + b ->
         // a.opAdd(b);
+    
+        //calculate literal expressions directly
 
         //return resulting Expression
         return be;

@@ -67,8 +67,9 @@ final class PackageDeclaration : Declaration
     {
         Name = name;
     }
-
-    @property public override NodeKind Kind(){ return NodeKind.PackageDeclaration; }
+    
+    ///Mixin for Kind Declaration
+    mixin(IsKind("PackageDeclaration"));
 }
 
 /**
@@ -82,7 +83,8 @@ final class ImportDeclaration : Declaration
     ///Holds a PackageNode
     PackageDeclaration Package;
 
-    @property public override NodeKind Kind(){ return NodeKind.ImportDeclaration; }
+    ///Mixin for Kind Declaration
+    mixin(IsKind("ImportDeclaration"));
 }
 
 
@@ -123,6 +125,9 @@ final class FunctionDeclaration : Declaration
     /// Is Template Function (here?)
     bool isTemplate;
 
+    ///is a extension method declaration
+    public bool IsExtensionMethod;
+
     //calling conventions are part of declartion not of type
     //flags: public, private, protected, package, static
 
@@ -155,8 +160,8 @@ final class FunctionDeclaration : Declaration
         this.Name = name;
     }   
 
-    //
-    @property public override NodeKind Kind(){ return NodeKind.FunctionDeclaration; }
+    ///Mixin for Kind Declaration
+    mixin(IsKind("FunctionDeclaration"));
 }
 
 /**
@@ -179,7 +184,8 @@ final class VariableDeclaration : Declaration
         VarDataType = type;
     }
 
-    @property public override NodeKind Kind(){ return NodeKind.VariableDeclaration; }
+    ///Mixin for Kind Declaration
+    mixin(IsKind("VariableDeclaration"));
 }
 
 //value declaration
@@ -201,7 +207,8 @@ final class ClassDeclaration : Declaration
     public ClassType[] Instances;
 
 
-    @property public override NodeKind Kind(){ return NodeKind.VariableDeclaration; }
+    ///Mixin for Kind Declaration
+    mixin(IsKind("ClassDeclaration"));
 }
 
 /**
@@ -215,7 +222,8 @@ final class TraitDeclaration : Declaration
     //TraitType?
     //Variables, Methods, Properties
 
-    @property public override NodeKind Kind(){ return NodeKind.TraitDeclaration; }
+    ///Mixin for Kind Declaration
+    mixin(IsKind("TraitDeclaration"));
 }
 
 /**
@@ -231,6 +239,8 @@ abstract class TypeDeclaration : Declaration
 */
 final class StructDeclaration : TypeDeclaration
 {
+    ///Mixin for Kind Declaration
+    mixin(IsKind("StructDeclaration"));
 }
 
 /**
@@ -238,6 +248,8 @@ final class StructDeclaration : TypeDeclaration
 */
 final class EnumDeclaration : TypeDeclaration
 {
+    ///Mixin for Kind Declaration
+    mixin(IsKind("EnumDeclaration"));
 }
 
 /**
@@ -245,13 +257,8 @@ final class EnumDeclaration : TypeDeclaration
 */
 final class AliasDeclaration : TypeDeclaration
 {
-}
-
-/**
-* Delegate Declaration
-*/
-final class DelegateDeclaration : TypeDeclaration
-{
+    ///Mixin for Kind Declaration
+    mixin(IsKind("AliasDeclaration"));
 }
 
 /**
@@ -259,6 +266,7 @@ final class DelegateDeclaration : TypeDeclaration
 */
 final class VariantDeclaration : TypeDeclaration
 {
-
+    ///Mixin for Kind Declaration
+    mixin(IsKind("VariantDeclaration"));
 }
 

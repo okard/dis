@@ -42,14 +42,14 @@ abstract class Statement : Node
 */
 final class BlockStatement : Statement
 {
-    ///Statements
-    public Statement[] Statements;
-
     ///Symbol Table
     public SymbolTable SymTable;
 
+    ///Statements
+    public Statement[] Statements;
 
-    @property public override NodeKind Kind(){ return NodeKind.BlockStatement; }
+    ///Mixin for Kind Declaration
+    mixin(IsKind("BlockStatement"));
 }
 
 /**
@@ -67,7 +67,8 @@ final class ExpressionStatement : Statement
         Expr = expr;
     }
 
-    @property public override NodeKind Kind(){ return NodeKind.ExpressionStatement; }
+    ///Mixin for Kind Declaration
+    mixin(IsKind("ExpressionStatement"));
 }
 
 /**
@@ -84,7 +85,8 @@ final class ReturnStatement : Statement
         Expr = expr;
     }
 
-    @property public override NodeKind Kind(){ return NodeKind.ReturnStatement; }
+    ///Mixin for Kind Declaration
+    mixin(IsKind("ReturnStatement"));
 }
 
 /**
@@ -99,10 +101,11 @@ final class ForStatement : Statement
     /// Statements done after a run
     public Statement[] RunStmts;
 
-    /// The Block Statement
-    public BlockStatement Block;
+    /// The Body Statement
+    public Statement Body;
 
-    @property public override NodeKind Kind(){ return NodeKind.ForStatement; }
+    ///Mixin for Kind Declaration
+    mixin(IsKind("ForStatement"));
 }
 
 /**
@@ -113,7 +116,11 @@ final class ForEachStatement : Statement
     //public VariableDeclaration Var;
     public Expression List;
 
-    @property public override NodeKind Kind(){ return NodeKind.ForEachStatement; }
+    ///Body Statement
+    public Statement Body;
+
+    ///Mixin for Kind Declaration
+    mixin(IsKind("ForEachStatement"));
 }
 
 /**
@@ -125,8 +132,9 @@ final class WhileStatement : Statement
     ///Loop Condition
     public Expression Condition;
 
-    /// Block Statement
-    public BlockStatement Block;
-    
-    @property public override NodeKind Kind(){ return NodeKind.WhileStatement; }
+    /// Body Statement
+    public Statement Body;
+
+    ///Mixin for Kind Declaration
+    mixin(IsKind("WhileStatement"));
 }

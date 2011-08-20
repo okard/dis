@@ -245,6 +245,16 @@ class SourceString : Source
     {
         return mLoc.Name;
     }
+
+    /**
+    * set name of source
+    */
+    @property
+    public void name(string name)
+    {
+        mLoc.Name = name;
+    }
+    
 }
 
 // Test Source String
@@ -252,6 +262,7 @@ version(unittest) import io = std.stdio;
 unittest
 {
     auto ss = new SourceString("abcd efgh ijkl mnop qrst uvwx yz");
+    ss.name = "<unittestsource>";
 
     assert(ss.getChar() == 'a');
     assert(ss.getChar() == 'b');

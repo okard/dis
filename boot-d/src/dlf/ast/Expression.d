@@ -47,7 +47,8 @@ final class LiteralExpression : Expression
         ReturnType = returnType;
     }
 
-    @property public override NodeKind Kind(){ return NodeKind.LiteralExpression; }
+    ///Mixin for Kind Declaration
+    mixin(IsKind("LiteralExpression"));
 }
 
 //
@@ -115,7 +116,8 @@ final class DotIdentifier : Expression
         //split at "."
     }
 
-    @property public override NodeKind Kind(){ return NodeKind.DotIdentifier; }
+    ///Mixin for Kind Declaration
+    mixin(IsKind("DotIdentifier"));
 }
 
 /**
@@ -131,7 +133,8 @@ final class CallExpression : Expression
 
     //return type is mFunction.solve().mReturnType
 
-    @property public override NodeKind Kind(){ return NodeKind.CallExpression; }
+    ///Mixin for Kind Declaration
+    mixin(IsKind("CallExpression"));
 }
 
 
@@ -141,7 +144,7 @@ final class CallExpression : Expression
 final class BinaryExpression : Expression
 {
     /// OP + - * / % ** ^ && ||
-    public enum Operator : ubyte { Add, Sub, Div, Mul, Mod, Power, And, Or, Xor }
+    public enum Operator : ubyte { Add, Sub, Mul, Div, Mod, Power, And, Or, Xor }
 
     /// Operator
     Operator Op; 
@@ -151,8 +154,8 @@ final class BinaryExpression : Expression
     /// Right Expression
     Expression Right;
 
- 
-    @property public override NodeKind Kind(){ return NodeKind.BinaryExpression; }
+    ///Mixin for Kind Declaration
+    mixin(IsKind("BinaryExpression"));
 }
 
 /**
@@ -160,16 +163,43 @@ final class BinaryExpression : Expression
 */
 final class AssignExpression : Expression
 {
+    //assign operator: =, +=, -=, *=, /=
+
     /// The Target
     Expression Target;
 
     /// The Value assigning to target
     Expression Value;
 
-
-    @property public override NodeKind Kind(){ return NodeKind.AssignExpression; }
+    ///Mixin for Kind Declaration
+    mixin(IsKind("AssignExpression"));
 }
 
+/**
+* If Expression
+*/
+final class IfExpression : Expression
+{
+    ///Condition
+    Expression Condition;
+    
+    // else if, else
 
-//if/else
-//switch/case
+    ///Mixin for Kind Declaration
+    mixin(IsKind("IfExpression"));
+}
+
+/**
+* Switch Expression
+*/
+final class SwitchExpression : Expression
+{
+    ///Condition?
+    Expression Condition;
+
+        //cases
+    //default case
+
+    ///Mixin for Kind Declaration
+    mixin(IsKind("SwitchExpression"));
+}

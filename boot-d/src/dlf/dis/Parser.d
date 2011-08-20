@@ -317,6 +317,8 @@ class Parser
     {
         //accept Identifier, ":", "," 
 
+        //TODO Change to use FunctionParameter structure
+
         //Parse one parameter
         //variants are: 
         //1. name : type
@@ -777,9 +779,13 @@ class Parser
         return null;
     }
 
+
+    //TODO parseDataType builtin datatype, identifier, def() datatype, tpl class type identifiier!(dataypes)
+
     /**
     * Get type for an identifier
     * return Opaque Type when not resolved
+    * TODO this is a semantic step remove???
     */
     private DataType resolveType(string identifier)
     {

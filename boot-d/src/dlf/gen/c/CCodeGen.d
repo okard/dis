@@ -50,6 +50,7 @@ class CCodeGen : CodeGen, Visitor
     private string[] compilerFlags = [ "-std=c99", "-c", "-Wall", "-g" ];
 
     //Linker Flags
+    //Link Runtime at default
 
     /**
     * Ctor
@@ -65,30 +66,34 @@ class CCodeGen : CodeGen, Visitor
     */
     void compile(PackageDeclaration pd)
     {
+        //Create C Package
         p = writer.Package("", "");
 
-        //if library compile header
+        //compile imports?
         //compile other packages first or look if they already compiled
+
+        //p.start
+        //include default header dish.h
 
         dispatchAuto(pd);
 
-        //p.start
-
         //check package imports they should go in first
         
-
         //p.close
         
-        //compile imports?
-        //create a CModule
-        //include default header dish.h
 
-        //resulting c files
 
-        //if executable, create c main 
+        //if executable, create main.c file with runtime handling and main function call
         //embed runtime etc
 
-        //def(C) declarations???? create definitions
+        //resulting c files -> compile -> link
+        
+
+
+        //For Libraries generate Header Files
+        if(ctx.Type == TargetType.StaticLib || ctx.Type == TargetType.SharedLib)
+        {
+        }
     }
 
     //package -> c package (header, src)
@@ -122,7 +127,18 @@ class CCodeGen : CodeGen, Visitor
         return id; 
     }
 
-    Node visit(FunctionDeclaration fd){ return fd; }
+    /**
+    * Compile FunctionDeclaration
+    */
+    Node visit(FunctionDeclaration fd)
+    { 
+        //for def(C) declarations -> create c definitions
+
+        //compile FunctionType fd.Instances
+        //mangle name?
+
+        return fd; 
+    }
 
     Node visit(VariableDeclaration vd){ return vd;}
     Node visit(ClassDeclaration cd){ return cd; }
