@@ -18,13 +18,13 @@
 ******************************************************************************/
 module dlf.basic.Signal;
 
-
-
 /**
 * Signal
 */
 struct Signal(T...)
 {
+    //TODO make thread safe
+
     //Handle Delegates
     public alias void delegate(T) Dg;
     //Handle Functions

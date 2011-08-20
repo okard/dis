@@ -105,6 +105,7 @@ struct FunctionParameter
     ushort Index;
 
     //Modifiers/Flags (ref, const, ..., vararg)
+    //Contraints
 }
     
 

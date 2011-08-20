@@ -37,14 +37,23 @@ enum TargetArch { x86_32, x86_64, ARM }
 */
 struct Context
 {
-    //obj dir
-    //target dir?
-    //header dir
-    //target type -> StaticLib, SharedLib, Executable (WinExecutable?)
-
+    ///Target Type
     TargetType Type;
+
+    ///Target Platform
     TargetPlatform Platform;
+
+    ///Target Architecture
     TargetArch Arch;
+
+    /// Link program with runtime
+    bool EnableRuntime = true;
+
+    //obj dir
+
+    //target dir?
+
+    //header dir
 }
 
 /**

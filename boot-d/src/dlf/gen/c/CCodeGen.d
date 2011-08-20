@@ -50,7 +50,7 @@ class CCodeGen : CodeGen, Visitor
     private string[] compilerFlags = [ "-std=c99", "-c", "-Wall", "-g" ];
 
     //Linker Flags
-    //Link Runtime at default
+    //Link Runtime at default, ctx?
 
     /**
     * Ctor
@@ -91,8 +91,10 @@ class CCodeGen : CodeGen, Visitor
 
 
         //For Libraries generate Header Files
-        if(ctx.Type == TargetType.StaticLib || ctx.Type == TargetType.SharedLib)
+        if(ctx.Type == TargetType.StaticLib 
+        || ctx.Type == TargetType.SharedLib)
         {
+            //hdrgen.create()
         }
     }
 

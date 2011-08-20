@@ -72,132 +72,187 @@ class CommandLineArg : ArgHelper
     }
 }
 
-
-//TODO class disc{}
-
+/**
+* Compiler Class
+*/
+class DisCompiler
+{
+    /// Command Line Parser
+    private CommandLineArg args;
     
+    /// Log Source
+    private LogSource log;
+
+    /// Compile Context
+    private Context ctx;
+
+    /**
+    * Ctor
+    */
+    this(string[] args)
+    {
+        this.log =  Log("disc");
+        this.log.OnLog += LevelConsoleListener(LogType.Information);
+        this.args = new CommandLineArg(args);
+       
+    }
+
+    /**
+    * Compile source files
+    */
+    int compile()
+    {
+        log.information("Dis Compiler V0.01");
+        
+        auto srcFiles = args.getSourceFiles();
+
+        //no files?
+        if(srcFiles.length < 1)
+        {
+            log.error("No Source Files");
+            //print usage
+            return 1;
+        }
+
+        //Compile each source file
+        foreach(string srcfile; srcFiles)
+        {
+            //Open Source
+            auto src = new SourceFile();
+            src.open(srcfile);
+
+            //print token
+            if(args.printToken)
+                dumpLexer(src);
+
+            //TODO try-catch
+
+            //compile file
+            compile(src);
+        }
+
+        return 0;
+    }
+
+
+    /**
+    * Compile on source file
+    */
+    private void compile(Source src)
+    {
+        //Parser
+        auto parser = new Parser();
+        parser.Src = src;
+
+        //parse
+        auto pack = cast(PackageDeclaration)parser.parse();
+
+        //A new Source File have to result in a PackageNode
+        assert(pack !is null);
+
+        if(args.printAst)
+            dumpParser(pack);
+
+        //Parse Imports
+        handleImports(pack);
+
+        //prepare code before semantic
+        //add default version flags and so on
+
+        //run semantics
+        auto semantic = new Semantic();
+        pack = cast(PackageDeclaration)semantic.run(pack);
+
+        //succesful semantic run result in a package declaration
+        assert(pack !is null);
+
+        //compile package
+        auto cgen = new CCodeGen(ctx);
+        cgen.compile(pack);
+    }
+
+
+    /**
+    * Debug Function that dumps out lexer output
+    */
+    private void dumpLexer(Source src)
+    {
+        //create lexer
+        auto lex = new Lexer();
+        lex.Src = src;
+        
+        //print tokens
+        writeln("------- START LEXER DUMP ------------------------------");
+        while(lex.getToken().Type != TokenType.EOF)
+        {
+            auto t = lex.CurrentToken;
+            if(t.Type == TokenType.Identifier)
+                writefln("Identifier: %1$s", t.Value);
+            else if (t.Type == TokenType.String)
+                writefln("String: %1$s", t.Value);
+            else
+                writeln(dlf.dis.Token.toString(t.Type));
+        }
+        writeln("------- END LEXER DUMP ------------------------------");
+
+        //reset source
+        src.reset();
+    }
+
+    /**
+    * dump parser
+    */
+    private void dumpParser(PackageDeclaration pd)
+    {
+        //Print out
+        auto printer = new Printer();
+        writeln("------- START PARSER DUMP ----------------------------");
+        printer.print(pd);
+        writeln("------- END PARSER DUMP ------------------------------");
+    }
+
+    /**
+    * Handle Imports
+    */
+    private void handleImports(PackageDeclaration pack)
+    {
+        //TODO paths as parameter
+        //TODO handle import foo.* (this modifies the ast)
+        //Look for Import Files
+        foreach(imp; pack.Imports)
+        {
+            // Search File
+            // Parse File
+            // Run Semantic 
+            // add to imp.Package 
+        }
+    }
+    
+    /**
+    * Level Console Log Listener
+    */
+    public LogSource.LogEvent.Dg LevelConsoleListener(LogType minimal)
+    {
+        return (LogSource ls, SysTime t, LogType ty, string msg)
+        {
+            if(ty >= minimal)
+                writefln(ls.Name == "" ? "%s%s" : "%s: %s" , ls.Name, msg);
+        };
+    }
+
+}
+
 /**
 * Main
 */
 int main(string[] args)
 {
-    auto log = Log("disc");
-
-    log.OnLog += LevelConsoleListener(LogType.Information);
-    log.information("Dis Compiler V0.01");
-
+    auto disc = new DisCompiler(args);
 
     //TODO Read Configuration (std.file.isfile(path))
     //Linux:    bindir, ~/.disc, /etc/disc
     //Windows:  bindir, %APPDATA%/disc.conf %ALLUSERSPROFILE%/Application Data
 
-    //parse arguments
-    auto arguments = new CommandLineArg(args);
-    auto srcFiles = arguments.getSourceFiles();
 
-
-    if(srcFiles.length < 1)
-    {
-        log.error("No Source Files");
-        return 1;
-    }
-
-    //Open Source
-    auto src = new SourceFile();
-    src.open(srcFiles[1]);
-
-    //print token
-    if(arguments.printToken)
-    {
-        auto lex = new Lexer();
-        lex.Src = src;
-        dumpLexer(lex);
-        src.reset();
-        writeln("------- END LEXER DUMP ------------------------------");
-    }
-   
-    //Parser
-    auto parser = new Parser();
-    parser.Src = src;
-    auto pack = cast(PackageDeclaration)parser.parse();
-
-    //A new Source File have to result in a PackageNode
-    assert(pack !is null);
-
-    //Parse Imports
-    handleImports(pack);
-
-    //prepare code before semantic
-    //add default version flags and so on
-
-    //Print out
-    auto printer = new Printer();
-    writeln("------- START PARSER DUMP ----------------------------");
-    printer.print(pack);
-    writeln("------- END PARSER DUMP ------------------------------");
-
-    //run semantics
-    auto semantic = new Semantic();
-    pack = cast(PackageDeclaration)semantic.run(pack);
-    writeln("------- END SEMANTIC ------------------------------");
-
-    //succesful semantic run result in a package declaration
-    assert(pack !is null);
-
-    //C CodeGen
-    Context ctx;
-    auto cgen = new CCodeGen(ctx);
-    cgen.compile(pack);
-
-
-    return 0;
-}
-
-
-/**
-* Handle Imports
-*/
-private void handleImports(PackageDeclaration pack)
-{
-    //TODO paths as parameter
-    //TODO handle import foo.* (this modifies the ast)
-    //Look for Import Files
-    foreach(imp; pack.Imports)
-    {
-        // Search File
-        // Parse File
-        // Run Semantic 
-        // add to imp.Package 
-    }
-}
-
-
-/**
-* Debug Function that dumps out lexer output
-*/
-private void dumpLexer(Lexer lex)
-{
-    while(lex.getToken().Type != TokenType.EOF)
-    {
-        auto t = lex.CurrentToken;
-        if(t.Type == TokenType.Identifier)
-            writefln("Identifier: %1$s", t.Value);
-        else if (t.Type == TokenType.String)
-            writefln("String: %1$s", t.Value);
-        else
-            writeln(toString(t.Type));
-    }
-}
-
-
-/**
-* Level Console Log Listener
-*/
-public LogSource.LogEvent.Dg LevelConsoleListener(LogType minimal)
-{
-    return (LogSource ls, SysTime t, LogType ty, string msg)
-    {
-        if(ty >= minimal)
-            writefln(ls.Name == "" ? "%s%s" : "%s: %s" , ls.Name, msg);
-    };
+    return disc.compile();
 }

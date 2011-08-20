@@ -782,6 +782,8 @@ class Parser
 
     //TODO parseDataType builtin datatype, identifier, def() datatype, tpl class type identifiier!(dataypes)
 
+    //datatype: identifier, dotidentifier, def(datatype,...):datatype, contraints, arrays, template instantion (identifier!datatype)
+
     /**
     * Get type for an identifier
     * return Opaque Type when not resolved
