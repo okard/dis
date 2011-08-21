@@ -20,7 +20,7 @@ module dlf.basic.Location;
 
 import std.conv;
 
-/*
+/**
 * Represents Code Location
 */
 struct Location
@@ -34,7 +34,7 @@ struct Location
     /// Name or File
     string Name;
     
-    /*
+    /**
     * Create Loc
     */
     this(uint line, uint col)
@@ -43,7 +43,7 @@ struct Location
         Col = col;
     }
     
-    /*
+    /**
     * to String
     */
     public string toString()

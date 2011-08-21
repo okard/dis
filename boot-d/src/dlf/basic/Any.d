@@ -73,10 +73,12 @@ struct Any
     }
 } 
 
-version(unittest) import std.stdio;
+// UnitTests ==================================================================
 
 unittest
 {
+    import std.stdio;
+
     Any p = 5;
     int i = cast(int)p;
     assert(i == 5);

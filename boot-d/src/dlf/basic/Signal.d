@@ -121,11 +121,11 @@ struct Signal(T...)
     }
 }
 
-version(unittest) import std.stdio;
+// UnitTests ==================================================================
 
-// Unittests
 unittest
 {
+    import std.stdio;
 
     Signal!(int) mySig;
     int foo = 0;

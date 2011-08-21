@@ -16,47 +16,48 @@
 *    along with disc.  If not, see <http://www.gnu.org/licenses/>.
 *
 ******************************************************************************/
-module dlf.ast.Transform;
+module dlf.basic.Settings; 
 
-import dlf.ast.Node;
-import dlf.ast.Declaration;
-import dlf.ast.Statement;
-import dlf.ast.Expression;
-import dlf.ast.Type;
-
-//ast util functions
+import std.stdio;
+import std.string;
 
 /**
-* extend a Node with appending an another one
+* Class for Configuration Handling
 */
-public static void extend(Node n, Node e)
+class Settings
 {
-    //if already extended add to bottom extended nodes
-    if(n.Extend !is null)
-            e.Parent = n.Extend;
+    ///key storage alias
+    private alias string[string] keymap;
 
-    n.Extend = e;
-}
+    ///save groups and keys
+    private keymap[string] keys;
 
+    private static const char GROUP_OPEN = '[';
+    private static const char GROUP_CLOSE = ']';
+    private static const char COMMENT = '#';
 
-/*
-* Helper to make possible foreach over extension nodes
-* TODO Generate lightweight iterable structure?
-* TODO type filter template
-* TODO parameter unique to generate errors if multiple instances of one type exist
-*/
-public Node[] extensions(Node n)
-{
-    if(n.Extend is null)
-        return null;
-
-    Node[] list;
-    do
+    /**
+    * Load a file
+    */
+    void load(string filename)
     {
-        list ~= n.Extend;
-        n = n.Extend;
-    }
-    while(n.Extend !is null);
+        auto f = File(filename, "r");
+        
+        char[] line;
 
-    return list;
+        while (f.readln(line))
+        {
+            auto l = strip(line);
+            if(l[0] == '#')
+                continue;
+
+            //[name]
+            //key=name
+        }
+    }
+
+
+    //get(string group, string
+
+    //var replacement, delegate mapping?
 }

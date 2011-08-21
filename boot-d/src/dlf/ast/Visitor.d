@@ -32,58 +32,79 @@ public interface Visitor
     public 
     {
     //Declarations
-    Node visit(PackageDeclaration);
-    Node visit(ImportDeclaration);
-    Node visit(FunctionDeclaration);
-    Node visit(VariableDeclaration);
-    Node visit(ClassDeclaration);
-    Node visit(TraitDeclaration);
+    void visit(PackageDeclaration);
+    void visit(ImportDeclaration);
+    void visit(FunctionDeclaration);
+    void visit(VariableDeclaration);
+    void visit(ClassDeclaration);
+    void visit(TraitDeclaration);
+
     //Statements
-    Node visit(BlockStatement);
-    Node visit(ExpressionStatement);
-    Node visit(ReturnStatement);
+    void visit(BlockStatement);
+    void visit(ExpressionStatement);
+    void visit(ReturnStatement);
+
     //Expressions
-    Node visit(LiteralExpression);
-    Node visit(CallExpression);
-    Node visit(DotIdentifier);
-    Node visit(AssignExpression);
-    Node visit(BinaryExpression);
+    void visit(LiteralExpression);
+    void visit(CallExpression);
+    void visit(DotIdentifier);
+    void visit(AssignExpression);
+    void visit(BinaryExpression);
+
     //Annotations:
     }
+
+    //voids with ref for modification or not?
+    //handle in dispatch so pd = dispatch(pd) works?
+    //but remove the requirement of return variables?
 }
 
 
 /**
 * Dispatch Function General
 */
-Node dispatch(Node n, Visitor v)
+Node dispatch(Node n, Visitor v, bool mod = false)
 {
     assert(n !is null);
     assert(v !is null);
 
-    /*final*/ switch(n.Kind)
+    //inner node
+    Node inner = n;
+    //set replacer function
+    n.replace = (Node nn){ assert(!mod); inner = nn; };
+
+    // node.replace(Node);
+    
+
+    /*final*/ 
+    switch(n.Kind)
     {   
         //Declarations
-        case NodeKind.PackageDeclaration: return v.visit(cast(PackageDeclaration)n);
-        case NodeKind.ImportDeclaration: return v.visit(cast(ImportDeclaration)n);
-        case NodeKind.VariableDeclaration: return v.visit(cast(VariableDeclaration)n);
-        case NodeKind.FunctionDeclaration: return v.visit(cast(FunctionDeclaration)n);
-        case NodeKind.ClassDeclaration: return v.visit(cast(ClassDeclaration)n);
-        case NodeKind.TraitDeclaration: return v.visit(cast(TraitDeclaration)n);
+        case NodeKind.PackageDeclaration: v.visit(cast(PackageDeclaration)n); break;
+        case NodeKind.ImportDeclaration: v.visit(cast(ImportDeclaration)n); break;
+        case NodeKind.VariableDeclaration: v.visit(cast(VariableDeclaration)n); break;
+        case NodeKind.FunctionDeclaration: v.visit(cast(FunctionDeclaration)n); break;
+        case NodeKind.ClassDeclaration: v.visit(cast(ClassDeclaration)n); break;
+        case NodeKind.TraitDeclaration: v.visit(cast(TraitDeclaration)n); break;
 
         //Statements
-        case NodeKind.BlockStatement: return v.visit(cast(BlockStatement)n);
-        case NodeKind.ExpressionStatement: return v.visit(cast(ExpressionStatement)n);
-        case NodeKind.ReturnStatement: return v.visit(cast(ReturnStatement)n);
+        case NodeKind.BlockStatement: v.visit(cast(BlockStatement)n); break;
+        case NodeKind.ExpressionStatement: v.visit(cast(ExpressionStatement)n); break;
+        case NodeKind.ReturnStatement: v.visit(cast(ReturnStatement)n); break;
         
         //Expressions
-        case NodeKind.LiteralExpression: return v.visit(cast(LiteralExpression)n);
-        case NodeKind.CallExpression: return v.visit(cast(CallExpression)n);
-        case NodeKind.DotIdentifier: return v.visit(cast(DotIdentifier)n);
-        case NodeKind.AssignExpression: return v.visit(cast(AssignExpression)n);
-        case NodeKind.BinaryExpression: return v.visit(cast(BinaryExpression)n);
+        case NodeKind.LiteralExpression: v.visit(cast(LiteralExpression)n); break;
+        case NodeKind.CallExpression: v.visit(cast(CallExpression)n); break;
+        case NodeKind.DotIdentifier: v.visit(cast(DotIdentifier)n); break;
+        case NodeKind.AssignExpression: v.visit(cast(AssignExpression)n); break;
+        case NodeKind.BinaryExpression: v.visit(cast(BinaryExpression)n); break;
     
         default: assert(false);
     }
+
+    n.replace = null;
+    
+
+    return mod ? inner : n;
 }
     

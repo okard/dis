@@ -102,10 +102,10 @@ struct Stack(T)
 
 // UnitTests ==================================================================
 
-version(unittest) import std.stdio;
-
 unittest
 {
+    import std.stdio;
+
     auto stack = Stack!int(20);
     assert(stack.size() == 20);
     assert(stack.length() == 0);

@@ -784,6 +784,7 @@ class Parser
 
     //datatype: identifier, dotidentifier, def(datatype,...):datatype, contraints, arrays, template instantion (identifier!datatype)
 
+
     /**
     * Get type for an identifier
     * return Opaque Type when not resolved

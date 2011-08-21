@@ -98,13 +98,12 @@ class ArgHelper
     }
 }
 
-
 // UnitTests ==================================================================
-
-version(unittest) import std.stdio;
 
 unittest
 {
+    import std.stdio;
+
     auto arg = ["foo.src", "--enable-a", "-o", "test.o", "bar.src"];
 
     class test : ArgHelper

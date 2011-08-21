@@ -75,6 +75,7 @@ class CCodeGen : CodeGen, Visitor
         //p.start
         //include default header dish.h
 
+        //start creating definitions
         dispatchAuto(pd);
 
         //check package imports they should go in first
@@ -94,7 +95,7 @@ class CCodeGen : CodeGen, Visitor
         if(ctx.Type == TargetType.StaticLib 
         || ctx.Type == TargetType.SharedLib)
         {
-            //hdrgen.create()
+            //hdrgen.create(folder, pd)
         }
     }
 
@@ -111,50 +112,53 @@ class CCodeGen : CodeGen, Visitor
     /**
     * Compile Package Declaration
     */
-    Node visit(PackageDeclaration pd)
+    void visit(PackageDeclaration pd)
     { 
+        //start
+        //include guards
         //Imports
         
-        return pd; 
+        //stop
     }
 
     /**
     * Compile Import Declarations
     */
-    Node visit(ImportDeclaration id)
+    void visit(ImportDeclaration id)
     {
         //imports are includes
         //get compile header name
-        
-        return id; 
+        //p.include( extension!ccode(id.Package, true).header);
+         
     }
 
     /**
     * Compile FunctionDeclaration
     */
-    Node visit(FunctionDeclaration fd)
+    void visit(FunctionDeclaration fd)
     { 
         //for def(C) declarations -> create c definitions
 
         //compile FunctionType fd.Instances
         //mangle name?
 
-        return fd; 
     }
 
-    Node visit(VariableDeclaration vd){ return vd;}
-    Node visit(ClassDeclaration cd){ return cd; }
-    Node visit(TraitDeclaration td){ return td; }
+    void visit(VariableDeclaration vd){ }
+    void visit(ClassDeclaration cd){  }
+    void visit(TraitDeclaration td){  }
+
     //Statements
-    Node visit(BlockStatement bs){ return bs; }
-    Node visit(ExpressionStatement es){ return es; }
-    Node visit(ReturnStatement rt){ return rt; }
+    void visit(BlockStatement bs){  }
+    void visit(ExpressionStatement es){  }
+    void visit(ReturnStatement rt){  }
+
     //Expressions
-    Node visit(LiteralExpression le){ return le; }
-    Node visit(CallExpression fc){ return fc; }
-    Node visit(DotIdentifier di){ return di; }
-    Node visit(AssignExpression ae){ return ae; }
-    Node visit(BinaryExpression be){ return be; }
+    void visit(LiteralExpression le){  }
+    void visit(CallExpression fc){  }
+    void visit(DotIdentifier di){  }
+    void visit(AssignExpression ae){  }
+    void visit(BinaryExpression be){  }
 
 
     /**
@@ -172,8 +176,20 @@ class CCodeGen : CodeGen, Visitor
     {
         for(int i=0; i < elements.length; i++)
         {
-            /*elements[i] =*/ dispatchAuto(elements[i]);
+            dispatchAuto(elements[i]);
         }
+    }
+
+
+    /**
+    * Compiler AST Extension Nodes
+    */
+    private class CCNode : Node
+    {
+        //function name
+        //header file name
+        //struct file name?
+        //union?
     }
 
 }

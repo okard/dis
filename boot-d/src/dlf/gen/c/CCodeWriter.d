@@ -19,6 +19,8 @@
 module dlf.gen.c.CCodeWriter;
 
 import std.stdio;
+import std.file;
+import std.path;
 
 /**
 * ANSI C Code Writer
@@ -45,15 +47,15 @@ struct CCodeWriter
         private this()
         {
         }
-   
-        //include guards
 
         /**
         * Start a package
         */
-        public void start()
+        public void start(string guard)
         {
             //write include guards
+            Header.writefln("#ifndef %s", guard);
+            Header.writefln("#define %s", guard);
         }
 
         /**
@@ -62,6 +64,7 @@ struct CCodeWriter
         public void close()
         {
             //end include guards
+            Header.writeln("#endif");
         }
 
         /**
@@ -69,6 +72,7 @@ struct CCodeWriter
         */
         public void include(string filename)
         {
+            //check state for writing include
             Header.writefln("#include \"%s\"", filename);
         }
 
@@ -97,9 +101,10 @@ struct CCodeWriter
     CPackage Package(string dir, string name)
     {
         auto pack = new CPackage();
-        // auto f = File("test.txt", "w");
-        //dir/name.h
-        //dir/name.c
+        assert(dir.isDir());
+        //TODO use std.path
+        //pack.Header = File(dir+name.h, "w");
+        //pack.Source = File(dir+name.c, "w");
         return pack;
     }
 

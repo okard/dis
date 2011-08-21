@@ -48,30 +48,29 @@ class HeaderGen : Visitor
     }
 
     //Declarations
-    Node visit(PackageDeclaration pd)    
+    void visit(PackageDeclaration pd)    
     { 
         //write package definition
 
-        return pd; 
     }
     
-    Node visit(ImportDeclaration id){ return id; }
-    Node visit(FunctionDeclaration fd){ return fd; }
-    Node visit(VariableDeclaration vd){ return vd; }
-    Node visit(ClassDeclaration cd){ return cd; }
-    Node visit(TraitDeclaration td){ return td; }
+    void visit(ImportDeclaration id){  }
+    void visit(FunctionDeclaration fd){  }
+    void visit(VariableDeclaration vd){  }
+    void visit(ClassDeclaration cd){  }
+    void visit(TraitDeclaration td){  }
 
     //Statements
-    Node visit(BlockStatement bs){ return bs; }
-    Node visit(ExpressionStatement es){ return es; }
-    Node visit(ReturnStatement rs){ return rs; }
+    void visit(BlockStatement bs){  }
+    void visit(ExpressionStatement es){  }
+    void visit(ReturnStatement rs){  }
 
     //Expressions
-    Node visit(LiteralExpression le){ return le; }
-    Node visit(CallExpression ce){ return ce; }
-    Node visit(DotIdentifier di){ return di; }
-    Node visit(AssignExpression ae){ return ae; }
-    Node visit(BinaryExpression be){ return be; }
+    void visit(LiteralExpression le){  }
+    void visit(CallExpression ce){  }
+    void visit(DotIdentifier di){  }
+    void visit(AssignExpression ae){  }
+    void visit(BinaryExpression be){  }
 
     /**
     * Auto Dispatch

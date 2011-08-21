@@ -108,11 +108,11 @@ struct ArrayBuffer(T)
 
 // UnitTests ==================================================================
 
-version(unittest) import std.stdio;
-version(unittest) import std.conv;
-
 unittest
 {
+    import std.stdio;
+    import std.conv;
+
     auto ab = ArrayBuffer!int(8);
 
     ab.addAfter(1);

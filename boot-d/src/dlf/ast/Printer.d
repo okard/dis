@@ -54,7 +54,7 @@ class Printer : Visitor
     /**
     * Visit Package Declaration
     */
-    Node visit(PackageDeclaration pd)
+    void visit(PackageDeclaration pd)
     {
         writetln("%sPackage: %s",tabs(),  pd.Name);
 
@@ -62,14 +62,12 @@ class Printer : Visitor
         foreach(fd; pd.Functions)
             dispatch(fd, this);
         tabDeepness--;
-
-        return pd;
     }
 
     /**
     * Visit FunctionDeclaration
     */
-    Node visit(FunctionDeclaration fd)
+    void visit(FunctionDeclaration fd)
     {
         writet("Function(%s): %s(", toString(fd.FuncType.CallingConv), fd.Name);
 
@@ -87,37 +85,36 @@ class Printer : Visitor
 
         if(fd.Body !is null)
             dispatch(fd.Body, this);
-
-        return fd;
     }
 
-
-    Node visit(ImportDeclaration imp)
+    /**
+    * Print Imports
+    */
+    void visit(ImportDeclaration imp)
     {
-        return imp;
     }
     
 
     /**
     * Print Variable Declaration
     */
-    Node visit(VariableDeclaration vd)
+    void visit(VariableDeclaration vd)
     {
         writet("var %s : %s = ", vd.Name, vd.VarDataType.toString());
         dispatch(vd.Initializer, this);
         writeln();
-
-        return vd;
     }
 
-
-    Node visit(ClassDeclaration cd){ return cd;}
-    Node visit(TraitDeclaration td){ return td;}
+    /**
+    * Class
+    */
+    void visit(ClassDeclaration cd){}
+    void visit(TraitDeclaration td){}
 
     /**
     * Visit Block Statement
     */
-    Node visit(BlockStatement bs)
+    void visit(BlockStatement bs)
     {
         writetln("{");
         tabDeepness++;
@@ -130,28 +127,24 @@ class Printer : Visitor
 
         tabDeepness--;
         writetln("}");
-
-        return bs;
     }
 
     /**
     * Visit ExpressionStatement
     */
-    Node visit(ExpressionStatement expr) 
+    void visit(ExpressionStatement expr) 
     {
         writet("");
         dispatch(expr.Expr, this);
         writeln();
-
-        return expr;
     }
 
-    Node visit(ReturnStatement rs){ return rs; }
+    void visit(ReturnStatement rs){  }
 
     /**
     * FunctionCall
     */
-    Node visit(CallExpression call) 
+    void visit(CallExpression call) 
     {
         writet("%s(", call.Function.toString());
 
@@ -161,14 +154,12 @@ class Printer : Visitor
         }
 
         writeln(")");
-
-        return call;
     }
 
     /**
     * Print Literals
     */
-    Node visit(LiteralExpression le)
+    void visit(LiteralExpression le)
     {
         if(le.ReturnType == StringType.Instance)
         {
@@ -176,41 +167,34 @@ class Printer : Visitor
         }
         else
             writef("%s", le.Value);
-
-        return le;
     }
 
     /**
     * Print Assign Expression
     */
-    Node visit(AssignExpression ae)
+    void visit(AssignExpression ae)
     {
         dispatch(ae.Target, this);
         write(" = ");
         dispatch(ae.Value, this);
-
-        return ae;
     }
 
     /**
     * Print Binary Expression
     */
-    Node visit(BinaryExpression be)
+    void visit(BinaryExpression be)
     {
         dispatch(be.Left, this);
         write(" <op> ");
         dispatch(be.Right, this);
-
-        return be;
     }
 
     /**
     * Visit Dot Identifier
     */
-    Node visit(DotIdentifier di)
+    void visit(DotIdentifier di)
     {
         write(di.toString());
-        return di;
     }
 
     /**

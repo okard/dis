@@ -60,9 +60,10 @@ interface Source
     public string name();
     
     //TODO Slice & Index Operator 
+
     //char opIndex(int pos);
     //char[] opSlice(int start, int end);
-    //name
+    //modification date
 }
 
 
@@ -257,10 +258,13 @@ class SourceString : Source
     
 }
 
-// Test Source String
-version(unittest) import io = std.stdio;
+// UnitTests ==================================================================
+
 unittest
 {
+    // Test Source String
+    import io = std.stdio;
+
     auto ss = new SourceString("abcd efgh ijkl mnop qrst uvwx yz");
     ss.name = "<unittestsource>";
 

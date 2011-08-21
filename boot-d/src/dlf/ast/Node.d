@@ -90,6 +90,9 @@ abstract class Node
 
     /// For Node Extensions in Semantic and Compiler Passes
     public Node Extend;
+
+    /// Replacer Delegate
+    void delegate(Node) replace;
 }
 
 /**

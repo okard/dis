@@ -57,7 +57,7 @@ class Semantic : Visitor
     /**new CPackage()
     * Visit PackageDeclaration
     */
-    Node visit(PackageDeclaration pack)
+    void visit(PackageDeclaration pack)
     {
         Information("Semantic: PackageDcl");
 
@@ -76,13 +76,13 @@ class Semantic : Visitor
         //Classes
         mapDispatch(pack.Classes);
 
-        return pack;
+        pack.replace(pack);
     }
 
     /**
     * Import Declaration
     */
-    Node visit(ImportDeclaration impDecl)
+    void visit(ImportDeclaration impDecl)
     {
         // Info
         Information("Semantic: ImportDecl %s", impDecl.Name);
@@ -104,30 +104,26 @@ class Semantic : Visitor
         //error when a import isn't resolved
 
         //Remove not required imports
-
-        return impDecl;
     }
 
     /**
     * Class Semantic Check
     */
-    Node visit(ClassDeclaration cls)
+    void visit(ClassDeclaration cls)
     {
-        return cls;
     }
 
     /**
     * Trait Semantic
     */
-    Node visit(TraitDeclaration td)
+    void visit(TraitDeclaration td)
     {
-        return td;
     }
 
     /**
     * Visit FunctionDeclaration
     */
-    Node visit(FunctionDeclaration func)
+    void visit(FunctionDeclaration func)
     { 
         Information("Semantic FuncDcl %s", func.Name);
 
@@ -153,13 +149,12 @@ class Semantic : Visitor
         if(func.Body !is null)
             func.Body = dispatchAuto(func.Body);
 
-        return func;
     }
 
      /**
     * Semantic Checks for Variables
     */
-    Node visit(VariableDeclaration var)
+    void visit(VariableDeclaration var)
     {
         Information("Semantic: VarDecl %s", var.Name);
 
@@ -186,13 +181,12 @@ class Semantic : Visitor
             //assert(var.VarDataType == var.Initializer.ReturnType);
         }
 
-        return var;
     }
 
     /**
     * Visit Block Statement
     */
-    Node visit(BlockStatement block)
+    void visit(BlockStatement block)
     {
         Information("Semantic: BlockStmt");
 
@@ -206,33 +200,30 @@ class Semantic : Visitor
         //check each statement
         mapDispatch(block.Statements);
 
-        return block;
     }
 
     /**
     * Visit Expression Statement
     */
-    Node visit(ExpressionStatement expr)
+    void visit(ExpressionStatement expr)
     {
         //visit Expression
         expr.Expr = dispatchAuto(expr.Expr);
 
-        return expr;
     }
 
     /**
     * Visit ReturnStatement
     */
-    Node visit(ReturnStatement rs)
+    void visit(ReturnStatement rs)
     {
         //check rs.Expr returntype must match parent return type
-        return rs;
     }
 
     /**
     * Visit Function Call
     */
-    Node visit(CallExpression call)
+    void visit(CallExpression call)
     {
         //TODO class Function Calls
         Information("Semantic: FuncCall %s", call.Function.toString());
@@ -261,37 +252,33 @@ class Semantic : Visitor
         }
 
         //check if Function exist
-
-        return call;
     }
 
     /**
     * Semantic Pass for DotIdentifier
     */
-    Node visit(DotIdentifier di)
+    void visit(DotIdentifier di)
     {
         // resolve returntype 
         // add node DotIdentifier pointo to Extend
         // auto decl = resolve(DotIdentifier di)
         // -> assign(di, decl);
         // di.ReturnType = decl.Type
-        return di;
     }
 
     /**
     * Semantic Pass for Assign Expression
     */
-    Node visit(AssignExpression ae)
+    void visit(AssignExpression ae)
     {
         //look for Target must be a declared value?
         //look for type match
-        return ae;
     }
     
     /**
     * Semantic Pass for BinaryExpression
     */
-    Node visit(BinaryExpression be)
+    void visit(BinaryExpression be)
     {
         //analyze left and right expression first
         be.Left = dispatchAuto(be.Left);
@@ -307,18 +294,16 @@ class Semantic : Visitor
         //calculate literal expressions directly
 
         //return resulting Expression
-        return be;
     }
 
     /**
     * Semantic Pass for Literal Expression
     */
-    Node visit(LiteralExpression le)
+    void visit(LiteralExpression le)
     {
         //look for string value?
         //verify string value?
         
-        return le;
     }
 
     /**
@@ -366,7 +351,7 @@ class Semantic : Visitor
     */
     private T dispatchAuto(T)(T e)
     {
-        return cast(T)dispatch(e, this);
+        return cast(T)dispatch(e, this, true);
     }
 
     /**

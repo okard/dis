@@ -93,10 +93,12 @@ static class ApplicationPath
     }
 }
 
-version(unittest) import std.stdio;
+// UnitTests ==================================================================
 
 unittest
 {
+    import std.stdio;
+
     //test isIn
     assert(isIn!int(3, [1, 2, 3, 4, 5]));
     assert(!isIn!int(6, [1, 2, 3, 4, 5]));

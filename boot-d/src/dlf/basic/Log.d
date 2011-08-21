@@ -18,6 +18,7 @@
 ******************************************************************************/
 module dlf.basic.Log;
 
+import std.stdio;
 import std.string;
 import std.datetime;
 
@@ -182,10 +183,12 @@ public LogSource.LogEvent.Dg FileListener(string file)
     };
 }
 
-// Unittests
-version(unittest) import std.stdio;
+// UnitTests ==================================================================
+
 unittest
 {
+    import std.stdio;
+
     //clear core log after test
     scope(exit) Log().OnLog.clear();
 
