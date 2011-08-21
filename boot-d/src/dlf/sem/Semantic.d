@@ -75,8 +75,6 @@ class Semantic : Visitor
 
         //Classes
         mapDispatch(pack.Classes);
-
-        pack.replace(pack);
     }
 
     /**
@@ -89,9 +87,7 @@ class Semantic : Visitor
 
         //semantic check for available PackageDeclarations
         if(impDecl.Package !is null)
-        {
             impDecl.Package = dispatchAuto(impDecl.Package);
-        }
         else
             Error("\tImport %s has not been solved", impDecl.Name);
 
@@ -111,6 +107,8 @@ class Semantic : Visitor
     */
     void visit(ClassDeclaration cls)
     {
+        //visit variabales
+        //visit methods
     }
 
     /**
@@ -125,10 +123,11 @@ class Semantic : Visitor
     */
     void visit(FunctionDeclaration func)
     { 
-        Information("Semantic FuncDcl %s", func.Name);
+        Information("Semantic FuncDecl %s", func.Name);
 
         //resolve return value
-        if(func.FuncType.ReturnType is null || func.FuncType.ReturnType == OpaqueType.Instance)
+        if(func.FuncType.ReturnType is null 
+        || func.FuncType.ReturnType == OpaqueType.Instance)
         {
             func.FuncType.ReturnType = VoidType.Instance;
             
@@ -290,6 +289,9 @@ class Semantic : Visitor
         //detect build in math types
         // a + b ->
         // a.opAdd(b);
+
+        //auto
+        //be.replace(new CallExpression(be.Left.ReturnType.Methods["opAssign"].Instance)) //(class)
     
         //calculate literal expressions directly
 

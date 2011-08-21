@@ -49,11 +49,14 @@ struct Context
     /// Link program with runtime
     bool EnableRuntime = true;
 
-    //obj dir
+    /// Object files directory
+    string ObjDir;
 
-    //target dir?
+    /// Output directory
+    string OutDir;
 
-    //header dir
+    /// Header Directory for library generation
+    string HeaderDir;
 }
 
 /**

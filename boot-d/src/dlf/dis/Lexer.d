@@ -399,3 +399,13 @@ class Lexer
         mKeywords["false"] = TokenType.KwFalse;
     }
 } 
+
+// UnitTests ==================================================================
+
+unittest
+{
+    //lexer unittest
+    import std.stdio;
+    
+    writeln("[TEST] Lexer Tests passed ");
+}

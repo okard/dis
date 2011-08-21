@@ -108,7 +108,7 @@ class Parser
     public Node parse()
     {
         if(Src is null || Src.isEof)
-            return null;
+            throw new Exception("No Source available");
 
         //get first token
         next();

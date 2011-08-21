@@ -45,6 +45,7 @@ class CommandLineArg : ArgHelper
     public bool printAst;    //print ast
     public bool printSem;    //print Semantic Log
 
+    public TargetType targType = TargetType.Executable;
     //compile context
 
     //prepare
@@ -54,6 +55,8 @@ class CommandLineArg : ArgHelper
         Options["--print-lex"] = (){ printToken = true; };
         Options["--print-ast"] = (){ printAst = true; };
         Options["--print-sem"] = (){ printSem = true; };
+        Options["-sharedlib"] = (){targType = TargetType.SharedLib; disallow(["-staticlib"]);};
+        Options["-staticlib"] = (){targType = TargetType.StaticLib; disallow(["-sharedlib"]);};
 
         //obj directory ".objdis"
         //log level
@@ -94,7 +97,20 @@ class DisCompiler
         this.log =  Log("disc");
         this.log.OnLog += LevelConsoleListener(LogType.Information);
         this.args = new CommandLineArg(args);
-       
+
+        //TODO config and command line parsing
+
+        //default args
+        ctx.ObjDir = ".objdis";
+        ctx.OutDir = "bin";
+        ctx.HeaderDir = "bin/header";
+        
+        ctx.Type = this.args.targType;
+
+        version(X86) ctx.Arch = TargetArch.x86_32; 
+        version(X86_64) ctx.Arch = TargetArch.x86_64;
+        version(Windows) ctx.Platform = TargetPlatform.Windows;
+        version(linux) ctx.Platform = TargetPlatform.Linux;      
     }
 
     /**
@@ -117,6 +133,8 @@ class DisCompiler
         //Compile each source file
         foreach(string srcfile; srcFiles)
         {
+            log.information("Compile %s", srcfile);
+
             //Open Source
             auto src = new SourceFile();
             src.open(srcfile);
@@ -236,7 +254,7 @@ class DisCompiler
         return (LogSource ls, SysTime t, LogType ty, string msg)
         {
             if(ty >= minimal)
-                writefln(ls.Name == "" ? "%s%s" : "%s: %s" , ls.Name, msg);
+                writefln("%s", msg);
         };
     }
 
@@ -247,7 +265,8 @@ class DisCompiler
 */
 int main(string[] args)
 {
-    auto disc = new DisCompiler(args);
+    //cut executable name out of args
+    auto disc = new DisCompiler(args[1..args.length]);
 
     //TODO Read Configuration (std.file.isfile(path))
     //Linux:    bindir, ~/.disc, /etc/disc

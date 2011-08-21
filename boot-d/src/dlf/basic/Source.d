@@ -281,6 +281,30 @@ unittest
     assert(ss.getChar() == 'a');
 
 
+    /*
+    // Test Source file
+    auto temp = io.File.tmpfile();
+    temp.writeln("abcd efgh ijkl mnop qrst uvwx yz");
+
+    auto sf = new SourceFile();
+    sf.open(temp.name);
+    
+    assert(sf.getChar() == 'a');
+    assert(sf.getChar() == 'b');
+    assert(sf.peekChar(1) == 'c');
+    assert(sf.peekChar(6) == 'g');
+    assert(sf.getChar() == 'c');
+    
+    while(!sf.isEof())
+        sf.getChar();
+
+    sf.reset();
+    assert(sf.getChar() == 'a');
+
+    temp.close();
+    */
+
+
     io.writeln("[TEST] Source Tests passed");
 }
 

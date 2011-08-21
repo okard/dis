@@ -39,6 +39,9 @@ class ArgHelper
     ///Unparsed elements
     protected string[] Unparsed;
 
+    ///Disallowed actions
+    private string[] Disallowed;
+
     /**
     * Parse command line arguments
     */
@@ -88,6 +91,15 @@ class ArgHelper
 
     //TODO getNumber
     //TODO getValue(["foo", "bar"]) 
+
+    /**
+    * Disable functions
+    */
+    protected void disallow(string[] args)
+    {
+        Disallowed ~= args;
+    }
+
 
     /**
     * Elements left unparsed in Arg Array
