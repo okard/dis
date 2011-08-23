@@ -68,20 +68,45 @@ class LogSource
     }
 
     /**
-    * Logs Information
+    * Verbose Log
     */
-    public void information(T...)(T args)
+    public void Verbose(T...)(T args)
+    {
+       log!(LogType.Verbose)(args);
+    }
+
+    /**
+    * Information Log
+    */
+    public void Information(T...)(T args)
     {
        log!(LogType.Information)(args);
     }
 
     /**
-    * Error Logging
+    * Warning Log
     */
-    public void error(T...)(T args)
+    public void Warning(T...)(T args)
+    {
+       log!(LogType.Warning)(args);
+    }
+
+    /**
+    * Error Log
+    */
+    public void Error(T...)(T args)
     {
        log!(LogType.Error)(args);
     }
+
+    /**
+    * Fatal Log
+    */
+    public void Fatal(T...)(T args)
+    {
+       log!(LogType.Fatal)(args);
+    }
+    
 
     /**
     * Getting Log event
@@ -137,6 +162,7 @@ final static class Log
         if(ls == null)
         {
             auto lss = new LogSource(s);
+            logSources[s] = lss;
             ls = &lss;
             (ls.evLog) += &mLog.evLog.opCall;
         }
@@ -198,9 +224,9 @@ unittest
         assert(msg == "foo");
     };
 
-    s.information("%s", "foo");
+    s.Information("%s", "foo");
     s.log!(LogType.Verbose)("%s", "foo");
-    Log().information("%s", "foo"); 
+    Log().Information("%s", "foo"); 
 
     writeln("[TEST] Log Tests passed");
 }

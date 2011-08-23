@@ -71,7 +71,7 @@ Node dispatch(Node n, Visitor v, bool mod = false)
     //inner node
     Node inner = n;
     //set replacer function
-    n.replace = (Node nn){ assert(!mod); inner = nn; };
+    n.ret = (Node nn){ assert(!mod); inner = nn; };
 
     // node.replace(Node);
     
@@ -102,7 +102,7 @@ Node dispatch(Node n, Visitor v, bool mod = false)
         default: assert(false);
     }
 
-    n.replace = null;
+    n.ret = null;
     
 
     return mod ? inner : n;

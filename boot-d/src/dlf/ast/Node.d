@@ -92,7 +92,7 @@ abstract class Node
     public Node Extend;
 
     /// Replacer Delegate
-    void delegate(Node) replace;
+    void delegate(Node) ret;
 }
 
 /**

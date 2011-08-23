@@ -29,9 +29,12 @@ final class SymbolTable
     /// Prev Symbol Table
     private SymbolTable mPrev;
     
+    //safe owner of symboltable
+    //private Node owner
+
     //save the symbols mangled in AST?
     //in other ways the name can be duplicated avaiable
-
+    
     /// the symbols
     private Declaration mSymbols[string];
     

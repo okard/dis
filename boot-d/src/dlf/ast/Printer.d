@@ -69,7 +69,7 @@ class Printer : Visitor
     */
     void visit(FunctionDeclaration fd)
     {
-        writet("Function(%s): %s(", toString(fd.FuncType.CallingConv), fd.Name);
+        writet("Function(%s): %s(", toString(fd.CallingConv), fd.Name);
 
         foreach(string key, ubyte index; fd.mArgumentNames)
         {
@@ -280,12 +280,12 @@ class Printer : Visitor
     /**
     * Calling Convention to string
     */
-    private static string toString(FunctionType.CallingConvention cc)
+    private static string toString(CallingConvention cc)
     {
         switch(cc)
         {
-        case FunctionType.CallingConvention.C: return "C";
-        case FunctionType.CallingConvention.Dis: return "Dis";
+        case CallingConvention.C: return "C";
+        case CallingConvention.Dis: return "Dis";
         default: return "";
         }
     }

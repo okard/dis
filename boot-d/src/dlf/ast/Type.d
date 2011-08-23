@@ -156,6 +156,11 @@ final class OpaqueType : DataType
     mixin Singleton!OpaqueType;
 }
 
+
+//unparsed datatype?
+// string array?
+
+
 /**
 * PointerType 
 * Ptr to a type
@@ -169,6 +174,7 @@ class PointerType : DataType
     public this(DataType t)
     {
         PointType = t;
+        //TODO cache with static opcall?
     }
 
     ///toString
@@ -205,8 +211,12 @@ class StringType : DataType
 */
 class ArrayType : DataType
 {
+    /// DataType of Array
     public DataType ArrType;
+    /// Size of Array
     public uint Size;
+    /// Is Dynamic Array
+    public bool Dynamic = false;
 }
 
 /**
@@ -228,13 +238,6 @@ class FunctionType : DataType
 
     //(DELETE) isTemplate at declaration Generic Method Type
     public bool GenericMethod;
-
-
-    //move this to declaration
-    public enum CallingConvention {None, C, Dis}
-
-    //Calling Convention defined in declaration??
-    public CallingConvention CallingConv;
 
     //mangled name?
 

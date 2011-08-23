@@ -94,7 +94,7 @@ class DisCompiler
     */
     this(string[] args)
     {
-        this.log =  Log("disc");
+        this.log =  Log.disc;
         this.log.OnLog += LevelConsoleListener(LogType.Information);
         this.args = new CommandLineArg(args);
 
@@ -118,14 +118,14 @@ class DisCompiler
     */
     int compile()
     {
-        log.information("Dis Compiler V0.01");
+        log.Information("Dis Compiler V0.01");
         
         auto srcFiles = args.getSourceFiles();
 
         //no files?
         if(srcFiles.length < 1)
         {
-            log.error("No Source Files");
+            log.Error("No Source Files");
             //print usage
             return 1;
         }
@@ -133,7 +133,7 @@ class DisCompiler
         //Compile each source file
         foreach(string srcfile; srcFiles)
         {
-            log.information("Compile %s", srcfile);
+            log.Information("Compile %s", srcfile);
 
             //Open Source
             auto src = new SourceFile();

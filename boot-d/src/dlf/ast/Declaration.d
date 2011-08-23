@@ -40,6 +40,9 @@ abstract class Declaration : Node
     // FQN ?? Full Qualified Name
 }
 
+/// Supported Calling Conventions for classes and functions
+public enum CallingConvention {None, C, Dis}
+
 /**
 * Package
 */
@@ -117,6 +120,9 @@ final class FunctionDeclaration : Declaration
     /// The Function Parameters
     public FunctionParameter[] Parameter;
 
+    //return type?
+    public string ReturnType;
+
     /// Instancen? generated at semantic step
     public FunctionType[] Instances;
 
@@ -129,12 +135,9 @@ final class FunctionDeclaration : Declaration
     ///is a extension method declaration
     public bool IsExtensionMethod;
 
-    //calling conventions are part of declartion not of type
-    //flags: public, private, protected, package, static
+    ///Calling Convention
+    public CallingConvention CallingConv;
 
-    //parameter names? index of parameter type
-    //map the names to the datatyps index of FunctionType
-    
     //OLD:
 
     public ubyte[string] mArgumentNames; //DELETE

@@ -146,7 +146,7 @@ class Parser
     private PackageDeclaration parsePackage()
     {
         //package identifier;
-        assert(mToken.Type == TokenType.KwPackage);
+        assertType(TokenType.KwPackage);
         
         //check for package identifier
         if(peek(1) != TokenType.Identifier)
@@ -202,7 +202,7 @@ class Parser
     private ClassDeclaration parseClass()
     {
         //must be class class
-        assert(mToken.Type == TokenType.KwClass);
+        assertType(TokenType.KwClass);
 
         // class identifier(template args) : inherits {
 
@@ -218,9 +218,12 @@ class Parser
         //top level node must be PackageDeclaration,(ClassDeclaration) 
         //def{(Calling Convention)} Identifier(Parameter) ReturnType
         // Block {}
-        assert(mToken.Type == TokenType.KwDef);
+        assertType(TokenType.KwDef);
 
         auto func = new FunctionDeclaration();
+    
+        //TODO assign annotations, attributes parsed before
+
         //add function declaration to stack
         mAstStack.push(func);
 
@@ -235,8 +238,8 @@ class Parser
             
             switch(mToken.Value)
             {
-            case "C": func.FuncType.CallingConv = FunctionType.CallingConvention.C; break;
-            case "Dis": func.FuncType.CallingConv = FunctionType.CallingConvention.Dis;break;
+            case "C": func.CallingConv = CallingConvention.C; break;
+            case "Dis": func.CallingConv = CallingConvention.Dis;break;
             default: Error(mToken.Loc, "Invalid CallingConvention");
             }
             
@@ -273,7 +276,8 @@ class Parser
                 Error(mToken.Loc, "parseDef: expected ) after parameters");
         }
 
-        //look for return value
+        //TODO can also be something like def(asdsd) required more parsing power
+        //look for return value 
         if(peek(1) == TokenType.Identifier || peek(1) == TokenType.Colon)
         {
             next();
@@ -283,6 +287,7 @@ class Parser
                     Error(mToken.Loc, "Expect Identifier after ':' for function return type");
             }
             func.FuncType.ReturnType = resolveType(mToken.Value);
+            //not only 
         }
 
         //if function declarations closes with ";" it is finished
@@ -290,6 +295,8 @@ class Parser
         {
             next();
         }
+
+        //after declaration followed  { or = or ; or is end of declaration
         
         //Look for Basic Block here, ignore new lines and comments
         if(peekIgnore(1, [TokenType.EOL, TokenType.Comment]) == TokenType.COBracket)
@@ -319,6 +326,14 @@ class Parser
 
         //TODO Change to use FunctionParameter structure
 
+        //simple case: "ident :" 
+        //simple case "def"
+        //simple case "ident["
+        //simple case "ident."
+        //simple case "ident!"
+
+        //complex case: "ident"
+
         //Parse one parameter
         //variants are: 
         //1. name : type
@@ -328,12 +343,16 @@ class Parser
         //5. varargs
         //TODO: keywords before: ref, const, in, out, this, ...
 
+
+        FunctionParameter param;
+
         //save elements for one parameter
         char[][] list;
 
-        ///helper function
+        ///helper function add a parameter to list
         void add()
         {
+            //TODO complex datatype parsing
             //currently max 2
             assert(list.length < 3);
 
@@ -341,6 +360,7 @@ class Parser
             if(list[list.length-1] == "...")
             {
                 fd.FuncType.mVarArgs = true;
+                param.Vararg = true;
 
                 if(list.length == 2)
                 {
@@ -391,6 +411,7 @@ class Parser
             case TokenType.Mul:
                 list[list.length-1] ~= '*';
                 break;
+
             case TokenType.Comma:
                 //one param finished
                 add();
@@ -408,7 +429,7 @@ class Parser
     */
     private VariableDeclaration parseVar()
     {
-        assert(mToken.Type == TokenType.KwVar);
+        assertType(TokenType.KwVar);
 
         //expect Identifier after var
         if(!expect(mToken, TokenType.Identifier))
@@ -499,7 +520,7 @@ class Parser
     private BlockStatement parseBlock()
     {
         //start token is "{"
-        assert(mToken.Type == TokenType.COBracket);
+        assertType(TokenType.COBracket);
 
         //TODO symbol table? each block has one?
         auto block = new BlockStatement();
@@ -704,7 +725,7 @@ class Parser
     */
     private Expression parseIfExpression()
     {
-        assert(mToken.Type == TokenType.KwIf);
+        assertType(TokenType.KwIf);
         Error(mToken.Loc, "TODO: Can't parse If Expressions yet");
         return null;
     }
@@ -714,7 +735,7 @@ class Parser
     */
     private Expression parseSwitchExpression()
     {
-        assert(mToken.Type == TokenType.KwSwitch);
+        assertType(TokenType.KwSwitch);
         Error(mToken.Loc, "TODO: Can't parse Switch Expressions yet");
         return null;
     }
@@ -724,7 +745,7 @@ class Parser
     */
     private DotIdentifier parseIdentifier()
     {
-        assert(mToken.Type == TokenType.Identifier);
+        assertType(TokenType.Identifier);
 
         auto di = new DotIdentifier(cast(char[])mToken.Value);
         bool expDot = true;
@@ -761,7 +782,7 @@ class Parser
     private Annotation parseAnnotation()
     {
         // Annotions: @identifier
-        assert(mToken.Type == TokenType.Annotation);
+        assertType(TokenType.Annotation);
         
         if(peek(1) != TokenType.Identifier)
         {
@@ -779,12 +800,31 @@ class Parser
         return null;
     }
 
+    /**
+    * Parse a datatype
+    */
+    private DataType parseDataType()
+    {
+        //assert(mToken.Type == TokenType.Identifier);
+      
+        //x -> Identifier
+        //int -> Identifier (BuiltIn Type)
+        //x[] -> Identifier Array
+        //x!x -> Identifier!Identifier Template instantiation
+        //x!(a,b) -> Identifier!(DataType list) Template instantiation
+        //def(a,b):c -> Delegate/FunctionType (datatypes) datatypes
+        //x.y.z -> DotIdentifier 
 
-    //TODO parseDataType builtin datatype, identifier, def() datatype, tpl class type identifiier!(dataypes)
+        //identifier* -> Pointer type
+        
+        //constraints? -> [xxx] not yet defined
+        
+        //TODO Implement parseDataType 
 
-    //datatype: identifier, dotidentifier, def(datatype,...):datatype, contraints, arrays, template instantion (identifier!datatype)
+        return OpaqueType.Instance;
+    }
 
-
+ 
     /**
     * Get type for an identifier
     * return Opaque Type when not resolved
@@ -877,6 +917,25 @@ class Parser
         writefln("(%s): %s", loc, msg);
     }
 
+
+    /**
+    * Assert Type
+    */
+    private void assertType(TokenType t)
+    {
+        if(mToken.Type != t)
+            throw new ParserException(mToken.Loc, format("Expected %s not %s", dlf.dis.Token.toString(t), dlf.dis.Token.toString(mToken.Type)));
+    }
+
+    /**
+    * Assert Type (array variant)
+    */
+    private void assertType(TokenType[] tt)
+    {
+        if(!isIn(mToken.Type, tt))
+            throw new ParserException(mToken.Loc, format("Expected [] not %s", dlf.dis.Token.toString(mToken.Type)));
+    }
+    
     /**
     * Set Source file for Lexer
     */
@@ -903,5 +962,18 @@ class Parser
     {
         //Root node with Multiple Package nodes?
         return mAstRoot;
+    }
+
+
+    /**
+    * Parser Exception
+    */
+    public class ParserException : Exception
+    {
+        ///Contruct new parser Exception
+        private this(Location loc, string message)
+        {
+            super(format("%s %s",loc.toString(), message));
+        }
     }
 } 
