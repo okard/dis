@@ -86,7 +86,7 @@ struct Stack(T)
     @property
     uint size()
     {
-        return mStackArr.length;
+        return cast(uint)mStackArr.length;
     }
 
     /**

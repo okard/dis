@@ -30,6 +30,8 @@ import dlf.ast.Transform;
 
 import std.stdio;
 
+//TODO Add Initializer Expressions for builtin data types
+
 /**
 * Semantic Pass for AST
 */
@@ -131,7 +133,7 @@ class Semantic : Visitor
         {
             func.FuncType.ReturnType = VoidType.Instance;
             
-            //if has body look through all return statements
+            //TODO if has body look through all return statements
 
             Information("\t Resolved ReturnType is '%s'", func.FuncType.ReturnType.toString());
         }

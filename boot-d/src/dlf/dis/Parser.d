@@ -924,7 +924,7 @@ class Parser
     private void assertType(TokenType t)
     {
         if(mToken.Type != t)
-            throw new ParserException(mToken.Loc, format("Expected %s not %s", dlf.dis.Token.toString(t), dlf.dis.Token.toString(mToken.Type)));
+            throw new ParserException(mToken.Loc, format("Expected %s not %s", dlf.dis.Token.toString(t), mToken.toString()));
     }
 
     /**
@@ -933,7 +933,7 @@ class Parser
     private void assertType(TokenType[] tt)
     {
         if(!isIn(mToken.Type, tt))
-            throw new ParserException(mToken.Loc, format("Expected [] not %s", dlf.dis.Token.toString(mToken.Type)));
+            throw new ParserException(mToken.Loc, format("Expected [] not %s", mToken.toString()));
     }
     
     /**

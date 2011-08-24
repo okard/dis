@@ -47,7 +47,7 @@ struct ArrayBuffer(T)
     {
         auto index = mStartIndex + n;
         if(index >= mArr.length) 
-            index = (mStartIndex + n) - mArr.length;
+            index = (mStartIndex + n) - cast(uint)mArr.length;
 
         //writefln("[%s] -> [%s]", n, index);
         return mArr[index];
@@ -62,7 +62,7 @@ struct ArrayBuffer(T)
         assert(mStartIndex < mArr.length);
 
         auto t = mArr[mStartIndex];
-        mStartIndex = mStartIndex == (mArr.length-1) ? 0 : ++mStartIndex;
+        mStartIndex = mStartIndex == (cast(uint)mArr.length-1) ? 0 : ++mStartIndex;
         mCount--;
         return t;
     }
@@ -77,7 +77,7 @@ struct ArrayBuffer(T)
 
         auto index = mStartIndex + mCount;
         if(index >= mArr.length) 
-            index = (mStartIndex + mCount) - mArr.length;
+            index = (mStartIndex + mCount) - cast(uint)mArr.length;
         
         //writefln("%s -> el: %s", index, n);
         mArr[index] = n;

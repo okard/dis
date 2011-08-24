@@ -93,7 +93,7 @@ final class DotIdentifier : Expression
     @property
     public int length()
     {
-        return mIdentifier.length;
+        return cast(int)mIdentifier.length;
     }
 
     /**

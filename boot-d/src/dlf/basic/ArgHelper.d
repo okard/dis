@@ -106,7 +106,7 @@ class ArgHelper
     */
     protected uint leftElements()
     {
-        return Args.length - pos;
+        return cast(uint)Args.length - pos;
     }
 }
 

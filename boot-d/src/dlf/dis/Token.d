@@ -78,9 +78,11 @@ enum TokenType : ubyte//c main
     MulAssign,      // *=
     DivAssign,      // /=
 
+    // <<
+    // >> shift operators
     // <-
     // ~>
-    // <~
+    // <~ proposol mixin operator
     //=>
     //#>
     //<#
@@ -128,13 +130,13 @@ string toString(TokenType tok)
 {
     switch(tok)
     {
-    case TokenType.None:        return "None";
-    case TokenType.Identifier:  return "Identifier";
-    case TokenType.String:      return "String";
-    case TokenType.Integer:     return "Integer";
-    case TokenType.Float:       return "Float";
-    case TokenType.Double:      return "Double";
-    case TokenType.EOL:         return "End of Line";
+    case TokenType.None:        return "<None>";
+    case TokenType.Identifier:  return "<Identifier>";
+    case TokenType.String:      return "<String>";
+    case TokenType.Integer:     return "<Integer>";
+    case TokenType.Float:       return "<Float>";
+    case TokenType.Double:      return "<Double>";
+    case TokenType.EOL:         return "<eol>";
     case TokenType.Semicolon:   return ";";
     case TokenType.Comma:       return ",";
     case TokenType.Dot:         return ".";
@@ -171,7 +173,7 @@ string toString(TokenType tok)
     case TokenType.KwTrue:      return "true";
     case TokenType.KwFalse:     return "false";
     case TokenType.Comment:     return "<comment>";
-    default: return "no token description";
+    default: return "token toString todo";
     }
 }
 
