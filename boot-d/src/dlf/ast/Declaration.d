@@ -18,6 +18,8 @@
 ******************************************************************************/
 module dlf.ast.Declaration;
 
+import std.datetime;
+
 import dlf.ast.Node;
 import dlf.ast.Visitor;
 import dlf.ast.Type;
@@ -62,6 +64,8 @@ final class PackageDeclaration : Declaration
     TraitDeclaration[] Traits;
     /// Runtime enabled
     bool RuntimeEnabled;
+    /// Modification Date
+    SysTime modificationDate;
 
     /**
     * Ctor

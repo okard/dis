@@ -19,6 +19,9 @@
 module dlf.basic.Source;
 
 import std.stream;
+import std.file;
+import std.datetime;
+
 import dlf.basic.Location;
 
 /**
@@ -58,13 +61,20 @@ interface Source
     */
     @property
     public string name();
+
+    /**
+    * modification date of source
+    */
+    @property
+    public ref SysTime modificationDate();
+
     
     //TODO Slice & Index Operator 
 
     //char opIndex(int pos);
     //char[] opSlice(int start, int end);
-    //modification date
     //Encoding utf8,...
+
 }
 
 
@@ -85,6 +95,9 @@ class SourceFile : File, Source
     /// current Buffer
     private ubyte mBufIndex = 0;
 
+    /// Modification Date
+    private SysTime modDate;
+
     /**
     * Ctor
     */
@@ -99,6 +112,7 @@ class SourceFile : File, Source
     public override void open(string filename, FileMode mode = (FileMode).In)
     {
         mLoc.Name = filename;
+        modDate = timeLastModified(filename); 
         super.open(filename, mode);
     }
 
@@ -171,6 +185,18 @@ class SourceFile : File, Source
     {
         return mLoc.Name;
     }
+
+    /**
+    * modification date of source
+    */
+    @property
+    public ref SysTime modificationDate()
+    {
+        return modDate;
+    }
+
+
+
 }
 
 /**
@@ -187,6 +213,9 @@ class SourceString : Source
     /// Position
     private uint mPos;
 
+    ///Modification Data
+    private SysTime modDate;
+
     /**
     * Ctor
     */
@@ -195,6 +224,7 @@ class SourceString : Source
         mPos = 0;
         mLoc = Location(0, 0);
         mStr = str;
+        modDate = Clock.currTime(UTC());
     }
 
     /**
@@ -255,6 +285,15 @@ class SourceString : Source
     public void name(string name)
     {
         mLoc.Name = name;
+    }
+
+    /**
+    * modification date of source
+    */
+    @property
+    public ref SysTime modificationDate()
+    {
+        return modDate;
     }
     
 }

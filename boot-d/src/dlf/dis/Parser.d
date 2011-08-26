@@ -162,6 +162,7 @@ class Parser
         //Create new Package Declaration
         auto pkg = new PackageDeclaration(di.toString());
         pkg.Loc = loc;
+        pkg.modificationDate = Src.modificationDate;
         pkg.SymTable = new SymbolTable(null);
         mSymTable = pkg.SymTable;
 

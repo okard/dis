@@ -48,7 +48,7 @@ abstract class DataType : Node
         }
      }
 
-    @property public override NodeKind Kind(){ return NodeKind.DataType; }
+    mixin(IsKind("DataType"));
 }
 
 /// Void
@@ -247,6 +247,8 @@ class FunctionType : DataType
     {
         ReturnType = OpaqueType.Instance;
     }
+
+    mixin(IsKind("FunctionType"));
 }
 
 

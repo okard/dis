@@ -58,18 +58,9 @@ class CCodeGen : CodeGen, Visitor
     /// Directory to store c source files
     private string srcDir;
 
+    /// Internal Generated DataTypes
     private CCNode[DataType] types;
 
-    /**
-    * 
-    */
-    static this()
-    {
-        //save types in node or in seperate table?
-        //static add CCNodes to default types
-        extend(VoidType.Instance, ctype("void"));
-        
-    }
 
     /**
     * Ctor
@@ -81,10 +72,33 @@ class CCodeGen : CodeGen, Visitor
         srcDir = ctx.ObjDir ~ "/src/";
         assert(srcDir.isDir());
 
+        // Primary/Builtin Types
         types[VoidType.Instance] = ctype("void");
+        types[BoolType.Instance] = ctype("bool");
+        types[ByteType.Instance] = ctype("char");
+        types[UByteType.Instance] = ctype("unsigned char");
+        types[ShortType.Instance] = ctype("short");
+        types[UShortType.Instance] = ctype("unsigned short");
+        types[IntType.Instance] = ctype("int");
+        types[UIntType.Instance] = ctype("unsigned int");
+        types[LongType.Instance] = ctype("long");
+        types[ULongType.Instance] = ctype("unsigned long");
+        types[FloatType.Instance] = ctype("float");
+        types[DoubleType.Instance] = ctype("double");
+        
+        //special case utf8 -> 4 byte chars?
+        //types[CharType.Instance] = ;
+       
+        //string runtime linking
+        if(ctx.EnableRuntime)
+        {
+            //add runtime mangled string type
+            //
+            //types[StringType.Instance] = ctype("_Disrt.");
+        }
     }
 
-    /**
+    /**double
     * Compile Package
     */
     void compile(PackageDeclaration pd)
@@ -99,10 +113,13 @@ class CCodeGen : CodeGen, Visitor
             assert(id.Package !is null);
             p = writer.Package(srcDir, id.Package.Name);
             dispatchAuto(id.Package);
+            //detect if one import has recompiled then this source should be recompiled too?
         }
 
         //check if already compiled
+        //if(extension!CCNode(pd. true) !is null)
         //CCNode Extension for pd
+        //check modification date if exists
         
 
         //Create C Package
@@ -129,7 +146,7 @@ class CCodeGen : CodeGen, Visitor
         }
 
         //resulting c files -> compile -> link
-        //builder.compile(context, writer.sources);
+        //builder.build(context, writer.sources);
         //executeable
         //shared lib
         //static lib
@@ -272,6 +289,10 @@ class CCodeGen : CodeGen, Visitor
 
         /// Identifier in C
         string Identifier;
+
+        //allocator function?
+        //is value type 
+        //is ptr type?
 
         ///Node Kind Mixin
         mixin(IsKind("Backend"));

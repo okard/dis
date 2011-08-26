@@ -1,8 +1,8 @@
 /*
 Dis Runtime
-- basic object
+- main functions
 
-Copyright (c) 2010 okard
+Copyright (c) 2011 okard
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -24,12 +24,9 @@ THE SOFTWARE.
 */
 package[nr] rt.object;
 
-/**
-* The basic object class
-*/
-class object
-{
-    //vtable
-    //ctor
-    //dtor
-}
+
+//start
+//stop
+//pause
+//attach
+
