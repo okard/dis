@@ -38,6 +38,13 @@ static class Mangle
     //mangle datatype?
     //static string mangle(DatatType type)
 
+
+    static string mangle(FunctionType f)
+    {
+        
+        return "";
+    }
+
     /**
     * Get mangled name for declaration 
     */

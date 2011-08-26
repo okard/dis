@@ -18,16 +18,22 @@
 ******************************************************************************/
 module dlf.gen.c.CCodeGen;
 
+import std.array;
+import std.string;
+import std.file;
+
 import dlf.ast.Visitor;
 import dlf.ast.Node;
 import dlf.ast.Declaration;
 import dlf.ast.Statement;
 import dlf.ast.Expression;
 import dlf.ast.Type;
+import dlf.ast.Transform;
 
 import dlf.gen.CodeGen;
 import dlf.gen.HeaderGen;
 import dlf.gen.c.CCodeWriter;
+import dlf.gen.c.CBuilder;
 
 /**
 * C Code Generator
@@ -43,14 +49,27 @@ class CCodeGen : CodeGen, Visitor
     /// Code Writer
     private CCodeWriter writer;
 
+    /// Code Builder
+    private CBuilder builder;
+
     /// Current C Package
     private CCodeWriter.CPackage p;
 
-    ///Compiler Flags
-    private string[] compilerFlags = [ "-std=c99", "-c", "-Wall", "-g" ];
+    /// Directory to store c source files
+    private string srcDir;
 
-    //Linker Flags
-    //Link Runtime at default, ctx?
+    private CCNode[DataType] types;
+
+    /**
+    * 
+    */
+    static this()
+    {
+        //save types in node or in seperate table?
+        //static add CCNodes to default types
+        extend(VoidType.Instance, ctype("void"));
+        
+    }
 
     /**
     * Ctor
@@ -59,6 +78,10 @@ class CCodeGen : CodeGen, Visitor
     {
         this.ctx = ctx;
         hdrgen = new HeaderGen();
+        srcDir = ctx.ObjDir ~ "/src/";
+        assert(srcDir.isDir());
+
+        types[VoidType.Instance] = ctype("void");
     }
 
     /**
@@ -66,30 +89,29 @@ class CCodeGen : CodeGen, Visitor
     */
     void compile(PackageDeclaration pd)
     {
-        //Create C Package
-        p = writer.Package("", "");
+        assert(pd !is null);
 
         //compile imports?
-        //compile other packages first or look if they already compiled
+        //compile other packages first or look if they already compile
+        //pd.Imports.Package
+        foreach(ImportDeclaration id; pd.Imports)
+        {
+            assert(id.Package !is null);
+            p = writer.Package(srcDir, id.Package.Name);
+            dispatchAuto(id.Package);
+        }
 
-        //p.start
-        //include default header dish.h
+        //check if already compiled
+        //CCNode Extension for pd
+        
 
+        //Create C Package
+        p = writer.Package(srcDir, pd.Name);
+
+        extend(pd, cheader(p.Header.name));
+        
         //start creating definitions
         dispatchAuto(pd);
-
-        //check package imports they should go in first
-        
-        //p.close
-        
-
-
-        //if executable, create main.c file with runtime handling and main function call
-        //embed runtime etc
-
-        //resulting c files -> compile -> link
-        
-
 
         //For Libraries generate Header Files
         if(ctx.Type == TargetType.StaticLib 
@@ -97,6 +119,20 @@ class CCodeGen : CodeGen, Visitor
         {
             //hdrgen.create(folder, pd)
         }
+
+        //For Executables generate main function
+        if(ctx.Type == TargetType.Executable)
+        {
+            //if executable, create main.c file with runtime handling and main function call
+            //embed runtime etc
+            //write main function
+        }
+
+        //resulting c files -> compile -> link
+        //builder.compile(context, writer.sources);
+        //executeable
+        //shared lib
+        //static lib
     }
 
     //package -> c package (header, src)
@@ -114,11 +150,16 @@ class CCodeGen : CodeGen, Visitor
     */
     void visit(PackageDeclaration pd)
     { 
-        //start
-        //include guards
+        //extend(pd, new CCNode(filename));
+        p.start(pd.Name.toUpper.replace(".", "_"));
+
+        //include default header dish.h
+
         //Imports
+
+        //check package imports they should go in first
         
-        //stop
+        p.close();
     }
 
     /**
@@ -139,8 +180,11 @@ class CCodeGen : CodeGen, Visitor
     { 
         //for def(C) declarations -> create c definitions
 
+        //foreach(fd.Instances)
+
         //compile FunctionType fd.Instances
         //mangle name?
+        // datatype 
 
     }
 
@@ -180,16 +224,58 @@ class CCodeGen : CodeGen, Visitor
         }
     }
 
+    /**
+    * create a simple type node
+    */
+    private static CCNode ctype(string name)
+    {
+        auto n = new CCNode();
+        n.Type = CCNode.IdentifierType.Type;
+        n.Identifier = name;
+        return n;
+    }
+
+    /**
+    * Create c function node
+    */
+    private static CCNode cfunction(string name)
+    {
+        auto n = new CCNode();
+        n.Type = CCNode.IdentifierType.Function;
+        n.Identifier = name;
+        return n;
+    }
+
+    /**
+    * Create a c header node
+    */
+    private static CCNode cheader(string file)
+    {
+        auto n = new CCNode();
+        n.Type = CCNode.IdentifierType.Header;
+        n.Identifier = file;
+        return n;
+    }
 
     /**
     * Compiler AST Extension Nodes
     */
-    private class CCNode : Node
+    private static class CCNode : Node
     {
-        //function name
         //header file name
-        //struct file name?
-        //union?
+
+        /// Type List for C Code Identifier
+        enum IdentifierType { Header, Function, Struct, Var, Type};
+
+        /// Type of C Code Identifier
+        IdentifierType Type;
+
+        /// Identifier in C
+        string Identifier;
+
+        ///Node Kind Mixin
+        mixin(IsKind("Backend"));
+
     }
 
 }

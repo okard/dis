@@ -38,6 +38,29 @@ public static void extend(Node n, Node e)
     n.Extend = e;
 }
 
+/**
+* Remove a extension node e from node n
+*/
+public static void remove(Node n, Node e)
+{
+    Node t = n.Extend;
+
+    while(t !is null)
+    {
+        if(t == e && t.Extend !is null)
+        {
+            n.Extend = t.Extend;
+            break;
+        }
+        else
+        {
+            n = t;
+            t = n.Extend;
+        }
+    }
+
+}
+
 
 /*
 * Helper to make possible foreach over extension nodes

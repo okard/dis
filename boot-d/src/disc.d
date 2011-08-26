@@ -158,35 +158,51 @@ class DisCompiler
     */
     private void compile(Source src)
     {
-        //Parser
-        auto parser = new Parser();
-        parser.Src = src;
+        try
+        {
 
-        //parse
-        auto pack = cast(PackageDeclaration)parser.parse();
+            //Parser
+            auto parser = new Parser();
+            parser.Src = src;
 
-        //A new Source File have to result in a PackageNode
-        assert(pack !is null);
+            //parser.load(src);
+            //parser.parsePackage();
+        
+            //parse
+            auto pack = cast(PackageDeclaration)parser.parse();
+            
+            //A new Source File have to result in a PackageNode
+            assert(pack !is null);
 
-        if(args.printAst)
-            dumpParser(pack);
+            if(args.printAst)
+                dumpParser(pack);
 
-        //Parse Imports
-        handleImports(pack);
+            //Parse Imports
+            handleImports(pack);
 
-        //prepare code before semantic
-        //add default version flags and so on
+            //prepare code before semantic
+            //add default version flags and so on
 
-        //run semantics
-        auto semantic = new Semantic();
-        pack = cast(PackageDeclaration)semantic.run(pack);
+            //run semantics
+            auto semantic = new Semantic();
+            pack = cast(PackageDeclaration)semantic.run(pack);
 
-        //succesful semantic run result in a package declaration
-        assert(pack !is null);
+            //succesful semantic run result in a package declaration
+            assert(pack !is null);
 
-        //compile package
-        auto cgen = new CCodeGen(ctx);
-        cgen.compile(pack);
+            //compile package
+            auto cgen = new CCodeGen(ctx);
+            cgen.compile(pack);
+
+        }
+        catch(Parser.ParserException exc)
+        {
+            log.Error(exc);
+        }
+        catch(Semantic.SemanticException exc)
+        {
+            log.Error(exc);
+        }
     }
 
 

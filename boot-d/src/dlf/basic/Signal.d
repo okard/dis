@@ -51,19 +51,23 @@ struct Signal(T...)
     void opOpAssign(string s)(Dg dg) 
         if (s == "-") 
     {
-        //remove
-        for(int i=0; i < dgHandler.length; i++)
+        int i = 0;
+        
+        //remove all dg
+        while(true)
         {
+            if( i >= dgHandler.length)
+                break;
+
             if(dgHandler[i] == dg)
             {
                 //swap with tail and clear tail
                 dgHandler[i] = dgHandler[dgHandler.length-1];
                 dgHandler.length -= 1;
-                //recursive remove because of array loop and swap
-                if(dgHandler.length > 0)
-                    this -= dg;
-                break;
+                continue;
             }
+
+            i++;
         }
     } 
 
@@ -83,19 +87,23 @@ struct Signal(T...)
     void opOpAssign(string s)(Fn fn) 
         if (s == "-") 
     {
-        //remove
-        for(int i=0; i < fnHandler.length; i++)
+        int i = 0;
+        
+        //remove all fn
+        while(true)
         {
+            if( i >= fnHandler.length)
+                break;
+
             if(fnHandler[i] == fn)
             {
                 //swap with tail and clear tail
                 fnHandler[i] = fnHandler[fnHandler.length-1];
                 fnHandler.length -= 1;
-                //recursive remove because of array loop and swap
-                if(fnHandler.length > 0)
-                    this -= fn;
-                break;
+                continue;
             }
+
+            i++;
         }
     } 
 
@@ -143,6 +151,10 @@ unittest
     assert(bar == 1);
     mySig -= &setFoo;
     mySig(6);
+    assert(foo == 5);
+    assert(bar == 2);
+    mySig -= &setBar;
+    mySig(1);
     assert(foo == 5);
     assert(bar == 2);
 

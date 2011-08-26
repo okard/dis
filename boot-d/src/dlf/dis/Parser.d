@@ -147,6 +147,9 @@ class Parser
     {
         //package identifier;
         assertType(TokenType.KwPackage);
+
+        //save loc
+        auto loc = mToken.Loc;
         
         //check for package identifier
         if(peek(1) != TokenType.Identifier)
@@ -158,6 +161,7 @@ class Parser
 
         //Create new Package Declaration
         auto pkg = new PackageDeclaration(di.toString());
+        pkg.Loc = loc;
         pkg.SymTable = new SymbolTable(null);
         mSymTable = pkg.SymTable;
 
@@ -165,7 +169,7 @@ class Parser
         mAstStack.push(pkg);
 
         //Look for semicolon or end of line
-        mToken = mLex.getToken();
+        next();
         if(mToken.Type != TokenType.EOL && mToken.Type != TokenType.Semicolon)
             Error(mToken.Loc, "Expected EOL or Semicolon after package declaration");
 
@@ -197,6 +201,23 @@ class Parser
     }
 
     /**
+    * Parse Import Declaration
+    */
+    private ImportDeclaration parseImport()
+    {
+        //import std.io.stream;
+        assertType(TokenType.KwImport);
+        auto imp = new ImportDeclaration;
+        imp.Loc = mToken.Loc;
+
+        //
+        if(!next(TokenType.Identifier))
+            Error(mToken.Loc, "parseImport: expect identifier after import keyword");
+        
+        return imp;
+    }
+
+    /**
     * Parse a Class
     */
     private ClassDeclaration parseClass()
@@ -221,13 +242,14 @@ class Parser
         assertType(TokenType.KwDef);
 
         auto func = new FunctionDeclaration();
+        func.Loc = mToken.Loc;
     
         //TODO assign annotations, attributes parsed before
 
         //add function declaration to stack
         mAstStack.push(func);
 
-        mToken = mLex.getToken();
+        next();
 
         //Parse Calling Convention
         if(mToken.Type == TokenType.ROBracket)
@@ -247,7 +269,7 @@ class Parser
             if(!expect(mToken, TokenType.RCBracket))
                 Error(mToken.Loc, "parseDef: Expected )");
 
-            mToken = mLex.getToken();
+            next();
         }
         
         //parse function name (identifier)
@@ -431,6 +453,8 @@ class Parser
     {
         assertType(TokenType.KwVar);
 
+        auto loc = mToken.Loc;
+
         //expect Identifier after var
         if(!expect(mToken, TokenType.Identifier))
         {
@@ -440,6 +464,7 @@ class Parser
         
         //create new variable delclaration at the moment with opaque type
         auto var = new VariableDeclaration(mToken.Value);
+        var.Loc = loc;
 
         //check for type Information
         if(peek(1) == TokenType.Identifier || peek(1) == TokenType.Colon)
@@ -524,6 +549,7 @@ class Parser
 
         //TODO symbol table? each block has one?
         auto block = new BlockStatement();
+        block.Loc = mToken.Loc;
         block.SymTable = mSymTable.push();
         mSymTable = block.SymTable;
         mAstStack.push(block);
@@ -612,22 +638,28 @@ class Parser
             case TokenType.String:
                 //TODO Fix it, a String Literal is a pointer to a char[] array
                 expr = new LiteralExpression(mToken.Value, StringType.Instance);
+                expr.Loc = mToken.Loc;
                 break;
             case TokenType.Char:
                 expr =  new LiteralExpression(mToken.Value, CharType.Instance); 
+                expr.Loc = mToken.Loc;
                 break;
             case TokenType.Integer:
                 expr = new LiteralExpression(mToken.Value, IntType.Instance); 
+                expr.Loc = mToken.Loc;
                 break;
             case TokenType.Float:
                 expr = new LiteralExpression(mToken.Value, FloatType.Instance); 
-                 break;
+                expr.Loc = mToken.Loc;
+                break;
             case TokenType.Double:
                 expr = new LiteralExpression(mToken.Value, DoubleType.Instance);
+                expr.Loc = mToken.Loc;
                 break;
             case TokenType.KwTrue:
             case TokenType.KwFalse:
                 expr = new LiteralExpression(mToken.Value, BoolType.Instance);
+                expr.Loc = mToken.Loc;
                 break;
             default:
                 Error(mToken.Loc, "No right Token for parse a Expression");
@@ -868,9 +900,18 @@ class Parser
     {
         while(n > 0)
         {
-            mToken = mLex.getToken();
+            next;
             n--;
         }
+    }
+
+    /**
+    * next with type check
+    */
+    private bool next(TokenType t)
+    {
+        next;
+        return mToken.Type == t ? true : false;
     }
 
     /**
@@ -906,6 +947,7 @@ class Parser
     {
         //TODO: Make error events, remove stupid writeln
         writefln("(%s): %s", loc, msg);
+        throw new ParserException(loc, msg);
     }
 
     /**
@@ -964,11 +1006,13 @@ class Parser
         return mAstRoot;
     }
 
+    ///@property public ParseResult Result();
+
 
     /**
     * Parser Exception
     */
-    public class ParserException : Exception
+    public static class ParserException : Exception
     {
         ///Contruct new parser Exception
         private this(Location loc, string message)

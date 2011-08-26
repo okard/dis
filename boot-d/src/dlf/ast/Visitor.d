@@ -67,14 +67,7 @@ Node dispatch(Node n, Visitor v, bool mod = false)
 {
     assert(n !is null);
     assert(v !is null);
-
-    //inner node
-    Node inner = n;
-    //set replacer function
-    n.ret = (Node nn){ assert(!mod); inner = nn; };
-
-    // node.replace(Node);
-    
+    assert(n.Self is null);
 
     /*final*/ 
     switch(n.Kind)
@@ -98,13 +91,15 @@ Node dispatch(Node n, Visitor v, bool mod = false)
         case NodeKind.DotIdentifier: v.visit(cast(DotIdentifier)n); break;
         case NodeKind.AssignExpression: v.visit(cast(AssignExpression)n); break;
         case NodeKind.BinaryExpression: v.visit(cast(BinaryExpression)n); break;
+
+
+        //Special
+        case NodeKind.Semantic: assert(false); //cant dispatch special nodes
+        case NodeKind.Backend: assert(false); 
     
         default: assert(false);
     }
 
-    n.ret = null;
-    
-
-    return mod ? inner : n;
+    return mod && (n.Self !is null) ? n.Self : n;
 }
     

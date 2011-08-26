@@ -16,57 +16,17 @@
 *    along with disc.  If not, see <http://www.gnu.org/licenses/>.
 *
 ******************************************************************************/
-module dlf.gen.CodeGen;
+module dlf.gen.DocGen;
 
-import dlf.ast.Node;
-import dlf.ast.Declaration;
-
-
-/// Target Type
-enum TargetType { Executable, StaticLib, SharedLib }
-
-/// Target Platform
-enum TargetPlatform { Linux, MacOSX, Windows }
-
-/// Target Arch
-enum TargetArch { x86_32, x86_64, ARM }
+import dlf.ast.Visitor;
 
 
 /**
-* Codegen Context
+* Documentation Generator
+* Outputs JSON?
 */
-struct Context
+final class DocGen 
 {
-    ///Target Type
-    TargetType Type;
 
-    ///Target Platform
-    TargetPlatform Platform;
 
-    ///Target Architecture
-    TargetArch Arch;
-
-    /// Link program with runtime
-    bool EnableRuntime = true;
-
-    /// Object files directory
-    string ObjDir;
-
-    /// Output directory
-    string OutDir;
-
-    /// Header Directory for library generation
-    string HeaderDir;
 }
-
-/**
-* CodeGen Interface
-*/
-interface CodeGen
-{
-    //compile Package, result? 
-    void compile(PackageDeclaration pd);
-}
-
-
-//Generic Code Gen Exception?

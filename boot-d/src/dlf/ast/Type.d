@@ -255,11 +255,14 @@ class FunctionType : DataType
 */
 class ClassType : DataType
 {
-    //Class Declaration
+    /// The original class declaration
+    ClassDeclaration ClassDecl;
+
     //Template Classes can have subclasstypes?
     //Parent Class
     //template arguments specifications
     //classname!(datatypes, ...)
+    //trait types
 }
 
 /**
@@ -267,6 +270,9 @@ class ClassType : DataType
 */
 class TraitType : DataType
 {
-    //Trait Declaration
+    ///The original trait declaration
+    TraitDeclaration TraitDecl;
 }
 
+//struct type?
+//enum type

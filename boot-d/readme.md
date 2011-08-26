@@ -13,11 +13,12 @@ Bootstrap Compiler written in D2
     - dlf.sem - semantic analysis
     - dlf.gen - code generation, c99 and llvm
     - disc - dis compiler code
-* lib
+    - llvm.* - llvm d bindings
+* lib/ 
 
 ## Build Instructions
 
-With valid D2 & Tools in PATH type in console:
+With valid D2 & Tools (gnu make) in PATH type in console:
 
 $ make
 

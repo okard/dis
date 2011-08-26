@@ -64,6 +64,7 @@ interface Source
     //char opIndex(int pos);
     //char[] opSlice(int start, int end);
     //modification date
+    //Encoding utf8,...
 }
 
 

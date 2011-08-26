@@ -66,11 +66,16 @@ public enum NodeKind : uint
     
     //DataType
     DataType,
-    //FunctionType
-    //ClassType
+    FunctionType,
+    ClassType,
+    TraitType,
 
     //Annotation
-    //CodeGen?
+
+    //Special
+    Comment,
+    Semantic,
+    Backend
 }
 
 /**
@@ -82,7 +87,6 @@ abstract class Node
     public Node Parent;
 
     /// Kind (immutable)? function?
-    //public NodeKind Kind;
     @property public abstract NodeKind Kind();
 
     /// Location
@@ -91,8 +95,8 @@ abstract class Node
     /// For Node Extensions in Semantic and Compiler Passes
     public Node Extend;
 
-    /// Replacer Delegate
-    void delegate(Node) ret;
+    /// Self Pointer for (crazy) dispatch replace
+    public Node Self;
 }
 
 /**

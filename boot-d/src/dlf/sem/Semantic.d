@@ -18,6 +18,8 @@
 ******************************************************************************/
 module dlf.sem.Semantic;
 
+import std.string;
+
 import dlf.ast.Node;
 import dlf.ast.Visitor;
 import dlf.ast.Declaration;
@@ -45,6 +47,8 @@ class Semantic : Visitor
 
     //Type stack name -> Type 
     //Stack!(Type[char[]])
+
+    //save main declaration
 
     /**
     * Run semantic passes 
@@ -109,6 +113,7 @@ class Semantic : Visitor
     */
     void visit(ClassDeclaration cls)
     {
+        //check inheritance templated traits, parent classes
         //visit variabales
         //visit methods
     }
@@ -139,6 +144,8 @@ class Semantic : Visitor
         }
         else
             Information("\t ReturnType is %s", func.FuncType.ReturnType.toString());
+
+        //create instance for main 
 
         //check if no Body then do through parameters 
         //Single Pairs are types
@@ -385,5 +392,19 @@ class Semantic : Visitor
     {
         //TODO Change to Events
         writefln(s, args);
+        throw new SemanticException(format(s, args));
+    }
+
+
+    /**
+    * Semantic Exception
+    */
+    public static class SemanticException : Exception
+    {
+        /// New Semantic Exception
+        this(string msg)
+        {
+            super(msg);
+        }
     }
 }

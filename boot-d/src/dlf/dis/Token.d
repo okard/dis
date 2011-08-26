@@ -78,6 +78,7 @@ enum TokenType : ubyte//c main
     MulAssign,      // *=
     DivAssign,      // /=
 
+    //:=
     // <<
     // >> shift operators
     // <-
@@ -91,6 +92,7 @@ enum TokenType : ubyte//c main
     //#  <-- Singleton object? Const? static?
     //$
     //.. //DotDot Slice Expression
+
 
     //Keywords
     KwPackage,      // package
@@ -116,7 +118,11 @@ enum TokenType : ubyte//c main
     KwTrue,         // true
     KwFalse,        // false
 
-    //To think about: op, obj, 
+    //To think about: 
+    // -op, operator overloading 
+    // -obj, classes or singletons 
+    // -asm inline assembler (parse as string???)
+    // -dsl[linq] for embedded dsl, compiler plugins
 
     //Comment Tokens, DocComments
     Comment
