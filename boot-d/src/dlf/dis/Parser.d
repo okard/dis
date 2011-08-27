@@ -115,6 +115,8 @@ class Parser
         nextIgnore([TokenType.Comment, TokenType.EOL]);
     }
 
+    //public Declaration parseDeclaration();
+
     /**
     * Parse package
     */
@@ -205,6 +207,8 @@ class Parser
         //import followed by identifier
         if(!next(TokenType.Identifier))
             Error(mToken.Loc, "parseImport: expect identifier after import keyword");
+
+        imp.Name = imp.ImportIdentifier = parseIdentifier.toString();
         
         return imp;
     }
@@ -252,6 +256,7 @@ class Parser
             
             switch(mToken.Value)
             {
+            case "c":
             case "C": func.CallingConv = CallingConvention.C; break;
             case "Dis": func.CallingConv = CallingConvention.Dis;break;
             default: Error(mToken.Loc, "Invalid CallingConvention");
@@ -300,9 +305,11 @@ class Parser
                 if(!expect(mToken, TokenType.Identifier))
                     Error(mToken.Loc, "Expect Identifier after ':' for function return type");
             }
-            func.FuncType.ReturnType = resolveType(mToken.Value);
+            func.ReturnType = new UnsolvedType(mToken.Value);
             //not only 
         }
+        else
+            func.ReturnType = OpaqueType.Instance;
 
         //if function declarations closes with ";" it is finished
         if(peek(1) == TokenType.Semicolon)
@@ -338,9 +345,7 @@ class Parser
     {
         //accept Identifier, ":", "," 
 
-        //TODO Change to use FunctionParameter structure
-
-        //simple case: "ident :" 
+        //simple case "ident :" 
         //simple case "def"
         //simple case "ident["
         //simple case "ident."
@@ -357,46 +362,7 @@ class Parser
         //5. varargs
         //TODO: keywords before: ref, const, in, out, this, ...
 
-
-        FunctionParameter param;
-
-        //save elements for one parameter
-        char[][] list;
-
-        ///helper function add a parameter to list
-        void add()
-        {
-            //TODO complex datatype parsing
-            //currently max 2
-            assert(list.length < 3, "Can't parse bigger parameter definitions as 2");
-
-            //varargs
-            if(list[list.length-1] == "...")
-            {
-                fd.FuncType.mVarArgs = true;
-                param.Vararg = true;
-
-                if(list.length == 2)
-                {
-                    //vararg name
-                    fd.mVarArgsName = cast(string)list[0];
-                }
-            }
-            //name and type
-            else if(list.length == 2)
-            {
-                fd.FuncType.Arguments ~= resolveType(cast(string)list[1]);
-                fd.mArgumentNames[cast(string)list[0]] = cast(ubyte)(fd.FuncType.Arguments.length-1);
-            }
-
-            //one argument
-            if(list.length == 1)
-            {
-                //TODO 1 element, variablename or type (declaration with block or not) -> semantic?
-                Error(mToken.Loc, "Function Parameters must have 2 Identifier 'name type', one identifier is not yet supported");
-            }
-
-        }
+        FunctionParameter param = FunctionParameter();
 
         //parse loop
         while(mToken.Type != TokenType.RCBracket)
@@ -406,29 +372,30 @@ class Parser
             switch(mToken.Type)
             {
             case TokenType.Identifier:
-                list  ~= cast(char[])mToken.Value;
+                //TODO parse Identifier
+                param.Definition ~= mToken.Value;
                 break;
-            case TokenType.Dot:
-                //todo dotted identifier
-                if(peek(1) == TokenType.Dot && peek(2) == TokenType.Dot)
-                {
-                    next(); next();
-                    list ~= cast(char[])"...";
-                }
+
+            case TokenType.Vararg:
+                param.Vararg = true;
                 break;
+
             case TokenType.Colon:
+                //change state?
                 continue;
+
             case TokenType.RCBracket:
-                add();
+                fd.Parameter ~= param;
                 return;
-            case TokenType.Mul:
-                list[list.length-1] ~= '*';
+
+            case TokenType.Mul: /// Clear Pointer Type
+                param.Definition ~= "*";
                 break;
 
             case TokenType.Comma:
                 //one param finished
-                add();
-                list.length = 0;
+                fd.Parameter ~= param;
+                param = FunctionParameter();
                 break;
             
             default:
@@ -847,6 +814,8 @@ class Parser
     */
     private DataType parseDataType()
     {
+        
+
         //assert(mToken.Type == TokenType.Identifier);
       
         //x -> Identifier

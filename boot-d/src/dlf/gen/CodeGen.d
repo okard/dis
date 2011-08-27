@@ -60,6 +60,8 @@ struct Context
 
     /// Header directory for library generation
     string HeaderDir;
+
+    //Package, SourceCode resolving
 }
 
 
@@ -67,14 +69,32 @@ struct Context
 //a compiling interface creates object files
 //a linker interface link them together to final program
 
+//ObjectGen
+//NativeGen?
+//BinaryGen?
+
+/**
+* Binary Generation
+*/
+interface BinaryGen
+{
+    //init(context);
+    //void addObjectFile()
+    //void link();
+}
+
 
 /**
 * CodeGen Interface
+* Object Generation
 */
 interface CodeGen
 {
-    //compile Package, result? 
+    //init(context);
+    //compile Package, result? (object file)
     void compile(PackageDeclaration pd);
+    //compile to CodeGenLinking
+    //context?
 }
 
 

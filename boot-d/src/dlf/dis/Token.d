@@ -28,7 +28,7 @@ http://d.puremagic.com/issues/show_bug.cgi?id=4423
 /**
 * Token
 */
-enum TokenType : ubyte//c main
+enum TokenType //: ubyte//c main
 {
     None,
     EOF,
@@ -44,7 +44,6 @@ enum TokenType : ubyte//c main
     EOL,            // End of Line
     Semicolon,      // ;
     Comma,          // ,
-    Dot,            // .
     Colon,          // :
     ROBracket,      // ( - Round Open Bracket
     RCBracket,      // ) - Round Close Bracket
@@ -53,6 +52,9 @@ enum TokenType : ubyte//c main
     COBracket,      // { - Cambered Open Bracket
     CCBracket,      // } - Cambered Close Bracket
     Annotation,     // @
+    Dot,            // .
+    Slice,          // ..
+    Vararg,         // ...
 
     //Binary & Math Operator
     Add,            // +
@@ -65,14 +67,17 @@ enum TokenType : ubyte//c main
     And,            // &
     Or,             // |
     Assign,         // =
-    LambdaAssign,   // ->
+    Concat,         // ~
+
     //Double Operator
+    LambdaAssign,   // ->
     Power,          // ** (4 ** 2 == 4²)
     LAnd,           // && Logic And
     LOr,            // || Logic Or
     Equal,          // ==
     NotEqual,       // !=
     
+    //ConcatAssign  // ~=
     AddAssign,      // +=
     SubAssign,      // -=
     MulAssign,      // *=
@@ -92,6 +97,7 @@ enum TokenType : ubyte//c main
     //#  <-- Singleton object? Const? static?
     //$
     //.. //DotDot Slice Expression
+    //... //Vararg Token
 
 
     //Keywords
@@ -135,18 +141,22 @@ enum TokenType : ubyte//c main
 */
 string toString(TokenType tok)
 {
-    switch(tok)
+    final switch(tok)
     {
     case TokenType.None:        return "<None>";
+    case TokenType.EOF:         return "<EOF>";
     case TokenType.Identifier:  return "<Identifier>";
+    case TokenType.Char:        return "<Char>";
     case TokenType.String:      return "<String>";
     case TokenType.Integer:     return "<Integer>";
     case TokenType.Float:       return "<Float>";
     case TokenType.Double:      return "<Double>";
-    case TokenType.EOL:         return "<eol>";
+    case TokenType.EOL:         return "<EOL>";
     case TokenType.Semicolon:   return ";";
     case TokenType.Comma:       return ",";
     case TokenType.Dot:         return ".";
+    case TokenType.Slice:       return "..";
+    case TokenType.Vararg:      return "...";
     case TokenType.Colon:       return ":";
     case TokenType.ROBracket:   return "(";
     case TokenType.RCBracket:   return ")";
@@ -154,11 +164,31 @@ string toString(TokenType tok)
     case TokenType.ACBracket:   return "]";
     case TokenType.COBracket:   return "{";
     case TokenType.CCBracket:   return "}";
-    case TokenType.Assign:      return "=";
-    case TokenType.LambdaAssign:return "->";
-    case TokenType.Mul:         return "*";
-    case TokenType.MulAssign:   return "*=";
     case TokenType.Annotation:  return "@";
+    // Single Operator
+    case TokenType.Add:         return "+";
+    case TokenType.Sub:         return "-";
+    case TokenType.Mul:         return "*";
+    case TokenType.Div:         return "/";
+    case TokenType.Mod:         return "%";
+    case TokenType.Not:         return "!";
+    case TokenType.Xor:         return "^";
+    case TokenType.And:         return "&";
+    case TokenType.Or:          return "|";
+    case TokenType.Assign:      return "=";
+    case TokenType.Concat:      return "~";
+    //Double Operator
+    case TokenType.LambdaAssign:return "->";
+    case TokenType.Power:       return "**";
+    case TokenType.LAnd:        return "&&";
+    case TokenType.LOr:         return "||";
+    case TokenType.Equal:       return "==";
+    case TokenType.NotEqual:    return "!=";
+    case TokenType.AddAssign:   return "+=";
+    case TokenType.SubAssign:   return "-=";
+    case TokenType.MulAssign:   return "*=";
+    case TokenType.DivAssign:   return "/=";
+    //Keywords
     case TokenType.KwPackage:   return "package";
     case TokenType.KwDef:       return "def";
     case TokenType.KwClass:     return "class";
@@ -174,13 +204,14 @@ string toString(TokenType tok)
     case TokenType.KwFor:       return "for";
     case TokenType.KwWhile:     return "while";
     case TokenType.KwDo:        return "do";
+    case TokenType.KwContinue:  return "continue";
+    case TokenType.KwBreak:     return "break";
     case TokenType.KwThis:      return "this";
     case TokenType.KwReturn:    return "return";
     case TokenType.KwNull:      return "null";
     case TokenType.KwTrue:      return "true";
     case TokenType.KwFalse:     return "false";
     case TokenType.Comment:     return "<comment>";
-    default: return "token toString todo";
     }
 }
 

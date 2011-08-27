@@ -168,13 +168,6 @@ class CCodeGen : CodeGen, Visitor
     {
         CBuilder.link(ctx);
     }
-    
-    //package -> c package (header, src)
-
-    // Steps:
-    //1. package -> *.c, *.h -> List of c files (Path: .objdis/src/*.c,*.h)
-    //2. *.c -> *.obj -> List of Objects (Compiler Options)
-    //3. *.obj -> binary (Linker Options)
 
     //debug infos with #line
 

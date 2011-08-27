@@ -23,7 +23,8 @@ import dlf.ast.Visitor;
 
 /**
 * Documentation Generator
-* Outputs JSON?
+* Outputs JSON? 
+* with json seperate html/pdf documentation can be created
 */
 final class DocGen 
 {

@@ -156,6 +156,18 @@ final class OpaqueType : DataType
     mixin Singleton!OpaqueType;
 }
 
+/**
+* Unsolved Type
+*/
+final class UnsolvedType : DataType
+{
+    /// The datatype in string representation
+    string TypeString;
+    //ctor
+    this(string type){ TypeString = type; }
+    /// to string
+    override string toString() { return TypeString; };
+}
 
 //unparsed datatype?
 // string array?

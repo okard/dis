@@ -69,18 +69,19 @@ class Printer : Visitor
     */
     void visit(FunctionDeclaration fd)
     {
-        writet("Function(%s): %s(", toString(fd.CallingConv), fd.Name);
+        writet("def(%s): %s(", toString(fd.CallingConv), fd.Name);
 
-        foreach(string key, ubyte index; fd.mArgumentNames)
+        foreach(FunctionParameter p; fd.Parameter)
         {
-            auto t = fd.FuncType.Arguments[index];
-            writef("%s %s, ", key, t.toString()); 
+            if(p.Definition.length == 2)
+                writef("%s : %s", p.Definition[0], p.Definition[1]);
+            if(p.Vararg) writef("...");
+            
+            if(p != fd.Parameter[$-1])
+            writef(", ");
         }
-        
-        if(fd.FuncType.mVarArgs)
-            writef("%s...", fd.mVarArgsName);
 
-        writefln(") %s", fd.FuncType.ReturnType.toString());
+        writefln(") %s", fd.ReturnType);
         //fd.mType.mReturnType
 
         if(fd.Body !is null)

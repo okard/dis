@@ -76,8 +76,10 @@ final class PackageDeclaration : Declaration
 */
 final class ImportDeclaration : Declaration
 {
-    ///Name
-    string Name;
+    /// Import Identifier
+    string ImportIdentifier;
+
+    //wildcard import
 
     ///Holds a PackageNode
     PackageDeclaration Package;
@@ -93,13 +95,13 @@ final class ImportDeclaration : Declaration
 struct FunctionParameter
 {
     ///String Definition
-    char[][] Definition;
+    string[] Definition;
     /// DatatType of Parameter
     DataType Type;
     /// Parameter Name
     string Name;
     /// Vararg
-    bool Vararg;
+    bool Vararg = false;
     /// Index, Position of Parameter
     ushort Index;
 
@@ -116,8 +118,8 @@ final class FunctionDeclaration : Declaration
     /// The Function Parameters
     public FunctionParameter[] Parameter;
 
-    //return type?
-    public string ReturnType;
+    /// Return Type
+    public DataType ReturnType;
 
     /// Instancen? generated at semantic step
     public FunctionType[] Instances;
@@ -134,21 +136,12 @@ final class FunctionDeclaration : Declaration
     ///Calling Convention
     public CallingConvention CallingConv;
 
-    //OLD:
-
-    public ubyte[string] mArgumentNames; //DELETE
-    //If VarArgs Function the Parameter Name for VarArgs
-    public string mVarArgsName; //DELETE
-
-    ///Function Signature (DELETE)
-    public FunctionType FuncType;
-
     /**
     * Default Ctor
     */
     public this()
     {
-        FuncType = new FunctionType(); 
+        //FuncType = new FunctionType(); 
     }
 
     /**

@@ -150,6 +150,7 @@ class Semantic : Visitor
     { 
         Information("Semantic FuncDecl %s", func.Name);
 
+        /*
         //resolve return value
         if(func.FuncType.ReturnType is null 
         || func.FuncType.ReturnType == OpaqueType.Instance)
@@ -162,6 +163,7 @@ class Semantic : Visitor
         }
         else
             Information("\t ReturnType is %s", func.FuncType.ReturnType.toString());
+        */
 
         //create instance for main 
 

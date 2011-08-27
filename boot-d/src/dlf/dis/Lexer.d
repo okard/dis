@@ -88,7 +88,7 @@ class Lexer
     }
 
     /**
-    * For double Lookups
+    * For double lookups
     * e.g. +=
     */
     private TokenType lookFor(char c, TokenType a, TokenType b) 
@@ -259,7 +259,10 @@ class Lexer
         case '\n': tok.Type = TokenType.EOL; break;
         case ';':  tok.Type = TokenType.Semicolon; break;
         case ',':  tok.Type = TokenType.Comma; break;
-        case '.':  tok.Type = TokenType.Dot; break;
+        case '.':  tok.Type = TokenType.Dot; 
+                   if(mSrc.peekChar(1) == '.'){ tok.Type = TokenType.Slice; mSrc.getChar();}
+                   if(mSrc.peekChar(1) == '.'){ tok.Type = TokenType.Vararg; mSrc.getChar();}
+                   break;
         case ':':  tok.Type = TokenType.Colon; break;
         case '(':  tok.Type = TokenType.ROBracket; break;
         case ')':  tok.Type = TokenType.RCBracket; break;
@@ -268,20 +271,21 @@ class Lexer
         case '{':  tok.Type = TokenType.COBracket; break;
         case '}':  tok.Type = TokenType.CCBracket; break;
         case '@':  tok.Type = TokenType.Annotation; break;
+        case '~':  tok.Type = TokenType.Concat; break;
         case '!':  tok.Type = lookFor('=', TokenType.Not, TokenType.NotEqual); break;
         case '+':  tok.Type = lookFor('=', TokenType.Add, TokenType.AddAssign); break;
         case '-':  tok.Type = lookFor('=', TokenType.Sub, TokenType.SubAssign); break;
         case '=':  tok.Type = lookFor('=', TokenType.Assign, TokenType.Equal); break;
         case '*':  tok.Type = lookFor('=', TokenType.Mul, TokenType.MulAssign); break;
+        case '&':  tok.Type = lookFor('&', TokenType.And, TokenType.LAnd); break;
+        case '|':  tok.Type = lookFor('|', TokenType.Or, TokenType.LOr); break;
+
         //Can be Comments
         case '/':  if(mSrc.peekChar(1) == '/' || mSrc.peekChar(1) == '*') 
                         scanComments(tok);
                    else
                         tok.Type = TokenType.Div;
                    break;
-
-        case '&': tok.Type = TokenType.And; break;
-        case '|': tok.Type = TokenType.Or; break;
 
         case '"':  scanString(tok); break;
         case '\'': scanChar(tok); break; 
