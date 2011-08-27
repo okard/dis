@@ -1,14 +1,5 @@
-# boot 
-boot-d/bin/disc
-.obj/
-
 # disc
 .objdis
-
-# llvm
-*.bc
-*.o
-*.bin
 
 # general
 *.log

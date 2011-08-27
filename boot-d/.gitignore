@@ -1,0 +1,9 @@
+# git ignore dis boot
+bin/
+.obj/
+
+# llvm
+*.bc
+*.o
+*.bin
+

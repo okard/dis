@@ -51,11 +51,11 @@ class CCodeGen : CodeGen, Visitor
     /// Header generator
     private HeaderGen hdrgen;
 
-    /// Code Writer
-    private CCodeWriter writer;
+    /// Code Writer 
+    private static CCodeWriter writer;
 
     /// Code Builder
-    private CBuilder builder;
+    private static CBuilder builder;
 
     /// Current C Package
     private CCodeWriter.CPackage p;
@@ -148,13 +148,23 @@ class CCodeGen : CodeGen, Visitor
             //write main function
         }
 
+        //buildeperate?
         //resulting c files -> compile -> link
-        //builder.build(context, writer.sources);
+
         //executeable
         //shared lib
         //static lib
     }
 
+
+    /**
+    * Seperate Static Build Function
+    */
+    static void build(Context ctx)
+    {
+        builder.build(ctx, writer.getCSources());
+    }
+    
     //package -> c package (header, src)
 
     // Steps:

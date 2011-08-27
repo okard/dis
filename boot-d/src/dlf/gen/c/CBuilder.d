@@ -18,6 +18,11 @@
 ******************************************************************************/
 module dlf.gen.c.CBuilder;
 
+import std.array;
+import std.path;
+import std.process;
+import std.stdio;
+
 import dlf.gen.CodeGen;
 
 /**
@@ -45,16 +50,69 @@ struct CBuilder
         //make last change date available
 
         //first step compile all source files to obj files
+        //save object files
+        string[] objfiles;
+
+        //TODO this can be threaded
+        foreach(string src; sources)
+        {
+            string[] args;
+            args ~= compilerExec;
+            args ~= compilerFlags;
+            string objfile = ctx.ObjDir ~ "/" ~ basename(src) ~ ".o";
+            args ~= ["-o", objfile] ;
+            args ~= src;
+
+            //d1 tango has process handling, d2 phobos has nothing .....
+
+            exec(args);
+
+            objfiles ~= objfile;
+        }
         
         //second step link all o files together
         //look for ctx.EnableRuntime
 
         final switch(ctx.Type)
         {
-            case TargetType.StaticLib: break;
-            case TargetType.SharedLib: break;
-            case TargetType.Executable: break;
+            case TargetType.StaticLib: 
+                assert(false, "Not yet implemented");
+
+            case TargetType.SharedLib: 
+                string[] args;
+                args ~= linkerExec;
+                args ~= linkerFlags;
+                if(ctx.EnableRuntime) args ~= linkRuntime;
+                args ~= ["-o", ctx.OutFile];
+                args ~= linkShared;
+                args ~= objfiles;
+                exec(args);
+                break;
+
+            case TargetType.Executable: 
+                string[] args;
+                args ~= linkerExec;
+                args ~= linkerFlags;
+                if(ctx.EnableRuntime) args ~= linkRuntime;
+                args ~= ["-o", ctx.OutFile];
+                args ~= objfiles;
+                exec(args);
+                break;
         }
+    }
+
+
+    /**
+    * Execute command
+    */
+    static void exec(string[] args)
+    {
+        string command = join(args, " ");
+        writeln(command);
+        
+        int result = system(command);
+        if(result != 0)
+            throw new Exception("Execute Command Failed");
     }
 
 

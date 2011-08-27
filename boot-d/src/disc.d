@@ -159,6 +159,7 @@ class DisCompiler
             //TODO try-catch
             //TODO compile step per package threaded? prepare worker threads, queue handling sort imports
             
+            //share codegen link after all file getting compiled
 
             //compile file
             if(!compile(src))
@@ -167,6 +168,9 @@ class DisCompiler
                 //return 2;
             }
         }
+
+        //compile and link
+        CCodeGen.build(ctx);
 
         return 0;
     }
