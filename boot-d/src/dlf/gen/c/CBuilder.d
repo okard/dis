@@ -42,17 +42,16 @@ struct CBuilder
 
     //static lib: ar rcs libname.a obj0.o obj1.o
 
+    private static string[] objfiles;
+
     /**
     * Build Source Files
     */
-    void build(Context ctx, string[] sources)
+    void compile(Context ctx, string[] sources)
     {
         //make last change date available
 
-        //first step compile all source files to obj files
-        //save object files
-        string[] objfiles;
-
+        //compile source file
         //TODO this can be threaded
         foreach(string src; sources)
         {
@@ -68,11 +67,14 @@ struct CBuilder
             exec(args);
 
             objfiles ~= objfile;
-        }
-        
-        //second step link all o files together
-        //look for ctx.EnableRuntime
+        }  
+    }
 
+    /**
+    * linking
+    */
+    static void link(Context ctx)
+    {
         final switch(ctx.Type)
         {
             case TargetType.StaticLib: 

@@ -62,6 +62,12 @@ struct Context
     string HeaderDir;
 }
 
+
+//TODO Split interface compiling and linking to steps need shared context
+//a compiling interface creates object files
+//a linker interface link them together to final program
+
+
 /**
 * CodeGen Interface
 */

@@ -167,10 +167,16 @@ class DisCompiler
                 log.Error("Failed to compile file: " ~ src.name);
                 //return 2;
             }
+
+            log.Information("");
         }
 
+        log.Information("Linking Program ...");
+
+        //add a share so it can create multiple instances
+        //compile can be earlier but linking not
         //compile and link
-        CCodeGen.build(ctx);
+        CCodeGen.link(ctx);
 
         return 0;
     }
@@ -213,8 +219,8 @@ class DisCompiler
             assert(pack !is null, "Semantic doesn't return a package declaration");
 
             log.Information("CodeGen ...");
+            
             //compile package
-
             cgen.compile(pack);
 
             packages[pack.Name] = pack;

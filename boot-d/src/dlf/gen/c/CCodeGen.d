@@ -52,10 +52,10 @@ class CCodeGen : CodeGen, Visitor
     private HeaderGen hdrgen;
 
     /// Code Writer 
-    private static CCodeWriter writer;
+    private CCodeWriter writer;
 
     /// Code Builder
-    private static CBuilder builder;
+    private CBuilder builder;
 
     /// Current C Package
     private CCodeWriter.CPackage p;
@@ -140,7 +140,7 @@ class CCodeGen : CodeGen, Visitor
             //hdrgen.create(folder, pd)
         }
 
-        //For Executables generate main function
+        //For Executables generate main function not so good only for package containing main???
         if(ctx.Type == TargetType.Executable)
         {
             //if executable, create main.c file with runtime handling and main function call
@@ -148,8 +148,12 @@ class CCodeGen : CodeGen, Visitor
             //write main function
         }
 
+        //compile file
+        builder.compile(ctx, writer.getCSources());
+
         //buildeperate?
         //resulting c files -> compile -> link
+        
 
         //executeable
         //shared lib
@@ -160,9 +164,9 @@ class CCodeGen : CodeGen, Visitor
     /**
     * Seperate Static Build Function
     */
-    static void build(Context ctx)
+    static void link(Context ctx)
     {
-        builder.build(ctx, writer.getCSources());
+        CBuilder.link(ctx);
     }
     
     //package -> c package (header, src)
