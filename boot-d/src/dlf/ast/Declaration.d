@@ -63,17 +63,9 @@ final class PackageDeclaration : Declaration
     /// Traits
     TraitDeclaration[] Traits;
     /// Runtime enabled
-    bool RuntimeEnabled;
+    bool RuntimeEnabled = true;
     /// Modification Date
     SysTime modificationDate;
-
-    /**
-    * Ctor
-    */
-    public this(string name)
-    {
-        Name = name;
-    }
     
     ///Mixin for Kind Declaration
     mixin(IsKind("PackageDeclaration"));

@@ -39,11 +39,44 @@ static class Mangle
     //static string mangle(DatatType type)
 
 
+    /**
+    * Mangle a FunctionType
+    */
     static string mangle(FunctionType f)
     {
+        //f.FuncDecl
+        //first generate mangle for function type
+        //then add function decl
+        //then add parent function 
+
+        string name;
+        Node n = f.FuncDecl;
+        while(n !is null)
+        {
+            Declaration d = cast(Declaration)n;
+            if(n is null)
+            {
+                n = n.Parent;
+                continue;
+            }
+
+            switch(d.Kind)
+            {
+                case NodeKind.PackageDeclaration:
+                case NodeKind.ClassDeclaration:
+                case NodeKind.TraitDeclaration:
+                case NodeKind.FunctionDeclaration: name = d.Name ~ name; break;
+                default:
+            }
+            
+            n = n.Parent;
+        }
         
-        return "";
+        return name;
     }
+
+    //mangle class type
+    //mangle struct types
 
     /**
     * Get mangled name for declaration 

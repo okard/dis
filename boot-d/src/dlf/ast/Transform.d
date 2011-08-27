@@ -83,3 +83,27 @@ public Node[] extensions(Node n)
 
     return list;
 }
+
+/**
+* Extract a single extended node from node
+*/
+public T ext(T : Node)(Node n, bool unique = true )
+{
+    T result = null;
+
+    do
+    {
+        if(cast(T)n.Extend !is null && result is null)
+            result = cast(T)n.Extend;
+        else if(cast(T)n.Extend !is null && result !is null && unique)
+            throw new Exception("This node type should be unique");
+        
+        n = n.Extend;
+    }
+    while(n !is null)
+
+    return result;
+}
+
+
+

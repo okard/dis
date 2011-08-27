@@ -41,22 +41,30 @@ import std.stdio;
 
 /**
 * Dis Parser
+* recursive descent, experimental
+* maybe replaced by parsing framework, peg/packrat parser
 */
 class Parser
 {
-    ///Lexer
+    /// Lexer
     private Lexer mLex;
-    ///Token
+
+    /// Current Token
     private Token mToken;
-    ///AST Root Node
+
+    /// AST Root Node
     private Node mAstRoot;
-    ///AST Current Node
+
+    /// AST Current Node
     private Node mAstCurrent;
-    ///AST Parser Stack
+
+    /// AST Parser Stack
     private Stack!Node mAstStack;
-    ///Current SymbolTable
+
+    /// Current SymbolTable
     private SymbolTable mSymTable;
-    ///Internal Types
+
+    /// Internal Types (Builtin)
     public static DataType[string] InternalTypes;
 
     /**
@@ -94,62 +102,52 @@ class Parser
     }
 
     /**
-    * Parse a Source to Node
+    * Load a source object
     */
-    public Node parse(Source src)
+    public void load(Source src)
     {
-        Src = src;
-        return parse();
-    }
-
-    /**
-    * Parse one node from current source
-    */
-    public Node parse()
-    {
-        if(Src is null || Src.isEof)
+        if(src is null || src.isEof)
             throw new Exception("No Source available");
 
-        //get first token
-        next();
+        Src = src;
 
-        while(mToken.Type == TokenType.Comment || mToken.Type == TokenType.EOL)
-            next();
-
-        try
-        {
-            //Supported Token as EntryPoint
-            switch(mToken.Type)
-            {
-                case TokenType.KwPackage: return parsePackage(); 
-                case TokenType.KwClass: break;
-                case TokenType.KwDef: break;
-                case TokenType.KwTrait: break;
-                case TokenType.KwType: break;
-                case TokenType.Identifier: return parseExpression();
-                default: return null;
-            }
-        }
-        catch(Throwable o)
-        {
-            Error(mToken.Loc, "Exception in Parser"); 
-            throw o;
-        }
-
-
-        return null;
+        //go to initial parseable token
+        nextIgnore([TokenType.Comment, TokenType.EOL]);
     }
 
     /**
     * Parse package
     */
-    private PackageDeclaration parsePackage()
+    public PackageDeclaration parsePackage()
     {
         //package identifier;
         assertType(TokenType.KwPackage);
+        
+        //Create new Package Declaration
+        auto pkg = new PackageDeclaration();
+        pkg.Loc = mToken.Loc;
+        pkg.modificationDate = Src.modificationDate;
+        pkg.SymTable = new SymbolTable(null);
+        mSymTable = pkg.SymTable;
+        //add package to parse stack
+        mAstStack.push(pkg);
 
-        //save loc
-        auto loc = mToken.Loc;
+        //parameterized keywords
+        if(peek(1) == TokenType.ROBracket)
+        {
+            next;
+            if(!next(TokenType.Identifier))
+                Error(mToken.Loc, "Expected Identifier for Package Keyword Parameter");
+            
+            switch(mToken.Value)
+            {
+                case "nr": pkg.RuntimeEnabled = false; break;
+                default: Error(mToken.Loc, "Not kown Package Keyword Parameter");
+            }
+            
+            if(!next(TokenType.RCBracket))
+                Error(mToken.Loc, "Expected ) after Package Keyword Parameter");
+        }
         
         //check for package identifier
         if(peek(1) != TokenType.Identifier)
@@ -158,16 +156,7 @@ class Parser
         //parse identifier for Package
         next();
         auto di = parseIdentifier();
-
-        //Create new Package Declaration
-        auto pkg = new PackageDeclaration(di.toString());
-        pkg.Loc = loc;
-        pkg.modificationDate = Src.modificationDate;
-        pkg.SymTable = new SymbolTable(null);
-        mSymTable = pkg.SymTable;
-
-        //add package to parse stack
-        mAstStack.push(pkg);
+        pkg.Name = di.toString();
 
         //Look for semicolon or end of line
         next();
@@ -178,6 +167,8 @@ class Parser
         while(mToken.Type != TokenType.EOF)
         {
             next();
+
+            //parseDeclarations
 
             switch(mToken.Type)
             {
@@ -211,7 +202,7 @@ class Parser
         auto imp = new ImportDeclaration;
         imp.Loc = mToken.Loc;
 
-        //
+        //import followed by identifier
         if(!next(TokenType.Identifier))
             Error(mToken.Loc, "parseImport: expect identifier after import keyword");
         
@@ -377,7 +368,7 @@ class Parser
         {
             //TODO complex datatype parsing
             //currently max 2
-            assert(list.length < 3);
+            assert(list.length < 3, "Can't parse bigger parameter definitions as 2");
 
             //varargs
             if(list[list.length-1] == "...")
@@ -403,7 +394,6 @@ class Parser
             {
                 //TODO 1 element, variablename or type (declaration with block or not) -> semantic?
                 Error(mToken.Loc, "Function Parameters must have 2 Identifier 'name type', one identifier is not yet supported");
-                assert(true);
             }
 
         }
@@ -513,7 +503,7 @@ class Parser
         {
         //Block Statement
         case TokenType.COBracket:
-            break;
+            return parseBlock();
         //for, foreach 
         case TokenType.KwFor: 
             break;
@@ -526,6 +516,7 @@ class Parser
         case TokenType.KwReturn:
             return new ReturnStatement(parseExpression());
         default:
+            //parse Expression
         }
 
         //parse Statement-Expression
@@ -599,6 +590,20 @@ class Parser
         return block;
     }
 
+    /**
+    * Parse a For Loop
+    * For or Foreach
+    */
+    private Statement parseFor()
+    {
+        assertType(TokenType.KwFor);
+
+        throw new ParserException(mToken.Loc, "Can't parse for statements at the moment");
+    }
+
+    //parseDoWhile
+    //parseWhile
+
 
     /**
     * Parse Expressions
@@ -664,7 +669,6 @@ class Parser
                 break;
             default:
                 Error(mToken.Loc, "No right Token for parse a Expression");
-                assert(true);
         }
 
         //here it can be KwThis
@@ -809,6 +813,11 @@ class Parser
         return di;
     }
 
+    //DotIdentifier (package, imports, datatypes, ...)
+    //DotExpression
+    //Import can have a * at end
+    //Seperate DotDataType ?
+
     /**
     * Parse Annotation
     */
@@ -916,6 +925,18 @@ class Parser
     }
 
     /**
+    * next with Ignoring
+    */
+    private void nextIgnore(TokenType[] ignore = [])
+    {
+        do
+        {
+            next();
+        }
+        while(isIn(mToken.Type, ignore))
+    }
+
+    /**
     * Peek token type
     */
     private TokenType peek(ushort lookahead = 1)
@@ -944,11 +965,11 @@ class Parser
     /**
     * Error Event
     */
-    private void Error(Location loc, string msg)
+    private void Error(Location loc, string message, string file = __FILE__, size_t line = __LINE__)
     {
         //TODO: Make error events, remove stupid writeln
-        writefln("(%s): %s", loc, msg);
-        throw new ParserException(loc, msg);
+        //writefln("(%s): %s", loc, message);
+        throw new ParserException(loc, message, file, line);
     }
 
     /**
@@ -983,7 +1004,7 @@ class Parser
     * Set Source file for Lexer
     */
     @property
-    public void Src(Source src)
+    private void Src(Source src)
     {
         mLex.Src = src;
     }
@@ -997,18 +1018,7 @@ class Parser
         return mLex.Src;
     }
 
-    /**
-    * Get Parse Tree
-    */
-    @property
-    public Node ParseTree()
-    {
-        //Root node with Multiple Package nodes?
-        return mAstRoot;
-    }
-
     ///@property public ParseResult Result();
-
 
     /**
     * Parser Exception
@@ -1016,9 +1026,9 @@ class Parser
     public static class ParserException : Exception
     {
         ///Contruct new parser Exception
-        private this(Location loc, string message)
+        private this(Location loc, string message, string file = __FILE__, size_t line = __LINE__)
         {
-            super(format("%s %s",loc.toString(), message));
+            super(format("(%s): %s", loc.toString(), message), file, line);
         }
     }
 } 

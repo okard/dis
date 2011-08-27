@@ -18,6 +18,9 @@
 ******************************************************************************/
 module dlf.basic.ArgHelper;
 
+import std.stdio;
+
+import dlf.basic.Util;
 
 /**
 * Command Line Argument Helper
@@ -52,6 +55,9 @@ class ArgHelper
         //go through the elements
         for(pos=0; pos < args.length; pos++)
         {   
+            if(isIn(args[pos], Disallowed))
+                writefln("A other options forbids the usage of option %s", args[pos]);
+
             auto hnd = (args[pos] in Options);
             
             //TODO Option to break parsing

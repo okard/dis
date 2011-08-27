@@ -47,6 +47,7 @@ struct CBuilder
         //first step compile all source files to obj files
         
         //second step link all o files together
+        //look for ctx.EnableRuntime
 
         final switch(ctx.Type)
         {

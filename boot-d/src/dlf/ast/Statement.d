@@ -96,8 +96,10 @@ final class ForStatement : Statement
 {
     /// Initialization Statements
     public Statement[] InitializerStmts;
+
     /// Break Condition
     public Expression ConditionExpr;
+
     /// Statements done after a run
     public Statement[] RunStmts;
 
@@ -114,6 +116,7 @@ final class ForStatement : Statement
 final class ForEachStatement : Statement
 {
     //public VariableDeclaration Var;
+
     public Expression List;
 
     ///Body Statement
@@ -129,6 +132,9 @@ final class ForEachStatement : Statement
 */
 final class WhileStatement : Statement
 {
+    /// Post test condition, While or DoWhile
+    bool PostTest = false;
+
     ///Loop Condition
     public Expression Condition;
 

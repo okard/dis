@@ -26,6 +26,9 @@ version(linux) import core.sys.posix.unistd;
 */
 public static bool isIn(T)(T t, T[] arr)
 {
+    if(arr.length == 0)
+        return false;
+
     foreach(T ta; arr)
         if(ta == t)
             return true;
@@ -93,6 +96,15 @@ static class ApplicationPath
     }
 }
 
+
+bool empty(string str)
+{
+    if(str is null) return true;
+    if(str.length <= 0) return true;
+    if(str == "") return true;
+    return false;
+}
+
 // UnitTests ==================================================================
 
 unittest
@@ -102,9 +114,14 @@ unittest
     //test isIn
     assert(isIn!int(3, [1, 2, 3, 4, 5]));
     assert(!isIn!int(6, [1, 2, 3, 4, 5]));
+    assert(!isIn!int(6, []));
 
     auto app = ApplicationPath.get();
     assert(app.length > 0);
+
+    assert(empty(null));
+    assert(empty(""));
+
 
     writeln("[TEST] Util Tests passed");
 }

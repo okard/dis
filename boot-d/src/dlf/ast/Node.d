@@ -86,14 +86,14 @@ abstract class Node
     /// Parent node
     public Node Parent;
 
-    /// Kind (immutable)? function?
-    @property public abstract NodeKind Kind();
-
     /// Location
     public Location Loc;
 
-    /// For Node Extensions in Semantic and Compiler Passes
+    /// For Node Extensions in Semantic and Compiler Passes (fixed size?)
     public Node Extend;
+
+    /// Kind (immutable)? function?
+    @property public abstract NodeKind Kind();
 
     /// Self Pointer for (crazy) dispatch replace
     public Node Self;

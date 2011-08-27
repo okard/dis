@@ -52,10 +52,13 @@ struct Context
     /// Object files directory
     string ObjDir;
 
-    /// Output directory
+    /// Binary output directory
     string OutDir;
 
-    /// Header Directory for library generation
+    /// Binary output Name
+    string OutFile;
+
+    /// Header directory for library generation
     string HeaderDir;
 }
 

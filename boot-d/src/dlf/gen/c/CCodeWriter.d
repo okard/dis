@@ -121,7 +121,7 @@ struct CCodeWriter
     
     CPackage Package(string dir, string name)
     {
-         assert(dir.isDir());
+        assert(dir.isDir(), "Directory for writing source files isn't a directory");
 
         auto pack = new CPackage();
         packages ~= pack;

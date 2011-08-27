@@ -30,20 +30,21 @@ import dlf.basic.Signal;
 enum LogType : ubyte
 {
     Verbose = 1,
-    Information = 2,
-    Warning = 3,
-    Error = 4,
-    Fatal = 5
+    Debug = 2,
+    Information = 3,
+    Warning = 4,
+    Error = 5,
+    Fatal = 6
 }
+
+/// Log Event Definition
+public alias Signal!(LogSource, SysTime, LogType, string) LogEvent;
 
 /**
 * Log Source
 */
-class LogSource
+struct LogSource
 {
-    //Log Event Definition
-    public alias Signal!(LogSource, SysTime, LogType, string) LogEvent;
-    
     // Log Source Name
     private string mName;
 
@@ -73,6 +74,14 @@ class LogSource
     public void Verbose(T...)(T args)
     {
        log!(LogType.Verbose)(args);
+    }
+    
+    /**
+    * Debug Log
+    */
+    public void Debug(T...)(T args)
+    {
+       log!(LogType.Debug)(args);
     }
 
     /**
@@ -141,7 +150,7 @@ final static class Log
     */
     static this()
     {
-        mLog = new LogSource("");
+        mLog = LogSource("");
         logSources[""] = mLog;
     }
 
@@ -158,15 +167,21 @@ final static class Log
     */
     static LogSource opCall(string s)
     {
-        auto ls = (s in logSources); 
-        if(ls == null)
+        if (__ctfe)
+            return LogSource(s);
+        else
         {
-            auto lss = new LogSource(s);
-            logSources[s] = lss;
-            ls = &lss;
-            (ls.evLog) += &mLog.evLog.opCall;
+            //look in log Sources
+            auto ls = (s in logSources); 
+            if(ls == null)
+            {
+                logSources[s] = LogSource(s);
+                logSources[s].OnLog += &mLog.OnLog.opCall;
+                ls = &logSources[s];
+            }
+           
+            return *ls;
         }
-        return *ls;
     }
 
     /**
@@ -185,13 +200,13 @@ final static class Log
 public void ConsoleListener(LogSource ls, SysTime t, LogType ty, string msg)
 {
     string type;
-    switch(ty) {
+    final switch(ty) {
     case LogType.Verbose: type = "Verbose"; break;
+    case LogType.Debug: type = "Debug"; break;
     case LogType.Information: type = "Information"; break;
     case LogType.Warning: type = "Warning"; break;
     case LogType.Error: type = "Error"; break;
     case LogType.Fatal: type = "Fatal"; break;
-    default: type = "";
     }
 
     writefln("%1$s %2$s: %3$s", ls.Name, type, msg);
@@ -200,7 +215,7 @@ public void ConsoleListener(LogSource ls, SysTime t, LogType ty, string msg)
 /**
 * File Log Listener
 */
-public LogSource.LogEvent.Dg FileListener(string file)
+public LogEvent.Dg FileListener(string file)
 {
     return (LogSource ls, SysTime t, LogType ty,string msg)
     {

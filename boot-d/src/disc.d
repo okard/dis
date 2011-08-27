@@ -24,6 +24,7 @@ import std.datetime;
 import dlf.basic.Log;
 import dlf.basic.Source;
 import dlf.basic.ArgHelper;
+import dlf.basic.Util;
 import dlf.ast.Printer;
 import dlf.ast.Node;
 import dlf.ast.Declaration;
@@ -44,9 +45,13 @@ class CommandLineArg : ArgHelper
     public bool printToken;  //print lexer tokens
     public bool printAst;    //print ast
     public bool printSem;    //print Semantic Log
+    public bool noRuntime = false;   //no runtime
+    public string outFile;   //output name
 
     public TargetType targType = TargetType.Executable;
     //compile context
+
+    //LogLevel
 
     //prepare
     public this(string[] args)
@@ -55,8 +60,10 @@ class CommandLineArg : ArgHelper
         Options["--print-lex"] = (){ printToken = true; };
         Options["--print-ast"] = (){ printAst = true; };
         Options["--print-sem"] = (){ printSem = true; };
+        Options["--no-runtime"] = (){ noRuntime = true; };
         Options["-sharedlib"] = (){targType = TargetType.SharedLib; disallow(["-staticlib"]);};
         Options["-staticlib"] = (){targType = TargetType.StaticLib; disallow(["-sharedlib"]);};
+        Options["-o"] = (){ outFile = getString(); };
 
         //obj directory ".objdis"
         //log level
@@ -89,20 +96,26 @@ class DisCompiler
     /// Compile Context
     private Context ctx;
 
+    /// Store parsed packages package name or file
+    private PackageDeclaration[string] packages;
+
     /**
     * Ctor
     */
     this(string[] args)
     {
+        this.args = new CommandLineArg(args);
         this.log =  Log.disc;
         this.log.OnLog += LevelConsoleListener(LogType.Information);
-        this.args = new CommandLineArg(args);
+
 
         //TODO config and command line parsing
 
         //default args
+        ctx.EnableRuntime = !this.args.noRuntime;
         ctx.ObjDir = ".objdis";
         ctx.OutDir = "bin";
+        ctx.OutFile = empty(this.args.outFile) ? ctx.OutDir ~"/unkown" : this.args.outFile;
         ctx.HeaderDir = "bin/header";
         
         ctx.Type = this.args.targType;
@@ -144,9 +157,15 @@ class DisCompiler
                 dumpLexer(src);
 
             //TODO try-catch
+            //TODO compile step per package threaded? prepare worker threads, queue handling sort imports
+            
 
             //compile file
-            compile(src);
+            if(!compile(src))
+            {
+                log.Error("Failed to compile file: " ~ src.name);
+                //return 2;
+            }
         }
 
         return 0;
@@ -156,23 +175,21 @@ class DisCompiler
     /**
     * Compile on source file
     */
-    private void compile(Source src)
+    private bool compile(Source src)
     {
         try
         {
+            auto parser = new Parser();
+            auto semantic = new Semantic();
+            auto cgen = new CCodeGen(ctx);
 
             //Parser
-            auto parser = new Parser();
-            parser.Src = src;
-
-            //parser.load(src);
-            //parser.parsePackage();
-        
-            //parse
-            auto pack = cast(PackageDeclaration)parser.parse();
+            log.Information("Parsing ...");
+            parser.load(src);
+            auto pack = parser.parsePackage();  //parser.parsePackage();
             
             //A new Source File have to result in a PackageNode
-            assert(pack !is null);
+            assert(pack !is null, "Parser doesn't return a package declaration");
 
             if(args.printAst)
                 dumpParser(pack);
@@ -184,25 +201,33 @@ class DisCompiler
             //add default version flags and so on
 
             //run semantics
-            auto semantic = new Semantic();
-            pack = cast(PackageDeclaration)semantic.run(pack);
+            log.Information("Semantic ...");
+            //semantic file logger for debugging?
+            pack = semantic.run(pack);
 
             //succesful semantic run result in a package declaration
-            assert(pack !is null);
+            assert(pack !is null, "Semantic doesn't return a package declaration");
 
+            log.Information("CodeGen ...");
             //compile package
-            auto cgen = new CCodeGen(ctx);
+
             cgen.compile(pack);
 
+            packages[pack.Name] = pack;
+
+            return true;
         }
         catch(Parser.ParserException exc)
         {
             log.Error(exc);
+            return false;
         }
         catch(Semantic.SemanticException exc)
         {
             log.Error(exc);
+            return false;
         }
+        //catch(CodeGenException)
     }
 
 
@@ -220,12 +245,12 @@ class DisCompiler
         while(lex.getToken().Type != TokenType.EOF)
         {
             auto t = lex.CurrentToken;
-            if(t.Type == TokenType.Identifier)
-                writefln("Identifier: %1$s", t.Value);
-            else if (t.Type == TokenType.String)
-                writefln("String: %1$s", t.Value);
-            else
-                writeln(dlf.dis.Token.toString(t.Type));
+            switch(t.Type)
+            {
+                case TokenType.Identifier: writefln("Identifier: %1$s", t.Value); break;
+                case TokenType.String: writefln("String: %1$s", t.Value); break;
+                default: writeln(t.toString());
+            }   
         }
         writeln("------- END LEXER DUMP ------------------------------");
 
@@ -255,6 +280,10 @@ class DisCompiler
         //Look for Import Files
         foreach(imp; pack.Imports)
         {
+            //TODO logging
+            // look into packages
+            // look into other sources if one matches this package
+
             // Search File
             // Parse File
             // Run Semantic 
@@ -265,7 +294,7 @@ class DisCompiler
     /**
     * Level Console Log Listener
     */
-    public LogSource.LogEvent.Dg LevelConsoleListener(LogType minimal)
+    public LogEvent.Dg LevelConsoleListener(LogType minimal)
     {
         return (LogSource ls, SysTime t, LogType ty, string msg)
         {

@@ -22,6 +22,8 @@ import std.array;
 import std.string;
 import std.file;
 
+import dlf.basic.Log;
+
 import dlf.ast.Visitor;
 import dlf.ast.Node;
 import dlf.ast.Declaration;
@@ -40,6 +42,9 @@ import dlf.gen.c.CBuilder;
 */
 class CCodeGen : CodeGen, Visitor
 {
+    /// Logger
+    private LogSource log = Log("CCodeGen");
+
     /// Compile Context
     private Context ctx;
 
@@ -61,6 +66,8 @@ class CCodeGen : CodeGen, Visitor
     /// Internal Generated DataTypes
     private CCNode[DataType] types;
 
+    //default header resource
+    //private static const string DisCGenHeader = import("dish.h");
 
     /**
     * Ctor
@@ -70,7 +77,7 @@ class CCodeGen : CodeGen, Visitor
         this.ctx = ctx;
         hdrgen = new HeaderGen();
         srcDir = ctx.ObjDir ~ "/src/";
-        assert(srcDir.isDir());
+        assert(srcDir.isDir(), "Target src dir isn't a directory");
 
         // Primary/Builtin Types
         types[VoidType.Instance] = ctype("void");
@@ -89,28 +96,24 @@ class CCodeGen : CodeGen, Visitor
         //special case utf8 -> 4 byte chars?
         //types[CharType.Instance] = ;
        
-        //string runtime linking
-        if(ctx.EnableRuntime)
-        {
-            //add runtime mangled string type
-            //
-            //types[StringType.Instance] = ctype("_Disrt.");
-        }
+        //string runtime linking 
+        //add it ever, failes if used and not linked to rt
+        //types[StringType.Instance] = ctype("_Disrt.");
     }
 
-    /**double
+    /**
     * Compile Package
     */
     void compile(PackageDeclaration pd)
     {
-        assert(pd !is null);
+        assert(pd !is null, "PackageDeclaration is null");
 
         //compile imports?
         //compile other packages first or look if they already compile
         //pd.Imports.Package
         foreach(ImportDeclaration id; pd.Imports)
         {
-            assert(id.Package !is null);
+            assert(id.Package !is null, "Import Package not parsed");
             p = writer.Package(srcDir, id.Package.Name);
             dispatchAuto(id.Package);
             //detect if one import has recompiled then this source should be recompiled too?

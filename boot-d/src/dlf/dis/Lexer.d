@@ -167,6 +167,7 @@ class Lexer
         mC = mSrc.getChar();
         if(mC == '\\')
         {
+            //escape chars
         }
 
         te.Value = to!string(mC);
@@ -175,6 +176,7 @@ class Lexer
         if(mC != '\'')
         {
             //error
+            throw new LexerException(Src.Loc, "A char can be only one character long");
         }
     }
 
@@ -392,11 +394,24 @@ class Lexer
         mKeywords["for"] = TokenType.KwFor;
         mKeywords["while"] = TokenType.KwWhile;
         mKeywords["do"] = TokenType.KwDo;
+        mKeywords["break"] = TokenType.KwBreak;
+        mKeywords["continue"] = TokenType.KwContinue;
         mKeywords["this"] = TokenType.KwThis;
         mKeywords["return"] = TokenType.KwReturn;
         mKeywords["null"] = TokenType.KwNull;
         mKeywords["true"] = TokenType.KwTrue;
         mKeywords["false"] = TokenType.KwFalse;
+    }
+
+    /**
+    * Lexer Exception
+    */
+    public static class LexerException : Exception
+    {
+        public this(Location loc, string msg)
+        {
+            super(msg);
+        }
     }
 } 
 

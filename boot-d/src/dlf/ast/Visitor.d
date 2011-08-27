@@ -65,9 +65,9 @@ public interface Visitor
 */
 Node dispatch(Node n, Visitor v, bool mod = false)
 {
-    assert(n !is null);
-    assert(v !is null);
-    assert(n.Self is null);
+    assert(n !is null, "Node shouldn't be null");
+    assert(v !is null, "Visitor shouldn't be null");
+    assert(n.Self is null, "A not null self, a dispatch goes wrong");
 
     /*final*/ 
     switch(n.Kind)
@@ -94,12 +94,14 @@ Node dispatch(Node n, Visitor v, bool mod = false)
 
 
         //Special
-        case NodeKind.Semantic: assert(false); //cant dispatch special nodes
-        case NodeKind.Backend: assert(false); 
+        case NodeKind.Semantic: assert(false, "Can't dispatch special node");
+        case NodeKind.Backend: assert(false, "Can't dispatch special node"); 
     
-        default: assert(false);
+        default: assert(false, "Missing dispatch case");
     }
 
+    assert(!(!mod && (n.Self !is null)), "Only with mod enabled a self should be set");
+         
     return mod && (n.Self !is null) ? n.Self : n;
 }
     

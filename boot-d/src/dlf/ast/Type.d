@@ -224,8 +224,8 @@ class ArrayType : DataType
 */
 class FunctionType : DataType
 {
-    /// The base function declaration of this type
-    public FunctionDeclaration FuncDecl;
+    /// The base function declaration of this type, Parent
+    public alias Parent FuncDecl;
 
     /// The function type arguments
     public DataType[] Arguments;
