@@ -66,6 +66,8 @@ public enum NodeKind : uint
     
     //DataType
     DataType,
+    OpaqueType,
+    UnsolvedType,
     FunctionType,
     ClassType,
     TraitType,

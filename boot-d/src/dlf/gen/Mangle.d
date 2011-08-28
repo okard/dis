@@ -18,6 +18,8 @@
 ******************************************************************************/
 module dlf.gen.Mangle;
 
+import std.string;
+
 import dlf.ast.Node;
 import dlf.ast.Declaration;
 import dlf.ast.Type;
@@ -44,12 +46,21 @@ static class Mangle
     */
     static string mangle(FunctionType f)
     {
+        string name;
+
+        int i = 0;
+        foreach(DataType dt; f.Arguments)
+        {
+            name = format("%d%s%s",i, dt.toString, name);
+            i++;
+        }
+
         //f.FuncDecl
         //first generate mangle for function type
         //then add function decl
         //then add parent function 
 
-        string name;
+  
         Node n = f.FuncDecl;
         while(n !is null)
         {
@@ -62,10 +73,10 @@ static class Mangle
 
             switch(d.Kind)
             {
-                case NodeKind.PackageDeclaration:
-                case NodeKind.ClassDeclaration:
-                case NodeKind.TraitDeclaration:
-                case NodeKind.FunctionDeclaration: name = d.Name ~ name; break;
+                case NodeKind.PackageDeclaration: name = "pkg" ~ d.Name ~ name; break;
+                case NodeKind.ClassDeclaration: name = "cls" ~ d.Name ~ name; break;
+                case NodeKind.TraitDeclaration: name = "trt" ~ d.Name ~ name; break;
+                case NodeKind.FunctionDeclaration: name = "fnc" ~ d.Name ~ name; break;
                 default:
             }
             

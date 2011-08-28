@@ -86,6 +86,7 @@ struct CBuilder
                 args ~= linkerFlags;
                 if(ctx.EnableRuntime) args ~= linkRuntime;
                 args ~= ["-o", ctx.OutFile];
+                args ~= ["-L", ctx.OutDir];
                 args ~= linkShared;
                 args ~= objfiles;
                 exec(args);
@@ -97,6 +98,7 @@ struct CBuilder
                 args ~= linkerFlags;
                 if(ctx.EnableRuntime) args ~= linkRuntime;
                 args ~= ["-o", ctx.OutFile];
+                args ~= ["-L", ctx.OutDir];
                 args ~= objfiles;
                 exec(args);
                 break;

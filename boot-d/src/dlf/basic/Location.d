@@ -49,6 +49,7 @@ struct Location
     public string toString()
     {
         //return here with Line+1 
-        return cast(string)(Name ~ ", Line " ~ to!(char[])(Line+1) ~ ", Col " ~ to!(char[])(Col));
+        //name:line-col
+        return cast(string)(Name ~ ":" ~ to!(char[])(Line+1) ~ "-" ~ to!(char[])(Col));
     }
 }

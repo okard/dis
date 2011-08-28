@@ -85,15 +85,30 @@ struct CCodeWriter
         }
 
         /**
+        * Write a comment
+        */
+        public void comment(string cmt)
+        {
+            //disable in release code gen?
+            Header.writefln("/* %s */", cmt);
+            Source.writefln("/* %s */", cmt);
+        }
+
+        /**
         * Write Debug C Preprocessor Line
         */
         public void debugln(Location loc)
         {
+            //TODO Check complete path
             //Header or Source? or Both
             Header.writefln("#line %d  \"%s\"", loc.Line, loc.Name);
             Source.writefln("#line %d  \"%s\"", loc.Line, loc.Name);
         }
 
+        
+
+        //glovalVariable
+        //BlockVariable
 
         //state 
         //create variable
@@ -112,6 +127,15 @@ struct CCodeWriter
         //so it can be appended when possible
         //add temp headers?
         //private writebfln() Write both
+
+        /**
+        * Get Header File Name
+        */
+        @property
+        public string HeaderFile()
+        {
+            return Header.name();
+        }
     }
 
 

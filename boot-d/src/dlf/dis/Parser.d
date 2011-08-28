@@ -22,6 +22,7 @@ import dlf.basic.Location;
 import dlf.basic.Source;
 import dlf.basic.Stack;
 import dlf.basic.Util;
+import dlf.basic.Log;
 
 import dlf.dis.Token;
 import dlf.dis.Lexer;
@@ -46,6 +47,9 @@ import std.stdio;
 */
 class Parser
 {
+    /// Logger
+    private LogSource log = Log("Parser");
+
     /// Lexer
     private Lexer mLex;
 
@@ -363,6 +367,7 @@ class Parser
         //TODO: keywords before: ref, const, in, out, this, ...
 
         FunctionParameter param = FunctionParameter();
+        param.Index = 0;
 
         //parse loop
         while(mToken.Type != TokenType.RCBracket)
@@ -384,18 +389,19 @@ class Parser
                 //change state?
                 continue;
 
-            case TokenType.RCBracket:
-                fd.Parameter ~= param;
-                return;
-
             case TokenType.Mul: /// Clear Pointer Type
                 param.Definition ~= "*";
                 break;
+            
+            case TokenType.RCBracket:
+                fd.Parameter ~= param;
+                return;
 
             case TokenType.Comma:
                 //one param finished
                 fd.Parameter ~= param;
                 param = FunctionParameter();
+                param.Index = cast(ushort)fd.Parameter.length;
                 break;
             
             default:
@@ -568,9 +574,23 @@ class Parser
         throw new ParserException(mToken.Loc, "Can't parse for statements at the moment");
     }
 
-    //parseDoWhile
-    //parseWhile
+    /**
+    * Parse While Loop
+    */
+    private WhileStatement parseWhile()
+    {
+        assertType(TokenType.KwWhile);
+        throw new ParserException(mToken.Loc, "Can't parse while statements at the moment");
+    }
 
+    /**
+    * Parse Do-While Loop
+    */
+    private WhileStatement parseDoWhile()
+    {
+        assertType(TokenType.KwDo);
+        throw new ParserException(mToken.Loc, "Can't parse do-while statements at the moment");
+    }
 
     /**
     * Parse Expressions
@@ -580,7 +600,7 @@ class Parser
         //parse one expression
         Expression expr = null;
 
-        writefln("Loc: %s, Tok: %s", mToken.Loc, mToken);
+        writefln("Parse Expr Loc: %s, Tok: %s", mToken.Loc, mToken);
 
         //Keyword Based
         //If-ElseIf-Else
@@ -814,7 +834,32 @@ class Parser
     */
     private DataType parseDataType()
     {
+        // Identifier
+        if(mToken.Type == TokenType.Identifier)
+        {
+            switch(peek(1))
+            {
+                //.
+                case TokenType.Dot: break;
+                //[ opt(num) ]
+                case TokenType.AOBracket: break;
+                //! datatype
+                //!(datatypes)
+                case TokenType.Not: break;
+
+                default: 
+                         //InternalTypes[mToken.Value]
+                         //internal lookup
+                         //parse
+                         //return unsolved type
+                         return new UnsolvedType(mToken.Value);
+            }
+        }
         
+        // Delegate Type
+        if(mToken.Type == TokenType.KwDef)
+        {
+        }
 
         //assert(mToken.Type == TokenType.Identifier);
       
@@ -825,6 +870,9 @@ class Parser
         //x!(a,b) -> Identifier!(DataType list) Template instantiation
         //def(a,b):c -> Delegate/FunctionType (datatypes) datatypes
         //x.y.z -> DotIdentifier 
+        //x.y.z[
+        //x.y.z!
+        //
 
         //identifier* -> Pointer type
         

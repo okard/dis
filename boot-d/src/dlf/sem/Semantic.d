@@ -58,6 +58,8 @@ class Semantic : Visitor
 
     //check all datatypes if a runtime type is used
 
+    //context? libraries doesnt have a main function?
+
     /**
     * Run semantic passes 
     * Parse Tree -> AST
@@ -150,6 +152,47 @@ class Semantic : Visitor
     { 
         Information("Semantic FuncDecl %s", func.Name);
 
+        if(func.Name == "main")
+        {
+            Information("Main Function detected");
+
+            assert(func.Body !is null, "main function required body");
+
+            assert(func.Parameter.length != 1, "a main function can only have one parameter");
+
+            if(func.ReturnType.Kind == NodeKind.OpaqueType)
+                func.ReturnType = VoidType.Instance;
+
+            //return type: unsolved then solved
+            //finally only int or void are allowed
+
+            assert(func.ReturnType == VoidType.Instance || func.ReturnType == IntType.Instance, "main function can be only have return type void or int");
+
+            //FunctionParameter for main should be 
+            
+            if(func.Instances.length == 0)
+            {
+                auto type = new FunctionType();
+                type.FuncDecl = func;
+                type.ReturnType = func.ReturnType;
+                
+                if(func.Parameter.length ==1)
+                {
+                    //at string[] argument
+                    //type.Arguments  ~=
+                }
+
+                func.Instances ~= type;
+                //generate instance
+                //mangled?
+            }
+        }
+
+        //if c calling convention only one instance is allowed
+
+        //Check Parameters
+        //only one vararg parameter allowed
+
         /*
         //resolve return value
         if(func.FuncType.ReturnType is null 
@@ -177,7 +220,6 @@ class Semantic : Visitor
         //go into Body
         if(func.Body !is null)
             func.Body = dispatchAuto(func.Body);
-
     }
 
      /**
@@ -223,6 +265,7 @@ class Semantic : Visitor
         mSymTable = block.SymTable;
 
         //analyze the declarations inside of blockstatement
+        //what is when parent is function, parameter variables
         
         foreach(Declaration sym; block.SymTable)
             dispatch(sym, this);
@@ -404,7 +447,8 @@ class Semantic : Visitor
     private void Information(T...)(string s, T args)
     {
         //TODO Change to Events
-        writefln(s, args);
+        //writefln(s, args);
+        log.log!(LogType.Information)(s, args);
     }
 
     /**
@@ -413,11 +457,21 @@ class Semantic : Visitor
     private void Error(T...)(string s, T args)
     {
         //TODO Change to Events
-        writefln(s, args);
+        //writefln(s, args);
+        log.log!(LogType.Error)(s, args);
         throw new SemanticException(format(s, args));
     }
 
     //Logging Signal? add Events for logging level
+
+    /**
+    * Logger 
+    */
+    @property
+    auto ref Logger()
+    {
+        return log;
+    }
     
 
     /**

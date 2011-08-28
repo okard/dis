@@ -31,6 +31,9 @@ abstract class DataType : Node
      /// is Runtime Type
      public bool isRuntimeType = false;
 
+     //ptr type
+     //type size
+
      /// Pointer Singleton Mixin
      protected mixin template PtrTypeSingleton()
      {
@@ -126,7 +129,7 @@ final class LongType : DataType
 /// 64 Bit
 final class ULongType : DataType
 {
-    override string toString() { return "ushort"; }
+    override string toString() { return "ulong"; }
     mixin Singleton!ULongType;
     mixin PtrTypeSingleton;
 }
@@ -154,6 +157,7 @@ final class OpaqueType : DataType
 {
     override string toString() { return "<Opaque>"; }
     mixin Singleton!OpaqueType;
+    mixin(IsKind("OpaqueType"));
 }
 
 /**
@@ -167,6 +171,7 @@ final class UnsolvedType : DataType
     this(string type){ TypeString = type; }
     /// to string
     override string toString() { return TypeString; };
+    mixin(IsKind("UnsolvedType"));
 }
 
 //unparsed datatype?

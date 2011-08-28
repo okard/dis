@@ -32,6 +32,7 @@ import dlf.ast.Expression;
 import dlf.ast.Type;
 import dlf.ast.Transform;
 
+import dlf.gen.Mangle;
 import dlf.gen.CodeGen;
 import dlf.gen.HeaderGen;
 import dlf.gen.c.CCodeWriter;
@@ -117,6 +118,8 @@ class CCodeGen : CodeGen, Visitor
             p = writer.Package(srcDir, id.Package.Name);
             dispatchAuto(id.Package);
             //detect if one import has recompiled then this source should be recompiled too?
+            //Imports to compile before? 
+            //so assert when its not yet compiled?
         }
 
         //check if already compiled
@@ -140,24 +143,9 @@ class CCodeGen : CodeGen, Visitor
             //hdrgen.create(folder, pd)
         }
 
-        //For Executables generate main function not so good only for package containing main???
-        if(ctx.Type == TargetType.Executable)
-        {
-            //if executable, create main.c file with runtime handling and main function call
-            //embed runtime etc
-            //write main function
-        }
 
-        //compile file
+        //compile file, create object file for this package
         builder.compile(ctx, writer.getCSources());
-
-        //buildeperate?
-        //resulting c files -> compile -> link
-        
-
-        //executeable
-        //shared lib
-        //static lib
     }
 
 
@@ -185,6 +173,8 @@ class CCodeGen : CodeGen, Visitor
         //Imports
 
         //check package imports they should go in first
+
+        mapDispatch(pd.Functions);
         
         p.close();
     }
@@ -205,17 +195,63 @@ class CCodeGen : CodeGen, Visitor
     */
     void visit(FunctionDeclaration fd)
     { 
-        //for def(C) declarations -> create c definitions
 
-        //foreach(fd.Instances)
+        foreach(FunctionType ft; fd.Instances)
+        {
+            gen(ft);
 
-        //compile FunctionType fd.Instances
-        //mangle name?
-        // datatype 
-
+            //if dis main is generated
+            //add wrapper c main
+            if(fd.Name == "main")
+                genCMain();
+        }
     }
 
-    void visit(VariableDeclaration vd){ }
+    /**
+    * Generate Function type
+    */
+    private void gen(FunctionType ft)
+    {
+        string mangle = Mangle.mangle(ft);
+        log.Information("Mangled name: %s", mangle);
+    
+        //c calling conevention not mangled
+        //functiontype declaration in header
+        //body in source
+        //ft.FuncDecl
+    }
+
+    /**
+    * Generate C main function
+    */
+    private void genCMain()
+    {
+        log.Information("Generate C Main Function");
+        //Write int main(int argc, char **argv){
+
+        p.Source.writeln("int main(int argc, char **argv)");
+        p.Source.writeln("{");
+        
+        if(ctx.EnableRuntime)
+        {
+            //init runtime
+        }
+
+        if(ctx.EnableRuntime)
+        {
+            //disable runtime
+        }
+
+        p.Source.writeln("}");
+    }
+    
+
+    void visit(VariableDeclaration vd)
+    {
+        //value vs reference type
+    }
+
+
     void visit(ClassDeclaration cd){  }
     void visit(TraitDeclaration td){  }
 
@@ -249,6 +285,15 @@ class CCodeGen : CodeGen, Visitor
         {
             dispatchAuto(elements[i]);
         }
+    }
+
+    /**
+    * Logger 
+    */
+    @property
+    auto ref Logger()
+    {
+        return log;
     }
 
     /**

@@ -22,3 +22,20 @@ With valid D2 & Tools (gnu make) in PATH type in console:
 
 $ make
 
+
+## Usage
+
+To use the dis boot compiler it is required you have gcc and tools available through PATH.
+
+To build the runtime type
+
+$ ./buildrt.sh under Linux (bash)
+
+To build a program you can use the wrapper script or start the compiler directly:
+
+$ ./disc.sh -o basic001 ../tests/runnable/basic001.dis
+$ ./bin/disc -o basic001 ../tests/runnable/basic001.dis 
+
+At the moment the search path handling for disrt library (dis runtime) is only partial implemented
+
+

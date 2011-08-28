@@ -194,6 +194,12 @@ class DisCompiler
             auto parser = new Parser();
             auto semantic = new Semantic();
             auto cgen = new CCodeGen(ctx);
+            
+            //log ahndling?
+            auto logfunc = LevelConsoleListener(LogType.Information);
+            //parser.Logger.OnLog += logfunc;
+            semantic.Logger.OnLog += logfunc;
+            cgen.Logger.OnLog += logfunc;
 
             //Parser
             log.Information("Parsing ...");
