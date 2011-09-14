@@ -29,19 +29,19 @@ import dlf.ast.Type;
 /**
 * extend a Node with appending an another one
 */
-public static void extend(Node n, Node e)
+/*public static void extend(Node n, Node e)
 {
     //if already extended add to bottom extended nodes
     if(n.Extend !is null)
             e.Parent = n.Extend;
 
     n.Extend = e;
-}
+}*/
 
 /**
 * Remove a extension node e from node n
 */
-public static void remove(Node n, Node e)
+/*public static void remove(Node n, Node e)
 {
     Node t = n.Extend;
 
@@ -59,7 +59,7 @@ public static void remove(Node n, Node e)
         }
     }
 
-}
+}*/
 
 
 /*
@@ -68,7 +68,7 @@ public static void remove(Node n, Node e)
 * TODO type filter template
 * TODO parameter unique to generate errors if multiple instances of one type exist
 */
-public Node[] extensions(Node n)
+/*public Node[] extensions(Node n)
 {
     if(n.Extend is null)
         return null;
@@ -82,12 +82,12 @@ public Node[] extensions(Node n)
     while(n.Extend !is null);
 
     return list;
-}
+}*/
 
 /**
 * Extract a single extended node from node
 */
-public T ext(T : Node)(Node n, bool unique = true )
+/*public T ext(T : Node)(Node n, bool unique = true )
 {
     T result = null;
 
@@ -103,7 +103,7 @@ public T ext(T : Node)(Node n, bool unique = true )
     while(n !is null)
 
     return result;
-}
+}*/
 
 
 

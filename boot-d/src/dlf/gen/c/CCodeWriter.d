@@ -150,9 +150,9 @@ struct CCodeWriter
         auto pack = new CPackage();
         packages ~= pack;
 
-        //TODO use std.path
-        pack.Header = File(dir~name~".h", "w");
-        pack.Source = File(dir~name~".c", "w");
+        //TODO std.path does not work with dots in name
+        pack.Header = File(buildPath(dir, name~".h"), "w");
+        pack.Source = File(buildPath(dir, name~".c"), "w");
         return pack;
     }
 

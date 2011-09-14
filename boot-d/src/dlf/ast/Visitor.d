@@ -51,12 +51,17 @@ public interface Visitor
     void visit(AssignExpression);
     void visit(BinaryExpression);
 
-    //Annotations:
+    //Annotations
+
+    //Types
+    
     }
 
     //voids with ref for modification or not?
     //handle in dispatch so pd = dispatch(pd) works?
     //but remove the requirement of return variables?
+    //in-out visitor void visit(LiteralExpression in, Node out);
+    //disable special ranges (declarations, statements, expression, types, and so on)
 }
 
 
@@ -92,6 +97,7 @@ Node dispatch(Node n, Visitor v, bool mod = false)
         case NodeKind.AssignExpression: v.visit(cast(AssignExpression)n); break;
         case NodeKind.BinaryExpression: v.visit(cast(BinaryExpression)n); break;
 
+        //Types
 
         //Special
         case NodeKind.Semantic: assert(false, "Can't dispatch special node");

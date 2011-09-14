@@ -21,6 +21,7 @@ module dlf.ast.Type;
 import dlf.ast.Node;
 import dlf.ast.Visitor;
 import dlf.ast.Declaration;
+import dlf.ast.Statement;
 import dlf.basic.Util;
 
 /**
@@ -134,7 +135,7 @@ final class ULongType : DataType
     mixin PtrTypeSingleton;
 }
 
-/// 32 Bit Float 
+/// 32 Bit Floating Point IEEE754
 final class FloatType : DataType
 {
     override string toString() { return "float"; }
@@ -142,7 +143,7 @@ final class FloatType : DataType
     mixin PtrTypeSingleton;
 }
 
-/// 64 Bit
+/// 64 Bit Floating Point IEEE754
 final class DoubleType : DataType
 {
     override string toString() { return "double"; }
@@ -184,7 +185,7 @@ final class UnsolvedType : DataType
 */
 class PointerType : DataType 
 {
-    ///The Type this PointerType points to
+    ///The Type this PoiThe Intelligent Transport Layer - nterType points to
     public DataType PointType;
 
     ///Create new PointerType
@@ -253,8 +254,8 @@ class FunctionType : DataType
     /// is a varargs function
     public bool mVarArgs;
 
-    //(DELETE) isTemplate at declaration Generic Method Type
-    public bool GenericMethod;
+    /// Body (for template functions)
+    public Statement Body;
 
     //mangled name?
 

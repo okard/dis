@@ -128,7 +128,7 @@ final class FunctionDeclaration : Declaration
     public Statement Body;
 
     /// Is Template Function (here?)
-    bool isTemplate;
+    bool IsTemplate;
 
     ///is a extension method declaration
     public bool IsExtensionMethod;

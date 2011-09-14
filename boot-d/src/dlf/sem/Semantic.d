@@ -32,6 +32,8 @@ import dlf.ast.Type;
 import dlf.ast.SymbolTable;
 import dlf.ast.Transform;
 
+import dlf.sem.Valid;
+
 import std.stdio;
 
 //TODO Add Initializer Expressions for builtin data types
@@ -75,7 +77,7 @@ class Semantic : Visitor
     */
     public PackageDeclaration run(PackageDeclaration pd)
     {
-        return dispatchAuto(pd);
+        return autoDispatch(pd);
     }
 
     /**new CPackage()
@@ -111,7 +113,7 @@ class Semantic : Visitor
 
         //semantic check for available PackageDeclarations
         if(impDecl.Package !is null)
-            impDecl.Package = dispatchAuto(impDecl.Package);
+            impDecl.Package = autoDispatch(impDecl.Package);
         else
             Error("\tImport %s has not been solved", impDecl.Name);
 
@@ -131,6 +133,10 @@ class Semantic : Visitor
     */
     void visit(ClassDeclaration cls)
     {
+        //Cases:
+        //  Explicit Class -> One Instance
+        //  Template Class -> Multiple Instances -> Multiple BlockStatements
+
         //when no inheritance parsed
         //add rt.object as default (when no runtime is specific, when runtime disabled error it is required to inherit from)
         //check inheritance templated traits, parent classes
@@ -152,41 +158,35 @@ class Semantic : Visitor
     { 
         Information("Semantic FuncDecl %s", func.Name);
 
+
+        //Cases:
+        // 1. Main Function
+        // 2. Declaration
+        // 3. Explicit Declaration
+        // 4. Template Functions (requires special body for each function, requires copy)
+
+        //first solve parameter array (resolve datatypes, detect complete
+        analyzeFuncParam(func);
+
+        //special case main function
         if(func.Name == "main")
         {
             Information("Main Function detected");
-
-            assert(func.Body !is null, "main function required body");
-
-            assert(func.Parameter.length != 1, "a main function can only have one parameter");
-
-            if(func.ReturnType.Kind == NodeKind.OpaqueType)
-                func.ReturnType = VoidType.Instance;
-
-            //return type: unsolved then solved
-            //finally only int or void are allowed
-
-            assert(func.ReturnType == VoidType.Instance || func.ReturnType == IntType.Instance, "main function can be only have return type void or int");
-
-            //FunctionParameter for main should be 
-            
-            if(func.Instances.length == 0)
-            {
-                auto type = new FunctionType();
-                type.FuncDecl = func;
-                type.ReturnType = func.ReturnType;
-                
-                if(func.Parameter.length ==1)
-                {
-                    //at string[] argument
-                    //type.Arguments  ~=
-                }
-
-                func.Instances ~= type;
-                //generate instance
-                //mangled?
-            }
+            analyzeMainFunc(func);
         }
+
+        //resolve datatypes
+        //create instance when single
+
+        if(func.Body is null)
+        {
+            //its a declaration
+            //it must have unambiguous parameter datatypes
+            assert(!func.IsTemplate);
+        }
+
+        //if(!func.isTemplate one Instance have to Exist
+
 
         //if c calling convention only one instance is allowed
 
@@ -208,7 +208,8 @@ class Semantic : Visitor
             Information("\t ReturnType is %s", func.FuncType.ReturnType.toString());
         */
 
-        //create instance for main 
+        //foreach instance check body
+        //create body instances?
 
         //check if no Body then do through parameters 
         //Single Pairs are types
@@ -219,7 +220,7 @@ class Semantic : Visitor
         
         //go into Body
         if(func.Body !is null)
-            func.Body = dispatchAuto(func.Body);
+            func.Body = autoDispatch(func.Body);
     }
 
      /**
@@ -231,7 +232,7 @@ class Semantic : Visitor
 
         //Do Semantic Analysis for Initializer Expression if available
         if(var.Initializer !is null)
-            var.Initializer = dispatchAuto(var.Initializer);
+            var.Initializer = autoDispatch(var.Initializer);
 
         //Set Datatype for Variable
         if(var.VarDataType == OpaqueType.Instance)
@@ -281,7 +282,7 @@ class Semantic : Visitor
     void visit(ExpressionStatement expr)
     {
         //visit Expression
-        expr.Expr = dispatchAuto(expr.Expr);
+        expr.Expr = autoDispatch(expr.Expr);
 
     }
 
@@ -318,7 +319,9 @@ class Semantic : Visitor
             if(resolve !is null)
             {
                 Information("\t Resolve type: %s", resolve);
-                extend(call.Function, resolve);
+                //TODO fix this
+                //extend(call.Function, resolve);
+                call.Function.Semantic = resolve;
             }
             //look foreach
             //get function declaration
@@ -354,8 +357,8 @@ class Semantic : Visitor
     void visit(BinaryExpression be)
     {
         //analyze left and right expression first
-        be.Left = dispatchAuto(be.Left);
-        be.Right = dispatchAuto(be.Right);
+        be.Left = autoDispatch(be.Left);
+        be.Right = autoDispatch(be.Right);
         
         //look for type match
 
@@ -395,6 +398,8 @@ class Semantic : Visitor
             return null;
         }
 
+        //Instances and arguments
+
         //TODO Detect this at front
 
         auto elements = di.length;
@@ -422,10 +427,69 @@ class Semantic : Visitor
         return null;
     }
 
+    //TODO Mixin Templates?
+    //mixin(Types); Functions, and so on
+
+
+    /**
+    * Analyze the function parameter definition
+    */
+    private void analyzeFuncParam(ref FunctionDeclaration fd)
+    {
+        //detect if template function or not
+
+        foreach(FunctionParameter p; fd.Parameter)
+        {
+        }
+    }
+
+    /**
+    * Analyze Main Function
+    */
+    private void analyzeMainFunc(ref FunctionDeclaration func)
+    {
+        assert(func.Name == "main");
+
+        assert(func.Body !is null, "main function required body");
+
+        assert(func.Parameter.length != 1, "a main function can only have one parameter");
+
+        if(func.ReturnType.Kind == NodeKind.OpaqueType)
+            func.ReturnType = VoidType.Instance;
+
+        //return type: unsolved then solved
+        //finally only int or void are allowed
+
+        assert(func.ReturnType == VoidType.Instance || func.ReturnType == IntType.Instance, "main function can be only have return type void or int");
+
+        //FunctionParameter for main should be 
+        
+        if(func.Instances.length == 0)
+        {
+            auto type = new FunctionType();
+            type.FuncDecl = func;
+            type.ReturnType = func.ReturnType;
+            type.Body = func.Body;
+            
+            if(func.Parameter.length ==1)
+            {
+                //at string[] argument
+                //type.Arguments  ~=
+            }
+
+            func.Instances ~= type;
+            //generate instance
+            //mangled?
+        }
+
+        //requires body
+    }
+
+
     /**
     * Auto Dispatch
     */
-    private T dispatchAuto(T)(T e)
+    private T autoDispatch(T)(T e)
     {
         return cast(T)dispatch(e, this, true);
     }
@@ -437,7 +501,7 @@ class Semantic : Visitor
     {
         for(int i=0; i < elements.length; i++)
         {
-            elements[i] = dispatchAuto(elements[i]);
+            elements[i] = autoDispatch(elements[i]);
         }
     }
 

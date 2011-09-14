@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-files=$(find ../rt/ -name *.dis -printf "%p ")
+files=$(find ../runtime/rt/ -name *.dis -printf "%p ")
 
 #echo $files
 

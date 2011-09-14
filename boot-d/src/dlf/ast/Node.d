@@ -91,8 +91,11 @@ abstract class Node
     /// Location
     public Location Loc;
 
-    /// For Node Extensions in Semantic and Compiler Passes (fixed size?)
-    public Node Extend;
+    /// Storage for Semantic Node
+    public Node Semantic;
+
+    /// Storage for CodeGen Node
+    public Node CodeGen;
 
     /// Kind (immutable)? function?
     @property public abstract NodeKind Kind();

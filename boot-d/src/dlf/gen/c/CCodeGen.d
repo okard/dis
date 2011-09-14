@@ -131,7 +131,8 @@ class CCodeGen : CodeGen, Visitor
         //Create C Package
         p = writer.Package(srcDir, pd.Name);
 
-        extend(pd, cheader(p.Header.name));
+        //add a header node
+        pd.CodeGen = cheader(p.Header.name);
         
         //start creating definitions
         dispatchAuto(pd);
@@ -212,10 +213,17 @@ class CCodeGen : CodeGen, Visitor
     */
     private void gen(FunctionType ft)
     {
+        //c calling convention not mangled
+
         string mangle = Mangle.mangle(ft);
         log.Information("Mangled name: %s", mangle);
     
-        //c calling conevention not mangled
+        //write
+
+        //if(ft.Body != null)
+        //dispatch(ft.Body)
+    
+        
         //functiontype declaration in header
         //body in source
         //ft.FuncDecl
@@ -236,6 +244,9 @@ class CCodeGen : CodeGen, Visitor
         {
             //init runtime
         }
+
+        //convert arguments to dis array (runtime??)
+        //call dis main
 
         if(ctx.EnableRuntime)
         {

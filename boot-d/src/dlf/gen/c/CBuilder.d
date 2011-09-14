@@ -58,7 +58,7 @@ struct CBuilder
             string[] args;
             args ~= compilerExec;
             args ~= compilerFlags;
-            string objfile = ctx.ObjDir ~ "/" ~ basename(src) ~ ".o";
+            string objfile = buildPath(ctx.ObjDir, setExtension(baseName(src), ".o"));
             args ~= ["-o", objfile] ;
             args ~= src;
 
