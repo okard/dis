@@ -19,6 +19,7 @@
 module dlf.gen.c.CCodeWriter;
 
 import std.stdio;
+import std.array;
 import std.file;
 import std.path;
 
@@ -105,6 +106,16 @@ struct CCodeWriter
             Source.writefln("#line %d  \"%s\"", loc.Line, loc.Name);
         }
 
+
+        /**
+        * Write Function Declaration
+        */
+        public void funcDecl(string rettype, string name)
+        {
+            Header.writefln("%s %s();", rettype, name);
+        }
+
+        //startBlock 
         
 
         //glovalVariable
@@ -116,6 +127,7 @@ struct CCodeWriter
         //Create function declaration
         //Create struct declaration 
 
+        //where?
         //openBlock
         //closeBlock
 
@@ -151,8 +163,8 @@ struct CCodeWriter
         packages ~= pack;
 
         //TODO std.path does not work with dots in name
-        pack.Header = File(buildPath(dir, name~".h"), "w");
-        pack.Source = File(buildPath(dir, name~".c"), "w");
+        pack.Header = File(buildPath(dir, setExtension(name.replace(".", "_"),".h")), "w");
+        pack.Source = File(buildPath(dir, setExtension(name.replace(".", "_"),".c")), "w");
         return pack;
     }
 

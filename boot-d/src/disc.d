@@ -45,8 +45,11 @@ class CommandLineArg : ArgHelper
     public bool printToken;  //print lexer tokens
     public bool printAst;    //print ast
     public bool printSem;    //print Semantic Log
+    public bool verboseLogging;
+    
     public bool noRuntime = false;   //no runtime
     public string outFile;   //output name
+    
 
     public TargetType targType = TargetType.Executable;
     //compile context
@@ -60,6 +63,7 @@ class CommandLineArg : ArgHelper
         Options["--print-lex"] = (){ printToken = true; };
         Options["--print-ast"] = (){ printAst = true; };
         Options["--print-sem"] = (){ printSem = true; };
+        Options["--verbose"] = (){ verboseLogging = true; };
         Options["--no-runtime"] = (){ noRuntime = true; };
         Options["-sharedlib"] = (){targType = TargetType.SharedLib; disallow(["-staticlib"]);};
         Options["-staticlib"] = (){targType = TargetType.StaticLib; disallow(["-sharedlib"]);};
@@ -197,9 +201,9 @@ class DisCompiler
             
             //log ahndling?
             auto logfunc = LevelConsoleListener(LogType.Information);
-            //parser.Logger.OnLog += logfunc;
-            semantic.Logger.OnLog += logfunc;
-            cgen.Logger.OnLog += logfunc;
+            parser.OnLog += logfunc;
+            semantic.OnLog += logfunc;
+            cgen.OnLog += logfunc;
 
             //Parser
             log.Information("Parsing ...");

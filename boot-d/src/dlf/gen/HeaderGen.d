@@ -40,6 +40,7 @@ class HeaderGen : Visitor
     {
         //path.isDir();
 
+        //create directory structure
         //file = join(path, pd.name )
 
         //hdr = File(file, "w");

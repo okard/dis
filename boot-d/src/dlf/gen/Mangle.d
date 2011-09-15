@@ -19,6 +19,8 @@
 module dlf.gen.Mangle;
 
 import std.string;
+import std.array;
+import std.conv;
 
 import dlf.ast.Node;
 import dlf.ast.Declaration;
@@ -73,16 +75,17 @@ static class Mangle
 
             switch(d.Kind)
             {
-                case NodeKind.PackageDeclaration: name = "pkg" ~ d.Name ~ name; break;
-                case NodeKind.ClassDeclaration: name = "cls" ~ d.Name ~ name; break;
-                case NodeKind.TraitDeclaration: name = "trt" ~ d.Name ~ name; break;
-                case NodeKind.FunctionDeclaration: name = "fnc" ~ d.Name ~ name; break;
+                case NodeKind.PackageDeclaration: name = "pkg" ~ to!(string)(d.Name.length) ~ d.Name.replace(".","_") ~ name; break;
+                case NodeKind.ClassDeclaration: name = "cls" ~ to!(string)(d.Name.length) ~ d.Name ~ name; break;
+                case NodeKind.TraitDeclaration: name = "trt" ~ to!(string)(d.Name.length) ~ d.Name ~ name; break;
+                case NodeKind.FunctionDeclaration: name = "fnc" ~ to!(string)(d.Name.length) ~ d.Name ~ name; break;
                 default:
             }
             
             n = n.Parent;
         }
         
+        name = "_dis" ~ name;
         return name;
     }
 
@@ -92,7 +95,7 @@ static class Mangle
     /**
     * Get mangled name for declaration 
     */
-    static string mangle(Declaration decl)
+    /*static string mangle(Declaration decl)
     {
         string name = "";
         //Functions have Parameters
@@ -136,7 +139,7 @@ static class Mangle
         name = "_Dis" ~ name;
         
         return name;
-    }
+    }*/
 
     /**
     * Convert mangled string into readable string

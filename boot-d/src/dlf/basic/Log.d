@@ -18,7 +18,6 @@
 ******************************************************************************/
 module dlf.basic.Log;
 
-import std.stdio;
 import std.string;
 import std.datetime;
 
@@ -199,6 +198,8 @@ final static class Log
 */
 public void ConsoleListener(LogSource ls, SysTime t, LogType ty, string msg)
 {
+    import std.stdio;
+
     string type;
     final switch(ty) {
     case LogType.Verbose: type = "Verbose"; break;
@@ -215,12 +216,16 @@ public void ConsoleListener(LogSource ls, SysTime t, LogType ty, string msg)
 /**
 * File Log Listener
 */
-public LogEvent.Dg FileListener(string file)
+public LogEvent.Dg FileListener(string file, LogType minimal)
 {
+    import std.stdio;
+
+    auto f = File(file, "a");
+
     return (LogSource ls, SysTime t, LogType ty,string msg)
     {
-        auto f = File(file, "a");
-        f.writefln("%1$s: %2$s", ls.Name, msg);
+        if(ty >= minimal)
+            f.writefln("%1$s: %2$s", ls.Name, msg);
     };
 }
 

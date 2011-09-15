@@ -529,12 +529,12 @@ class Semantic : Visitor
     //Logging Signal? add Events for logging level
 
     /**
-    * Logger 
+    * Log Event
     */
     @property
-    auto ref Logger()
+    ref LogEvent OnLog()
     {
-        return log;
+        return log.OnLog;
     }
     
 

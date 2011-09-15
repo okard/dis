@@ -217,12 +217,25 @@ class CCodeGen : CodeGen, Visitor
 
         string mangle = Mangle.mangle(ft);
         log.Information("Mangled name: %s", mangle);
+
+        //TODO checking
+        //TODO prepare parameter
+
+        //TODO write demangled name above as comment
+
+
+        ft.CodeGen = cfunction(mangle);
+
+        string rettype = types[ft.ReturnType].Identifier;
+
+        p.funcDecl(rettype, mangle);
     
         //write
 
         //if(ft.Body != null)
         //dispatch(ft.Body)
-    
+        
+        //write function body?
         
         //functiontype declaration in header
         //body in source
@@ -267,7 +280,11 @@ class CCodeGen : CodeGen, Visitor
     void visit(TraitDeclaration td){  }
 
     //Statements
-    void visit(BlockStatement bs){  }
+    void visit(BlockStatement bs)
+    {  
+        //p.startBlock
+        //p.endBlock
+    }
     void visit(ExpressionStatement es){  }
     void visit(ReturnStatement rt){  }
 
@@ -298,13 +315,13 @@ class CCodeGen : CodeGen, Visitor
         }
     }
 
-    /**
-    * Logger 
+   /**
+    * Log Event
     */
     @property
-    auto ref Logger()
+    ref LogEvent OnLog()
     {
-        return log;
+        return log.OnLog;
     }
 
     /**

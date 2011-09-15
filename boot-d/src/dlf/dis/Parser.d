@@ -1035,6 +1035,16 @@ class Parser
         return mLex.Src;
     }
 
+
+    /**
+    * Log Event
+    */
+    @property
+    ref LogEvent OnLog()
+    {
+        return log.OnLog;
+    }
+
     ///@property public ParseResult Result();
 
     /**
