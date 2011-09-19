@@ -149,6 +149,10 @@ class DisCompiler
             return 1;
         }
 
+        //first parse each file
+        //than run semantic on each file
+        //than run code gen
+
         //Compile each source file
         foreach(string srcfile; srcFiles)
         {

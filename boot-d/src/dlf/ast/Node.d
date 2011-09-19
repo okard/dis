@@ -124,3 +124,7 @@ bool isExpression(Node n) { return n.Kind >= NodeKind.Expression && n.Kind < Nod
 
 //isDataType
 //isAnnotation
+
+bool isBackendNode(Node n) { return n is null ? false : n.Kind == NodeKind.Backend; }
+
+bool isSemanticNode(Node n) { return n is null ? false : n.Kind == NodeKind.Semantic; }

@@ -30,7 +30,7 @@ import dlf.ast.SymbolTable;
 */
 abstract class Statement : Node
 {
-
+    //index?
 } 
 
 /**

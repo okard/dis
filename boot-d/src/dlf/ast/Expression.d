@@ -180,10 +180,14 @@ final class AssignExpression : Expression
 */
 final class IfExpression : Expression
 {
-    ///Condition
+    /// Condition
     Expression Condition;
     
-    // else if, else
+    /// Else Ifs Expressions
+    IfExpression[] ElseIfsExpr;
+
+    /// Else Expression
+    Expression ElseExpr;
 
     ///Mixin for Kind Declaration
     mixin(IsKind("IfExpression"));

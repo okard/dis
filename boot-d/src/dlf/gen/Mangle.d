@@ -75,10 +75,18 @@ static class Mangle
 
             switch(d.Kind)
             {
-                case NodeKind.PackageDeclaration: name = "pkg" ~ to!(string)(d.Name.length) ~ d.Name.replace(".","_") ~ name; break;
-                case NodeKind.ClassDeclaration: name = "cls" ~ to!(string)(d.Name.length) ~ d.Name ~ name; break;
-                case NodeKind.TraitDeclaration: name = "trt" ~ to!(string)(d.Name.length) ~ d.Name ~ name; break;
-                case NodeKind.FunctionDeclaration: name = "fnc" ~ to!(string)(d.Name.length) ~ d.Name ~ name; break;
+                case NodeKind.PackageDeclaration: 
+                    name = "pkg" ~ to!(string)(d.Name.length) ~ d.Name.replace(".","_") ~ name; 
+                    break;
+                case NodeKind.ClassDeclaration: 
+                    name = "cls" ~ to!(string)(d.Name.length) ~ d.Name ~ name; 
+                    break;
+                case NodeKind.TraitDeclaration: 
+                    name = "trt" ~ to!(string)(d.Name.length) ~ d.Name ~ name; 
+                    break;
+                case NodeKind.FunctionDeclaration: 
+                    name = "fnc" ~ to!(string)(d.Name.length) ~ d.Name ~ name; 
+                    break;
                 default:
             }
             

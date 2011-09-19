@@ -117,6 +117,7 @@ class Semantic : Visitor
         else
             Error("\tImport %s has not been solved", impDecl.Name);
 
+        //semantic on package should have been run
 
 
         //when a type resolved from import package
@@ -249,7 +250,7 @@ class Semantic : Visitor
         {   
             //for class types generate constructor call?
             //check for allowed conversions?
-            // implicit casts check
+            // implize_t]icit casts check
             Information("\tVarType: %s, InitType: %s", var.VarDataType,var.Initializer.ReturnType); 
             //assert(var.VarDataType == var.Initializer.ReturnType);
         }

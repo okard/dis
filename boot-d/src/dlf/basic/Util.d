@@ -91,18 +91,32 @@ static class ApplicationPath
             buf[bs] = '\0';
             auto c = new char[](bs);
             c = buf[0..bs];
-            return to!string(c);
+            return std.conv.to!string(c);
         }
     }
 }
 
-
+/**
+* Check if a string is empty
+*/
 bool empty(string str)
 {
     if(str is null) return true;
     if(str.length <= 0) return true;
     if(str == "") return true;
     return false;
+}
+
+/**
+* Safe cast
+*/
+T to(T)(Object o)
+{
+    auto t = cast(T)o;
+    if(t is null)
+        throw new Exception("Can't cast " ~ typeid(o).toString() ~ " to " ~ typeid(T).toString());
+
+    return t;
 }
 
 // UnitTests ==================================================================

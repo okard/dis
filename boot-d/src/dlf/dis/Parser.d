@@ -225,7 +225,7 @@ class Parser
         //must be class class
         assertType(TokenType.KwClass);
 
-        // class identifier(template args) : inherits {
+        // class(kw param) identifier(template args) : inherits {
 
 
         return null;
