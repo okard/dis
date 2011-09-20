@@ -20,6 +20,7 @@ module dlf.basic.Util;
 
 import std.conv;
 version(linux) import core.sys.posix.unistd;
+version(Windows) import core.sys.windows.windows;
 
 /**
 * Is in Array Function
@@ -73,8 +74,8 @@ static class ApplicationPath
     {
         static string get()
         {
-            wchar buf[BUFFER_SIZE];
-            auto bs = GetModuleFileNameW(GetModuleHandleW(null), buf.ptr, BUFFER_SIZE);
+            char buf[BUFFER_SIZE];
+            auto bs = GetModuleFileNameA(GetModuleHandleW(null), buf.ptr, BUFFER_SIZE);
             auto str = to!string(buf[0..bs]);
             //str = Util.replace!(char)(str,'\\','/');
             return str;

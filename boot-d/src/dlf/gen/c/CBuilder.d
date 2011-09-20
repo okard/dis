@@ -36,7 +36,7 @@ struct CBuilder
 
     /// Linker
     private static string linkerExec = "gcc";
-    private static string[] linkerFlags = ["-lc"];
+    private static string[] linkerFlags = [];
     private static string linkRuntime = "-ldisrt";
     private static string linkShared = "-shared";
 
