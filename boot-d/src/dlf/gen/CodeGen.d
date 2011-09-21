@@ -22,32 +22,12 @@ import dlf.ast.Node;
 import dlf.ast.Declaration;
 
 
-/// Target Type
-enum TargetType { Executable, StaticLib, SharedLib }
-
-/// Target Platform
-enum TargetPlatform { Linux, MacOSX, Windows }
-
-/// Target Arch
-enum TargetArch { x86_32, x86_64, ARM }
-
-
 /**
 * Codegen Context
 */
-struct Context
+struct BackendContext
 {
-    ///Target Type
-    TargetType Type;
-
-    ///Target Platform
-    TargetPlatform Platform;
-
-    ///Target Architecture
-    TargetArch Arch;
-
-    /// Link program with runtime
-    bool EnableRuntime = true;
+    //Libraries to Link
 
     /// Object files directory
     string ObjDir;
@@ -60,12 +40,8 @@ struct Context
 
     /// Header directory for library generation
     string HeaderDir;
-
-    //Package, SourceCode resolving
 }
 
-
-//TODO Split interface compiling and linking to steps need shared context
 //a compiling interface creates object files
 //a linker interface link them together to final program
 

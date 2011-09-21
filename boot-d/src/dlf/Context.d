@@ -20,14 +20,35 @@ module dlf.Context;
 
 import dlf.gen.CodeGen;
 
+/// Target Type
+enum TargetType { Executable, StaticLib, SharedLib }
+
+/// Target Platform
+enum TargetPlatform { Linux, MacOSX, Windows }
+
+/// Target Arch
+enum TargetArch { x86_32, x86_64, ARM }
+
 /**
 * Global Compiler Context
 */ 
-struct Context
+class Context
 {
-    //shared values
+    ///Target Type
+    TargetType Type;
+
+    ///Target Platform
+    TargetPlatform Platform;
+
+    ///Target Architecture
+    TargetArch Arch;
+
+    /// Link program with runtime
+    bool EnableRuntime = true;
 
     //parser context
     //semantic context
-    //codegen context
+
+    ///Backend/CodeGen Context
+    BackendContext Backend;
 }

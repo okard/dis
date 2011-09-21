@@ -21,6 +21,7 @@ module dlf.gen.c.CCodeGen;
 import std.array;
 import std.string;
 import std.file;
+import std.path;
 
 import dlf.basic.Log;
 
@@ -32,6 +33,7 @@ import dlf.ast.Expression;
 import dlf.ast.Type;
 import dlf.ast.Transform;
 
+import dlf.Context;
 import dlf.gen.Mangle;
 import dlf.gen.CodeGen;
 import dlf.gen.HeaderGen;
@@ -77,7 +79,7 @@ class CCodeGen : CodeGen, Visitor
     {
         this.ctx = ctx;
         hdrgen = new HeaderGen();
-        srcDir = ctx.ObjDir ~ "/src/";
+        srcDir = buildPath(ctx.Backend.ObjDir, "src");
         assert(srcDir.isDir(), "Target src dir isn't a directory");
 
         // Primary/Builtin Types

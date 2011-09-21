@@ -23,6 +23,7 @@ import std.path;
 import std.process;
 import std.stdio;
 
+import dlf.Context;
 import dlf.gen.CodeGen;
 
 /**
@@ -58,7 +59,7 @@ struct CBuilder
             string[] args;
             args ~= compilerExec;
             args ~= compilerFlags;
-            string objfile = buildPath(ctx.ObjDir, setExtension(baseName(src), ".o"));
+            string objfile = buildPath(ctx.Backend.ObjDir, setExtension(baseName(src), ".o"));
             args ~= ["-o", objfile] ;
             args ~= src;
 
@@ -85,8 +86,8 @@ struct CBuilder
                 args ~= linkerExec;
                 args ~= linkerFlags;
                 if(ctx.EnableRuntime) args ~= linkRuntime;
-                args ~= ["-o", ctx.OutFile];
-                args ~= ["-L", ctx.OutDir];
+                args ~= ["-o", ctx.Backend.OutFile];
+                args ~= ["-L", ctx.Backend.OutDir];
                 args ~= linkShared;
                 args ~= objfiles;
                 exec(args);
@@ -97,8 +98,8 @@ struct CBuilder
                 args ~= linkerExec;
                 args ~= linkerFlags;
                 if(ctx.EnableRuntime) args ~= linkRuntime;
-                args ~= ["-o", ctx.OutFile];
-                args ~= ["-L", ctx.OutDir];
+                args ~= ["-o", ctx.Backend.OutFile];
+                args ~= ["-L", ctx.Backend.OutDir];
                 args ~= objfiles;
                 exec(args);
                 break;

@@ -25,13 +25,18 @@ import dlf.basic.Log;
 import dlf.basic.Source;
 import dlf.basic.ArgHelper;
 import dlf.basic.Util;
+
 import dlf.ast.Printer;
 import dlf.ast.Node;
 import dlf.ast.Declaration;
 import dlf.dis.Token;
 import dlf.dis.Lexer;
+
 import dlf.dis.Parser;
+
 import dlf.sem.Semantic;
+
+import dlf.Context;
 import dlf.gen.CodeGen;
 import dlf.gen.c.CCodeGen;
 
@@ -118,11 +123,12 @@ class DisCompiler
         //TODO config and command line parsing
 
         //default args
+        ctx = new Context();
         ctx.EnableRuntime = !this.args.noRuntime;
-        ctx.ObjDir = ".objdis";
-        ctx.OutDir = "bin";
-        ctx.OutFile = empty(this.args.outFile) ? ctx.OutDir ~"/unkown" : this.args.outFile;
-        ctx.HeaderDir = "bin/header";
+        ctx.Backend.ObjDir = ".objdis";
+        ctx.Backend.OutDir = "bin";
+        ctx.Backend.OutFile = empty(this.args.outFile) ? ctx.Backend.OutDir ~"/unkown" : this.args.outFile;
+        ctx.Backend.HeaderDir = "bin/header";
         
         ctx.Type = this.args.targType;
 
