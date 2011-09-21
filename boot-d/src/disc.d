@@ -111,12 +111,12 @@ class DisCompiler
     /// Store parsed packages package name or file
     private PackageDeclaration[string] packages;
 
-    //Object File for Package
-
+    /// a full package
     private struct Pkg
     {
         SourceFile file;
         PackageDeclaration ast; 
+        //Object File for Package
     }
 
     /**
@@ -127,7 +127,6 @@ class DisCompiler
         this.args = new CommandLineArg(args);
         this.log =  Log.disc;
         this.log.OnLog += LevelConsoleListener(LogType.Information);
-
 
         //TODO config and command line parsing
 
@@ -181,10 +180,16 @@ class DisCompiler
         {
             pkgs[i].file = new SourceFile();
             pkgs[i].file.open(srcFiles[i]);
+
+            if(args.printToken)
+                dumpLexer(pkgs[i].file);
             
             parser.load(pkgs[i].file);
             pkgs[i].ast = parser.parsePackage(); 
             assert(pkgs[i].ast !is null, "Parsing a Source file should result in a package");
+
+            if(args.printAst)
+                dumpParser(pkgs[i].ast);
         }
 
         //handle imports

@@ -125,6 +125,7 @@ T to(T)(Object o)
 unittest
 {
     import std.stdio;
+    import std.exception;
 
     //test isIn
     assert(isIn!int(3, [1, 2, 3, 4, 5]));
@@ -145,9 +146,7 @@ unittest
     class barr {}
     
     foo f = to!foo(new bar());
-    bool ex=false;
-    try { foo f2 = to!foo(new barr());} catch(Exception exc){  ex = true; }
-    assert(ex, "No Exception thrown");
+    assertThrown!Exception(to!foo(new barr()));
     bar b = to!bar(cast(foo)new bar());
     
     writeln("[TEST] Util Tests passed");

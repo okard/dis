@@ -106,13 +106,33 @@ struct CCodeWriter
             Source.writefln("#line %d  \"%s\"", loc.Line, loc.Name);
         }
 
-
         /**
         * Write Function Declaration
         */
         public void funcDecl(string rettype, string name)
         {
             Header.writefln("%s %s();", rettype, name);
+        }
+
+        /**
+        * Define Function
+        */
+        public void funcDef(string rettype, string name, string[] param)
+        {
+            Source.writef("%s %s(%s", rettype, name, param[0]);
+            for(int i=1; i < param.length; i++)
+                Source.writef(", %s", param[i]);
+            Source.writeln(")");
+            Source.writeln("{");
+            
+        }
+
+        /**
+        * End Function Definition
+        */
+        public void funcEnd()
+        {
+            Source.writeln("}");
         }
 
         //startBlock 

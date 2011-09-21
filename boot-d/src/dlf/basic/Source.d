@@ -70,6 +70,8 @@ interface Source
 
     
     //TODO Slice & Index Operator 
+    
+    //offset & seek
 
     //char opIndex(int pos);
     //char[] opSlice(int start, int end);

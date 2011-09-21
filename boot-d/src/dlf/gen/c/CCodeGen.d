@@ -238,6 +238,7 @@ class CCodeGen : CodeGen, Visitor
         //dispatch(ft.Body)
         
         //write function body?
+        //p.funcDef()
         
         //functiontype declaration in header
         //body in source
@@ -250,10 +251,8 @@ class CCodeGen : CodeGen, Visitor
     private void genCMain()
     {
         log.Information("Generate C Main Function");
-        //Write int main(int argc, char **argv){
 
-        p.Source.writeln("int main(int argc, char **argv)");
-        p.Source.writeln("{");
+        p.funcDef("int", "main", ["int argc", "char **argv"]);
         
         if(ctx.EnableRuntime)
         {
@@ -268,7 +267,7 @@ class CCodeGen : CodeGen, Visitor
             //disable runtime
         }
 
-        p.Source.writeln("}");
+        p.funcEnd();
     }
     
 
