@@ -76,7 +76,7 @@ static class ApplicationPath
         {
             char buf[BUFFER_SIZE];
             auto bs = GetModuleFileNameA(GetModuleHandleW(null), buf.ptr, BUFFER_SIZE);
-            auto str = to!string(buf[0..bs]);
+            auto str = std.conv.to!string(buf[0..bs]);
             //str = Util.replace!(char)(str,'\\','/');
             return str;
         }
@@ -131,12 +131,24 @@ unittest
     assert(!isIn!int(6, [1, 2, 3, 4, 5]));
     assert(!isIn!int(6, []));
 
+    //test application path
     auto app = ApplicationPath.get();
     assert(app.length > 0);
 
+    //test empty
     assert(empty(null));
     assert(empty(""));
-
-
+    
+    //test safe cast to
+    class foo {}
+    class bar : foo{}
+    class barr {}
+    
+    foo f = to!foo(new bar());
+    bool ex=false;
+    try { foo f2 = to!foo(new barr());} catch(Exception exc){  ex = true; }
+    assert(ex, "No Exception thrown");
+    bar b = to!bar(cast(foo)new bar());
+    
     writeln("[TEST] Util Tests passed");
 }

@@ -1,6 +1,7 @@
 # git ignore dis boot
 bin/
 .obj/
+obj/
 
 # llvm
 *.bc
