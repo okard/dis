@@ -47,12 +47,14 @@ import dlf.gen.c.CCodeGen;
 class CommandLineArg : ArgHelper
 {
     //option
-    public bool printToken;  //print lexer tokens
-    public bool printAst;    //print ast
-    public bool printSem;    //print Semantic Log
-    public bool verboseLogging;
+    public bool printToken;             //print lexer tokens
+    public bool printAst;               //print ast
+    public bool printSem;               //print Semantic Log
+    public bool verboseLogging;         //verbose output
     
-    public bool noRuntime = false;   //no runtime
+    public bool compileOnly = false;    //do not link, compile only
+    public bool noRuntime = false;      //no runtime
+
     public string outFile;   //output name
     
 
@@ -69,6 +71,7 @@ class CommandLineArg : ArgHelper
         Options["--print-ast"] = (){ printAst = true; };
         Options["--print-sem"] = (){ printSem = true; };
         Options["--verbose"] = (){ verboseLogging = true; };
+        Options["-c"] = (){ compileOnly = true; };
         Options["--no-runtime"] = (){ noRuntime = true; };
         Options["-sharedlib"] = (){targType = TargetType.SharedLib; disallow(["-staticlib"]);};
         Options["-staticlib"] = (){targType = TargetType.StaticLib; disallow(["-sharedlib"]);};
@@ -109,6 +112,12 @@ class DisCompiler
     private PackageDeclaration[string] packages;
 
     //Object File for Package
+
+    private struct Pkg
+    {
+        SourceFile file;
+        PackageDeclaration ast; 
+    }
 
     /**
     * Ctor
@@ -155,36 +164,50 @@ class DisCompiler
             return 1;
         }
 
-        //first parse each file
-        //than run semantic on each file
-        //than run code gen
-
-        //Compile each source file
-        foreach(string srcfile; srcFiles)
-        {
-            log.Information("Compile %s", srcfile);
-
-            //Open Source
-            auto src = new SourceFile();
-            src.open(srcfile);
-
-            //print token
-            if(args.printToken)
-                dumpLexer(src);
-
-            //TODO try-catch
-            //TODO compile step per package threaded? prepare worker threads, queue handling sort imports
+        auto parser = new Parser();
+        auto semantic = new Semantic();
+        auto cgen = new CCodeGen(ctx);
             
-            //share codegen link after all file getting compiled
+        //logging
+        auto logfunc = LevelConsoleListener(LogType.Information);
+        parser.OnLog += logfunc;
+        semantic.OnLog += logfunc;
+        cgen.OnLog += logfunc;
 
-            //compile file
-            if(!compile(src))
-            {
-                log.Error("Failed to compile file: " ~ src.name);
-                //return 2;
-            }
+        log.Information("Parsing...");
+        //create packages and parse them
+        auto pkgs = new Pkg[srcFiles.length];
+        for(int i=0;i < pkgs.length; i++)
+        {
+            pkgs[i].file = new SourceFile();
+            pkgs[i].file.open(srcFiles[i]);
+            
+            parser.load(pkgs[i].file);
+            pkgs[i].ast = parser.parsePackage(); 
+            assert(pkgs[i].ast !is null, "Parsing a Source file should result in a package");
+        }
 
-            log.Information("");
+        //handle imports
+        log.Information("Resolve imports...");
+        foreach(Pkg p; pkgs)
+        {
+            handleImports(p.ast);
+        }
+
+        //semantic
+        log.Information("Semantic...");
+        foreach(Pkg p; pkgs)
+        {
+            p.ast = semantic.run(p.ast);
+            assert(p.ast !is null, "Semantic analyse on a package should have a valid result");
+        }
+
+        //codegen
+        log.Information("CodeGen...");
+        foreach(Pkg p; pkgs)
+        {
+            cgen.compile(p.ast);
+            packages[p.ast.Name] = p.ast;
         }
 
         log.Information("Linking Program ...");
@@ -196,72 +219,6 @@ class DisCompiler
 
         return 0;
     }
-
-
-    /**
-    * Compile on source file
-    */
-    private bool compile(Source src)
-    {
-        try
-        {
-            auto parser = new Parser();
-            auto semantic = new Semantic();
-            auto cgen = new CCodeGen(ctx);
-            
-            //log ahndling?
-            auto logfunc = LevelConsoleListener(LogType.Information);
-            parser.OnLog += logfunc;
-            semantic.OnLog += logfunc;
-            cgen.OnLog += logfunc;
-
-            //Parser
-            log.Information("Parsing ...");
-            parser.load(src);
-            auto pack = parser.parsePackage();  //parser.parsePackage();
-            
-            //A new Source File have to result in a PackageNode
-            assert(pack !is null, "Parser doesn't return a package declaration");
-
-            if(args.printAst)
-                dumpParser(pack);
-
-            //Parse Imports
-            handleImports(pack);
-
-            //prepare code before semantic
-            //add default version flags and so on
-
-            //run semantics
-            log.Information("Semantic ...");
-            //semantic file logger for debugging?
-            pack = semantic.run(pack);
-
-            //succesful semantic run result in a package declaration
-            assert(pack !is null, "Semantic doesn't return a package declaration");
-
-            log.Information("CodeGen ...");
-            
-            //compile package
-            cgen.compile(pack);
-
-            packages[pack.Name] = pack;
-
-            return true;
-        }
-        catch(Parser.ParserException exc)
-        {
-            log.Error(exc);
-            return false;
-        }
-        catch(Semantic.SemanticException exc)
-        {
-            log.Error(exc);
-            return false;
-        }
-        //catch(CodeGenException)
-    }
-
 
     /**
     * Debug Function that dumps out lexer output

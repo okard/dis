@@ -118,7 +118,7 @@ class CCodeGen : CodeGen, Visitor
         {
             assert(id.Package !is null, "Import Package not parsed");
             p = writer.Package(srcDir, id.Package.Name);
-            dispatchAuto(id.Package);
+            autoDispatch(id.Package);
             //detect if one import has recompiled then this source should be recompiled too?
             //Imports to compile before? 
             //so assert when its not yet compiled?
@@ -137,7 +137,7 @@ class CCodeGen : CodeGen, Visitor
         pd.CodeGen = cheader(p.Header.name);
         
         //start creating definitions
-        dispatchAuto(pd);
+        autoDispatch(pd);
 
         //For Libraries generate Header Files
         if(ctx.Type == TargetType.StaticLib 
@@ -148,7 +148,7 @@ class CCodeGen : CodeGen, Visitor
 
 
         //compile file, create object file for this package
-        builder.compile(ctx, writer.getCSources());
+        builder.compile(ctx, [p.SourceFile]);
     }
 
 
@@ -301,7 +301,7 @@ class CCodeGen : CodeGen, Visitor
     /**
     * Auto Dispatch
     */
-    private T dispatchAuto(T)(T e)
+    private T autoDispatch(T)(T e)
     {
         return cast(T)dispatch(e, this);
     }
@@ -313,7 +313,7 @@ class CCodeGen : CodeGen, Visitor
     {
         for(int i=0; i < elements.length; i++)
         {
-            dispatchAuto(elements[i]);
+            autoDispatch(elements[i]);
         }
     }
 

@@ -148,6 +148,15 @@ struct CCodeWriter
         {
             return Header.name();
         }
+
+        /**
+        * Get Source File name
+        */
+        @property
+        public string SourceFile()
+        {
+            return Source.name();
+        }
     }
 
 
