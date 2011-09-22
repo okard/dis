@@ -37,6 +37,8 @@ import dlf.dis.Parser;
 import dlf.sem.Semantic;
 
 import dlf.Context;
+import dlf.gen.HeaderGen;
+import dlf.gen.DocGen;
 import dlf.gen.CodeGen;
 import dlf.gen.c.CCodeGen;
 
@@ -166,6 +168,8 @@ class DisCompiler
         auto parser = new Parser();
         auto semantic = new Semantic();
         auto cgen = new CCodeGen(ctx);
+        auto hdrgen = new HeaderGen();
+        auto docgen = new DocGen();
             
         //logging
         auto logfunc = LevelConsoleListener(LogType.Information);
@@ -220,7 +224,15 @@ class DisCompiler
         //add a share so it can create multiple instances
         //compile can be earlier but linking not
         //compile and link
-        CCodeGen.link(ctx);
+        cgen.link(ctx);
+
+        //For Libraries generate Header Files
+        if(ctx.Type == TargetType.StaticLib 
+        || ctx.Type == TargetType.SharedLib)
+        {
+            //if header generation is enabled?
+            //hdrgen.create(folder, pd)
+        }
 
         return 0;
     }

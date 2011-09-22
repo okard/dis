@@ -85,7 +85,7 @@ class Semantic : Visitor
     */
     void visit(PackageDeclaration pack)
     {
-        Information("Semantic: PackageDcl");
+        Information("Semantic: Package %s", pack.Loc.Name);
 
         mSymTable = pack.SymTable;
 

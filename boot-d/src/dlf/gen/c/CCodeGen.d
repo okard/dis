@@ -24,6 +24,7 @@ import std.file;
 import std.path;
 
 import dlf.basic.Log;
+import dlf.basic.Util;
 
 import dlf.ast.Visitor;
 import dlf.ast.Node;
@@ -51,9 +52,6 @@ class CCodeGen : CodeGen, Visitor
     /// Compile Context
     private Context ctx;
 
-    /// Header generator
-    private HeaderGen hdrgen;
-
     /// Code Writer 
     private CCodeWriter writer;
 
@@ -66,9 +64,6 @@ class CCodeGen : CodeGen, Visitor
     /// Directory to store c source files
     private string srcDir;
 
-    /// Internal Generated DataTypes
-    private CCNode[DataType] types;
-
     //default header resource
     //private static const string DisCGenHeader = import("dish.h");
 
@@ -78,23 +73,24 @@ class CCodeGen : CodeGen, Visitor
     this(Context ctx)
     {
         this.ctx = ctx;
-        hdrgen = new HeaderGen();
+        
         srcDir = buildPath(ctx.Backend.ObjDir, "src");
         assert(srcDir.isDir(), "Target src dir isn't a directory");
 
         // Primary/Builtin Types
-        types[VoidType.Instance] = ctype("void");
-        types[BoolType.Instance] = ctype("bool");
-        types[ByteType.Instance] = ctype("char");
-        types[UByteType.Instance] = ctype("unsigned char");
-        types[ShortType.Instance] = ctype("short");
-        types[UShortType.Instance] = ctype("unsigned short");
-        types[IntType.Instance] = ctype("int");
-        types[UIntType.Instance] = ctype("unsigned int");
-        types[LongType.Instance] = ctype("long");
-        types[ULongType.Instance] = ctype("unsigned long");
-        types[FloatType.Instance] = ctype("float");
-        types[DoubleType.Instance] = ctype("double");
+        VoidType.Instance.CodeGen = ctype("void");
+        BoolType.Instance.CodeGen = ctype("bool");
+        ByteType.Instance.CodeGen = ctype("char");
+        UByteType.Instance.CodeGen = ctype("unsigned char");
+        ShortType.Instance.CodeGen = ctype("short");
+        UShortType.Instance.CodeGen = ctype("unsigned short");
+        IntType.Instance.CodeGen = ctype("int");
+        UIntType.Instance.CodeGen = ctype("unsigned int");
+        LongType.Instance.CodeGen = ctype("long");
+        ULongType.Instance.CodeGen = ctype("unsigned long");
+        FloatType.Instance.CodeGen = ctype("float");
+        DoubleType.Instance.CodeGen = ctype("double");
+      
         
         //special case utf8 -> 4 byte chars?
         //types[CharType.Instance] = ;
@@ -148,17 +144,7 @@ class CCodeGen : CodeGen, Visitor
         //start creating definitions
         autoDispatch(pd);
 
-        //For Libraries generate Header Files
-        if(ctx.Type == TargetType.StaticLib 
-        || ctx.Type == TargetType.SharedLib)
-        {
-            //if header generation is enabled?
-            //move this to DisCompiler class?
-            //hdrgen.create(folder, pd)
-        }
-
-
-        //compile file, create object file for this package
+        //compile file, create object file for this package (return object file)
         builder.compile(ctx, [p.SourceFile]);
     }
 
@@ -166,9 +152,10 @@ class CCodeGen : CodeGen, Visitor
     /**
     * Seperate Static Build Function
     */
-    static void link(Context ctx)
+    void link(Context ctx)
     {
-        CBuilder.link(ctx);
+        //TODO object files as parameter
+        builder.link(ctx, CBuilder.objfiles);
     }
 
     //debug infos with #line
@@ -182,11 +169,9 @@ class CCodeGen : CodeGen, Visitor
         //extend(pd, new CCNode(filename));
         p.start(pd.Name.toUpper.replace(".", "_"));
 
-        //include default header dish.h
-
+        //include default header dish.h ???
         //Imports
-
-        //check package imports they should go in first
+        mapDispatch(pd.Imports);
 
         mapDispatch(pd.Functions);
         
@@ -200,7 +185,7 @@ class CCodeGen : CodeGen, Visitor
     {
         //imports are includes
         //get compile header name
-        //p.include( to!CCNode(id.Package.CodeGen).Identifier);
+        //p.include(getgen(id.Package).Identifier);
     }
 
     /**
@@ -225,31 +210,58 @@ class CCodeGen : CodeGen, Visitor
     */
     private void gen(FunctionType ft)
     {
-        //c calling convention not mangled
+        auto funcDecl = to!FunctionDeclaration(ft.FuncDecl);
+        
+        //name for function type
+        string name = funcDecl.CallingConv == CallingConvention.C ?
+                      funcDecl.Name :
+                      Mangle.mangle(ft);
 
-        string mangle = Mangle.mangle(ft);
-        log.Information("Mangled name: %s", mangle);
+        log.Information("Function: %s", name);
 
         //TODO checking
         //TODO prepare parameter
         //TODO write demangled name above as comment
 
-        ft.CodeGen = cfunction(mangle);
-        string rettype = types[ft.ReturnType].Identifier;
-        
-        p.funcDecl(rettype, mangle);
-    
-        //write
+        //add codegen node
+        ft.CodeGen = cfunction(name);
 
-        //if(ft.Body != null)
-        //dispatch(ft.Body)
+        //resolve retun type
+        //TODO gen code for when not yet done? gen declaration?
+        string rettype = getgen(ft.ReturnType).Identifier;
         
-        //write function body?
-        //p.funcDef()
-        
-        //functiontype declaration in header
-        //body in source
-        //ft.FuncDecl
+        //start writing code
+        p.debugln(funcDecl.Loc);
+        p.funcDecl(rettype, name, []);
+    
+        //write body
+        if(ft.Body !is null)
+        {
+            p.funcDef(rettype, name, []);
+
+            //TODO Handled through semantic???
+            switch(ft.Body.Kind)
+            {
+                //BlockStatement has {}
+                case NodeKind.BlockStatement:
+                    autoDispatch(ft.Body);
+                    break;
+                //ExpressionStatment: { return Statement; }
+                case NodeKind.ExpressionStatement:
+                    p.blockStart();
+                    p.Source.write("return ");
+                    autoDispatch(ft.Body);
+                    p.Source.write(";");
+                    p.blockEnd();
+                    break;
+                //Else: { Statement }
+                default:
+                    p.blockStart();
+                    autoDispatch(ft.Body);
+                    p.blockEnd();
+            }
+           
+        }
     }
 
     /**
@@ -260,6 +272,7 @@ class CCodeGen : CodeGen, Visitor
         log.Information("Generate C Main Function");
 
         p.funcDef("int", "main", ["int argc", "char **argv"]);
+        p.blockStart();
         
         if(ctx.EnableRuntime)
         {
@@ -274,7 +287,7 @@ class CCodeGen : CodeGen, Visitor
             //disable runtime
         }
 
-        p.funcEnd();
+        p.blockEnd();
     }
     
 
@@ -297,11 +310,17 @@ class CCodeGen : CodeGen, Visitor
     //Statements
     void visit(BlockStatement bs)
     {  
-        //p.startBlock
-        //p.endBlock
+        p.blockStart();
+        //write variables
+        //write statements
+        p.blockEnd();
     }
     
-    void visit(ExpressionStatement es){  }
+    void visit(ExpressionStatement es)
+    {  
+        autoDispatch(es.Expr);
+    }
+
     void visit(ReturnStatement rt){  }
 
     //Expressions
@@ -343,6 +362,14 @@ class CCodeGen : CodeGen, Visitor
     ref LogEvent OnLog()
     {
         return log.OnLog;
+    }
+
+    /**
+    * Get CCNode from node
+    */
+    private static CCNode getgen(Node n) 
+    {
+        return to!CCNode(n.CodeGen);
     }
 
     /**
@@ -397,6 +424,8 @@ class CCodeGen : CodeGen, Visitor
         //allocator function?
         //is value type 
         //is ptr type?
+        //declaration
+        //definitions
 
         ///Node Kind Mixin
         mixin(IsKind("Backend"));

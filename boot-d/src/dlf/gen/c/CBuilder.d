@@ -76,7 +76,7 @@ struct CBuilder
     /**
     * linking
     */
-    static void link(Context ctx)
+    void link(Context ctx, string[] objfiles)
     {
         final switch(ctx.Type)
         {

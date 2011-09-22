@@ -31,6 +31,7 @@ import dlf.basic.Location;
 struct CCodeWriter
 {
     //TODO Parameter for creation?
+    //TODO Clean up splitting writer functions (Source/Header)
 
     /// Package List
     private CPackage[] packages;
@@ -109,9 +110,12 @@ struct CCodeWriter
         /**
         * Write Function Declaration
         */
-        public void funcDecl(string rettype, string name)
+        public void funcDecl(string rettype, string name, string[] param)
         {
-            Header.writefln("%s %s();", rettype, name);
+            Header.writef("%s %s(%s", rettype, name, param.length <= 0 ? "" : param[0]);
+             for(int i=1; i < param.length; i++)
+                Header.writef(", %s", param[i]);
+            Header.writeln(");");
         }
 
         /**
@@ -119,18 +123,25 @@ struct CCodeWriter
         */
         public void funcDef(string rettype, string name, string[] param)
         {
-            Source.writef("%s %s(%s", rettype, name, param[0]);
+            Source.writef("%s %s(%s", rettype, name, param.length <= 0 ? "" : param[0]);
             for(int i=1; i < param.length; i++)
                 Source.writef(", %s", param[i]);
             Source.writeln(")");
-            Source.writeln("{");
             
         }
 
         /**
-        * End Function Definition
+        * Start block in source
         */
-        public void funcEnd()
+        public void blockStart()
+        {
+            Source.writeln("{");
+        }
+
+        /**
+        * End block in source
+        */
+        public void blockEnd()
         {
             Source.writeln("}");
         }
