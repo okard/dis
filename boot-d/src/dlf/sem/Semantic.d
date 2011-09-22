@@ -32,7 +32,8 @@ import dlf.ast.Type;
 import dlf.ast.SymbolTable;
 import dlf.ast.Transform;
 
-import dlf.sem.Valid;
+import dlf.sem.Declaration;
+import dlf.sem.Type;
 
 import std.stdio;
 
@@ -61,6 +62,13 @@ class Semantic : Visitor
     //check all datatypes if a runtime type is used
 
     //context? libraries doesnt have a main function?
+
+    //Functions for types (resolving)
+    mixin TypeSem;
+
+    //Functions for declarations
+    mixin DeclSem;
+
 
     /**
     * Run semantic passes 
@@ -158,7 +166,6 @@ class Semantic : Visitor
     void visit(FunctionDeclaration func)
     { 
         Information("Semantic FuncDecl %s", func.Name);
-
 
         //Cases:
         // 1. Main Function
@@ -441,6 +448,11 @@ class Semantic : Visitor
 
         foreach(FunctionParameter p; fd.Parameter)
         {
+            log.Information("Param %s Type: %s", p.Name, p.Type);
+            //type should not been Unkown or unsolved
+            //p.Type
+            //p.Name
+            //p.Vararg
         }
     }
 

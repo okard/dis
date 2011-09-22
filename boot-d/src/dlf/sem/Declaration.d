@@ -16,25 +16,13 @@
 *    along with disc.  If not, see <http://www.gnu.org/licenses/>.
 *
 ******************************************************************************/
-module dlf.sem.Valid;
-
-import dlf.ast.Node;
-
-//Check if AST Nodes are valid
-
-
-static void assertValid(bool condition, string msg = "")
-{
-    //throw Valid Exception?
-}
-
+module dlf.sem.Declaration;
 
 /**
-* Valid Node
+* Semantic Functions for Types
 */
-bool valid(Node n)
+mixin template DeclSem()
 {
-    
-    return false;
-}
 
+
+}

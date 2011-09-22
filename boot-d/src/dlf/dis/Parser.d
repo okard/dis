@@ -570,7 +570,6 @@ class Parser
     private Statement parseFor()
     {
         assertType(TokenType.KwFor);
-
         throw new ParserException(mToken.Loc, "Can't parse for statements at the moment");
     }
 
@@ -820,11 +819,7 @@ class Parser
 
         next();
         
-        //Special Annotations
-        /*if(mToken.Value == "CallConv")
-        {
-            return new CallConvAnnotation();
-        }*/
+        //unittest 
         
         return null;
     }
