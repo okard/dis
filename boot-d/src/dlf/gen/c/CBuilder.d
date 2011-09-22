@@ -33,7 +33,7 @@ struct CBuilder
 {
     /// Compiler Flags
     private static string compilerExec = "gcc";
-    private static string[] compilerFlags = ["-fPIC", "-c", "-std=c99", "-Wall", "-g" ];
+    private static string[] compilerFlags = ["-c", "-std=c99", "-Wall", "-g" ];
 
     /// Linker
     private static string linkerExec = "gcc";
@@ -59,6 +59,8 @@ struct CBuilder
             string[] args;
             args ~= compilerExec;
             args ~= compilerFlags;
+            if(ctx.Platform != TargetPlatform.Windows)
+                args ~= "-fPIC";
             string objfile = buildPath(ctx.Backend.ObjDir, setExtension(baseName(src), ".o"));
             args ~= ["-o", objfile] ;
             args ~= src;

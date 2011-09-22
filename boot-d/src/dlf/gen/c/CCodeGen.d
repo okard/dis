@@ -110,13 +110,26 @@ class CCodeGen : CodeGen, Visitor
     void compile(PackageDeclaration pd)
     {
         assert(pd !is null, "PackageDeclaration is null");
+        
+        //Package already compiled
+        if(pd.CodeGen !is null)
+            return;
 
+        //check if target header & source file exist
+        //
+        
         //compile imports?
         //compile other packages first or look if they already compile
         //pd.Imports.Package
         foreach(ImportDeclaration id; pd.Imports)
         {
             assert(id.Package !is null, "Import Package not parsed");
+            
+            //already compiled
+            if(id.Package.CodeGen !is null)
+                continue;
+            
+            // CodeGen for Import
             p = writer.Package(srcDir, id.Package.Name);
             autoDispatch(id.Package);
             //detect if one import has recompiled then this source should be recompiled too?
@@ -124,15 +137,11 @@ class CCodeGen : CodeGen, Visitor
             //so assert when its not yet compiled?
         }
 
-        //check if already compiled
-        //if(extension!CCNode(pd. true) !is null)
         //CCNode Extension for pd
         //check modification date if exists
         
-
         //Create C Package
         p = writer.Package(srcDir, pd.Name);
-
         //add a header node
         pd.CodeGen = cheader(p.Header.name);
         
@@ -143,6 +152,8 @@ class CCodeGen : CodeGen, Visitor
         if(ctx.Type == TargetType.StaticLib 
         || ctx.Type == TargetType.SharedLib)
         {
+            //if header generation is enabled?
+            //move this to DisCompiler class?
             //hdrgen.create(folder, pd)
         }
 
@@ -189,8 +200,7 @@ class CCodeGen : CodeGen, Visitor
     {
         //imports are includes
         //get compile header name
-        //p.include( extension!ccode(id.Package, true).header);
-         
+        //p.include( to!CCNode(id.Package.CodeGen).Identifier);
     }
 
     /**
@@ -198,9 +208,9 @@ class CCodeGen : CodeGen, Visitor
     */
     void visit(FunctionDeclaration fd)
     { 
-
         foreach(FunctionType ft; fd.Instances)
         {
+            //Generate code for each function instance
             gen(ft);
 
             //if dis main is generated
@@ -222,14 +232,11 @@ class CCodeGen : CodeGen, Visitor
 
         //TODO checking
         //TODO prepare parameter
-
         //TODO write demangled name above as comment
 
-
         ft.CodeGen = cfunction(mangle);
-
         string rettype = types[ft.ReturnType].Identifier;
-
+        
         p.funcDecl(rettype, mangle);
     
         //write
@@ -276,9 +283,16 @@ class CCodeGen : CodeGen, Visitor
         //value vs reference type
     }
 
-
-    void visit(ClassDeclaration cd){  }
-    void visit(TraitDeclaration td){  }
+    void visit(ClassDeclaration cd)
+    {
+        //add to type array?
+        //render for each class instance
+    }
+    
+    void visit(TraitDeclaration td)
+    {  
+        //add to type array?
+    }
 
     //Statements
     void visit(BlockStatement bs)
@@ -286,11 +300,17 @@ class CCodeGen : CodeGen, Visitor
         //p.startBlock
         //p.endBlock
     }
+    
     void visit(ExpressionStatement es){  }
     void visit(ReturnStatement rt){  }
 
     //Expressions
-    void visit(LiteralExpression le){  }
+    void visit(LiteralExpression le)
+    {  
+        //write value
+    }
+    
+    
     void visit(CallExpression fc){  }
     void visit(DotIdentifier di){  }
     void visit(AssignExpression ae){  }
