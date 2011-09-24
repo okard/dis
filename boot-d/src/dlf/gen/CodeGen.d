@@ -18,8 +18,7 @@
 ******************************************************************************/
 module dlf.gen.CodeGen;
 
-import dlf.ast.Node;
-import dlf.ast.Declaration;
+
 
 
 /**
@@ -54,9 +53,9 @@ struct BackendContext
 */
 interface BinaryGen
 {
-    //init(context);
-    //void addObjectFile()
-    //void link();
+    import dlf.Context;
+
+    void link(Context ctx, string[] objfiles);
 }
 
 
@@ -64,13 +63,12 @@ interface BinaryGen
 * CodeGen Interface
 * Object Generation
 */
-interface CodeGen
+interface ObjectGen
 {
-    //init(context);
-    //compile Package, result? (object file)
+    import dlf.ast.Declaration;
+    
     void compile(PackageDeclaration pd);
-    //compile to CodeGenLinking
-    //context?
+    //string[] compile(Context ctx, PackageDeclaration pd);
 }
 
 

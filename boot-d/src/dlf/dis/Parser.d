@@ -861,17 +861,15 @@ class Parser
         //x -> Identifier
         //int -> Identifier (BuiltIn Type)
         //x[] -> Identifier Array
-        //x!x -> Identifier!Identifier Template instantiation
+        //x!x -> Identifier!Identifier Template instantiation -> temp
         //x!(a,b) -> Identifier!(DataType list) Template instantiation
         //def(a,b):c -> Delegate/FunctionType (datatypes) datatypes
         //x.y.z -> DotIdentifier 
-        //x.y.z[
+        //x.y.z[ -> Array(DotIdentifier)
         //x.y.z!
-        //
-
-        //identifier* -> Pointer type
+        //x.y.z* -> Pointer Type
         
-        //constraints? -> [xxx] not yet defined
+        //[ x | xxx] -> constraints?
         
         //TODO Implement parseDataType 
 

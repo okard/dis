@@ -44,7 +44,7 @@ import dlf.gen.c.CBuilder;
 /**
 * C Code Generator
 */
-class CCodeGen : CodeGen, Visitor
+class CCodeGen : ObjectGen, Visitor
 {
     /// Logger
     private LogSource log = Log("CCodeGen");
@@ -233,34 +233,15 @@ class CCodeGen : CodeGen, Visitor
         //start writing code
         p.debugln(funcDecl.Loc);
         p.funcDecl(rettype, name, []);
-    
+
         //write body
         if(ft.Body !is null)
         {
-            p.funcDef(rettype, name, []);
+            assert(ft.Body.Kind == NodeKind.BlockStatement, "Sem should rewrite body to block statement");
 
-            //TODO Handled through semantic???
-            switch(ft.Body.Kind)
-            {
-                //BlockStatement has {}
-                case NodeKind.BlockStatement:
-                    autoDispatch(ft.Body);
-                    break;
-                //ExpressionStatment: { return Statement; }
-                case NodeKind.ExpressionStatement:
-                    p.blockStart();
-                    p.Source.write("return ");
-                    autoDispatch(ft.Body);
-                    p.Source.write(";");
-                    p.blockEnd();
-                    break;
-                //Else: { Statement }
-                default:
-                    p.blockStart();
-                    autoDispatch(ft.Body);
-                    p.blockEnd();
-            }
-           
+            p.funcDef(rettype, name, []);
+            
+            autoDispatch(ft.Body);
         }
     }
 

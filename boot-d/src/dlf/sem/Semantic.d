@@ -176,6 +176,11 @@ class Semantic : Visitor
         //first solve parameter array (resolve datatypes, detect complete
         analyzeFuncParam(func);
 
+        //analyze statement and rewrite to block
+        analyzeFuncStmt(func);
+
+        //create instance when single
+
         //special case main function
         if(func.Name == "main")
         {
@@ -183,9 +188,7 @@ class Semantic : Visitor
             analyzeMainFunc(func);
         }
 
-        //resolve datatypes
-        //create instance when single
-
+        //if function has no body it is a declaration
         if(func.Body is null)
         {
             //its a declaration
@@ -193,9 +196,10 @@ class Semantic : Visitor
             assert(!func.IsTemplate);
         }
 
+        //if it is not a template there must be one instance
         if(!func.IsTemplate)
         {
-            //func.Instances.length == 0
+            //func.Instances.length == 1
         }
 
         //go into Body
@@ -366,55 +370,6 @@ class Semantic : Visitor
     }
 
     /**
-    * Get the Declaration of a DotIdentifier
-    * e.g. "this.foo.bar.x" is a VariableDeclaration(int)
-    */
-    private Declaration resolve(DotIdentifier di)
-    {
-        //Symbol Table should not be null
-        if(mSymTable is null)
-        {
-            Error("\t Resolve DotIdentifier: SymbolTable is null");
-            return null;
-        }
-
-        //Instances and arguments
-
-        //TODO Detect this at front
-
-        auto elements = di.length;
-        if(elements == 1)
-        {
-            //search up
-            auto sym = mSymTable;
-
-            do
-            {
-                if(sym.contains(cast(string)di[0]))
-                    return sym[cast(string)di[0]];
-            
-                sym = sym.pop();
-            }
-            while(sym !is null)
-        }
-        else
-        {
-            //go up 
-            //search down
-        }
-        
-
-        return null;
-    }
-
-    //TODO Mixin Templates?
-    //mixin(Types); Functions, and so on
-
-
-    
-
-
-    /**
     * Auto Dispatch
     */
     private T autoDispatch(T)(T e)
@@ -462,8 +417,6 @@ class Semantic : Visitor
         if(!cond)
             Error(message);
     }
-
-    //Logging Signal? add Events for logging level
 
     /**
     * Log Event

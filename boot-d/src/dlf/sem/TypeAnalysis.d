@@ -24,5 +24,48 @@ module dlf.sem.TypeAnalysis;
 mixin template TypeAnalysis()
 {
 
+    //resolve types
+
+    /**
+    * Get the Declaration of a DotIdentifier
+    * e.g. "this.foo.bar.x" is a VariableDeclaration(int)
+    */
+    private Declaration resolve(DotIdentifier di)
+    {
+        //Symbol Table should not be null
+        if(mSymTable is null)
+        {
+            Error("\t Resolve DotIdentifier: SymbolTable is null");
+            return null;
+        }
+
+        //Instances and arguments
+
+        //TODO Detect this at front
+
+        auto elements = di.length;
+        if(elements == 1)
+        {
+            //search up
+            auto sym = mSymTable;
+
+            do
+            {
+                if(sym.contains(cast(string)di[0]))
+                    return sym[cast(string)di[0]];
+            
+                sym = sym.pop();
+            }
+            while(sym !is null)
+        }
+        else
+        {
+            //go up 
+            //search down
+        }
+        
+
+        return null;
+    }
 
 }

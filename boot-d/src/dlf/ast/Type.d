@@ -152,7 +152,7 @@ final class DoubleType : DataType
 }
 
 /**
-* Not yet resolved type
+* Not known datatype
 */
 final class OpaqueType : DataType
 {
@@ -295,4 +295,7 @@ class TraitType : DataType
 }
 
 //struct type?
+
 //enum type
+
+//Variant Type

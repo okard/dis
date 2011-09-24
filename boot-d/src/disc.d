@@ -92,6 +92,7 @@ class CommandLineArg : ArgHelper
     */
     public string[] getSourceFiles()
     {
+        //TODO filter *.dis
         return Unparsed;
     }
 }

@@ -18,6 +18,8 @@
 ******************************************************************************/
 module dlf.sem.DeclAnalysis;
 
+public import dlf.basic.Util;
+
 /**
 * Semantic Functions for Types
 */
@@ -38,6 +40,29 @@ mixin template DeclAnalysis()
             //p.Type
             //p.Name
             //p.Vararg
+        }
+    }
+
+    /**
+    * Analyze the function statement
+    */ 
+    private void analyzeFuncStmt(ref FunctionDeclaration fd)
+    {
+        if(fd.Body is null) return;
+
+        //fix Expression Statement
+        if(fd.Body.Kind == NodeKind.ExpressionStatement)
+        {
+            auto block = new BlockStatement();
+            block.Statements ~= new ReturnStatement(to!(ExpressionStatement)(fd.Body).Expr);
+            fd.Body = block;
+        }
+        //fix other statements
+        if(fd.Body.Kind != NodeKind.BlockStatement)
+        {
+            auto block = new BlockStatement();
+            block.Statements ~= fd.Body;
+            fd.Body = block;
         }
     }
 
