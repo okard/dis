@@ -40,7 +40,6 @@ public enum NodeKind : uint
     VariableDeclaration,
     ClassDeclaration,
     TraitDeclaration,
-    StructDeclaration,
     EnumDeclaration,
     AliasDeclaration,
     VariantDeclaration,

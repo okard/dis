@@ -16,12 +16,12 @@
 *    along with disc.  If not, see <http://www.gnu.org/licenses/>.
 *
 ******************************************************************************/
-module dlf.sem.Declaration;
+module dlf.sem.TypeAnalysis;
 
 /**
 * Semantic Functions for Types
 */
-mixin template DeclSem()
+mixin template TypeAnalysis()
 {
 
 

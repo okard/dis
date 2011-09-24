@@ -1,0 +1,5 @@
+//main without body
+package tests.fails.main001;
+
+def main
+

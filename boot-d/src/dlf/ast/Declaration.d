@@ -228,15 +228,6 @@ abstract class TypeDeclaration : Declaration
 }
 
 /**
-* Structure Type
-*/
-final class StructDeclaration : TypeDeclaration
-{
-    ///Mixin for Kind Declaration
-    mixin(IsKind("StructDeclaration"));
-}
-
-/**
 * Enum Type
 */
 final class EnumDeclaration : TypeDeclaration
