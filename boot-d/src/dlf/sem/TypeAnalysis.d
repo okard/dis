@@ -63,4 +63,11 @@ mixin template TypeAnalysis()
         return null;
     }
 
+    /**
+    * Is opaque type
+    */
+    private static bool IsOpaque(DataType t)
+    {
+        return t == OpaqueType.Instance;
+    }
 }

@@ -29,6 +29,15 @@ abstract class Annotation : Node
 {
     /// Annotation Name
     string Name;
+
+    mixin(IsKind("Annotation"));
 }
 
-//Test Annotation
+
+/**
+* UnitTest Annotation
+*/
+final class UnitTestAnnotation : Node
+{
+    mixin(IsKind("UnitTestAnnotation"));
+}

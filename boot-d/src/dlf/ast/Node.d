@@ -71,7 +71,9 @@ public enum NodeKind : uint
     ClassType,
     TraitType,
 
-    //Annotation
+    //Annotation,
+    Annotation,
+    UnitTestAnnotation,
 
     //Special
     Comment,

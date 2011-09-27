@@ -72,6 +72,9 @@ class CCodeGen : ObjectGen, Visitor
     this(Context ctx)
     {
         this.ctx = ctx;
+
+        if(!ctx.Backend.ObjDir.isDir())
+            std.file.mkdirRecurse(ctx.Backend.ObjDir);
         
         srcDir = buildPath(ctx.Backend.ObjDir, "src");
         assert(srcDir.isDir(), "Target src dir isn't a directory");

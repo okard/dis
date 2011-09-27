@@ -206,6 +206,7 @@ class Semantic : Visitor
             //func.Instances.length == 1
         }
 
+        //analyze body for template first when instance get created?
         //go into Body
         if(func.Body !is null)
             func.Body = autoDispatch(func.Body);
@@ -223,7 +224,7 @@ class Semantic : Visitor
             var.Initializer = autoDispatch(var.Initializer);
 
         //Set Datatype for Variable
-        if(var.VarDataType == OpaqueType.Instance)
+        if(IsOpaque(var.VarDataType))
         {
             if(var.Initializer !is null)
             {
@@ -397,8 +398,6 @@ class Semantic : Visitor
     */
     private void Information(T...)(string s, T args)
     {
-        //TODO Change to Events
-        //writefln(s, args);
         log.log!(LogType.Information)(s, args);
     }
 
@@ -407,8 +406,6 @@ class Semantic : Visitor
     */
     private void Error(T...)(string s, T args)
     {
-        //TODO Change to Events
-        //writefln(s, args);
         log.log!(LogType.Error)(s, args);
     }
 

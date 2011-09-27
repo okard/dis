@@ -40,6 +40,8 @@ abstract class Declaration : Node
     public string Name;
 
     // FQN ?? Full Qualified Name
+
+    //uint Index;
 }
 
 /// Supported Calling Conventions for classes and functions
