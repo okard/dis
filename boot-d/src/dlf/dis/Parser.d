@@ -977,8 +977,7 @@ class Parser
     */
     private void Error(Location loc, string message, string file = __FILE__, size_t line = __LINE__)
     {
-        //TODO: Make error events, remove stupid writeln
-        //writefln("(%s): %s", loc, message);
+        log.Error(message);
         throw new ParserException(loc, message, file, line);
     }
 
@@ -987,8 +986,7 @@ class Parser
     */
     private void Warning(Location loc, string msg)
     {
-        //TODO: Make error events, remove stupid writeln
-        writefln("(%s): %s", loc, msg);
+        log.Warning("(%s): %s", loc, msg);
     }
 
 

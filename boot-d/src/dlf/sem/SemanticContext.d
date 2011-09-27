@@ -16,42 +16,12 @@
 *    along with disc.  If not, see <http://www.gnu.org/licenses/>.
 *
 ******************************************************************************/
-module dlf.Context;
-
-import dlf.sem.SemanticContext;
-import dlf.gen.CodeGen;
-
-/// Target Type
-enum TargetType { Executable, StaticLib, SharedLib }
-
-/// Target Platform
-enum TargetPlatform { Linux, MacOSX, Windows }
-
-/// Target Arch
-enum TargetArch { x86_32, x86_64, ARM }
+module dlf.sem.SemanticContext;
 
 /**
-* Global Compiler Context
-*/ 
-class Context
+* Semantic Context
+*/
+struct SemanticContext
 {
-    ///Target Type
-    TargetType Type;
 
-    ///Target Platform
-    TargetPlatform Platform;
-
-    ///Target Architecture
-    TargetArch Arch;
-
-    /// Link program with runtime
-    bool EnableRuntime = true;
-
-    //parser context
-
-    ///Semantic Context
-    SemanticContext Semantic;
-
-    ///Backend/CodeGen Context
-    BackendContext Backend;
 }

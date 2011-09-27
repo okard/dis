@@ -55,7 +55,6 @@ interface Source
     */
     public bool isEof();
 
-
     /**
     * name of source
     */
@@ -67,6 +66,13 @@ interface Source
     */
     @property
     public ref SysTime modificationDate();
+
+    /**
+    * current offset in source
+    */
+    @property
+    public size_t offset();
+
 
     
     //TODO Slice & Index Operator 
@@ -197,7 +203,14 @@ class SourceFile : File, Source
         return modDate;
     }
 
-
+    /**
+    * current offset in source
+    */
+    @property
+    public size_t offset()
+    {
+        return cast(size_t)position;
+    }
 
 }
 
@@ -213,7 +226,7 @@ class SourceString : Source
     private string mStr;
 
     /// Position
-    private uint mPos;
+    private size_t mPos;
 
     ///Modification Data
     private SysTime modDate;
@@ -296,6 +309,15 @@ class SourceString : Source
     public ref SysTime modificationDate()
     {
         return modDate;
+    }
+
+    /**
+    * current offset in source
+    */
+    @property
+    public size_t offset()
+    {
+        return mPos;
     }
     
 }

@@ -32,7 +32,6 @@ import dlf.ast.Declaration;
 import dlf.ast.Statement;
 import dlf.ast.Expression;
 import dlf.ast.Type;
-import dlf.ast.Transform;
 
 import dlf.Context;
 import dlf.gen.Mangle;

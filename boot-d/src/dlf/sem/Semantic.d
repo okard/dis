@@ -30,7 +30,6 @@ import dlf.ast.Expression;
 import dlf.ast.Annotation;
 import dlf.ast.Type;
 import dlf.ast.SymbolTable;
-import dlf.ast.Transform;
 
 import dlf.sem.DeclAnalysis;
 import dlf.sem.TypeAnalysis;
@@ -121,9 +120,14 @@ class Semantic : Visitor
 
         //semantic check for available PackageDeclarations
         if(impDecl.Package !is null)
+        {
             impDecl.Package = autoDispatch(impDecl.Package);
+        }
         else
+        {
             Error("\tImport %s has not been solved", impDecl.Name);
+            fatal("Can't proceed with unsolved import");
+        }
 
         //semantic on package should have been run
 
@@ -406,7 +410,14 @@ class Semantic : Visitor
         //TODO Change to Events
         //writefln(s, args);
         log.log!(LogType.Error)(s, args);
-        throw new SemanticException(format(s, args));
+    }
+
+    /**
+    * Fatal semantic error
+    */
+    private void fatal(string msg = "")
+    {
+         throw new SemanticException(msg);
     }
 
     /**
@@ -416,6 +427,8 @@ class Semantic : Visitor
     {
         if(!cond)
             Error(message);
+
+        fatal(message);
     }
 
     /**

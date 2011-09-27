@@ -32,12 +32,7 @@ mixin template TypeAnalysis()
     */
     private Declaration resolve(DotIdentifier di)
     {
-        //Symbol Table should not be null
-        if(mSymTable is null)
-        {
-            Error("\t Resolve DotIdentifier: SymbolTable is null");
-            return null;
-        }
+        assert(mSymTable is null, "Resolve DotIdentifier: SymbolTable is null");
 
         //Instances and arguments
 
