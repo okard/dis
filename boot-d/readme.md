@@ -20,8 +20,11 @@ Bootstrap Compiler written in D2
 
 With valid D2 & Tools (gnu make) in PATH type in console:
 
-$ make
+$ make 
 
+For windows there is a powershell script
+
+$ make.ps1
 
 ## Usage
 
@@ -30,6 +33,7 @@ To use the dis boot compiler it is required you have gcc and tools available thr
 To build the runtime type
 
 $ ./buildrt.sh under Linux (bash)
+$ buildrt.ps1 under Windows (Powershell)
 
 To build a program you can use the wrapper script or start the compiler directly:
 
