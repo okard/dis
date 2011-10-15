@@ -1,0 +1,21 @@
+//testing polymorphic function (ad-hoc polymorphism)
+package tests.runnable.function003;
+
+def show(i : int)
+{
+    assert(i == 5);
+}
+
+def show(d : double)
+{
+    assert(d == 3.0);
+}
+
+def main()
+{
+    var i : int = 5;
+    var d : double = 3.0;
+
+    show(i);
+    show(d);
+}
