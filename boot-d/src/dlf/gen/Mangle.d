@@ -84,7 +84,7 @@ static class Mangle
                 case NodeKind.TraitDeclaration: 
                     name = "trt" ~ to!(string)(d.Name.length) ~ d.Name ~ name; 
                     break;
-                case NodeKind.FunctionDeclaration: 
+                case NodeKind.FunctionSymbol: 
                     name = "fnc" ~ to!(string)(d.Name.length) ~ d.Name ~ name; 
                     break;
                 default:
@@ -107,7 +107,7 @@ static class Mangle
     {
         string name = "";
         //Functions have Parameters
-        if(decl.Kind == NodeKind.FunctionDeclaration)
+        if(decl.Kind == NodeKind.FunctionSymbol)
         {
             //Require name for instance!!!
            //TODO function append parameter
@@ -132,7 +132,7 @@ static class Mangle
                 case NodeKind.ClassDeclaration:
                     name = "_cls" ~ d.Name ~ name;
                     break;
-                case NodeKind.FunctionDeclaration:
+                case NodeKind.FunctionSymbol:
                     name = "_fcn" ~ d.Name ~ name;
                     break;
                 default:

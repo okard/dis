@@ -18,12 +18,30 @@
 ******************************************************************************/
 module dlf.ast.Special;
 
+import std.array;
+
 /**
 * Identifier 
 */
 struct CompositeIdentifier
 { 
     string[] idents;
+
+    /**
+    * Return last 
+    */
+    string last()
+    {
+        return idents[idents.length-1];
+    }
+
+    /**
+    * To string
+    */
+    string toString()
+    {
+        return join(idents, ".");
+    }
 }
 
 

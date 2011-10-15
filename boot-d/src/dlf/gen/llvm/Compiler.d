@@ -155,7 +155,7 @@ class Compiler : AbstractVisitor
     /**
     * Compile Function Declaration
     */
-    override void visit(FunctionDeclaration func)
+    override void visit(FunctionSymbol func)
     {
         //TODO look for Extension Methods
         //TODO look for class functions
@@ -227,7 +227,7 @@ class Compiler : AbstractVisitor
         if(block.Parent.NodeType == Node.Type.Declaration 
         && (cast(Declaration)block.Parent).DeclType == Declaration.Type.Function)
         {
-            auto funcDecl = cast(FunctionDeclaration)block.Parent;
+            auto funcDecl = cast(FunctionSymbol)block.Parent;
             auto funcCNode = CNode!ValueNode(funcDecl);
             auto funcVal = cast(llvm.FunctionValue)funcCNode.LLVMValue;
 
@@ -313,7 +313,7 @@ class Compiler : AbstractVisitor
         //semantic pass should have resolved the function
         
         //Require Function Declaration
-        FunctionDeclaration funcDecl;
+        FunctionSymbol funcDecl;
         
         //check for dot identifier
         if(cast(FunctionDeclaration)call.Function.Extend is null)

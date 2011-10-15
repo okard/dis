@@ -18,6 +18,7 @@
 ******************************************************************************/
 module dlf.ast.SymbolTable;
 
+import dlf.ast.Node;
 import dlf.ast.Declaration;
 
 
@@ -29,11 +30,8 @@ final class SymbolTable
     /// Prev Symbol Table
     private SymbolTable mPrev;
     
-    //safe owner of symboltable
-    //private Node owner
-
-    //save the symbols mangled in AST?
-    //in other ways the name can be duplicated avaiable
+    /// Owner Node of SymbolTable
+    public Node Owner;
     
     /// the symbols
     private Declaration mSymbols[string];
@@ -41,8 +39,9 @@ final class SymbolTable
     /**
     * Create new SymbolTable
     */
-    public this(SymbolTable parent)
+    public this(Node Owner, SymbolTable parent)
     {
+        this.Owner = Owner;
         this.mPrev = parent;
     }
 
@@ -92,9 +91,9 @@ final class SymbolTable
     /**
     * Creates a new SymbolTable
     */
-    public SymbolTable push()
+    public SymbolTable push(Node owner)
     {
-        auto st = new SymbolTable(this);
+        auto st = new SymbolTable(owner, this);
         return st;
     }
 

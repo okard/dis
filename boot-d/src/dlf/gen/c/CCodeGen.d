@@ -175,7 +175,9 @@ class CCodeGen : ObjectGen, Visitor
         //Imports
         mapDispatch(pd.Imports);
 
-        mapDispatch(pd.Functions);
+        //go through declarations
+        foreach(Declaration d; pd.SymTable)
+            autoDispatch(d);
         
         p.close();
     }
@@ -191,9 +193,9 @@ class CCodeGen : ObjectGen, Visitor
     }
 
     /**
-    * Compile FunctionDeclaration
+    * Compile FunctionSymbol
     */
-    void visit(FunctionDeclaration fd)
+    void visit(FunctionSymbol fd)
     { 
         foreach(FunctionType ft; fd.Instances)
         {
@@ -212,10 +214,11 @@ class CCodeGen : ObjectGen, Visitor
     */
     private void gen(FunctionType ft)
     {
-        auto funcDecl = to!FunctionDeclaration(ft.FuncDecl);
+        auto funcDecl = to!FunctionSymbol(ft.FuncDecl);
+        auto funcBase = ft.FuncBase;
         
         //name for function type
-        string name = funcDecl.CallingConv == CallingConvention.C ?
+        string name = funcBase.CallingConv == CallingConvention.C ?
                       funcDecl.Name :
                       Mangle.mangle(ft);
 

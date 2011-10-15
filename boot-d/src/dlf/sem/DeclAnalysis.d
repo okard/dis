@@ -29,7 +29,7 @@ mixin template DeclAnalysis()
     /**
     * Analyze the function parameter definition
     */
-    private void analyzeFuncParam(ref FunctionDeclaration fd)
+    private void analyzeFuncParam(ref FunctionBase fd)
     {
         //detect if template function or not
 
@@ -46,7 +46,7 @@ mixin template DeclAnalysis()
     /**
     * Analyze the function statement
     */ 
-    private void analyzeFuncStmt(ref FunctionDeclaration fd)
+    private void analyzeFuncStmt(ref FunctionBase fd)
     {
         if(fd.Body is null) return;
 
@@ -69,23 +69,27 @@ mixin template DeclAnalysis()
     /**
     * Analyze Main Function
     */
-    private void analyzeMainFunc(ref FunctionDeclaration func)
+    private void analyzeMainFunc(ref FunctionSymbol func)
     {
         assert(func.Name == "main");
 
-        assertSem(func.Body !is null, "main function required body");
+        assert(func.Bases.length == 0, "Multiple defintion of main not allowed");
 
-        log.Information("main func parameter count: %s", func.Parameter.length);
+        auto base = func.Bases[0];
 
-        assert(func.Parameter.length != 1, "a main function can only have one parameter");
+        assertSem(base.Body !is null, "main function required body");
 
-        if(func.ReturnType.Kind == NodeKind.OpaqueType)
-            func.ReturnType = VoidType.Instance;
+        log.Information("main func parameter count: %s", base.Parameter.length);
+
+        assert(base.Parameter.length != 1, "a main function can only have one parameter");
+
+        if(base.ReturnType.Kind == NodeKind.OpaqueType)
+            base.ReturnType = VoidType.Instance;
 
         //return type: unsolved then solved
         //finally only int or void are allowed
 
-        assert(func.ReturnType == VoidType.Instance || func.ReturnType == IntType.Instance, "main function can be only have return type void or int");
+        assert(base.ReturnType == VoidType.Instance || base.ReturnType == IntType.Instance, "main function can be only have return type void or int");
 
         //FunctionParameter for main should be 
         
@@ -93,10 +97,11 @@ mixin template DeclAnalysis()
         {
             auto type = new FunctionType();
             type.FuncDecl = func;
-            type.ReturnType = func.ReturnType;
-            type.Body = func.Body;
+            type.FuncBase = base;
+            type.ReturnType =  base.ReturnType;
+            type.Body = base.Body;
             
-            if(func.Parameter.length ==1)
+            if(base.Parameter.length ==1)
             {
                 //at string[] argument
                 //type.Arguments  ~=

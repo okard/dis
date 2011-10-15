@@ -18,6 +18,12 @@
 ******************************************************************************/
 module dlf.ast.Printer;
 
+import std.stdio;
+import std.string;
+import std.array;
+
+import dlf.basic.Util;
+
 import dlf.ast.Node;
 import dlf.ast.Visitor;
 import dlf.ast.Type;
@@ -25,10 +31,6 @@ import dlf.ast.Declaration;
 import dlf.ast.Statement;
 import dlf.ast.Expression;
 import dlf.ast.Annotation;
-
-import std.stdio;
-import std.string;
-import std.array;
 
 /**
 * AST Printer
@@ -58,33 +60,43 @@ class Printer : Visitor
         writetln("%sPackage: %s",tabs(),  pd.Name);
 
         tabDeepness++;
-        foreach(fd; pd.Functions)
+        foreach(fd; pd.SymTable)
             dispatch(fd, this);
         tabDeepness--;
     }
 
-    /**
-    * Visit FunctionDeclaration
-    */
-    void visit(FunctionDeclaration fd)
-    {
-        writet("def(%s): %s(", toString(fd.CallingConv), fd.Name);
 
-        foreach(FunctionParameter p; fd.Parameter)
+    /**
+    * Visit FunctionSymbol
+    */
+    void visit(FunctionSymbol fd)
+    {
+        foreach(FunctionBase fb; fd.Bases)
+            visit(fb);
+    }
+
+    /**
+    * Print function base
+    */
+    void visit(FunctionBase fb)
+    {
+        writet("def(%s): %s(", toString(fb.CallingConv), to!Declaration(fb.Parent).Name);
+
+        foreach(FunctionParameter p; fb.Parameter)
         {
             if(p.Definition.length == 2)
                 writef("%s : %s", p.Definition[0], p.Definition[1]);
             if(p.Vararg) writef("...");
             
-            if(p != fd.Parameter[$-1])
+            if(p != fb.Parameter[$-1])
             writef(", ");
         }
 
-        writefln(") %s", fd.ReturnType);
+        writefln(") %s", fb.ReturnType);
         //fd.mType.mReturnType
 
-        if(fd.Body !is null)
-            dispatch(fd.Body, this);
+        if(fb.Body !is null)
+            dispatch(fb.Body, this);
     }
 
     /**

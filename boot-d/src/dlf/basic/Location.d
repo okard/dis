@@ -25,6 +25,9 @@ import std.conv;
 */
 struct Location
 {
+    /// Offset
+    size_t Offset;
+
     /// Line starts with 0
     uint Line;
  

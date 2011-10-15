@@ -20,11 +20,14 @@ module dlf.ast.Declaration;
 
 import std.datetime;
 
+import dlf.basic.Location;
+
 import dlf.ast.Node;
 import dlf.ast.Visitor;
 import dlf.ast.Type;
 import dlf.ast.Statement;
 import dlf.ast.Expression;
+import dlf.ast.Special;
 import dlf.ast.SymbolTable;
 
 /**
@@ -54,18 +57,13 @@ final class PackageDeclaration : Declaration
 {
     /// Symbol Table
     public SymbolTable SymTable;
+
     /// Imports
     ImportDeclaration[] Imports;
-    /// Variables
-    VariableDeclaration[] Variables;
-    /// Functions
-    FunctionDeclaration[] Functions;
-    /// Classes
-    ClassDeclaration[] Classes;
-    /// Traits
-    TraitDeclaration[] Traits;
+
     /// Runtime enabled
     bool RuntimeEnabled = true;
+
     /// Modification Date
     SysTime modificationDate;
     
@@ -79,11 +77,12 @@ final class PackageDeclaration : Declaration
 final class ImportDeclaration : Declaration
 {
     /// Import Identifier
-    string ImportIdentifier;
+    CompositeIdentifier ImportIdentifier;
 
-    //wildcard import
+    /// Wildcard Import (e.g. foo.*)
+    bool IsWildcardImport;
 
-    ///Holds a PackageNode
+    /// The associated package node
     PackageDeclaration Package;
 
     ///Mixin for Kind Declaration
@@ -110,12 +109,11 @@ struct FunctionParameter
     //Modifiers/Flags (ref, const, ..., vararg)
     //Contraints
 }
-    
 
 /**
-* Function Declaration (def)
+* A Function Base
 */
-final class FunctionDeclaration : Declaration
+class FunctionBase : Node
 {
     /// The Function Parameters
     public FunctionParameter[] Parameter;
@@ -123,40 +121,43 @@ final class FunctionDeclaration : Declaration
     /// Return Type
     public DataType ReturnType;
 
-    /// Instancen? generated at semantic step
-    public FunctionType[] Instances;
-
-    ///Has a Body (BlockStatement, Statement, Expression)
+    /// Has a Body (BlockStatement, Statement, Expression)
     public Statement Body;
 
     /// Is Template Function (here?)
     bool IsTemplate;
 
-    ///is a extension method declaration
+    /// Is a extension method declaration
     public bool IsExtensionMethod;
 
-    ///Calling Convention
+    /// Calling Convention
     public CallingConvention CallingConv;
 
-    /**
-    * Default Ctor
-    */
-    public this()
-    {
-        //FuncType = new FunctionType(); 
-    }
+    mixin(IsKind("FunctionBase"));
+}
+    
+
+/**
+* Function Declaration (def)
+*/
+final class FunctionSymbol : Declaration
+{
+    /// Function bases for ad-hoc polymorphism
+    public FunctionBase[] Bases;
+
+    /// Instances generated in semantic step
+    public FunctionType[] Instances;
 
     /**
     * Ctor
     */
     public this(string name)
     {
-        this();
         this.Name = name;
     }   
 
     ///Mixin for Kind Declaration
-    mixin(IsKind("FunctionDeclaration"));
+    mixin(IsKind("FunctionSymbol"));
 }
 
 /**
@@ -197,7 +198,7 @@ final class ClassDeclaration : Declaration
     //Mixins
 
     //VariableDeclaration[] Variables;
-    //FunctionDeclaration[] Methods;
+    //FunctionSymbols[] Methods;
 
     public ClassType[] Instances;
 

@@ -130,6 +130,7 @@ class SourceFile : File, Source
     */
     public Location Loc()
     {
+        mLoc.Offset = offset();
         return mLoc;
     }
 
@@ -173,6 +174,7 @@ class SourceFile : File, Source
     public void reset()
     {
         position = 0;
+        mLoc.Offset = offset();
         mLoc.Col = 0;
         mLoc.Line = 0;
     }
@@ -247,6 +249,7 @@ class SourceString : Source
     */
     public Location Loc()
     {
+        mLoc.Offset = offset();
         return mLoc;
     }
 
@@ -272,6 +275,7 @@ class SourceString : Source
     public void reset()
     {
         mPos = 0;
+        mLoc.Offset = 0;
         mLoc.Col = mLoc.Line = 0;
     }
 

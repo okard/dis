@@ -56,15 +56,6 @@ class Parser
     /// Current Token
     private Token mToken;
 
-    /// AST Root Node
-    private Node mAstRoot;
-
-    /// AST Current Node
-    private Node mAstCurrent;
-
-    /// AST Parser Stack
-    private Stack!Node mAstStack;
-
     /// Current SymbolTable
     private SymbolTable mSymTable;
 
@@ -77,7 +68,6 @@ class Parser
     public this()
     {
         mLex = new Lexer();
-        mAstStack = Stack!Node(256);
     }
 
     /**
@@ -133,10 +123,8 @@ class Parser
         auto pkg = new PackageDeclaration();
         pkg.Loc = mToken.Loc;
         pkg.modificationDate = Src.modificationDate;
-        pkg.SymTable = new SymbolTable(null);
+        pkg.SymTable = new SymbolTable(pkg, null);
         mSymTable = pkg.SymTable;
-        //add package to parse stack
-        mAstStack.push(pkg);
 
         //parameterized keywords
         if(peek(1) == TokenType.ROBracket)
@@ -180,10 +168,8 @@ class Parser
             {
             case TokenType.KwClass: break;
             case TokenType.KwDef:
-                    auto f = parseDef(); 
-                    f.Parent = pkg;
-                    pkg.Functions ~= f;
-                    mSymTable[f.Name] = f;
+                    //TODO give symbol table as scope?
+                    parseDef(); 
                 break;
             case TokenType.KwImport: break;
             //DefDecl
@@ -212,7 +198,23 @@ class Parser
         if(!next(TokenType.Identifier))
             Error(mToken.Loc, "parseImport: expect identifier after import keyword");
 
-        imp.Name = imp.ImportIdentifier = parseIdentifier.toString();
+        imp.ImportIdentifier.idents ~= value();
+
+        while(peek(1) == TokenType.Dot)
+        {
+            next;
+            switch(peek(1))
+            {
+                case TokenType.Identifier: 
+                    next; imp.ImportIdentifier.idents ~= value(); break;
+                case TokenType.Mul:
+                    next; imp.IsWildcardImport = true; break;
+                default:
+                    Error(mToken.Loc, "parseImport: expect identifier or * after dot");
+            }
+        }
+
+        imp.Name = imp.ImportIdentifier.toString();
         
         return imp;
     }
@@ -234,20 +236,17 @@ class Parser
     /**
     * Parse Method Definitions
     */
-    private FunctionDeclaration parseDef()
+    private void parseDef()
     {
         //top level node must be PackageDeclaration,(ClassDeclaration) 
         //def{(Calling Convention)} Identifier(Parameter) ReturnType
         // Block {}
         assertType(TokenType.KwDef);
 
-        auto func = new FunctionDeclaration();
+        auto func = new FunctionBase();
         func.Loc = mToken.Loc;
     
         //TODO assign annotations, attributes parsed before
-
-        //add function declaration to stack
-        mAstStack.push(func);
 
         next();
 
@@ -277,11 +276,25 @@ class Parser
         if(mToken.Type != TokenType.Identifier)
         {
             Error(mToken.Loc, "parseDef: expected identifier");
-            return null;
         }
-        
-        func.Name = cast(string)mToken.Value;
 
+        //get name
+        string name = cast(string)mToken.Value;
+
+        if(!mSymTable.contains(name))
+        {
+            mSymTable[name] = new FunctionSymbol(name);
+            mSymTable[name].Loc = mToken.Loc; //first occurence
+            mSymTable[name].Parent = mSymTable.Owner; //Parent Node
+        }
+
+        if(!mSymTable[name].Kind != NodeKind.FunctionSymbol)
+            Error(mToken.Loc, "parseDef: already a symbol with this name is available");
+
+        //assign function base
+        auto sym = (cast(FunctionSymbol)mSymTable[name]);
+        sym.Bases ~= func;
+        func.Parent = sym;
 
         //Parse Parameter if available
         if(peek(1) == TokenType.ROBracket)
@@ -334,18 +347,12 @@ class Parser
             b.Parent = func;
             func.Body = b;
         }
-
-        //Function Declaration finished pop from stack
-        mAstStack.pop();
-
-        //return function
-        return func;
     }
        
     /**
     * Parse Function Defintion Parameters
     */
-    private void parseDefParams(FunctionDeclaration fd)
+    private void parseDefParams(FunctionBase fd)
     {
         //accept Identifier, ":", "," 
 
@@ -515,9 +522,8 @@ class Parser
         //TODO symbol table? each block has one?
         auto block = new BlockStatement();
         block.Loc = mToken.Loc;
-        block.SymTable = mSymTable.push();
+        block.SymTable = mSymTable.push(block);
         mSymTable = block.SymTable;
-        mAstStack.push(block);
 
         //parse until "}"
         while(mToken.Type != TokenType.CCBracket && peek(1) != TokenType.CCBracket)
@@ -894,6 +900,14 @@ class Parser
         }
         else
             return InternalTypes.get(identifier, OpaqueType.Instance);
+    }
+
+    /**
+    * Get current token value
+    */
+    private string value()
+    {
+        return mToken.Value;
     }
 
     /**

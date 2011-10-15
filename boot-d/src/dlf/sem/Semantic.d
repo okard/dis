@@ -98,16 +98,12 @@ class Semantic : Visitor
 
         // Imports
         //add default runtime imports when not available
+        //checkRtImports(pack);
         mapDispatch(pack.Imports);
 
-        // Variables
-        mapDispatch(pack.Variables);
-
-        // Functions
-        mapDispatch(pack.Functions);
-
-        //Classes
-        mapDispatch(pack.Classes);
+        //go through declarations
+        foreach(Declaration d; pack.SymTable)
+            autoDispatch(d);
     }
 
     /**
@@ -165,11 +161,12 @@ class Semantic : Visitor
     }
 
     /**
-    * Visit FunctionDeclaration
+    * Visit FunctionSymbol
     */
-    void visit(FunctionDeclaration func)
+    void visit(FunctionSymbol func)
     { 
-        Information("Semantic FuncDecl %s", func.Name);
+        Information("Semantic FuncSym %s", func.Name);
+
 
         //Cases:
         // 1. Main Function
@@ -177,11 +174,14 @@ class Semantic : Visitor
         // 3. Explicit Declaration
         // 4. Template Functions (requires special body for each function, requires copy)
 
-        //first solve parameter array (resolve datatypes, detect complete
-        analyzeFuncParam(func);
-
-        //analyze statement and rewrite to block
-        analyzeFuncStmt(func);
+        
+        foreach(FunctionBase fb; func.Bases)
+        {
+            //first solve parameter array (resolve datatypes, detect complete
+            analyzeFuncParam(fb);
+            //analyze statement and rewrite to block
+            analyzeFuncStmt(fb);
+        }
 
         //create instance when single
 
@@ -192,7 +192,16 @@ class Semantic : Visitor
             analyzeMainFunc(func);
         }
 
-        //if function has no body it is a declaration
+        //go through function bases
+        foreach(FunctionBase fb; func.Bases)
+        {
+            visit(fb);
+        }
+    }
+
+    void visit(FunctionBase func)
+    {
+            //if function has no body it is a declaration
         if(func.Body is null)
         {
             //its a declaration

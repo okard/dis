@@ -130,6 +130,7 @@ enum TokenType //: ubyte//c main
     // -asm inline assembler (parse as string???)
     // -dsl[linq] for embedded dsl, compiler plugins
     // -ptr for pointer types
+    // -data for structs and flat data types
 
     //Comment Tokens, DocComments
     Comment

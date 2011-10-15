@@ -34,7 +34,7 @@ public interface Visitor
     //Declarations
     void visit(PackageDeclaration);
     void visit(ImportDeclaration);
-    void visit(FunctionDeclaration);
+    void visit(FunctionSymbol);
     void visit(VariableDeclaration);
     void visit(ClassDeclaration);
     void visit(TraitDeclaration);
@@ -81,7 +81,7 @@ Node dispatch(Node n, Visitor v, bool mod = false)
         case NodeKind.PackageDeclaration: v.visit(cast(PackageDeclaration)n); break;
         case NodeKind.ImportDeclaration: v.visit(cast(ImportDeclaration)n); break;
         case NodeKind.VariableDeclaration: v.visit(cast(VariableDeclaration)n); break;
-        case NodeKind.FunctionDeclaration: v.visit(cast(FunctionDeclaration)n); break;
+        case NodeKind.FunctionSymbol: v.visit(cast(FunctionSymbol)n); break;
         case NodeKind.ClassDeclaration: v.visit(cast(ClassDeclaration)n); break;
         case NodeKind.TraitDeclaration: v.visit(cast(TraitDeclaration)n); break;
 

@@ -245,6 +245,9 @@ class FunctionType : DataType
     /// The base function declaration of this type, Parent
     public alias Parent FuncDecl;
 
+    /// Function Base
+    public FunctionBase FuncBase;
+
     /// The function type arguments
     public DataType[] Arguments;
 
