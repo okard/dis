@@ -73,10 +73,11 @@ mixin template DeclAnalysis()
     {
         assert(func.Name == "main");
 
-        assert(func.Bases.length == 0, "Multiple defintion of main not allowed");
+        assert(func.Bases.length == 1, "Multiple defintion of main not allowed");
 
         auto base = func.Bases[0];
 
+        debug writefln("analyzeMainFunc: base body %s", base.Body);
         assertSem(base.Body !is null, "main function required body");
 
         log.Information("main func parameter count: %s", base.Parameter.length);
@@ -96,7 +97,7 @@ mixin template DeclAnalysis()
         if(func.Instances.length == 0)
         {
             auto type = new FunctionType();
-            type.FuncDecl = func;
+            type.Parent = func;
             type.FuncBase = base;
             type.ReturnType =  base.ReturnType;
             type.Body = base.Body;

@@ -55,6 +55,8 @@ enum TokenType //: ubyte//c main
     Dot,            // .
     Slice,          // ..
     Vararg,         // ...
+    SharpSign,      // #
+    Dollar,         // $
 
     //Binary & Math Operator
     Add,            // +
@@ -77,27 +79,25 @@ enum TokenType //: ubyte//c main
     Equal,          // ==
     NotEqual,       // !=
     
-    //ConcatAssign  // ~=
+    ConcatAssign,   // ~=
     AddAssign,      // +=
     SubAssign,      // -=
     MulAssign,      // *=
     DivAssign,      // /=
 
-    //:=
+    // := special assign?
     // <<
     // >> shift operators
+    // <<<
+    // >>>
     // <-
     // ~>
     // <~ proposol mixin operator
-    //=>
-    //#>
-    //<#
-    //+>
-    //<+
-    //#  <-- Singleton object? Const? static?
-    //$
-    //.. //DotDot Slice Expression
-    //... //Vararg Token
+    // => //lambda?
+    // #>
+    // <#
+    // +>
+    // <+
 
 
     //Keywords
@@ -108,6 +108,7 @@ enum TokenType //: ubyte//c main
     KwVal,          // val
     KwTrait,        // trait
     KwType,         // type
+    KwConst,        // const
     KwImport,       // import
     KwIf,           // if
     KwElse,         // else
@@ -166,6 +167,8 @@ string toString(TokenType tok)
     case TokenType.COBracket:   return "{";
     case TokenType.CCBracket:   return "}";
     case TokenType.Annotation:  return "@";
+    case TokenType.SharpSign:   return "#";
+    case TokenType.Dollar:      return "$";
     // Single Operator
     case TokenType.Add:         return "+";
     case TokenType.Sub:         return "-";
@@ -185,6 +188,7 @@ string toString(TokenType tok)
     case TokenType.LOr:         return "||";
     case TokenType.Equal:       return "==";
     case TokenType.NotEqual:    return "!=";
+    case TokenType.ConcatAssign:return "~=";
     case TokenType.AddAssign:   return "+=";
     case TokenType.SubAssign:   return "-=";
     case TokenType.MulAssign:   return "*=";
@@ -197,6 +201,7 @@ string toString(TokenType tok)
     case TokenType.KwVal:       return "val";
     case TokenType.KwTrait:     return "trait";
     case TokenType.KwType:      return "type";
+    case TokenType.KwConst:     return "const";
     case TokenType.KwImport:    return "import";
     case TokenType.KwIf:        return "if";
     case TokenType.KwElse:      return "else";

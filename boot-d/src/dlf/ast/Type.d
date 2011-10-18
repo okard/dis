@@ -153,6 +153,7 @@ final class DoubleType : DataType
 
 /**
 * Not known datatype
+* For implicit typing
 */
 final class OpaqueType : DataType
 {
@@ -163,6 +164,7 @@ final class OpaqueType : DataType
 
 /**
 * Unsolved Type
+* Type setted, but not yet solved
 */
 final class UnsolvedType : DataType
 {
@@ -243,7 +245,8 @@ class ArrayType : DataType
 class FunctionType : DataType
 {
     /// The base function declaration of this type, Parent
-    public alias Parent FuncDecl;
+    @property
+    public FunctionSymbol FuncDecl() { return cast(FunctionSymbol)Parent; }
 
     /// Function Base
     public FunctionBase FuncBase;
@@ -272,6 +275,19 @@ class FunctionType : DataType
     mixin(IsKind("FunctionType"));
 }
 
+/**
+* Struct Type
+*/
+class StructType : DataType
+{
+    /// Struct Declaration
+    public StructDeclaration StructDecl;
+    
+    //TODO indexes, offsets
+
+    /// Struct Fields
+    public DataType Fields[];
+}
 
 /**
 * Class Type
@@ -279,7 +295,7 @@ class FunctionType : DataType
 class ClassType : DataType
 {
     /// The original class declaration
-    ClassDeclaration ClassDecl;
+    public ClassDeclaration ClassDecl;
 
     //Template Classes can have subclasstypes?
     //Parent Class
@@ -297,7 +313,6 @@ class TraitType : DataType
     TraitDeclaration TraitDecl;
 }
 
-//struct type?
 
 //enum type
 

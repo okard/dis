@@ -432,9 +432,10 @@ class Semantic : Visitor
     private void assertSem(bool cond, string message)
     {
         if(!cond)
+        {
             Error(message);
-
-        fatal(message);
+            fatal(message);
+        }
     }
 
     /**

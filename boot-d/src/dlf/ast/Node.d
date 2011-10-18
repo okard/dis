@@ -104,6 +104,13 @@ abstract class Node
 
     /// Self Pointer for (crazy) dispatch replace
     public Node Self;
+
+    /**
+    * Validator Function
+    */
+    public void valid()
+    {
+    }
 }
 
 /**

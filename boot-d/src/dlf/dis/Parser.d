@@ -18,6 +18,10 @@
 ******************************************************************************/
 module dlf.dis.Parser;
 
+import std.string;
+//debug
+import std.stdio;
+
 import dlf.basic.Location;
 import dlf.basic.Source;
 import dlf.basic.Stack;
@@ -35,10 +39,6 @@ import dlf.ast.Expression;
 import dlf.ast.Annotation;
 import dlf.ast.Printer;
 import dlf.ast.SymbolTable;
-
-import std.string;
-//debug
-import std.stdio;
 
 /**
 * Dis Parser
@@ -169,7 +169,7 @@ class Parser
             case TokenType.KwClass: break;
             case TokenType.KwDef:
                     //TODO give symbol table as scope?
-                    parseDef(); 
+                    parseDef(pkg.SymTable); 
                 break;
             case TokenType.KwImport: break;
             //DefDecl
@@ -236,7 +236,7 @@ class Parser
     /**
     * Parse Method Definitions
     */
-    private void parseDef()
+    private void parseDef(SymbolTable symtbl)
     {
         //top level node must be PackageDeclaration,(ClassDeclaration) 
         //def{(Calling Convention)} Identifier(Parameter) ReturnType
@@ -257,11 +257,10 @@ class Parser
             if(!expect(mToken,TokenType.Identifier))
                 Error(mToken.Loc, "parseDef: Expected Identifier for Calling Convention");
             
-            switch(mToken.Value)
+            switch(mToken.Value.toLower())
             {
-            case "c":
-            case "C": func.CallingConv = CallingConvention.C; break;
-            case "Dis": func.CallingConv = CallingConvention.Dis;break;
+            case "c": func.CallingConv = CallingConvention.C; break;
+            case "dis": func.CallingConv = CallingConvention.Dis;break;
             default: Error(mToken.Loc, "Invalid CallingConvention");
             }
             
@@ -281,18 +280,18 @@ class Parser
         //get name
         string name = cast(string)mToken.Value;
 
-        if(!mSymTable.contains(name))
+        if(!symtbl.contains(name))
         {
-            mSymTable[name] = new FunctionSymbol(name);
-            mSymTable[name].Loc = mToken.Loc; //first occurence
-            mSymTable[name].Parent = mSymTable.Owner; //Parent Node
+            symtbl[name] = new FunctionSymbol(name);
+            symtbl[name].Loc = mToken.Loc; //first occurence
+            symtbl[name].Parent = symtbl.Owner; //Parent Node
         }
 
-        if(!mSymTable[name].Kind != NodeKind.FunctionSymbol)
-            Error(mToken.Loc, "parseDef: already a symbol with this name is available");
+        if(symtbl[name].Kind != NodeKind.FunctionSymbol)
+            Error(mToken.Loc, "parseDef: already a non-function entry in symbol table with this name");
 
         //assign function base
-        auto sym = (cast(FunctionSymbol)mSymTable[name]);
+        auto sym = (cast(FunctionSymbol)symtbl[name]);
         sym.Bases ~= func;
         func.Parent = sym;
 
@@ -335,17 +334,23 @@ class Parser
         }
 
         //after declaration followed  { or = or ; or is end of declaration
-        
-        //Look for Basic Block here, ignore new lines and comments
-        if(peekIgnore(1, [TokenType.EOL, TokenType.Comment]) == TokenType.COBracket)
+        switch(peekIgnore(1, [TokenType.EOL, TokenType.Comment]))
         {
-            //goto "{"
-            while(mToken.Type != TokenType.COBracket) 
-                next();
-            //parse the block
-            auto b = parseBlock();
-            b.Parent = func;
-            func.Body = b;
+            //block {}
+            case TokenType.COBracket:
+                nextIgnore([TokenType.EOL, TokenType.Comment]);
+                //parse the block
+                auto b = parseBlock();
+                b.Parent = func;
+                func.Body = b;
+                return;
+
+            // = <statement or expression>
+            case TokenType.Assign:
+                throw new ParserException(mToken.Loc, "Assign Expr|Stmt Functions not yet implemented");
+
+            default:
+                return;
         }
     }
        
@@ -429,7 +434,7 @@ class Parser
         //expect Identifier after var
         if(!expect(mToken, TokenType.Identifier))
         {
-            Error(mToken.Loc, "Expect Identifer after var keyword");
+            Error(mToken.Loc, "Expect Identifier after var keyword");
             return null;
         }
         

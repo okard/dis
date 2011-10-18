@@ -184,15 +184,42 @@ final class VariableDeclaration : Declaration
     mixin(IsKind("VariableDeclaration"));
 }
 
-//value declaration
+/**
+* Value Declaration
+*/
+final class ValueDeclaration : Declaration
+{
+}
 
-//class template parameter?
+/**
+* Constant Declaration
+*/
+final class ConstantDeclaration : Declaration
+{
+
+}
+
+/**
+*
+*/
+final class StructDeclaration : Declaration
+{
+    /// Symbol Table
+    public SymbolTable SymTable;
+
+    /// Calling Convention
+    public CallingConvention CallingConv;
+}
+
 
 /**
 * Class Declaration
 */
 final class ClassDeclaration : Declaration
 {
+    /// Symbol Table
+    public SymbolTable SymTable;
+
     //BaseClass / Parent Class
     //Traits
     //Mixins
