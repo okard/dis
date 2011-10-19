@@ -1,0 +1,138 @@
+\section{Syntax}
+
+
+\subsection{Types}
+Built-in:
+\begin{multicols}{4}
+\begin{itemize}
+\item bool 
+\item byte 
+\item ubyte 
+\item short 
+\item ushort 
+\item int 
+\item uint 
+\item long 
+\item ulong 
+\item float 
+\item double 
+\item ptr 
+\item char 
+\end{itemize}
+\end{multicols}
+
+User defined types:
+\begin{itemize}
+\item Classes, 
+\item Functions, 
+\item Traits, 
+\item Structures
+\item Enums
+\item Delegates
+\end{itemize}
+
+\subsection{Declarations}
+
+\subsubsection*{Packages}
+
+\begin{ebnf}
+PackageDeclaration & \rightarrow "package" identifier\; \\
+\end{ebnf}
+
+\subsubsection{Type Identifier}
+\begin{itemize}
+\item Identifier
+\item Identifier.Identifier
+\item Identifier[]
+\item Identifier!Identifier
+\item Identifier!(Identifier, Identifier)
+\item {[}Identifier]
+\item Identifier *
+\end{itemize}
+
+
+
+%% Variables %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{Variables \& Values}
+\begin{ebnf}
+	VariableDecl & \rightarrow "var"\; identfifier\; [":" identifier] ["=" Literal] (";" | CRLF) \\
+	ValueDecl & \rightarrow "val"\; identfifier\; [":" identifier] ["=" Literal] (";" | CRLF)
+\end{ebnf}
+
+\begin{lstlisting}
+// Explicit Typing
+var i : int = 5;
+val f : float = 5.0;
+// Implicit Typing
+var i = 5;
+var b = 0x0;
+
+\end{lstlisting}
+
+%% Functions %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{Functions}
+\begin{ebnf}
+FunctionDeclaration & \rightarrow "def"\; ["("\; Identifier\; ")"]\; identifier\; ["("\; ")" ]\; \\
+\end{ebnf}
+
+% Example
+\begin{lstlisting}
+def main
+{
+}
+
+def square(x) = x**2;
+\end{lstlisting}
+
+calling convention
+
+%% Classes %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{Classes}
+class
+\lstinline!class foo {}!
+calling convention
+constructor
+destructor
+operator overloading
+
+%% Traits %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{Traits}
+trait
+\begin{lstlisting}
+trait printable
+{
+	def print(): void;
+}
+
+class foo
+{
+	def print = io.writeln("foo");
+}
+
+//class foo can be printable
+(foo() as printable).print();
+\end{lstlisting}
+
+%% Types Decl %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{Enums, Delegates, Alias, Variant}
+The type keyword is used to declare utility types, a dis program isn't based on these types but can use them as utility.
+
+\begin{lstlisting}
+type myInteger int
+type myBoolean = {True, False}
+type dgTest (int) => bool
+type Number = byte | short | int | long | float | double;
+\end{lstlisting}
+
+
+\subsection{Statements}
+for while do (mixins) try catch finally
+
+\subsection{Expression}
+\begin{itemize}
+\item BinaryOperator: \& | + - * ** / \% \textasciicircum{} 
+\item LogicalOperator: \&\&  ||
+\end{itemize}
+if 
+switch
+cast Expressions

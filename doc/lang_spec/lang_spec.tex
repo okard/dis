@@ -1,4 +1,4 @@
-\documentclass[a4paper]{article}
+\documentclass[a4paper,fleqn]{article}
 
 \include{preamble} 
 
@@ -11,17 +11,23 @@
 \begin{document}
 \maketitle
 \begin{center}
-Version 1.0
+Version X.X DRAFT
 \end{center}
 
 \newpage
 \tableofcontents
 \newpage
 
-\section{Introduction}
+\section*{License}
+
+\begin{flushleft}
 This Document describes the Dis programming language, these document is licensed under Creative Commons Attribution-NoDerivs 3.0 Unported License.
 
-\section{About}
+\url{http://creativecommons.org/licenses/by-nd/3.0/}
+\end{flushleft}
+
+\section{Introduction}
+
 The dis programming language is a multi paradigm programming language, designed with following paradigm in mind:
 \begin{itemize}
 \item Meta-programming
@@ -40,216 +46,27 @@ Other concepts:
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Lexical
-\section{Lexical}
-Basic:
-
-\begin{itemize}
-\item $Alpha \rightarrow [a-zA-Z\_]+$
-\item $Number \rightarrow [0-9]+$
-\item $Identifier \rightarrow Alpha (Alpha / Number)+$
-\end{itemize}
-
-A Identifier can be one of following keywords:
-\begin{multicols}{4}
-\begin{itemize}
-\item package 
-\item import
-\item trait 
-\item class 
-\item def 
-\item var 
-\item val 
-\item type 
-\item for 
-\item while 
-\item do 
-\item if 
-\item switch 
-\item as
-\item in
-\end{itemize}
-\end{multicols}
-
-Symbols \& Operator
-\begin{multicols}{5}
-\begin{itemize}
-\item +
-\item -
-\item *
-\item /
-\item \%
-\item **
-
-\item <
-\item >
-
-\item =
-\item !
-\item ==
-\item <=
-\item >=
-\item +=
-\item *=
-\item /=
-
-\item \&
-\item \&\&
-\item |
-\item ||
-\item \^{}
-
-\item :=
-\item <-
-\item ->
-
-\item \textasciitilde{}
-
-\item {
-\item }
-\item (
-\item )
-\item {[}
-\item ]
-\item .
-\item :
-\item ;
-\end{itemize}
-\end{multicols}
-
-
-A identifier can also be one of the following built in types
-\subsection{Types}
-Built-in:
-
-\begin{multicols}{4}
-\begin{itemize}
-\item bool 
-\item byte 
-\item ubyte 
-\item short 
-\item ushort 
-\item int 
-\item uint 
-\item long 
-\item ulong 
-\item float 
-\item double 
-\item ptr 
-\item char 
-\end{itemize}
-\end{multicols}
-
-
-User defined types:
-Standard Library
-\begin{itemize}
-\item Classes, 
-\item Functions, 
-\item Traits, 
-\item Structures
-\item Enums
-\item Delegates
-
-\end{itemize}
+\include{parts/lexical}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% GrammarStandard Library
-\section{Grammar}
-
-\subsection{Declarations}
-
-\subsubsection*{Packages}
-\[PackageDeclaration \rightarrow "package" identifier;\]
-
-\subsubsection*{Variables \& Values}
-\begin{ebnf}
-	VariableDecl & \rightarrow "var"\; identfifier\; [":" identifier] ["=" Literal] (";" | CRLF) \\
-	ValueDecl & \rightarrow "val"\; identfifier\; [":" identifier] ["=" Literal] (";" | CRLF)
-\end{ebnf}
-
-
-
-var val
-\lstinline!var i : int = 5;!
-
-\subsubsection*{Functions}
-def
-\lstinline!def square(x) = x**2;!
-
-calling convention
-
-\subsubsection*{Classes}
-class
-\lstinline!class foo {}!
-calling convention
-constructor
-destructor
-operator overloading
-
-\subsubsection*{Traits}
-trait
-\begin{lstlisting}
-trait printable
-{
-	def print(): void;
-}
-
-class foo
-{
-	def print = io.writeln("foo");
-}
-
-//class foo can be printable
-(foo() as printable).print();
-\end{lstlisting}
-
-\subsubsection*{Enums, Structure, Delegates, Alias, Variant}
-The type keyword is used to declare utility types, a dis program isn't based on these types but can use them as utility.
-
-\begin{lstlisting}
-type myInteger int
-type point { x: int; y : int; }
-type myBoolean = {True, False}
-type dgTest (int) => bool
-type Number = byte | short | int | long | float | double;
-\end{lstlisting}
-
-
-\subsection{Statements}
-for while do (mixins) try catch finally
-
-\subsection{Expression}
-\begin{itemize}
-\item BinaryOperator: \& | + - * ** / \% \textasciicircum{} 
-\item LogicalOpVersion 1.0erator: \&\&  ||
-\end{itemize}
-if 
-switch
+%% Grammar
+\include{parts/syntax}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Semantic
-\section{Semantic}
-Default Runtime and Standard Library Imports
-Operator Overloading
+\include{parts/semantic}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Name Mangarationarationling
-\section{Name Mangeling}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Runtime
-\section{Runtime}
+%% ABI & Runtime
+\include{parts/abi_rt}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Standard Library
-\section{Standard Library}
-std.io;
-std.string;
+\include{parts/stdlib}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Standard Library
 \section{Future}
-Domain Specific Language
-
+Embedded Domain Specific Language
 
 \end{document} 
