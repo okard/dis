@@ -1,36 +1,154 @@
-(* Basic Definitions *)
-digit = ;
-alpha = ;
-
-ident = alpha, {alpha | digit};
-
-(* Declarations *)
-FunctionDeclaration = "def", {CallingConvention}, ident, ; 
-CallingConvention = "(", "C" | "Dis", ")";
-ParameterList = ident, ":", ident 
-
- 
-(* Statements *)
-Statement = Expression
-BlockStatement = "{", {Statement}, "}"
-
-(* For, ForEach, While *)
+(*
+Notation
 
 
-(* Expressions *)
-Expression = BinaryExpression | IfExpression
 
-BinaryExpression = Expression, "+" | "-" | "*" | "/" | "%" | "^", Expression
+*)
 
-IfExpression = "if", "(", Expression, ")", Expression | Statement | BlockStatement
-(* todo: else *)
+Package = 
+    "package", DotIdentifier, {Declaration}
 
-SwitchExpression = "switch", "(", Expression, ")", SwitchBlock
+
+Declaration =
+      ImportDeclaration
+    | VariableDeclaration
+    | ValueDeclaration
+    | FunctionDeclaration
+    | ClassDeclaration
+    | TypeDeclaration
+    | TraitDeclaration
+    | StructDeclaration
+
+ImportDeclaration =
+    "import", DotIdentifier, [".", "*"];
+
+VariableDeclaration = 
+    "var", Identifier, [":" TypeIdentifier], ["=" Expression];
+    
+
+FunctionDeclaration = 
+    "def", {CallingConvention}, Identifier, [":" TypeIdentifier ]; 
+
+FunctionDefinition =
+      "=" Statement
+    | BlockStatement;
+
+CallingConvention = 
+    "(", "C" | "Dis", ")";
+
+ParameterDeclaration = Identifier, [":", TypeIdentifier];
+
+StructDeclaration =
+    "data", Identifier
+
+ClassDeclaration =
+    "obj", Identifier
+
+TraitDeclaration =
+    "trait", Identifier
+
+TypeDeclaration =
+      EnumDeclaration
+    | AliasDeclaration
+    | VariantDeclaration
+
+
+
+Statement = 
+      Expression
+    | ForStatement
+    | ForEachStatement
+    | WhileStatement
+    | DoWhileStatement
+
+
+BlockStatement = 
+    "{", {Declaration | Statement}, "}"
+
+
+
+Expression = 
+    Literal
+    | BinaryExpression 
+    | IfExpression
+    | SwitchExpression
+    | CallExpression
+    | "(" Expression ")"
+    | LambdaExpression
+    | IdentifierExpression
+    | AssignExpression
+    | CompareExpression
+
+Literal =
+      "true"
+    | "false"
+    | "null"
+    | NumberLiteral
+    | StringLiteral
+
+BinaryExpression = 
+    Expression, BinaryOperator, Expression
+
+BinaryOperator =
+      "+"
+    | "-"
+    | "*"
+    | "/"
+    | "%"
+    | "**"
+    | "~"
+
+
+IfExpression = 
+    "if", "(", Expression, ")", Expression | Statement | BlockStatement
+
+
+SwitchExpression = 
+    "switch", "(", Expression, ")", SwitchBlock
+
 SwitchBlock = "{", "}"
 
-(* Special Expressions *)
-DotIdentifier = ident, {".", ident}
-FunctionCall = Expression, "(", {Expression}, ")"
+
+CallExpression = 
+    Expression, "(", {Expression}, ")"
 
 
+AssignExpression =
+    IdentifierExpression, AssignOperator, Expression
+
+AssignOperator =
+      "="
+    | "+="
+    | "-="
+    | "*="
+    | "/="
+    | "%="
+    | "~="
+
+CompareExpression =
+    Expression, CompareOperator, Expression
+
+CompareOperator =
+      "=="
+    | "!="
+    | "<"
+    | ">"
+    | "<="
+    | ">="
+
+
+
+TypeIdentifier =
+      DotIdentifier
+    | DotIdentifier, "!", "(", { TypeIdentifier }, ")"
+    | DotIdentifier, "[", "]"
+    | "def", "(", {TypeIdentifier}, ")", [":" TypeIdentifier ]
+    
+DotIdentifier = 
+    ident, {".", ident}
+
+Identifier= alpha, {alpha | digit};
+
+digit = ;
+alpha = ;
 
