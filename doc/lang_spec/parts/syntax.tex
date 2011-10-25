@@ -1,6 +1,8 @@
-\section{Syntax}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Syntax/Grammar
+\section{Syntax / Grammar}
 
-
+ 
 \subsection{Types}
 Built-in:
 \begin{multicols}{4}
@@ -29,17 +31,19 @@ User defined types:
 \item Structures
 \item Enums
 \item Delegates
+\item Alias
+\item Variants
 \end{itemize}
 
 \subsection{Declarations}
 
-\subsubsection*{Packages}
+\subsubsection{Packages}
 
 \begin{ebnf}
 PackageDeclaration & \rightarrow "package" identifier\; \\
 \end{ebnf}
 
-\subsubsection{Type Identifier}
+\subsubsection*{Type Identifier}
 \begin{itemize}
 \item Identifier
 \item Identifier.Identifier
@@ -50,13 +54,11 @@ PackageDeclaration & \rightarrow "package" identifier\; \\
 \item Identifier *
 \end{itemize}
 
-
-
 %% Variables %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection*{Variables \& Values}
+\subsubsection{Variables \& Values}
 \begin{ebnf}
-	VariableDecl & \rightarrow "var"\; identfifier\; [":" identifier] ["=" Literal] (";" | CRLF) \\
-	ValueDecl & \rightarrow "val"\; identfifier\; [":" identifier] ["=" Literal] (";" | CRLF)
+	VariableDecl & \rightarrow "var"\; Identfifier\; [":"\; TypeIdentifier] ["=" Literal] (";" | CRLF) \\
+	ValueDecl & \rightarrow "val"\; Identfifier\; [":"\; TypeIdentifier] ["=" Literal] (";" | CRLF)
 \end{ebnf}
 
 \begin{lstlisting}
@@ -69,10 +71,16 @@ var b = 0x0;
 
 \end{lstlisting}
 
-%% Functions %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection*{Functions}
+\subsubsection{Constants}
 \begin{ebnf}
-FunctionDeclaration & \rightarrow "def"\; ["("\; Identifier\; ")"]\; identifier\; ["("\; ")" ]\; \\
+	ConstantDecl & \rightarrow "const"\; Identfifier\; [":"\; TypeIdentifier] ["=" Literal] (";" | CRLF) \\
+\end{ebnf}
+
+%% Functions %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Functions}
+\begin{ebnf}
+CallingConv & \rightarrow "("\; Identifier\; ")" \\
+FunctionDeclaration & \rightarrow "def"\; [CallingConv] Identifier\; Identifier\; ["("\; ")" ]\; \\
 \end{ebnf}
 
 % Example
@@ -87,7 +95,7 @@ def square(x) = x**2;
 calling convention
 
 %% Classes %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection*{Classes}
+\subsubsection{Classes}
 class
 \lstinline!class foo {}!
 calling convention
@@ -96,7 +104,7 @@ destructor
 operator overloading
 
 %% Traits %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection*{Traits}
+\subsubsection{Traits}
 trait
 \begin{lstlisting}
 trait printable
@@ -114,19 +122,34 @@ class foo
 \end{lstlisting}
 
 %% Types Decl %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection*{Enums, Delegates, Alias, Variant}
+\subsubsection{Enums, Delegates, Alias, Variant}
 The type keyword is used to declare utility types, a dis program isn't based on these types but can use them as utility.
 
 \begin{lstlisting}
 type myInteger int
 type myBoolean = {True, False}
-type dgTest (int) => bool
+type dgTest def(:int) : bool
 type Number = byte | short | int | long | float | double;
 \end{lstlisting}
 
 
 \subsection{Statements}
-for while do (mixins) try catch finally
+for 
+while do  
+try catch finally
+return
+
+\begin{ebnf}
+ReturnStatement & \rightarrow "return" Expression \\
+\end{ebnf}
+
+\begin{ebnf}
+BlockStatement & \rightarrow {Statement} \\
+\end{ebnf}
+
+block
+
+(mixins)
 
 \subsection{Expression}
 \begin{itemize}
@@ -136,3 +159,5 @@ for while do (mixins) try catch finally
 if 
 switch
 cast Expressions
+Lambda Expressions
+
