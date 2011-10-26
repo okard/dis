@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE language SYSTEM "language.dtd">
+
+<language name="EBNF" version="0.1" kateversion="2.5" section="Sources" extensions="*.*" mimetype="text/x-ebnf" casesensitive="true" author="tg" license="LGPL">
+    <highlighting>
+        
+        <list name="symbols">
+            <item> { </item>
+            <item> } </item>
+            <item> | </item>
+            <item> ? </item>
+            <item> [ </item>
+            <item> ] </item>
+        </list>
+        
+        <!-- Contexts -->
+        <contexts>
+            <!-- Standard Context -->
+            <context attribute="Normal Text" lineEndContext="#pop" name="Normal Text" >
+                <!-- Special Symbols -->
+                <keyword attribute="Keyword" context="#stay" String="symbols" />
+                <!-- Detect Terminal String -->
+                <DetectChar attribute="String" context="string" char="&quot;" />
+                <!-- Detect Comment -->
+                <Detect2Chars attribute="Comment" context="Commentar" char="(" char1="*" beginRegion="Comment"/>
+            </context>
+            
+            <!-- String Context -->
+            <context attribute="String" lineEndContext="#stay" name="string" >
+                <DetectChar attribute="String" context="#pop" char="&quot;" />
+            </context>
+            
+            <!-- Comment Context -->
+            <context attribute="Comment" lineEndContext="#stay" name="Commentar">
+                <Detect2Chars attribute="Comment" context="#pop" char="*" char1=")" endRegion="Comment"/>
+                <IncludeRules context="##Alerts" />
+            </context>
+        </contexts>
+        
+        <!-- Item Data -->
+        <itemDatas>
+            <itemData name="Normal Text" defStyleNum="dsNormal" />
+            <itemData name="Keyword" defStyleNum="dsKeyword" />
+            <itemData name="String" defStyleNum="dsString" />
+            <itemData name="Comment" defStyleNum="dsComment"/>
+        </itemDatas>
+    </highlighting>
+
+    <!-- General Section -->
+    <general>
+        <comments>
+        <comment name="multiLine"  start="(*" end="*)" />
+        </comments>
+        <keywords casesensitive="true"/>
+    </general>
+</language>

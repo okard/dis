@@ -1,13 +1,15 @@
 (*
-Notation
-
-
+Dis Programming Language
+EBNF Syntax according ISO/IEC 14977 standard
 
 *)
 
 Package = 
-    "package", DotIdentifier, {Declaration}
+    "package", DotIdentifier, { Declaration };
 
+(*
+    Declarations
+*)
 
 Declaration =
       ImportDeclaration
@@ -17,20 +19,22 @@ Declaration =
     | ClassDeclaration
     | TypeDeclaration
     | TraitDeclaration
-    | StructDeclaration
+    | StructDeclaration;
 
 ImportDeclaration =
     "import", DotIdentifier, [".", "*"];
 
 VariableDeclaration = 
     "var", Identifier, [":" TypeIdentifier], ["=" Expression];
-    
 
+ValueDeclaration =
+    "val", Identifier, [":" TypeIdentifier], ["=" Expression];
+    
 FunctionDeclaration = 
-    "def", {CallingConvention}, Identifier, [":" TypeIdentifier ]; 
+    "def", {CallingConvention}, Identifier, [":" TypeIdentifier ], [FunctionDefinition]; 
 
 FunctionDefinition =
-      "=" Statement
+      ("=", Statement)
     | BlockStatement;
 
 CallingConvention = 
@@ -39,19 +43,35 @@ CallingConvention =
 ParameterDeclaration = Identifier, [":", TypeIdentifier];
 
 StructDeclaration =
-    "data", Identifier
+    "data", Identifier, StructBody;
+
+StructBody =
+    "{", { Declaration } "}";
 
 ClassDeclaration =
-    "obj", Identifier
+    "obj", Identifier, ClassBody;
 
 TraitDeclaration =
-    "trait", Identifier
+    "trait", Identifier, TraitBody;
 
 TypeDeclaration =
-      EnumDeclaration
-    | AliasDeclaration
-    | VariantDeclaration
+    "type", Identifier, ( AliasDeclaration | EnumDeclaration | VariantDeclaration );
 
+AliasDeclaration =
+    TypeIdentifier;
+
+EnumDeclaration =
+    "=", "{", Identifier {",", Identifier }, "}";
+
+VariantDeclaration =
+    "=", TypeIdentifier, { "|", TypeIdentifier };
+
+Block = 
+    "{", {Declaration | Statement}, "}";
+
+(*
+    Statements
+*)
 
 
 Statement = 
@@ -59,12 +79,11 @@ Statement =
     | ForStatement
     | ForEachStatement
     | WhileStatement
-    | DoWhileStatement
+    | DoWhileStatement;
 
-
-BlockStatement = 
-    "{", {Declaration | Statement}, "}"
-
+(*
+    Expressions
+*)
 
 
 Expression = 
@@ -75,19 +94,17 @@ Expression =
     | CallExpression
     | "(" Expression ")"
     | LambdaExpression
-    | IdentifierExpression
-    | AssignExpression
-    | CompareExpression
+    | IdentifierExpression;
 
 Literal =
       "true"
     | "false"
     | "null"
     | NumberLiteral
-    | StringLiteral
+    | StringLiteral;
 
 BinaryExpression = 
-    Expression, BinaryOperator, Expression
+    Expression, BinaryOperator, Expression;
 
 BinaryOperator =
       "+"
@@ -97,55 +114,46 @@ BinaryOperator =
     | "%"
     | "**"
     | "~"
-
-
-IfExpression = 
-    "if", "(", Expression, ")", Expression | Statement | BlockStatement
-
-
-SwitchExpression = 
-    "switch", "(", Expression, ")", SwitchBlock
-
-SwitchBlock = "{", "}"
-
-
-CallExpression = 
-    Expression, "(", {Expression}, ")"
-
-
-AssignExpression =
-    IdentifierExpression, AssignOperator, Expression
-
-AssignOperator =
-      "="
+    | "="
     | "+="
     | "-="
     | "*="
     | "/="
     | "%="
     | "~="
-
-CompareExpression =
-    Expression, CompareOperator, Expression
-
-CompareOperator =
-      "=="
+    | "=="
     | "!="
     | "<"
     | ">"
     | "<="
-    | ">="
+    | ">=";
 
 
+IfExpression = 
+    "if", "(", Expression, ")", Expression | Statement | BlockStatement;
+
+
+SwitchExpression = 
+    "switch", "(", Expression, ")", SwitchBlock;
+
+SwitchBlock = "{", "}";
+
+
+CallExpression = 
+    Expression, "(", {Expression}, ")";
+
+(*
+    Special
+*)
 
 TypeIdentifier =
       DotIdentifier
-    | DotIdentifier, "!", "(", { TypeIdentifier }, ")"
-    | DotIdentifier, "[", "]"
-    | "def", "(", {TypeIdentifier}, ")", [":" TypeIdentifier ]
+    | DotIdentifier, "!", "(", TypeIdentifier, {"," TypeIdentifier }, ")"
+    | DotIdentifier, "[", [ Expression ], "]"
+    | "def", "(", {TypeIdentifier}, ")", [":" TypeIdentifier ];
     
 DotIdentifier = 
-    ident, {".", ident}
+    ident, {".", ident};
 
 Identifier= alpha, {alpha | digit};
 
