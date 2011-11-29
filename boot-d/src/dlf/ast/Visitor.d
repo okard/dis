@@ -100,8 +100,8 @@ Node dispatch(Node n, Visitor v, bool mod = false)
         //Types
 
         //Special
-        case NodeKind.Semantic: assert(false, "Can't dispatch special node");
-        case NodeKind.Backend: assert(false, "Can't dispatch special node"); 
+        case NodeKind.Semantic: assert(false, "Can't dispatch special semantic node");
+        case NodeKind.Backend: assert(false, "Can't dispatch special backend node"); 
     
         default: assert(false, "Missing dispatch case");
     }

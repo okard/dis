@@ -19,6 +19,7 @@
 module dlf.ast.Expression;
 
 import dlf.ast.Node;
+import dlf.ast.Special;
 import dlf.ast.Visitor;
 import dlf.ast.Type;
 
@@ -59,6 +60,9 @@ final class LiteralExpression : Expression
 */
 final class DotIdentifier : Expression
 {
+    /// The Composite Identifier
+    public CompositeIdentifier Identifier;
+
     ///parts of identifiers splitted with .
     private char[][] mIdentifier;
 
@@ -108,14 +112,6 @@ final class DotIdentifier : Expression
         return s;
     }
 
-    /**
-    * TODO Parse dotted expression from string
-    */
-    public static parse(string value)
-    {
-        //split at "."
-    }
-
     ///Mixin for Kind Declaration
     mixin(IsKind("DotIdentifier"));
 }
@@ -154,8 +150,26 @@ final class BinaryExpression : Expression
     /// Right Expression
     Expression Right;
 
-    ///Mixin for Kind Declaration
+    /// Mixin for Kind Declaration
     mixin(IsKind("BinaryExpression"));
+}
+
+/**
+* Unary Expression
+*/
+final class UnaryExpression : Expression
+{
+    /// Valid Operators
+    public enum Operator : ubyte { Not }
+
+    /// The Operator
+    Operator Op;
+
+    /// The Expression
+    Expression Expr;
+
+    /// Mixin for Kind Declaration
+    mixin(IsKind("UnaryExpression"));
 }
 
 /**

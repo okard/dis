@@ -60,6 +60,7 @@ public enum NodeKind : uint
     DotIdentifier, //DotExpression, IdentifierExpression
     CallExpression,
     BinaryExpression,
+    UnaryExpression,
     AssignExpression,
     IfExpression,
     SwitchExpression,
@@ -131,7 +132,9 @@ bool isStatement(Node n) { return n.Kind >= NodeKind.Statement && n.Kind < NodeK
 /// Is Expression
 bool isExpression(Node n) { return n.Kind >= NodeKind.Expression && n.Kind < NodeKind.DataType; }
 
-//TODO isDataType
+/// Is DataType
+bool isDataType(Node n) { return n.Kind >= NodeKind.DataType && n.Kind < NodeKind.Annotation; }
+
 //TODO isAnnotation
 
 /// is Backend Node
