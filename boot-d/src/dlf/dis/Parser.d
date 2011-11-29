@@ -51,7 +51,7 @@ class Parser
     private LogSource log = Log("Parser");
 
     /// Lexer
-    private Lexer mLex;
+    private scope Lexer mLex;
 
     /// Current Token
     private Token mToken;
@@ -106,6 +106,9 @@ class Parser
         //open source file and set ignore tokens
         mLex.open(src);
         mLex.Ignore = [TokenType.Comment, TokenType.EOL];
+        
+        //go to first token
+        next();
     }
 
     //public Declaration parseDeclaration();
@@ -253,7 +256,7 @@ class Parser
         if(mToken.Type == TokenType.ROBracket)
         {
             //identifier aka calling convention
-            if(!expect(mToken,TokenType.Identifier))
+            if(!next(TokenType.Identifier))
                 Error(mToken.Loc, "parseDef: Expected Identifier for Calling Convention");
             
             switch(mToken.Value.toLower())
@@ -264,7 +267,7 @@ class Parser
             }
             
             //close )
-            if(!expect(mToken, TokenType.RCBracket))
+            if(!next(TokenType.RCBracket))
                 Error(mToken.Loc, "parseDef: Expected )");
 
             next();
@@ -317,7 +320,7 @@ class Parser
             next();
             if(mToken.Type == TokenType.Colon)
             {
-                if(!expect(mToken, TokenType.Identifier))
+                if(!next(TokenType.Identifier))
                     Error(mToken.Loc, "Expect Identifier after ':' for function return type");
             }
             func.ReturnType = new UnsolvedType(mToken.Value);
@@ -431,10 +434,9 @@ class Parser
         auto loc = mToken.Loc;
 
         //expect Identifier after var
-        if(!expect(mToken, TokenType.Identifier))
+        if(!next(TokenType.Identifier))
         {
             Error(mToken.Loc, "Expect Identifier after var keyword");
-            return null;
         }
         
         //create new variable delclaration at the moment with opaque type
@@ -448,11 +450,8 @@ class Parser
             if(peek(1) == TokenType.Colon)
                 next();
             
-            if(!expect(mToken, TokenType.Identifier))
-            {
+            if(!next(TokenType.Identifier))
                 Error(mToken.Loc, "Expected Identifer as type information for variable");
-                return null;
-            }
 
             //parseIdentifier()
             var.VarDataType = resolveType(mToken.Value);
@@ -760,6 +759,7 @@ class Parser
     {
         assertType(TokenType.KwIf);
         Error(mToken.Loc, "TODO: Can't parse If Expressions yet");
+
         return null;
     }
 
@@ -912,15 +912,6 @@ class Parser
     private string value()
     {
         return mToken.Value;
-    }
-
-    /**
-    * Expect a special token
-    */
-    private bool expect(ref Token token, TokenType expected)
-    {
-        token = mLex.getToken();
-        return (token.Type == expected);
     }
 
     /**
