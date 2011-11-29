@@ -21,6 +21,7 @@ module dlf.dis.Lexer;
 import dlf.basic.Location;
 import dlf.basic.Source;
 import dlf.basic.ArrayBuffer;
+import util = dlf.basic.Util;
 import dlf.dis.Token;
 
 //phobos imports
@@ -35,16 +36,18 @@ import std.stdio;
 */
 class Lexer
 {
-    //Keyword to Token
+    /// Keyword to Token
     private static TokenType[char[]] mKeywords;
-    //Token List
+    /// Token List
     private ArrayBuffer!(Token) mTokList;
-    ///The current source to lex
+    /// The current source to lex
     private Source mSrc;
-    ///Current Token
+    /// Current Token
     private Token mTok;
-    ///Current char
+    /// Current char
     private char mC;
+    /// Tokens to ignore
+    private TokenType[] ignoreList;
 
     /**
     * Ctor
@@ -311,9 +314,17 @@ class Lexer
     }
 
     /**
+    * Start lexing source
+    */
+    public void open(Source src)
+    {
+        mSrc = src;
+    }
+
+    /**
     * Get next Token
     */
-    Token getToken()
+    public Token getToken()
     {
         if(!mTokList.empty())
         {
@@ -321,7 +332,13 @@ class Lexer
             //mTokList.removeFront();
         }
         else
-            mTok = nextToken();
+        {
+            do
+            {
+                mTok = nextToken();
+            }
+            while(util.isIn(mTok.Type, ignoreList));
+        }
         
         return mTok;
     }
@@ -336,7 +353,15 @@ class Lexer
         
         Token tok;
         while(mTokList.length() < n)
-            tok =  mTokList.addAfter(nextToken());
+        {
+            do
+            {
+                tok = nextToken();
+            }
+            while(util.isIn(mTok.Type, ignoreList));
+        
+            tok =  mTokList.addAfter(tok);
+        }
 
         return tok;
     }
@@ -351,31 +376,31 @@ class Lexer
     }
     
     /**
-    * Current Value for Token
-    */
-    @property
-    string CurrentValue()
-    {
-        return mTok.Value;
-    }
-
-    /**
-    * Set current Source
-    */
-    @property
-    void Src(Source src)
-    {
-        mSrc = src;
-    }
-    
-    /**
     * Get current Source
     */
     @property
     Source Src()
     {
         return mSrc;
-    }  
+    }
+
+    /**
+    * Set ignored token 
+    */
+    @property
+    void Ignore(TokenType[] token)
+    {
+        ignoreList = token;
+    }
+
+    /**
+    * Get ignored token
+    */
+    @property
+    TokenType[] Ignore()
+    {
+        return ignoreList;
+    }
 
     /**
     * Static Constructor

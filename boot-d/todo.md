@@ -7,6 +7,8 @@
 
 * Harmonize next/peek functions
 * Clean up error handling
+* Reduce syntax sugar -> stricter syntax
+* Rewrite
 
 ## Syntax Tree
 
@@ -14,4 +16,6 @@
 
 ## Codegen
 
+## Runtime
 
+* Create runtime ABI documentation

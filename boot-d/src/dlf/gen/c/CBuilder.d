@@ -80,6 +80,9 @@ struct CBuilder
     {
         final switch(ctx.Type)
         {
+            case TargetType.Binary:
+                assert(false, "Not yet implemented");
+
             case TargetType.StaticLib: 
                 assert(false, "Not yet implemented");
 

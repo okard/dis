@@ -245,7 +245,7 @@ class DisCompiler
     {
         //create lexer
         auto lex = new Lexer();
-        lex.Src = src;
+        lex.open(src);
         
         //print tokens
         writeln("------- START LEXER DUMP ------------------------------");

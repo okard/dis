@@ -1033,7 +1033,7 @@ class Parser
     @property
     private void Src(Source src)
     {
-        mLex.Src = src;
+        mLex.open(src);
     }
     
     /**

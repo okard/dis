@@ -22,7 +22,7 @@ import dlf.sem.SemanticContext;
 import dlf.gen.CodeGen;
 
 /// Target Type
-enum TargetType { Executable, StaticLib, SharedLib }
+enum TargetType { Executable, StaticLib, SharedLib, Binary }
 
 /// Target Platform
 enum TargetPlatform { Linux, MacOSX, Windows }

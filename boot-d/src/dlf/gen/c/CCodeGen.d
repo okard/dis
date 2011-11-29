@@ -263,6 +263,7 @@ class CCodeGen : ObjectGen, Visitor
         if(ctx.EnableRuntime)
         {
             //init runtime
+            //initialize linked libs
         }
 
         //convert arguments to dis array (runtime??)
@@ -271,6 +272,7 @@ class CCodeGen : ObjectGen, Visitor
         if(ctx.EnableRuntime)
         {
             //disable runtime
+            //deinitialize linked libs
         }
 
         p.blockEnd();
