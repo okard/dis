@@ -45,6 +45,7 @@ enum TokenType //: ubyte//c main
     Semicolon,      // ;
     Comma,          // ,
     Colon,          // :
+    DblColon,       // ::
     ROBracket,      // ( - Round Open Bracket
     RCBracket,      // ) - Round Close Bracket
     AOBracket,      // [ - Angled Open Bracket
@@ -105,7 +106,7 @@ enum TokenType //: ubyte//c main
     KwDef,          // def
     KwClass,        // class
     KwVar,          // var
-    KwVal,          // val
+    KwLet,          // let
     KwTrait,        // trait
     KwType,         // type
     KwConst,        // const
@@ -160,6 +161,7 @@ string toString(TokenType tok)
     case TokenType.Slice:       return "..";
     case TokenType.Vararg:      return "...";
     case TokenType.Colon:       return ":";
+    case TokenType.DblColon:    return "::";
     case TokenType.ROBracket:   return "(";
     case TokenType.RCBracket:   return ")";
     case TokenType.AOBracket:   return "[";
@@ -198,7 +200,7 @@ string toString(TokenType tok)
     case TokenType.KwDef:       return "def";
     case TokenType.KwClass:     return "class";
     case TokenType.KwVar:       return "var";
-    case TokenType.KwVal:       return "val";
+    case TokenType.KwLet:       return "let";
     case TokenType.KwTrait:     return "trait";
     case TokenType.KwType:      return "type";
     case TokenType.KwConst:     return "const";

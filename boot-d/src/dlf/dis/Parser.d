@@ -103,10 +103,9 @@ class Parser
         if(src is null || src.isEof)
             throw new Exception("No Source available");
 
-        Src = src;
-
-        //go to initial parseable token
-        nextIgnore([TokenType.Comment, TokenType.EOL]);
+        //open source file and set ignore tokens
+        mLex.open(src);
+        mLex.Ignore = [TokenType.Comment, TokenType.EOL];
     }
 
     //public Declaration parseDeclaration();
@@ -334,11 +333,11 @@ class Parser
         }
 
         //after declaration followed  { or = or ; or is end of declaration
-        switch(peekIgnore(1, [TokenType.EOL, TokenType.Comment]))
+        switch(peek(1))
         {
             //block {}
             case TokenType.COBracket:
-                nextIgnore([TokenType.EOL, TokenType.Comment]);
+                next();
                 //parse the block
                 auto b = parseBlock();
                 b.Parent = func;
@@ -551,7 +550,7 @@ class Parser
 
             //Declarations:
             //var, val, def, class, trait, type
-            if(isIn!TokenType(mToken.Type, [TokenType.KwVal, TokenType.KwDef, TokenType.KwClass]))
+            if(isIn!TokenType(mToken.Type, [TokenType.KwLet, TokenType.KwDef, TokenType.KwClass]))
             {
                 //parseDeclarations
                 continue;
@@ -925,21 +924,13 @@ class Parser
     }
 
     /**
-    * next token
-    */ 
-    private void next()
-    {
-        mToken = mLex.getToken();
-    }
-
-    /**
     * next n token
     */
-    private void next(uint n)
+    private void next(uint n = 1)
     {
         while(n > 0)
         {
-            next;
+            mToken = mLex.getToken();
             n--;
         }
     }
@@ -949,20 +940,8 @@ class Parser
     */
     private bool next(TokenType t)
     {
-        next;
+        next();
         return mToken.Type == t ? true : false;
-    }
-
-    /**
-    * next with Ignoring
-    */
-    private void nextIgnore(TokenType[] ignore = [])
-    {
-        do
-        {
-            next();
-        }
-        while(isIn(mToken.Type, ignore))
     }
 
     /**
@@ -971,24 +950,6 @@ class Parser
     private TokenType peek(ushort lookahead = 1)
     {
         return mLex.peekToken(lookahead).Type;
-    }
-
-    /**
-    * Peek next valid TokenType
-    * Ignore the ignore list
-    */
-    private TokenType peekIgnore(ushort lookahead = 1, TokenType[] ignore = [])
-    {
-        TokenType t;
-
-        do
-        {
-            t = mLex.peekToken(lookahead).Type;
-            lookahead++;
-        }
-        while(isIn!TokenType(t, ignore));
-
-        return t;
     }
 
     /**
@@ -1025,15 +986,6 @@ class Parser
     {
         if(!isIn(mToken.Type, tt))
             throw new ParserException(mToken.Loc, format("Expected [] not %s", mToken.toString()));
-    }
-    
-    /**
-    * Set Source file for Lexer
-    */
-    @property
-    private void Src(Source src)
-    {
-        mLex.open(src);
     }
     
     /**

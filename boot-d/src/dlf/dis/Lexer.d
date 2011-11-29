@@ -412,7 +412,7 @@ class Lexer
         mKeywords["package"] = TokenType.KwPackage;
         mKeywords["class"] = TokenType.KwClass;
         mKeywords["var"] = TokenType.KwVar;
-        mKeywords["val"] = TokenType.KwVal;
+        mKeywords["let"] = TokenType.KwLet;
         mKeywords["trait"] = TokenType.KwTrait;
         mKeywords["type"] = TokenType.KwType;
         mKeywords["const"] = TokenType.KwConst;
