@@ -39,6 +39,8 @@ enum TokenType //: ubyte//c main
     Integer,
     Float,
     Double,
+    Hex,
+    Binary,
 
     //Symbols
     EOL,            // End of Line
@@ -85,6 +87,7 @@ enum TokenType //: ubyte//c main
     SubAssign,      // -=
     MulAssign,      // *=
     DivAssign,      // /=
+    XorAssign,      // ^=
 
     // := special assign?
     // <<
@@ -105,6 +108,7 @@ enum TokenType //: ubyte//c main
     KwPackage,      // package
     KwDef,          // def
     KwClass,        // class
+    KwObj,          // obj
     KwVar,          // var
     KwLet,          // let
     KwTrait,        // trait
@@ -154,6 +158,8 @@ string toString(TokenType tok)
     case TokenType.Integer:     return "<Integer>";
     case TokenType.Float:       return "<Float>";
     case TokenType.Double:      return "<Double>";
+    case TokenType.Hex:         return "<Hex>";
+    case TokenType.Binary:      return "<Binary>";
     case TokenType.EOL:         return "<EOL>";
     case TokenType.Semicolon:   return ";";
     case TokenType.Comma:       return ",";
@@ -195,10 +201,12 @@ string toString(TokenType tok)
     case TokenType.SubAssign:   return "-=";
     case TokenType.MulAssign:   return "*=";
     case TokenType.DivAssign:   return "/=";
+    case TokenType.XorAssign:   return "^=";
     //Keywords
     case TokenType.KwPackage:   return "package";
     case TokenType.KwDef:       return "def";
     case TokenType.KwClass:     return "class";
+    case TokenType.KwObj:       return "obj";
     case TokenType.KwVar:       return "var";
     case TokenType.KwLet:       return "let";
     case TokenType.KwTrait:     return "trait";

@@ -195,6 +195,17 @@ class Lexer
 
         te.Value ~= mC;
 
+        //lex hex literals
+        if(mC == '0' && mSrc.peekChar(1) == 'x')
+        {
+            //TODO lex hex literals
+        }
+
+        //lex binary literals
+        if(mC == '0' && mSrc.peekChar(1) == 'b')
+        {
+        }
+
         while(isNumeric(mSrc.peekChar(1)) || mSrc.peekChar(1) == '.')
         {
             mC = mSrc.getChar();
@@ -262,11 +273,6 @@ class Lexer
         case '\n': tok.Type = TokenType.EOL; break;
         case ';':  tok.Type = TokenType.Semicolon; break;
         case ',':  tok.Type = TokenType.Comma; break;
-        case '.':  tok.Type = TokenType.Dot; 
-                   if(mSrc.peekChar(1) == '.'){ tok.Type = TokenType.Slice; mSrc.getChar();}
-                   if(mSrc.peekChar(1) == '.'){ tok.Type = TokenType.Vararg; mSrc.getChar();}
-                   break;
-        case ':':  tok.Type = TokenType.Colon; break;
         case '(':  tok.Type = TokenType.ROBracket; break;
         case ')':  tok.Type = TokenType.RCBracket; break;
         case '[':  tok.Type = TokenType.AOBracket; break;
@@ -275,6 +281,9 @@ class Lexer
         case '}':  tok.Type = TokenType.CCBracket; break;
         case '@':  tok.Type = TokenType.Annotation; break;
         case '~':  tok.Type = TokenType.Concat; break;
+        case '$':  tok.Type = TokenType.Dollar; break;
+        case '#':  tok.Type = TokenType.SharpSign; break;
+        case ':':  tok.Type = lookFor(':', TokenType.Colon, TokenType.DblColon); break;
         case '!':  tok.Type = lookFor('=', TokenType.Not, TokenType.NotEqual); break;
         case '+':  tok.Type = lookFor('=', TokenType.Add, TokenType.AddAssign); break;
         case '-':  tok.Type = lookFor('=', TokenType.Sub, TokenType.SubAssign); break;
@@ -282,7 +291,13 @@ class Lexer
         case '*':  tok.Type = lookFor('=', TokenType.Mul, TokenType.MulAssign); break;
         case '&':  tok.Type = lookFor('&', TokenType.And, TokenType.LAnd); break;
         case '|':  tok.Type = lookFor('|', TokenType.Or, TokenType.LOr); break;
-
+        case '^':  tok.Type = lookFor('=', TokenType.Xor, TokenType.XorAssign); break;
+        // <.>, <slice> and <vararg>
+        case '.':  tok.Type = TokenType.Dot; 
+                   if(mSrc.peekChar(1) == '.'){ tok.Type = TokenType.Slice; mSrc.getChar();}
+                   if(mSrc.peekChar(1) == '.'){ tok.Type = TokenType.Vararg; mSrc.getChar();}
+                   break;
+        
         //Can be Comments
         case '/':  if(mSrc.peekChar(1) == '/' || mSrc.peekChar(1) == '*') 
                         scanComments(tok);
@@ -408,9 +423,10 @@ class Lexer
     */
     static this()
     {
-        mKeywords["def"] = TokenType.KwDef;
         mKeywords["package"] = TokenType.KwPackage;
+        mKeywords["def"] = TokenType.KwDef;
         mKeywords["class"] = TokenType.KwClass;
+        mKeywords["obj"] = TokenType.KwObj;
         mKeywords["var"] = TokenType.KwVar;
         mKeywords["let"] = TokenType.KwLet;
         mKeywords["trait"] = TokenType.KwTrait;
@@ -451,6 +467,10 @@ unittest
 {
     //lexer unittest
     import std.stdio;
+
+    
+
+
     
     writeln("[TEST] Lexer Tests passed ");
 }

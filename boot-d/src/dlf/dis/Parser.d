@@ -119,7 +119,7 @@ class Parser
     public PackageDeclaration parsePackage()
     {
         //package identifier;
-        assertType(TokenType.KwPackage);
+        checkType(TokenType.KwPackage);
         
         //Create new Package Declaration
         auto pkg = new PackageDeclaration();
@@ -132,8 +132,7 @@ class Parser
         if(peek(1) == TokenType.ROBracket)
         {
             next;
-            if(!next(TokenType.Identifier))
-                Error(mToken.Loc, "Expected Identifier for Package Keyword Parameter");
+            accept(TokenType.Identifier, "Expected Identifier for Package Keyword Parameter");
             
             switch(mToken.Value)
             {
@@ -141,8 +140,7 @@ class Parser
                 default: Error(mToken.Loc, "Not kown Package Keyword Parameter");
             }
             
-            if(!next(TokenType.RCBracket))
-                Error(mToken.Loc, "Expected ) after Package Keyword Parameter");
+            accept(TokenType.RCBracket, "Expected ) after Package Keyword Parameter");
         }
         
         //check for package identifier
@@ -192,13 +190,13 @@ class Parser
     private ImportDeclaration parseImport()
     {
         //import std.io.stream;
-        assertType(TokenType.KwImport);
+        checkType(TokenType.KwImport);
         auto imp = new ImportDeclaration;
         imp.Loc = mToken.Loc;
 
         //import followed by identifier
-        if(!next(TokenType.Identifier))
-            Error(mToken.Loc, "parseImport: expect identifier after import keyword");
+        
+        accept(TokenType.Identifier, "parseImport: expect identifier after import keyword");
 
         imp.ImportIdentifier.idents ~= value();
 
@@ -227,7 +225,7 @@ class Parser
     private ClassDeclaration parseClass()
     {
         //must be class class
-        assertType(TokenType.KwClass);
+        checkType(TokenType.KwClass);
 
         // class(kw param) identifier(template args) : inherits {
 
@@ -243,7 +241,7 @@ class Parser
         //top level node must be PackageDeclaration,(ClassDeclaration) 
         //def{(Calling Convention)} Identifier(Parameter) ReturnType
         // Block {}
-        assertType(TokenType.KwDef);
+        checkType(TokenType.KwDef);
 
         auto func = new FunctionBase();
         func.Loc = mToken.Loc;
@@ -256,8 +254,7 @@ class Parser
         if(mToken.Type == TokenType.ROBracket)
         {
             //identifier aka calling convention
-            if(!next(TokenType.Identifier))
-                Error(mToken.Loc, "parseDef: Expected Identifier for Calling Convention");
+            accept(TokenType.Identifier, "parseDef: Expected Identifier for Calling Convention");
             
             switch(mToken.Value.toLower())
             {
@@ -266,9 +263,7 @@ class Parser
             default: Error(mToken.Loc, "Invalid CallingConvention");
             }
             
-            //close )
-            if(!next(TokenType.RCBracket))
-                Error(mToken.Loc, "parseDef: Expected )");
+            accept(TokenType.RCBracket, "parseDef: Expected ) for Calling Conventions");
 
             next();
         }
@@ -320,8 +315,8 @@ class Parser
             next();
             if(mToken.Type == TokenType.Colon)
             {
-                if(!next(TokenType.Identifier))
-                    Error(mToken.Loc, "Expect Identifier after ':' for function return type");
+                
+                accept(TokenType.Identifier, "Expect Identifier after ':' for function return type");
             }
             func.ReturnType = new UnsolvedType(mToken.Value);
             //not only 
@@ -429,15 +424,12 @@ class Parser
     */
     private VariableDeclaration parseVar()
     {
-        assertType(TokenType.KwVar);
+        checkType(TokenType.KwVar);
 
         auto loc = mToken.Loc;
 
         //expect Identifier after var
-        if(!next(TokenType.Identifier))
-        {
-            Error(mToken.Loc, "Expect Identifier after var keyword");
-        }
+        accept(TokenType.Identifier, "Expect Identifier after var keyword");
         
         //create new variable delclaration at the moment with opaque type
         auto var = new VariableDeclaration(mToken.Value);
@@ -450,8 +442,8 @@ class Parser
             if(peek(1) == TokenType.Colon)
                 next();
             
-            if(!next(TokenType.Identifier))
-                Error(mToken.Loc, "Expected Identifer as type information for variable");
+    
+            accept(TokenType.Identifier, "Expected Identifer as type information for variable");
 
             //parseIdentifier()
             var.VarDataType = resolveType(mToken.Value);
@@ -520,7 +512,7 @@ class Parser
     private BlockStatement parseBlock()
     {
         //start token is "{"
-        assertType(TokenType.COBracket);
+        checkType(TokenType.COBracket);
 
         //TODO symbol table? each block has one?
         auto block = new BlockStatement();
@@ -578,7 +570,7 @@ class Parser
     */
     private Statement parseFor()
     {
-        assertType(TokenType.KwFor);
+        checkType(TokenType.KwFor);
         throw new ParserException(mToken.Loc, "Can't parse for statements at the moment");
     }
 
@@ -587,7 +579,7 @@ class Parser
     */
     private WhileStatement parseWhile()
     {
-        assertType(TokenType.KwWhile);
+        checkType(TokenType.KwWhile);
         throw new ParserException(mToken.Loc, "Can't parse while statements at the moment");
     }
 
@@ -596,7 +588,7 @@ class Parser
     */
     private WhileStatement parseDoWhile()
     {
-        assertType(TokenType.KwDo);
+        checkType(TokenType.KwDo);
         throw new ParserException(mToken.Loc, "Can't parse do-while statements at the moment");
     }
 
@@ -757,7 +749,7 @@ class Parser
     */
     private Expression parseIfExpression()
     {
-        assertType(TokenType.KwIf);
+        checkType(TokenType.KwIf);
         Error(mToken.Loc, "TODO: Can't parse If Expressions yet");
 
         return null;
@@ -768,7 +760,7 @@ class Parser
     */
     private Expression parseSwitchExpression()
     {
-        assertType(TokenType.KwSwitch);
+        checkType(TokenType.KwSwitch);
         Error(mToken.Loc, "TODO: Can't parse Switch Expressions yet");
         return null;
     }
@@ -778,7 +770,7 @@ class Parser
     */
     private DotIdentifier parseIdentifier()
     {
-        assertType(TokenType.Identifier);
+        checkType(TokenType.Identifier);
 
         auto di = new DotIdentifier(cast(char[])mToken.Value);
         bool expDot = true;
@@ -820,7 +812,7 @@ class Parser
     private Annotation parseAnnotation()
     {
         // Annotions: @identifier
-        assertType(TokenType.Annotation);
+        checkType(TokenType.Annotation);
         
         if(peek(1) != TokenType.Identifier)
         {
@@ -927,12 +919,13 @@ class Parser
     }
 
     /**
-    * next with type check
+    * Require a special type next
     */
-    private bool next(TokenType t)
+    private void accept(TokenType t, string error)
     {
         next();
-        return mToken.Type == t ? true : false;
+        if(mToken.Type != t)
+            Error(mToken.Loc, error);
     }
 
     /**
@@ -964,7 +957,7 @@ class Parser
     /**
     * Assert Type
     */
-    private void assertType(TokenType t)
+    private void checkType(TokenType t)
     {
         if(mToken.Type != t)
             throw new ParserException(mToken.Loc, format("Expected %s not %s", dlf.dis.Token.toString(t), mToken.toString()));
@@ -973,7 +966,7 @@ class Parser
     /**
     * Assert Type (array variant)
     */
-    private void assertType(TokenType[] tt)
+    private void checkType(TokenType[] tt)
     {
         if(!isIn(mToken.Type, tt))
             throw new ParserException(mToken.Loc, format("Expected [] not %s", mToken.toString()));
