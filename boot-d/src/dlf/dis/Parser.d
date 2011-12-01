@@ -59,6 +59,9 @@ class Parser
     /// Current SymbolTable
     private SymbolTable mSymTable;
 
+    /// Current flags
+    private Declaration.Flags flags;
+
     /// Internal Types (Builtin)
     public static DataType[string] InternalTypes;
 
@@ -142,22 +145,16 @@ class Parser
             
             accept(TokenType.RCBracket, "Expected ) after Package Keyword Parameter");
         }
-        
-        //check for package identifier
-        if(peek(1) != TokenType.Identifier)
-            Error(mToken.Loc, "Expected Identifier after package");
 
-        //parse identifier for Package
-        next();
+        //parse package identifier
+        accept(TokenType.Identifier, "Expected Identifier after package");
         auto di = parseIdentifier();
         pkg.Name = di.toString();
 
-        //Look for semicolon or end of line
-        next();
-        if(mToken.Type != TokenType.EOL && mToken.Type != TokenType.Semicolon)
-            Error(mToken.Loc, "Expected EOL or Semicolon after package declaration");
+        //Look for semicolon
+        accept(TokenType.Semicolon, "Expected Semicolon after package declaration");
 
-        //general parse loop (package scope)
+        //parse rest of package
         while(mToken.Type != TokenType.EOF)
         {
             next();
@@ -165,22 +162,30 @@ class Parser
             //parseDeclarations
 
             switch(mToken.Type)
-            {
-            case TokenType.KwClass: break;
+            { 
+            //import
+            case TokenType.KwImport: 
+                break;
+            //function
             case TokenType.KwDef:
                     //TODO give symbol table as scope?
                     parseDef(pkg.SymTable); 
                 break;
-            case TokenType.KwImport: break;
-            //DefDecl
+            //struct
+            case TokenType.KwStruct:
+                break;
+            //class
+            case TokenType.KwClass: 
+                break;
+  
             //VarDecl
             //ValDecl
             //TraitDecl
             default:
+                //Error(mToken.Loc, "Not valid package element");
             }
         }
 
-        //dont pop from stack
         return pkg;
     }
 
@@ -344,7 +349,10 @@ class Parser
 
             // = <statement or expression>
             case TokenType.Assign:
-                throw new ParserException(mToken.Loc, "Assign Expr|Stmt Functions not yet implemented");
+                next();
+                auto e = parseExpression();
+                func.Body = new ExpressionStatement(e);
+                return;
 
             default:
                 return;
@@ -356,24 +364,14 @@ class Parser
     */
     private void parseDefParams(FunctionBase fd)
     {
-        //accept Identifier, ":", "," 
-
-        //simple case "ident :" 
-        //simple case "def"
-        //simple case "ident["
-        //simple case "ident."
-        //simple case "ident!"
-
-        //complex case: "ident"
-
-        //Parse one parameter
-        //variants are: 
-        //1. name : type
-        //2. name type
-        //3. name
-        //4. type
-        //5. varargs
-        //TODO: keywords before: ref, const, in, out, this, ...
+        //TODO: keywords before: ref, const, this, ...
+ 
+        //cases:
+        //- name
+        //- name : type
+        //- name... : type
+        //- : type
+        //- ...
 
         FunctionParameter param = FunctionParameter();
         param.Index = 0;
@@ -424,6 +422,8 @@ class Parser
     */
     private VariableDeclaration parseVar()
     {
+        //"var", SimpleDeclaration;
+        //SimpleDeclaration = Identifier, [":" TypeIdentifier], ["=" Expression];
         checkType(TokenType.KwVar);
 
         auto loc = mToken.Loc;
@@ -431,36 +431,32 @@ class Parser
         //expect Identifier after var
         accept(TokenType.Identifier, "Expect Identifier after var keyword");
         
-        //create new variable delclaration at the moment with opaque type
+        //create new variable declaration at the moment with opaque type
         auto var = new VariableDeclaration(mToken.Value);
         var.Loc = loc;
 
         //check for type Information
-        if(peek(1) == TokenType.Identifier || peek(1) == TokenType.Colon)
+        if(peek(1) == TokenType.Colon)
         {
-            //Type Information
-            if(peek(1) == TokenType.Colon)
-                next();
-            
-    
+            next();
+
+            //parseDataType
             accept(TokenType.Identifier, "Expected Identifer as type information for variable");
 
-            //parseIdentifier()
+            //try to resolve type
             var.VarDataType = resolveType(mToken.Value);
         }
         
         //check for initalizer
         if(peek(1) == TokenType.Assign)
         {
-            next(); //oken is now "="-Assign
+            next(); //token is now "="-Assign
             next(); //now its start of expression
 
             var.Initializer = parseExpression();
         }
 
-        //skip semicolon at end
-        if(peek(1) == TokenType.Semicolon)
-            next();
+        accept(TokenType.Semicolon, "Missing semicolon after variable declaration");
 
         return var;
     }
@@ -480,14 +476,15 @@ class Parser
         case TokenType.COBracket:
             return parseBlock();
         //for, foreach 
-        case TokenType.KwFor: 
-            break;
+        case TokenType.KwFor:
+            return parseFor();
         //do-while
         case TokenType.KwDo: 
-            break;
+            return parseDoWhile();
         //while
         case TokenType.KwWhile: 
-            break;
+            return parseWhile();
+        //return
         case TokenType.KwReturn:
             return new ReturnStatement(parseExpression());
         default:
@@ -500,6 +497,7 @@ class Parser
         {
             auto es =  new ExpressionStatement(exp);
             exp.Parent = es;
+            return es;
         }
 
         return null;
@@ -600,30 +598,16 @@ class Parser
         //parse one expression
         Expression expr = null;
 
-        writefln("Parse Expr Loc: %s, Tok: %s", mToken.Loc, mToken);
+        debug writefln("Parse Expr Loc: %s, Tok: %s", mToken.Loc, mToken);
 
-        //Keyword Based
-        //If-ElseIf-Else
-        //Switch-Case
         switch(mToken.Type)
         {
+            // Keyword Expressions
             case TokenType.KwIf: 
                 expr = parseIfExpression();
                 break;
             case TokenType.KwSwitch: 
                 expr = parseSwitchExpression();
-                break;
-            case TokenType.KwThis: 
-                 /*identifier?*/
-                //expr = parseIdentifier();
-                break;
-            case TokenType.ROBracket: 
-                //return parseExpression; 
-                //assert(mToken.Type == RCBracket);
-                break;
-            case TokenType.Identifier:
-                /*look under switch*/ 
-                expr = parseIdentifier();
                 break;
 
             // Literal Expressions
@@ -654,13 +638,23 @@ class Parser
                 expr = new LiteralExpression(mToken.Value, BoolType.Instance);
                 expr.Loc = mToken.Loc;
                 break;
-            default:
-                Error(mToken.Loc, "No right Token for parse a Expression");
-        }
 
-        //here it can be KwThis
-        //ROBracket
-        //Identifier
+
+            case TokenType.KwThis: 
+                 /*identifier?*/
+                //expr = parseIdentifier();
+                break;
+            case TokenType.ROBracket: 
+                //auto e = parseExpression;
+                //accept(TokenType.RCBracket, "require ) after expression");
+                break;
+            case TokenType.Identifier:
+                /*look under switch*/ 
+                expr = parseIdentifier();
+                break;
+            default:
+                Error(mToken.Loc, "No valid token for parse an expression");
+        }
 
         //seems to be a function call "(" after expression/identifier
         if(expr.Kind == NodeKind.DotIdentifier && peek(1) == TokenType.ROBracket)
@@ -688,6 +682,12 @@ class Parser
 
             //return call;
             expr = call;
+        }
+
+        //array index expression []
+        if(peek(1) == TokenType.AOBracket)
+        {
+            Error(mToken.Loc, "Array index expressions [] not yet supported");
         }
 
         
@@ -773,6 +773,7 @@ class Parser
         checkType(TokenType.Identifier);
 
         auto di = new DotIdentifier(cast(char[])mToken.Value);
+        //expect dot
         bool expDot = true;
 
         while((peek(1) == TokenType.Identifier) || (peek(1) == TokenType.Dot))
@@ -782,13 +783,11 @@ class Parser
             if(expDot && mToken.Type == TokenType.Identifier)
             {
                 Error(mToken.Loc, "expected dot to seperate identifiers");
-                break;
             }   
             //dot
             if(!expDot && mToken.Type == TokenType.Dot)
             {
                 Error(mToken.Loc, "expected identifier after dot");
-                break;
             }
             
             expDot = !expDot;
@@ -813,13 +812,16 @@ class Parser
     {
         // Annotions: @identifier
         checkType(TokenType.Annotation);
-        
-        if(peek(1) != TokenType.Identifier)
-        {
-            Error(mToken.Loc, "Error: Expected Identifier after @ for Annotations");
-        }
 
-        next();
+        accept(TokenType.Identifier, "Expected Identifier after @ for Annotations");
+
+        switch(mToken.Value)
+        {
+            case "unittest":
+                return new UnitTestAnnotation();
+            default:
+                Error(mToken.Loc, "Invalid annotation");
+        }
         
         //unittest 
         
@@ -868,7 +870,7 @@ class Parser
         //def(a,b):c -> Delegate/FunctionType (datatypes) datatypes
         //x.y.z -> DotIdentifier 
         //x.y.z[ -> Array(DotIdentifier)
-        //x.y.z!
+        //x.y.z! -> Template instantiation
         //x.y.z* -> Pointer Type
         
         //[ x | xxx] -> constraints?
@@ -883,6 +885,7 @@ class Parser
     * Get type for an identifier
     * return Opaque Type when not resolved
     * TODO this is a semantic step remove???
+    * Solve Basic Types at parsing
     */
     private DataType resolveType(string identifier)
     {

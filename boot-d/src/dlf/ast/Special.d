@@ -27,6 +27,16 @@ struct CompositeIdentifier
 { 
     string[] idents;
 
+
+    /**
+    * Return first component
+    * e.g. for this.xxx.yyy
+    */
+    string first()
+    {
+        return idents[0];
+    }
+
     /**
     * Return last 
     */

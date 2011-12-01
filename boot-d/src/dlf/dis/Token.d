@@ -107,6 +107,7 @@ enum TokenType //: ubyte//c main
     //Keywords
     KwPackage,      // package
     KwDef,          // def
+    KwStruct,       // struct
     KwClass,        // class
     KwObj,          // obj
     KwVar,          // var
@@ -205,6 +206,7 @@ string toString(TokenType tok)
     //Keywords
     case TokenType.KwPackage:   return "package";
     case TokenType.KwDef:       return "def";
+    case TokenType.KwStruct:    return "struct";
     case TokenType.KwClass:     return "class";
     case TokenType.KwObj:       return "obj";
     case TokenType.KwVar:       return "var";

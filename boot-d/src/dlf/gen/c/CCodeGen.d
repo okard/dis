@@ -76,7 +76,8 @@ class CCodeGen : ObjectGen, Visitor
         if(!ctx.Backend.ObjDir.isDir())
             std.file.mkdirRecurse(ctx.Backend.ObjDir);
         
-        srcDir = buildPath(ctx.Backend.ObjDir, "src");
+        srcDir = buildPath(ctx.Backend.ObjDir, "tmpDisSrc");
+        //TODO create dir
         assert(srcDir.isDir(), "Target src dir isn't a directory");
 
         // Primary/Builtin Types

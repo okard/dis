@@ -425,6 +425,7 @@ class Lexer
     {
         mKeywords["package"] = TokenType.KwPackage;
         mKeywords["def"] = TokenType.KwDef;
+        mKeywords["struct"] = TokenType.KwStruct;
         mKeywords["class"] = TokenType.KwClass;
         mKeywords["obj"] = TokenType.KwObj;
         mKeywords["var"] = TokenType.KwVar;

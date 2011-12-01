@@ -149,21 +149,49 @@ class DisCompiler
         version(linux) ctx.Platform = TargetPlatform.Linux;      
     }
 
+
+    public int tryCompile()
+    {
+        log.Information("Dis Compiler V0.01");
+        try
+        {
+            compile();
+            return 0;
+        }
+        catch(UsageException ex)
+        {
+            log.Error(ex.toString());
+            return -1;
+        }
+        catch(Lexer.LexerException ex)
+        {
+            log.Error(ex.toString());
+            return -2;
+        }
+        catch(Parser.ParserException ex)
+        {
+            log.Error(ex.toString());
+            return -3;
+        }
+        catch(Semantic.SemanticException ex)
+        {
+            log.Error(ex.toString());
+            return -4;
+        }
+    }
+
     /**
     * Compile source files
     */
-    int compile()
+    private void compile()
     {
-        log.Information("Dis Compiler V0.01");
-        
+
         auto srcFiles = args.getSourceFiles();
 
         //no files?
         if(srcFiles.length < 1)
         {
-            log.Error("No Source Files");
-            //print usage
-            return 1;
+            throw new UsageException("No Source Files");
         }
 
         auto parser = new Parser();
@@ -183,8 +211,11 @@ class DisCompiler
         auto pkgs = new Pkg[srcFiles.length];
         for(int i=0;i < pkgs.length; i++)
         {
+            log.Information("file: %s", srcFiles[i]);
             pkgs[i].file = new SourceFile();
             pkgs[i].file.open(srcFiles[i]);
+
+            
 
             if(args.printToken)
                 dumpLexer(pkgs[i].file);
@@ -223,8 +254,10 @@ class DisCompiler
         log.Information("Linking Program ...");
 
         //add a share so it can create multiple instances
-        //compile can be earlier but linking not
-        //compile and link
+      
+        //prepare object files
+
+        //link program
         cgen.link(ctx);
 
         //For Libraries generate Header Files
@@ -234,8 +267,6 @@ class DisCompiler
             //if header generation is enabled?
             //hdrgen.create(folder, pd)
         }
-
-        return 0;
     }
 
     /**
@@ -310,6 +341,18 @@ class DisCompiler
         };
     }
 
+    /**
+    * Usage Exception
+    */
+    private static class UsageException : Exception
+    {
+        ///Contruct new usage exception
+        private this(string message, string file = __FILE__, size_t line = __LINE__)
+        {
+            super(message, file, line);
+        }
+    }
+
 }
 
 /**
@@ -325,5 +368,5 @@ int main(string[] args)
     //Windows:  bindir, %APPDATA%/disc.conf %ALLUSERSPROFILE%/Application Data
 
 
-    return disc.compile();
+    return disc.tryCompile();
 }
