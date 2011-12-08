@@ -79,6 +79,7 @@ class CommandLineArg : ArgHelper
         Options["-staticlib"] = (){targType = TargetType.StaticLib; disallow(["-sharedlib"]);};
         Options["-o"] = (){ outFile = getString(); };
 
+        //Options["-od"] = (){ objdir = getString(); };
         //obj directory ".objdis"
         //log level
         //import dirs -> "%apppath%/../lib"
@@ -161,22 +162,22 @@ class DisCompiler
         catch(UsageException ex)
         {
             log.Error(ex.toString());
-            return -1;
+            return 1;
         }
         catch(Lexer.LexerException ex)
         {
             log.Error(ex.toString());
-            return -2;
+            return 2;
         }
         catch(Parser.ParserException ex)
         {
             log.Error(ex.toString());
-            return -3;
+            return 3;
         }
         catch(Semantic.SemanticException ex)
         {
             log.Error(ex.toString());
-            return -4;
+            return 4;
         }
     }
 
@@ -367,6 +368,8 @@ int main(string[] args)
     //Linux:    bindir, ~/.disc, /etc/disc
     //Windows:  bindir, %APPDATA%/disc.conf %ALLUSERSPROFILE%/Application Data
 
+    int res = disc.tryCompile();
+    writefln("Result: %d", res);
 
-    return disc.tryCompile();
+    return res;
 }

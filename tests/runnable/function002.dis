@@ -1,4 +1,7 @@
 //testing function template
+//# Desc: Basic Test 002
+//# CompileResult: 0
+//# RunResult: 0
 package tests.runnable.function002;
 
 def sqr(x)
