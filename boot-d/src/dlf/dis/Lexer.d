@@ -373,7 +373,7 @@ class Lexer
             {
                 tok = nextToken();
             }
-            while(util.isIn(mTok.Type, ignoreList));
+            while(util.isIn(tok.Type, ignoreList));
         
             tok =  mTokList.addAfter(tok);
         }
@@ -469,6 +469,7 @@ unittest
     //lexer unittest
     import std.stdio;
 
+    auto src = new SourceString("{ } \n ");
     
 
 

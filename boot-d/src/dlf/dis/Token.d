@@ -131,6 +131,8 @@ enum TokenType //: ubyte//c main
     KwTrue,         // true
     KwFalse,        // false
 
+    //Missing: private, public, protected, ref
+
     //To think about: 
     // -op, operator overloading 
     // -obj, classes or singletons 

@@ -3,7 +3,7 @@ package tests.runnable.basic004;
 
 def main
 {
-    var i int = 0;
+    var i: int = 0;
 
     i = 1 + 1;
     i = 2 - 1;

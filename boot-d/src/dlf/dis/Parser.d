@@ -269,10 +269,9 @@ class Parser
             }
             
             accept(TokenType.RCBracket, "parseDef: Expected ) for Calling Conventions");
-
             next();
         }
-        
+
         //parse function name (identifier)
         if(mToken.Type != TokenType.Identifier)
         {
@@ -280,8 +279,9 @@ class Parser
         }
 
         //get name
-        string name = cast(string)mToken.Value;
+        string name = mToken.Value;
 
+        //register entry when not already exist
         if(!symtbl.contains(name))
         {
             symtbl[name] = new FunctionSymbol(name);
@@ -296,8 +296,9 @@ class Parser
         auto sym = (cast(FunctionSymbol)symtbl[name]);
         sym.Bases ~= func;
         func.Parent = sym;
+        func.ReturnType = OpaqueType.Instance;
 
-        //Parse Parameter if available
+        //optional: Parse Parameter
         if(peek(1) == TokenType.ROBracket)
         {
             next();
@@ -305,34 +306,24 @@ class Parser
             //parse parameters when some available
             if(peek(1) != TokenType.RCBracket)
                 parseDefParams(func);
-            else 
-                next();
 
-            //after parsing parameters expects )
-            if(mToken.Type != TokenType.RCBracket)
-                Error(mToken.Loc, "parseDef: expected ) after parameters");
+            accept(TokenType.RCBracket, "parseDef: expected ) after parameters");
         }
 
-        //TODO can also be something like def(asdsd) required more parsing power
-        //look for return value 
-        if(peek(1) == TokenType.Identifier || peek(1) == TokenType.Colon)
+        //optional: look for return value 
+        if(peek(1) == TokenType.Colon)
         {
             next();
-            if(mToken.Type == TokenType.Colon)
-            {
-                
-                accept(TokenType.Identifier, "Expect Identifier after ':' for function return type");
-            }
+            //TODO use parseDataType
+            accept(TokenType.Identifier, "Expect Identifier after ':' for function return type");
             func.ReturnType = new UnsolvedType(mToken.Value);
-            //not only 
         }
-        else
-            func.ReturnType = OpaqueType.Instance;
-
-        //if function declarations closes with ";" it is finished
+        
+        //optional: if function declarations closes with ";" it is finished
         if(peek(1) == TokenType.Semicolon)
         {
             next();
+            return;
         }
 
         //after declaration followed  { or = or ; or is end of declaration
@@ -341,6 +332,7 @@ class Parser
             //block {}
             case TokenType.COBracket:
                 next();
+                debug writefln("function block");
                 //parse the block
                 auto b = parseBlock();
                 b.Parent = func;
@@ -355,7 +347,7 @@ class Parser
                 return;
 
             default:
-                return;
+                Error(mToken.Loc, "Invalid token for function definition");
         }
     }
        
@@ -364,6 +356,9 @@ class Parser
     */
     private void parseDefParams(FunctionBase fd)
     {
+        //start at round open bracket
+        checkType(TokenType.ROBracket);
+        
         //TODO: keywords before: ref, const, this, ...
  
         //cases:
@@ -385,7 +380,8 @@ class Parser
             {
             case TokenType.Identifier:
                 //TODO parse Identifier
-                param.Definition ~= mToken.Value;
+                param.Name ~= mToken.Value;
+                    
                 break;
 
             case TokenType.Vararg:
@@ -400,6 +396,7 @@ class Parser
                 param.Definition ~= "*";
                 break;
             
+            //finish
             case TokenType.RCBracket:
                 fd.Parameter ~= param;
                 return;
@@ -415,6 +412,38 @@ class Parser
                 Error(mToken.Loc, format("Not expected Token in parseDefParams: %s", dlf.dis.Token.toString(mToken.Type)) );
             }
         }     
+    }
+
+    /**
+    * parse a single parameter
+    */
+    private FunctionParameter parseDefParameter()
+    {
+        //cases:
+        //- name
+        //- name : type
+        //- name... : type
+        //- : type
+        //- ...
+
+        FunctionParameter param = FunctionParameter();
+        param.Index = 0;
+
+        switch(mToken.Type)
+        {
+        case TokenType.Identifier:
+            param.Name = mToken.Value;
+            next();
+            
+            break;
+        case TokenType.Colon:
+            param.Type = parseDataType();
+            break;
+        default:
+            Error(mToken.Loc, format("Not expected Token in parseDefParameter: %s", mToken.toString()));
+        }
+
+        return param;
     }
 
     /**
@@ -435,27 +464,40 @@ class Parser
         auto var = new VariableDeclaration(mToken.Value);
         var.Loc = loc;
 
-        //check for type Information
-        if(peek(1) == TokenType.Colon)
+
+        switch(peek(1))
         {
-            next();
-
-            //parseDataType
-            accept(TokenType.Identifier, "Expected Identifer as type information for variable");
-
-            //try to resolve type
-            var.VarDataType = resolveType(mToken.Value);
+            case TokenType.Colon:
+                next();
+                //TODO use parseDataType
+                accept(TokenType.Identifier, "Expected Identifier as type information for variable");
+                //try to resolve type
+                var.VarDataType = resolveType(mToken.Value);
+                
+                //assign can be followed
+                if(peek(1) == TokenType.Assign)
+                    goto case TokenType.Assign;
+                break;
+            case TokenType.Assign:
+                next(); //token is now "="-Assign
+                next(); //now its start of expression
+                var.Initializer = parseExpression();
+                break;
+            case TokenType.Semicolon:
+                break;
+            default:
+                next();
+                Error(mToken.Loc, "Unkown token in variable declaration");
         }
-        
+
+        /*
         //check for initalizer
         if(peek(1) == TokenType.Assign)
         {
-            next(); //token is now "="-Assign
-            next(); //now its start of expression
 
-            var.Initializer = parseExpression();
         }
-
+        */
+        
         accept(TokenType.Semicolon, "Missing semicolon after variable declaration");
 
         return var;
@@ -466,9 +508,8 @@ class Parser
     */
     private Statement parseStatement()
     {
-
         //a Statement can be a statement
-        //or a StatementExpression
+        //or an Expression as StatementExpression
 
         switch(mToken.Type)
         {
@@ -487,20 +528,14 @@ class Parser
         //return
         case TokenType.KwReturn:
             return new ReturnStatement(parseExpression());
+        //Expression
         default:
-            //parse Expression
-        }
-
-        //parse Statement-Expression
-        auto exp = parseExpression();
-        if(exp !is null)
-        {
+            auto exp = parseExpression();
+            accept(TokenType.Semicolon, "Missing semicolon after expression statement");
             auto es =  new ExpressionStatement(exp);
             exp.Parent = es;
             return es;
         }
-
-        return null;
     }
 
     /**
