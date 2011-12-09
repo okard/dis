@@ -1,7 +1,12 @@
-//test simple class
+
+//# Desc: simple class
+//# CompileResult: 0
+//# RunResult: 0
+//# Type: Runnable
+
 package tests.runnable.oop001;
 
-class foo
+obj foo
 {
 }
 

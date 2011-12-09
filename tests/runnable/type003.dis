@@ -1,4 +1,9 @@
-//test enum type
+
+//# Desc: enum type
+//# CompileResult: 0
+//# RunResult: 0
+//# Type: Runnable
+
 package tests.runnable.type003;
 
 

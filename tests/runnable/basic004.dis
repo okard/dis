@@ -1,7 +1,9 @@
-//test binary expressions
-//# Desc: Basic Test 004
+
+//# Desc: math binary expressions
 //# CompileResult: 0
 //# RunResult: 0
+//# Type: Runnable
+
 package tests.runnable.basic004;
 
 def main

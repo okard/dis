@@ -1,7 +1,12 @@
-//test simple constructor with class variable
+
+//# Desc: simple constructor with class variable
+//# CompileResult: 0
+//# RunResult: 0
+//# Type: Runnable
+
 package tests.runnable.oop002;
 
-class foo
+obj foo
 {
     var i int = 0;
 

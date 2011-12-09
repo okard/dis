@@ -1,7 +1,9 @@
-//test simple variable initialization
-//# Desc: Basic Test 002
+
+//# Desc: simple variable initialization
 //# CompileResult: 0
 //# RunResult: 0
+//# Type: Runnable
+
 package tests.runnable.basic002;
 
 def main

@@ -1,5 +1,10 @@
-//testing variant type
 
+//# Desc: variant type
+//# CompileResult: 0
+//# RunResult: 0
+//# Type: Runnable
+
+package tests.runnable.type004;
 
 type number = byte | short | int | long | float | double;
 

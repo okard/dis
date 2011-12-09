@@ -1,7 +1,9 @@
-// Main without body
-// Parser Error
-//# Desc: Basic Test 001
-//# CompileResult: 3
+
+//# Desc: main without body
+//# CompileResult: 0
+//# RunResult: 0
+//# Type: Fail
+
 package tests.fails.main001;
 
 def main

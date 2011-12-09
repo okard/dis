@@ -5,7 +5,7 @@ import subprocess
 
 # Settings:
 TEST_DIR = os.path.dirname(__file__) # test path (is script path)
-DISC = "../boot-d/disc.sh" # the compiler executable
+DISC = os.path.join(TEST_DIR, "../boot-d/disc.sh") # the compiler executable
 OBJDIR = os.path.join(TEST_DIR, ".objdis") # object files for test compilation
 BINDIR = os.path.join(TEST_DIR, ".testbin") # test binaries
 
@@ -17,6 +17,7 @@ WARNING = '\033[93m'
 FAIL = '\033[91m'
 ENDC = '\033[0m'
 
+SPECDESC = 'Desc'
 SPECCOMPRESULT = 'CompileResult'
 SPECRUNRESULT = 'RunResult'
 
@@ -28,15 +29,18 @@ def main(argv=None):
         os.makedirs(BINDIR)
     
     #get testfiles
-    testfiles = sum([[os.path.join(f[0], g) for g in f[2] if re.search('.*\.dis',g)] for f in os.walk(TEST_DIR)], [])
+    testfiles = sorted(sum([[os.path.join(f[0], g) for g in f[2] if re.search('.*\.dis',g)] for f in os.walk(TEST_DIR)], []))
 
     #run tests
     for testfile in testfiles:
-        print(testfile)
         spec = extractTestSpec(testfile)
-        compileTest(spec, testfile)
-        runTest(spec, testfile)
-    pass
+        print("Test: {0} ({1})".format(spec.get(SPECDESC, ""), testfile))
+        
+        binary = compileTest(spec, testfile)
+        runTest(spec, binary)
+   
+    # print results
+    
 
 # -----------------------------------------------------------------------------
 
@@ -105,7 +109,10 @@ def compileTest(spec, testfile):
 # -----------------------------------------------------------------------------
 # Run a single test
 def runTest(spec, testExec):
-    pass
+    
+    if testExec == None:
+        return
+    
     
 # -----------------------------------------------------------------------------
 # run main

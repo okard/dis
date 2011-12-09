@@ -1,4 +1,9 @@
-//test alias type
+
+//# Desc: alias type
+//# CompileResult: 0
+//# RunResult: 0
+//# Type: Runnable
+
 package tests.runnable.type001;
 
 //alias type

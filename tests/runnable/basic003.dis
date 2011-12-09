@@ -1,7 +1,9 @@
-//test basic types
-//# Desc: Basic Test 003
+
+//# Desc: basic types
 //# CompileResult: 0
 //# RunResult: 0
+//# Type: Runnable
+
 package tests.runnable.basic003;
 
 def main

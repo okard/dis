@@ -1,4 +1,10 @@
-package foo;
+
+//# Desc: full
+//# CompileResult: 0
+//# RunResult: 0
+//# Type: Runnable
+
+package full;
 
 //Compile Time Ifs
 static if(int.size == 32)
@@ -10,11 +16,11 @@ type delegate_def def(x, y) : int;
 // delegate as parameter
 def callother(x : delegate__def) : int
 {
-    ret x(5,6);
+    return x(5,6);
 }
 
 //sample class
-class bla
+obj bla
 {
     //ctor
     def this()
@@ -85,7 +91,7 @@ class bla
 }
 
 // generic class
-class generic(T)
+obj generic(T)
 {
     var x : T;
 }
@@ -95,7 +101,7 @@ def getInt()
 {
     var g = generic!int();
     g.x = 5;
-    ret g;
+    return g;
 }   
 
 // const class -> can not inherited

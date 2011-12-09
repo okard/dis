@@ -1,7 +1,8 @@
-//test simple empty main
-//# Desc: Basic Test 001
+
+//# Desc: simple empty main
 //# CompileResult: 0
 //# RunResult: 0
+//# Type: Runnable
 
 package tests.runnable.basic001;
 

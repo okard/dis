@@ -1,10 +1,15 @@
-//tests interface + extension method
+
+//# Desc: interface + extension method
+//# CompileResult: 0
+//# RunResult: 0
+//# Type: Runnable
+
 package tests.runnable.extended001;
 
 import std.io;
 
 //class
-class foo
+obj foo
 {
     var i: int = 0;
 }

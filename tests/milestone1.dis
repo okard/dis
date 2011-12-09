@@ -1,6 +1,12 @@
+
+//# Desc: milestone one
+//# CompileResult: 0
+//# RunResult: 0
+//# Type: Runnable
+
 package milestone1;
 
-def(C) printf(format: char*, T...) int;
+def(C) printf(format: char*, T...): int;
 
 def main
 {

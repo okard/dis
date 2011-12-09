@@ -1,8 +1,13 @@
-//test struct type
+
+//# Desc: struct type
+//# CompileResult: 0
+//# RunResult: 0
+//# Type: Runnable
+
 package tests.runnable.type002;
 
 //structure type
-type myStruct
+struct myStruct
 {
     i: int;
     str: string;

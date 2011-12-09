@@ -1,7 +1,9 @@
-//test simple function
-//# Desc: Function Test 001
+
+//# Desc: simple function
 //# CompileResult: 0
 //# RunResult: 0
+//# Type: Runnable
+
 package tests.runnable.function001;
 
 def dbl(x: int) :int
