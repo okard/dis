@@ -14,7 +14,7 @@ static if(int.size == 32)
 type delegate_def def(x, y) : int;
 
 // delegate as parameter
-def callother(x : delegate__def) : int
+def callother(x : delegate_def) : int
 {
     return x(5,6);
 }

@@ -26,3 +26,8 @@ package rt.c.stdio;
 
 
 def(C) printf(format : ptr, ...) : int;
+
+
+//stdin, stdout and stderr
+//var(c) stdin : ptr = $external;
+//var(ce) stdin: ptr;

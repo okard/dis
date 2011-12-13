@@ -34,10 +34,15 @@ def main(argv=None):
     #run tests
     for testfile in testfiles:
         spec = extractTestSpec(testfile)
-        print("Test: {0} ({1})".format(spec.get(SPECDESC, ""), testfile))
         
+        sys.stdout.write("(")
         binary = compileTest(spec, testfile)
+        sys.stdout.write(")")
+        
+        sys.stdout.write("(")
         runTest(spec, binary)
+        sys.stdout.write(")")
+        print(" Desc: {0} ({1})".format(spec.get(SPECDESC, ""), testfile),)
    
     # print results
     
@@ -83,27 +88,28 @@ def compileTest(spec, testfile):
         if SPECCOMPRESULT in spec:
             expected = int(spec[SPECCOMPRESULT])
             if expected == ret:
-                print(OKGREEN+"Success"+ENDC);
+                sys.stdout.write(OKGREEN+"Success"+ENDC);
+                return os.path.join(BINDIR, binname)
             else:
                 if ret == 0:
-                    print(FAIL+"Compiled but has not to"+ENDC);
+                    sys.stdout.write(FAIL+"Compiled but has not to"+ENDC);
                 elif ret == 1:
-                    print(FAIL+"Usage Error"+ENDC);
+                    sys.stdout.write(FAIL+"Usage Error"+ENDC);
                 elif ret == 2:
-                    print(FAIL+"Lexer Error"+ENDC);
+                    sys.stdout.write(FAIL+"Lexer Error"+ENDC);
                 elif ret == 3:
-                    print(FAIL+"Parser Error"+ENDC);
+                    sys.stdout.write(FAIL+"Parser Error"+ENDC);
                 elif ret == 4:
-                    print(FAIL+"Semantic Error"+ENDC);
+                    sys.stdout.write(FAIL+"Semantic Error"+ENDC);
                 else:
-                    print(FAIL+"Unkown Result: {0}".format(ret)+ENDC);
+                    sys.stdout.write(FAIL+"Unkown Result: {0}".format(ret)+ENDC);
         else:
-            print(WARNING+"Missing Spec (Result: {0})".format(ret)+ENDC);
+            sys.stdout.write(WARNING+"Missing Spec (Result: {0})".format(ret)+ENDC);
         #return binary at success
-        return os.path.join(BINDIR, binname)
+        return None
     except OSError:
         #return null?
-        print("Cant start compiler")
+        sys.stdout.write("Cant start compiler")
         return None
  
 # -----------------------------------------------------------------------------
@@ -111,8 +117,11 @@ def compileTest(spec, testfile):
 def runTest(spec, testExec):
     
     if testExec == None:
+        sys.stdout.write(FAIL+"No Binary"+ENDC);
         return
     
+    #run file
+    sys.stdout.write(OKGREEN+"Success"+ENDC);
     
 # -----------------------------------------------------------------------------
 # run main

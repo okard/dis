@@ -23,3 +23,16 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 package rt.c.stdlib;
+
+
+//def(c) malloc(size: size_t) : ptr;
+//def(c) realloc(p: ptr, size: size_t) : ptr;
+//def(c) free (p: ptr) : void;
+
+//def(c) exit(status: int) : void;
+//def(c) abort() : void;
+
+
+//int atexit ( void ( * function ) (void) );
+
+//int fprintf ( FILE * stream, const char * format, ... );

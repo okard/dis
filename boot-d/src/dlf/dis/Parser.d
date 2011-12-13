@@ -203,7 +203,7 @@ class Parser
         
         accept(TokenType.Identifier, "parseImport: expect identifier after import keyword");
 
-        imp.ImportIdentifier.idents ~= value();
+        imp.ImportIdentifier.idents ~= mToken.Value;
 
         while(peek(1) == TokenType.Dot)
         {
@@ -211,7 +211,7 @@ class Parser
             switch(peek(1))
             {
                 case TokenType.Identifier: 
-                    next; imp.ImportIdentifier.idents ~= value(); break;
+                    next; imp.ImportIdentifier.idents ~= mToken.Value; break;
                 case TokenType.Mul:
                     next; imp.IsWildcardImport = true; break;
                 default:
@@ -858,9 +858,8 @@ class Parser
                 Error(mToken.Loc, "Invalid annotation");
         }
         
-        //unittest 
-        
-        return null;
+        //never get here
+        throw new Exception("");
     }
 
     /**
@@ -868,13 +867,32 @@ class Parser
     */
     private DataType parseDataType()
     {
+        //TODO Complete parseDataType 
+
+        //x -> Identifier
+        //int -> Identifier (BuiltIn Type)
+        //x[] -> Identifier Array
+        //x!x -> Identifier!Identifier Template instantiation -> temp
+        //x!(a,b) -> Identifier!(DataType list) Template instantiation
+        //def(a,b):c -> Delegate/FunctionType (datatypes) datatypes
+        //x.y.z -> DotIdentifier 
+        //x.y.z[ -> Array(DotIdentifier)
+        //x.y.z! -> Template instantiation
+        //x.y.z* -> Pointer Type
+        //[ x | xxx] -> constraints?
+
         // Identifier
         if(mToken.Type == TokenType.Identifier)
         {
-            switch(peek(1))
+            next();
+            return new UnsolvedType(mToken.Value);
+
+            //TODO parseDataTypes
+            /*switch(peek(1))
             {
                 //.
                 case TokenType.Dot: break;
+                //parseIdentifier()
                 //[ opt(num) ]
                 case TokenType.AOBracket: break;
                 //! datatype
@@ -888,30 +906,22 @@ class Parser
                          //return unsolved type
                          return new UnsolvedType(mToken.Value);
             }
+            */
         }
         
         // Delegate Type
         if(mToken.Type == TokenType.KwDef)
         {
+            Error(mToken.Loc, "delegate types not yet supported");
         }
 
-        //assert(mToken.Type == TokenType.Identifier);
-      
-        //x -> Identifier
-        //int -> Identifier (BuiltIn Type)
-        //x[] -> Identifier Array
-        //x!x -> Identifier!Identifier Template instantiation -> temp
-        //x!(a,b) -> Identifier!(DataType list) Template instantiation
-        //def(a,b):c -> Delegate/FunctionType (datatypes) datatypes
-        //x.y.z -> DotIdentifier 
-        //x.y.z[ -> Array(DotIdentifier)
-        //x.y.z! -> Template instantiation
-        //x.y.z* -> Pointer Type
-        
-        //[ x | xxx] -> constraints?
-        
-        //TODO Implement parseDataType 
 
+        if(mToken.Type == TokenType.AOBracket)
+        {
+            Error(mToken.Loc, "contraint types not yet supported");
+        }
+
+        Error(mToken.Loc, "Not a valid datatype");
         return OpaqueType.Instance;
     }
 
@@ -924,6 +934,7 @@ class Parser
     */
     private DataType resolveType(string identifier)
     {
+        //TODO rewrite / obsolete
         //TODO lookup at symbol table?
         //check for pointer
         if(identifier[identifier.length-1] == '*')
@@ -934,14 +945,6 @@ class Parser
         }
         else
             return InternalTypes.get(identifier, OpaqueType.Instance);
-    }
-
-    /**
-    * Get current token value
-    */
-    private string value()
-    {
-        return mToken.Value;
     }
 
     /**
@@ -990,7 +993,6 @@ class Parser
     {
         log.Warning("(%s): %s", loc, msg);
     }
-
 
     /**
     * Assert Type
