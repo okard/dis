@@ -69,7 +69,7 @@ class Lexer
 
             c = mSrc.getChar();
         }
-        while(c == ' ' || c == '\t') //Ignore Space and tab at the moment, to improve
+        while(c == ' ' || c == '\t'); //Ignore Space and tab at the moment, to improve
 
         return true;
     }

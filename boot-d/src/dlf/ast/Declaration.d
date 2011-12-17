@@ -67,7 +67,7 @@ final class PackageDeclaration : Declaration
     /// Modification Date
     SysTime modificationDate;
     
-    ///Mixin for Kind Declaration
+    /// Mixin for Kind Declaration
     mixin(IsKind("PackageDeclaration"));
 }
 
@@ -85,7 +85,7 @@ final class ImportDeclaration : Declaration
     /// The associated package node
     PackageDeclaration Package;
 
-    ///Mixin for Kind Declaration
+    /// Mixin for Kind Declaration
     mixin(IsKind("ImportDeclaration"));
 }
 
@@ -95,25 +95,24 @@ final class ImportDeclaration : Declaration
 */
 struct FunctionParameter
 {
-    ///String Definition
-    string[] Definition;
-    /// DatatType of Parameter
-    DataType Type;
     /// Parameter Name
     string Name;
-    /// Vararg
+    /// DataType of Parameter
+    DataType Type;
+    /// Is it a Vararg Parameter
     bool Vararg = false;
-    /// Index, Position of Parameter
+    /// Index No, Position of Parameter
     ushort Index;
 
     //Modifiers/Flags (ref, const, ..., vararg)
-    //Contraints
+
+    //ContraintType -> DataType
 }
 
 /**
 * A Function Base
 */
-class FunctionBase : Node
+class FunctionDeclaration : Declaration
 {
     /// The Function Parameters
     public FunctionParameter[] Parameter;
@@ -124,6 +123,15 @@ class FunctionBase : Node
     /// Has a Body (BlockStatement, Statement, Expression)
     public Statement Body;
 
+    /// Overrides of this function
+    public FunctionDeclaration[] Overrides;
+
+    /// The function types used for template funcs
+    public FunctionType[] Instances;
+    
+    /// The generated bodies for the function types
+    public Statement[FunctionType] InstanceBodies;
+    
     /// Is Template Function (here?)
     bool IsTemplate;
 
@@ -133,31 +141,8 @@ class FunctionBase : Node
     /// Calling Convention
     public CallingConvention CallingConv;
 
-    mixin(IsKind("FunctionBase"));
-}
-    
-
-/**
-* Function Declaration (def)
-*/
-final class FunctionSymbol : Declaration
-{
-    /// Function bases for ad-hoc polymorphism
-    public FunctionBase[] Bases;
-
-    /// Instances generated in semantic step
-    public FunctionType[] Instances;
-
-    /**
-    * Ctor
-    */
-    public this(string name)
-    {
-        this.Name = name;
-    }   
-
-    ///Mixin for Kind Declaration
-    mixin(IsKind("FunctionSymbol"));
+    /// Mixin for Kind Declaration
+    mixin(IsKind("FunctionDeclaration"));
 }
 
 /**
@@ -180,7 +165,7 @@ final class VariableDeclaration : Declaration
         VarDataType = type;
     }
 
-    ///Mixin for Kind Declaration
+    /// Mixin for Kind Declaration
     mixin(IsKind("VariableDeclaration"));
 }
 
@@ -189,6 +174,8 @@ final class VariableDeclaration : Declaration
 */
 final class ValueDeclaration : Declaration
 {
+    /// Mixin for Kind Declaration
+    mixin(IsKind("ValueDeclaration"));
 }
 
 /**
@@ -196,11 +183,12 @@ final class ValueDeclaration : Declaration
 */
 final class ConstantDeclaration : Declaration
 {
-
+    /// Mixin for Kind Declaration
+    mixin(IsKind("ConstantDeclaration"));
 }
 
 /**
-*
+* Structure Declaration
 */
 final class StructDeclaration : Declaration
 {
@@ -209,6 +197,9 @@ final class StructDeclaration : Declaration
 
     /// Calling Convention
     public CallingConvention CallingConv;
+
+    /// Mixin for Kind Declaration
+    mixin(IsKind("ClassDeclaration"));
 }
 
 
@@ -220,17 +211,20 @@ final class ClassDeclaration : Declaration
     /// Symbol Table
     public SymbolTable SymTable;
 
-    //BaseClass / Parent Class
+    //BaseClass / Parent Class 
+    //Multi inheritance?
     //Traits
     //Mixins
 
     //VariableDeclaration[] Variables;
     //FunctionSymbols[] Methods;
 
+    //Is Template
+
     public ClassType[] Instances;
 
 
-    ///Mixin for Kind Declaration
+    /// Mixin for Kind Declaration
     mixin(IsKind("ClassDeclaration"));
 }
 
@@ -239,48 +233,40 @@ final class ClassDeclaration : Declaration
 */
 final class TraitDeclaration : Declaration
 {
-    //Visitor Mixin
-    //mixin VisitorMixin;
-
     //TraitType?
     //Variables, Methods, Properties
 
-    ///Mixin for Kind Declaration
+    /// Mixin for Kind Declaration
     mixin(IsKind("TraitDeclaration"));
-}
-
-/**
-* Type Declaration Base Class
-* For Struct, Enum, Alias, Delegates
-*/
-abstract class TypeDeclaration : Declaration
-{
-}
-
-/**
-* Enum Type
-*/
-final class EnumDeclaration : TypeDeclaration
-{
-    ///Mixin for Kind Declaration
-    mixin(IsKind("EnumDeclaration"));
 }
 
 /**
 * Alias Declaration
 */
-final class AliasDeclaration : TypeDeclaration
+final class AliasDeclaration : Declaration
 {
-    ///Mixin for Kind Declaration
+    /// The target type
+    DataType AliasType;
+
+    /// Mixin for Kind Declaration
     mixin(IsKind("AliasDeclaration"));
+}
+
+/**
+* Enum Type
+*/
+final class EnumDeclaration : Declaration
+{
+    /// Mixin for Kind Declaration
+    mixin(IsKind("EnumDeclaration"));
 }
 
 /**
 * Variant Declaration
 */
-final class VariantDeclaration : TypeDeclaration
+final class VariantDeclaration : Declaration
 {
-    ///Mixin for Kind Declaration
+    /// Mixin for Kind Declaration
     mixin(IsKind("VariantDeclaration"));
 }
 

@@ -84,7 +84,7 @@ static class Mangle
                 case NodeKind.TraitDeclaration: 
                     name = "trt" ~ to!(string)(d.Name.length) ~ d.Name ~ name; 
                     break;
-                case NodeKind.FunctionSymbol: 
+                case NodeKind.FunctionDeclaration: 
                     name = "fnc" ~ to!(string)(d.Name.length) ~ d.Name ~ name; 
                     break;
                 default:

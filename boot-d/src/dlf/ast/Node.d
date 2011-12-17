@@ -36,9 +36,10 @@ public enum NodeKind : uint
     Declaration,
     PackageDeclaration,
     ImportDeclaration,
-    FunctionBase,
-    FunctionSymbol,
+    FunctionDeclaration,
     VariableDeclaration,
+    ValueDeclaration,
+    ConstantDeclaration,
     ClassDeclaration,
     TraitDeclaration,
     EnumDeclaration,
@@ -57,7 +58,7 @@ public enum NodeKind : uint
     //Expression
     Expression,
     LiteralExpression,
-    DotIdentifier, //DotExpression, IdentifierExpression
+    IdentifierExpression,
     CallExpression,
     BinaryExpression,
     UnaryExpression,

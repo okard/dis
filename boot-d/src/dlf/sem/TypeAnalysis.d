@@ -18,6 +18,12 @@
 ******************************************************************************/
 module dlf.sem.TypeAnalysis;
 
+/*
+class TypeAnalysis : Visitor
+{
+}
+*/
+
 /**
 * Semantic Functions for Types
 */
@@ -27,12 +33,12 @@ mixin template TypeAnalysis()
     //resolve types
 
     /**
-    * Get the Declaration of a DotIdentifier
+    * Get the Declaration of a IdentifierExpression
     * e.g. "this.foo.bar.x" is a VariableDeclaration(int)
     */
-    private Declaration resolve(DotIdentifier di)
+    private Declaration resolve(IdentifierExpression di)
     {
-        assert(mSymTable is null, "Resolve DotIdentifier: SymbolTable is null");
+        assert(mSymTable is null, "Resolve IdentifierExpression: SymbolTable is null");
 
         //Instances and arguments
 
@@ -46,12 +52,12 @@ mixin template TypeAnalysis()
 
             do
             {
-                if(sym.contains(cast(string)di[0]))
-                    return sym[cast(string)di[0]];
+                if(sym.contains(di.first))
+                    return sym[di.first];
             
                 sym = sym.pop();
             }
-            while(sym !is null)
+            while(sym !is null);
         }
         else
         {

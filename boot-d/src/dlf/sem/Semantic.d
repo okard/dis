@@ -75,6 +75,8 @@ class Semantic : Visitor
     */
     public Node run(Node astNode)
     {
+        //scope instanciatio classes
+
         //TODO Multiple Runs?
         return dispatch(astNode, this);
     }
@@ -163,9 +165,14 @@ class Semantic : Visitor
     /**
     * Visit FunctionSymbol
     */
-    void visit(FunctionSymbol func)
+    void visit(FunctionDeclaration func)
     { 
         Information("Semantic FuncSym %s", func.Name);
+
+
+        analyzeFuncParam(func);
+        //analyze statement and rewrite to block
+        analyzeFuncStmt(func);
 
 
         //Cases:
@@ -174,14 +181,20 @@ class Semantic : Visitor
         // 3. Explicit Declaration
         // 4. Template Functions (requires special body for each function, requires copy)
 
-        
-        foreach(FunctionBase fb; func.Bases)
+        //if function has no body it is a declaration
+        if(func.Body is null)
         {
-            //first solve parameter array (resolve datatypes, detect complete
-            analyzeFuncParam(fb);
-            //analyze statement and rewrite to block
-            analyzeFuncStmt(fb);
+            //its a declaration
+            //it must have unambiguous parameter datatypes
+            assert(!func.IsTemplate);
         }
+
+         //if it is not a template there must be one instance
+        if(!func.IsTemplate)
+        {
+            //func.Instances.length == 1
+        }
+
 
         //create instance when single
 
@@ -192,33 +205,22 @@ class Semantic : Visitor
             analyzeMainFunc(func);
         }
 
-        //go through function bases
-        foreach(FunctionBase fb; func.Bases)
-        {
-            visit(fb);
-        }
-    }
-
-    void visit(FunctionBase func)
-    {
-            //if function has no body it is a declaration
-        if(func.Body is null)
-        {
-            //its a declaration
-            //it must have unambiguous parameter datatypes
-            assert(!func.IsTemplate);
-        }
-
-        //if it is not a template there must be one instance
-        if(!func.IsTemplate)
-        {
-            //func.Instances.length == 1
-        }
-
         //analyze body for template first when instance get created?
         //go into Body
         if(func.Body !is null)
             func.Body = autoDispatch(func.Body);
+
+
+        foreach(FunctionDeclaration fdo; func.Overrides)
+        {
+            //first solve parameter array (resolve datatypes, detect complete
+            analyzeFuncParam(fdo);
+            //analyze statement and rewrite to block
+            analyzeFuncStmt(fdo);
+        }
+        
+        //go through overrides
+        mapDispatch(func.Overrides);
     }
 
      /**
@@ -309,10 +311,10 @@ class Semantic : Visitor
         
         //Expression to Function
 
-        if(fexpr.Kind == NodeKind.DotIdentifier)
+        if(fexpr.Kind == NodeKind.IdentifierExpression)
         {
-            Information("\t Is DotIdentifier -> Try to resolve type");
-            auto resolve = resolve(cast(DotIdentifier)fexpr);
+            Information("\t Is IdentifierExpression -> Try to resolve type");
+            auto resolve = resolve(cast(IdentifierExpression)fexpr);
 
             if(resolve !is null)
             {
@@ -329,13 +331,13 @@ class Semantic : Visitor
     }
 
     /**
-    * Semantic Pass for DotIdentifier
+    * Semantic Pass for IdentifierExpression
     */
-    void visit(DotIdentifier di)
+    void visit(IdentifierExpression di)
     {
         // resolve returntype 
-        // add node DotIdentifier pointo to Extend
-        // auto decl = resolve(DotIdentifier di)
+        // add node IdentifierExpression pointo to Extend
+        // auto decl = resolve(IdentifierExpression di)
         // -> assign(di, decl);
         // di.ReturnType = decl.Type
     }

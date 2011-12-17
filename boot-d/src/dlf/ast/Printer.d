@@ -69,34 +69,27 @@ class Printer : Visitor
     /**
     * Visit FunctionSymbol
     */
-    void visit(FunctionSymbol fd)
+    void visit(FunctionDeclaration fd)
     {
-        foreach(FunctionBase fb; fd.Bases)
-            visit(fb);
-    }
+        writet("def(%s): %s(", toString(fd.CallingConv), to!Declaration(fd.Parent).Name);
 
-    /**
-    * Print function base
-    */
-    void visit(FunctionBase fb)
-    {
-        writet("def(%s): %s(", toString(fb.CallingConv), to!Declaration(fb.Parent).Name);
-
-        foreach(FunctionParameter p; fb.Parameter)
+        foreach(FunctionParameter p; fd.Parameter)
         {
-            if(p.Definition.length == 2)
-                writef("%s : %s", p.Definition[0], p.Definition[1]);
+            //if(p.Definition.length == 2)
+            //    writef("%s : %s", p.Definition[0], p.Definition[1]);
             if(p.Vararg) writef("...");
             
-            if(p != fb.Parameter[$-1])
+            if(p != fd.Parameter[$-1])
             writef(", ");
         }
 
-        writefln(") %s", fb.ReturnType);
-        //fd.mType.mReturnType
+        writefln(") %s", fd.ReturnType);
 
-        if(fb.Body !is null)
-            dispatch(fb.Body, this);
+        if(fd.Body !is null)
+            dispatch(fd.Body, this);
+
+        foreach(FunctionDeclaration fdo; fd.Overrides)
+            visit(fdo);
     }
 
     /**
@@ -204,7 +197,7 @@ class Printer : Visitor
     /**
     * Visit Dot Identifier
     */
-    void visit(DotIdentifier di)
+    void visit(IdentifierExpression di)
     {
         write(di.toString());
     }
@@ -245,7 +238,7 @@ class Printer : Visitor
     {
         switch(exp.Kind)
         {
-            case NodeKind.DotIdentifier: return (cast(DotIdentifier) exp).toString();
+            case NodeKind.IdentifierExpression: return (cast(IdentifierExpression) exp).toString();
             case NodeKind.CallExpression: return toString(cast(CallExpression) exp);
             case NodeKind.LiteralExpression: return (cast(LiteralExpression)exp).Value;
             default: return "<unkown expression>";
@@ -262,20 +255,6 @@ class Printer : Visitor
             case NodeKind.ExpressionStatement: return toString((cast(ExpressionStatement)stat).Expr);
             default: return "<unkown statement>";
         }
-    }
-
-    /**
-    * DotIdentifier to string
-    */
-    public static string toString(DotIdentifier di)
-    {
-        char[] str;
-
-        for(int i=0; i < (di.length-1); i++)
-            str ~= di[i] ~ ".";
-
-        str ~= di[di.length-1];
-        return cast(string)str;
     }
 
     /**

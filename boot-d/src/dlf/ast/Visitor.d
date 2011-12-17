@@ -34,7 +34,7 @@ public interface Visitor
     //Declarations
     void visit(PackageDeclaration);
     void visit(ImportDeclaration);
-    void visit(FunctionSymbol);
+    void visit(FunctionDeclaration);
     void visit(VariableDeclaration);
     void visit(ClassDeclaration);
     void visit(TraitDeclaration);
@@ -47,7 +47,7 @@ public interface Visitor
     //Expressions
     void visit(LiteralExpression);
     void visit(CallExpression);
-    void visit(DotIdentifier);
+    void visit(IdentifierExpression);
     void visit(AssignExpression);
     void visit(BinaryExpression);
 
@@ -81,7 +81,7 @@ Node dispatch(Node n, Visitor v, bool mod = false)
         case NodeKind.PackageDeclaration: v.visit(cast(PackageDeclaration)n); break;
         case NodeKind.ImportDeclaration: v.visit(cast(ImportDeclaration)n); break;
         case NodeKind.VariableDeclaration: v.visit(cast(VariableDeclaration)n); break;
-        case NodeKind.FunctionSymbol: v.visit(cast(FunctionSymbol)n); break;
+        case NodeKind.FunctionDeclaration: v.visit(cast(FunctionDeclaration)n); break;
         case NodeKind.ClassDeclaration: v.visit(cast(ClassDeclaration)n); break;
         case NodeKind.TraitDeclaration: v.visit(cast(TraitDeclaration)n); break;
 
@@ -93,7 +93,7 @@ Node dispatch(Node n, Visitor v, bool mod = false)
         //Expressions
         case NodeKind.LiteralExpression: v.visit(cast(LiteralExpression)n); break;
         case NodeKind.CallExpression: v.visit(cast(CallExpression)n); break;
-        case NodeKind.DotIdentifier: v.visit(cast(DotIdentifier)n); break;
+        case NodeKind.IdentifierExpression: v.visit(cast(IdentifierExpression)n); break;
         case NodeKind.AssignExpression: v.visit(cast(AssignExpression)n); break;
         case NodeKind.BinaryExpression: v.visit(cast(BinaryExpression)n); break;
 

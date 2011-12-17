@@ -29,7 +29,7 @@ mixin template DeclAnalysis()
     /**
     * Analyze the function parameter definition
     */
-    private void analyzeFuncParam(ref FunctionBase fd)
+    private void analyzeFuncParam(ref FunctionDeclaration fd)
     {
         //detect if template function or not
 
@@ -46,7 +46,7 @@ mixin template DeclAnalysis()
     /**
     * Analyze the function statement
     */ 
-    private void analyzeFuncStmt(ref FunctionBase fd)
+    private void analyzeFuncStmt(ref FunctionDeclaration fd)
     {
         if(fd.Body is null) return;
 
@@ -69,28 +69,26 @@ mixin template DeclAnalysis()
     /**
     * Analyze Main Function
     */
-    private void analyzeMainFunc(ref FunctionSymbol func)
+    private void analyzeMainFunc(ref FunctionDeclaration func)
     {
         assert(func.Name == "main");
 
-        assert(func.Bases.length == 1, "Multiple defintion of main not allowed");
+        assert(func.Overrides.length == 0, "Can't override main function");
 
-        auto base = func.Bases[0];
+        debug writefln("analyzeMainFunc: base body %s", func.Body);
+        assertSem(func.Body !is null, "main function required body");
 
-        debug writefln("analyzeMainFunc: base body %s", base.Body);
-        assertSem(base.Body !is null, "main function required body");
+        log.Information("main func parameter count: %s", func.Parameter.length);
 
-        log.Information("main func parameter count: %s", base.Parameter.length);
+        assert(func.Parameter.length != 1, "a main function can only have one parameter");
 
-        assert(base.Parameter.length != 1, "a main function can only have one parameter");
-
-        if(base.ReturnType.Kind == NodeKind.OpaqueType)
-            base.ReturnType = VoidType.Instance;
+        if(func.ReturnType.Kind == NodeKind.OpaqueType)
+            func.ReturnType = VoidType.Instance;
 
         //return type: unsolved then solved
         //finally only int or void are allowed
 
-        assert(base.ReturnType == VoidType.Instance || base.ReturnType == IntType.Instance, "main function can be only have return type void or int");
+        assert(func.ReturnType == VoidType.Instance || func.ReturnType == IntType.Instance, "main function can be only have return type void or int");
 
         //FunctionParameter for main should be 
         
@@ -98,11 +96,11 @@ mixin template DeclAnalysis()
         {
             auto type = new FunctionType();
             type.Parent = func;
-            type.FuncBase = base;
-            type.ReturnType =  base.ReturnType;
-            type.Body = base.Body;
+            //type.FuncBase = func;
+            type.ReturnType =  func.ReturnType;
+            type.Body = func.Body;
             
-            if(base.Parameter.length ==1)
+            if(func.Parameter.length ==1)
             {
                 //at string[] argument
                 //type.Arguments  ~=

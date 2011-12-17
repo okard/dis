@@ -154,11 +154,12 @@ class Parser
         //Look for semicolon
         accept(TokenType.Semicolon, "Expected Semicolon after package declaration");
 
+        //parseDeclaration([ListOfAllowedDeclarations]);
+
         //parse rest of package
         while(mToken.Type != TokenType.EOF)
         {
             next();
-
             //parseDeclarations
 
             switch(mToken.Type)
@@ -248,16 +249,16 @@ class Parser
         // Block {}
         checkType(TokenType.KwDef);
 
-        auto func = new FunctionBase();
+        auto func = new FunctionDeclaration();
+        func.ReturnType = OpaqueType.Instance;
         func.Loc = mToken.Loc;
     
         //TODO assign annotations, attributes parsed before
 
-        next();
-
         //Parse Calling Convention
-        if(mToken.Type == TokenType.ROBracket)
+        if(peek(1) == TokenType.ROBracket)
         {
+            next;
             //identifier aka calling convention
             accept(TokenType.Identifier, "parseDef: Expected Identifier for Calling Convention");
             
@@ -269,34 +270,23 @@ class Parser
             }
             
             accept(TokenType.RCBracket, "parseDef: Expected ) for Calling Conventions");
-            next();
         }
 
-        //parse function name (identifier)
-        if(mToken.Type != TokenType.Identifier)
-        {
-            Error(mToken.Loc, "parseDef: expected identifier");
-        }
+        accept(TokenType.Identifier, "parseDef: missing function identifier");
 
         //get name
-        string name = mToken.Value;
+        func.Name = mToken.Value;
 
-        //register entry when not already exist
-        if(!symtbl.contains(name))
+        //append to function table
+        if(!symtbl.contains(func.Name))
+            symtbl[func.Name] = func;
+        else
         {
-            symtbl[name] = new FunctionSymbol(name);
-            symtbl[name].Loc = mToken.Loc; //first occurence
-            symtbl[name].Parent = symtbl.Owner; //Parent Node
+            if(symtbl[func.Name].Kind != NodeKind.FunctionDeclaration)
+                Error(mToken.Loc, "parseDef: already a non-function entry in symbol table with this name");
+
+            (cast(FunctionDeclaration)symtbl[func.Name]).Overrides ~= func;
         }
-
-        if(symtbl[name].Kind != NodeKind.FunctionSymbol)
-            Error(mToken.Loc, "parseDef: already a non-function entry in symbol table with this name");
-
-        //assign function base
-        auto sym = (cast(FunctionSymbol)symtbl[name]);
-        sym.Bases ~= func;
-        func.Parent = sym;
-        func.ReturnType = OpaqueType.Instance;
 
         //optional: Parse Parameter
         if(peek(1) == TokenType.ROBracket)
@@ -342,8 +332,7 @@ class Parser
             // = <statement or expression>
             case TokenType.Assign:
                 next();
-                auto e = parseExpression();
-                func.Body = new ExpressionStatement(e);
+                func.Body = parseStatement();
                 return;
 
             default:
@@ -354,7 +343,7 @@ class Parser
     /**
     * Parse Function Defintion Parameters
     */
-    private void parseDefParams(FunctionBase fd)
+    private void parseDefParams(FunctionDeclaration fd)
     {
         //start at round open bracket
         checkType(TokenType.ROBracket);
@@ -393,7 +382,7 @@ class Parser
                 continue;
 
             case TokenType.Mul: /// Clear Pointer Type
-                param.Definition ~= "*";
+                //param.Definition ~= "*";
                 break;
             
             //finish
@@ -692,7 +681,7 @@ class Parser
         }
 
         //seems to be a function call "(" after expression/identifier
-        if(expr.Kind == NodeKind.DotIdentifier && peek(1) == TokenType.ROBracket)
+        if(expr.Kind == NodeKind.IdentifierExpression && peek(1) == TokenType.ROBracket)
         {
             next();
 
@@ -803,11 +792,13 @@ class Parser
     /**
     * Parse Identifier
     */
-    private DotIdentifier parseIdentifier()
+    private IdentifierExpression parseIdentifier()
     {
         checkType(TokenType.Identifier);
 
-        auto di = new DotIdentifier(cast(char[])mToken.Value);
+        auto di = new IdentifierExpression();
+        di.append(mToken.Value);
+
         //expect dot
         bool expDot = true;
 
@@ -828,8 +819,7 @@ class Parser
             expDot = !expDot;
             
             if(mToken.Type == TokenType.Identifier)
-                di ~= cast(char[])mToken.Value;
-            
+                di.append(mToken.Value);
         }
 
         return di;

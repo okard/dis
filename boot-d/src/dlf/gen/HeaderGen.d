@@ -56,7 +56,7 @@ class HeaderGen : Visitor
     }
     
     void visit(ImportDeclaration id){  }
-    void visit(FunctionSymbol fd){  }
+    void visit(FunctionDeclaration fd){  }
     void visit(VariableDeclaration vd){  }
     void visit(ClassDeclaration cd){  }
     void visit(TraitDeclaration td){  }
@@ -69,7 +69,7 @@ class HeaderGen : Visitor
     //Expressions
     void visit(LiteralExpression le){  }
     void visit(CallExpression ce){  }
-    void visit(DotIdentifier di){  }
+    void visit(IdentifierExpression di){  }
     void visit(AssignExpression ae){  }
     void visit(BinaryExpression be){  }
 

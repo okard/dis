@@ -55,65 +55,27 @@ final class LiteralExpression : Expression
 //
 
 /**
-* Dotted Identifier
+* IdentifierExpression
 * e.g. foo.bar.x.y
 */
-final class DotIdentifier : Expression
+final class IdentifierExpression : Expression
 {
     /// The Composite Identifier
     public CompositeIdentifier Identifier;
 
-    ///parts of identifiers splitted with .
-    private char[][] mIdentifier;
-
-    /**
-    * Create dotted identifier
-    */
-    public this(char[] identifier)
-    {
-        mIdentifier ~= identifier;
-    }
-
-    /**
-    * Append
-    */
-    public void opOpAssign(string s)(char[] part)
-        if(s == "~")
-    {
-        mIdentifier ~= part;
-    }
-
-    /**
-    * Index Access for parts of identifier
-    */
-    public char[] opIndex(int index)
-    {
-        return mIdentifier[index];
-    }
-
-    /**
-    * How many parts has this DotIdentifier
-    */
-    @property
-    public int length()
-    {
-        return cast(int)mIdentifier.length;
-    }
+    /// Alias This the Composite Identifier
+    alias Identifier this;
 
     /**
     * To String
     */
     override string toString() 
-    {
-        string s;
-        for(int i=0; i < mIdentifier.length; i++)
-            s ~= cast(string)mIdentifier[i] ~ (i == (mIdentifier.length-1) ? "" :".");
-           
-        return s;
+    {   
+        return Identifier.toString();
     }
 
     ///Mixin for Kind Declaration
-    mixin(IsKind("DotIdentifier"));
+    mixin(IsKind("IdentifierExpression"));
 }
 
 /**

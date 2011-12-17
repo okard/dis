@@ -196,8 +196,20 @@ class CCodeGen : ObjectGen, Visitor
     /**
     * Compile FunctionSymbol
     */
-    void visit(FunctionSymbol fd)
-    { 
+    void visit(FunctionDeclaration fd)
+    {
+        //two steps
+
+        
+
+        //Overrides
+        mapDispatch(fd.Overrides);
+
+        
+        //generate c main wrapper
+        if(fd.Name == "main")
+            genCMain();
+
         foreach(FunctionType ft; fd.Instances)
         {
             //Generate code for each function instance
@@ -205,8 +217,7 @@ class CCodeGen : ObjectGen, Visitor
 
             //if dis main is generated
             //add wrapper c main
-            if(fd.Name == "main")
-                genCMain();
+          
         }
     }
 
@@ -215,11 +226,10 @@ class CCodeGen : ObjectGen, Visitor
     */
     private void gen(FunctionType ft)
     {
-        auto funcDecl = to!FunctionSymbol(ft.FuncDecl);
-        auto funcBase = ft.FuncBase;
+        auto funcDecl = to!FunctionDeclaration(ft.FuncDecl);
         
         //name for function type
-        string name = funcBase.CallingConv == CallingConvention.C ?
+        string name = funcDecl.CallingConv == CallingConvention.C ?
                       funcDecl.Name :
                       Mangle.mangle(ft);
 
@@ -320,7 +330,7 @@ class CCodeGen : ObjectGen, Visitor
     
     
     void visit(CallExpression fc){  }
-    void visit(DotIdentifier di){  }
+    void visit(IdentifierExpression di){  }
     void visit(AssignExpression ae){  }
     void visit(BinaryExpression be){  }
 

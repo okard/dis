@@ -113,4 +113,11 @@ final class SymbolTable
         return !(mPrev is null);
     }
 
+
+    private struct Entry
+    {
+        //type: variable, function, class, struct 
+        //binding: extern 
+    }
+
 } 

@@ -27,6 +27,8 @@ struct CompositeIdentifier
 { 
     string[] idents;
 
+    //typed parts?, 
+    //packages, datatypes, declarations
 
     /**
     * Return first component
@@ -51,6 +53,22 @@ struct CompositeIdentifier
     string toString()
     {
         return join(idents, ".");
+    }
+
+    /**
+    * Append a part
+    */
+    void append(string part)
+    {
+        idents ~= part;
+    }
+
+    /**
+    * Count of elements
+    */
+    auto length()
+    {
+        return idents.length;
     }
 }
 

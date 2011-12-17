@@ -39,5 +39,6 @@ abstract class Annotation : Node
 */
 final class UnitTestAnnotation : Annotation
 {
+    //test name
     mixin(IsKind("UnitTestAnnotation"));
 }

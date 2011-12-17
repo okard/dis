@@ -246,10 +246,7 @@ class FunctionType : DataType
 {
     /// The base function declaration of this type, Parent
     @property
-    public FunctionSymbol FuncDecl() { return cast(FunctionSymbol)Parent; }
-
-    /// Function Base
-    public FunctionBase FuncBase;
+    public auto FuncDecl() { return cast(FunctionDeclaration)Parent; }
 
     /// The function type arguments
     public DataType[] Arguments;
@@ -260,7 +257,7 @@ class FunctionType : DataType
     /// is a varargs function
     public bool mVarArgs;
 
-    /// Body (for template functions)
+    /// Body (for template functions) move to declarations
     public Statement Body;
 
     //mangled name?
