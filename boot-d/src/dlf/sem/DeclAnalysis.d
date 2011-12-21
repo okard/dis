@@ -35,7 +35,7 @@ mixin template DeclAnalysis()
 
         foreach(FunctionParameter p; fd.Parameter)
         {
-            log.Information("Param %s Type: %s", p.Name, p.Type);
+            log.Information("Param '%s' Type: '%s'", p.Name is null ? "<null>" : p.Name, p.Type);
             //type should not been Unkown or unsolved
             //p.Type
             //p.Name

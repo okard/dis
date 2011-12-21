@@ -55,6 +55,9 @@ public enum CallingConvention {None, C, Dis}
 */
 final class PackageDeclaration : Declaration
 {
+    /// Package Identifier
+    CompositeIdentifier PackageIdentifier;
+
     /// Symbol Table
     public SymbolTable SymTable;
 

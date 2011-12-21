@@ -470,8 +470,15 @@ unittest
     import std.stdio;
 
     auto src = new SourceString("{ } \n ");
-    
+    auto lex = new Lexer();
+    lex.open(src);
 
+    assert(lex.getToken().Type == TokenType.COBracket);
+    assert(lex.getToken().Type == TokenType.CCBracket);
+    assert(lex.getToken().Type == TokenType.EOL);
+    assert(lex.getToken().Type == TokenType.EOF);
+
+    //keyword test
 
     
     writeln("[TEST] Lexer Tests passed ");
