@@ -20,6 +20,8 @@ module dlf.ast.Special;
 
 import std.array;
 
+import dlf.ast.Node;
+
 /**
 * Identifier 
 */
@@ -29,6 +31,8 @@ struct CompositeIdentifier
 
     //typed parts?, 
     //packages, datatypes, declarations
+    //Composite Parts can reference to ast nodes
+    //Node[uint] refs
 
     /**
     * Return first component
@@ -71,6 +75,5 @@ struct CompositeIdentifier
         return idents.length;
     }
 }
-
 
 

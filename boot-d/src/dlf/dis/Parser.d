@@ -154,7 +154,7 @@ class Parser
         //Look for semicolon
         accept(TokenType.Semicolon, "Expected Semicolon after package declaration");
 
-        //parseDeclaration([ListOfAllowedDeclarations]);
+        //parseDeclarations([ListOfAllowedDeclarations]);
 
         //parse rest of package
         while(mToken.Type != TokenType.EOF)
@@ -200,11 +200,11 @@ class Parser
         auto imp = new ImportDeclaration;
         imp.Loc = mToken.Loc;
 
-        //import followed by identifier
+        //import followed by identifier import foo = asdasd
         
         accept(TokenType.Identifier, "parseImport: expect identifier after import keyword");
 
-        imp.ImportIdentifier.idents ~= mToken.Value;
+        imp.ImportIdentifier.append(mToken.Value);
 
         while(peek(1) == TokenType.Dot)
         {
@@ -212,7 +212,7 @@ class Parser
             switch(peek(1))
             {
                 case TokenType.Identifier: 
-                    next; imp.ImportIdentifier.idents ~= mToken.Value; break;
+                    next; imp.ImportIdentifier.append(mToken.Value); break;
                 case TokenType.Mul:
                     next; imp.IsWildcardImport = true; break;
                 default:
@@ -235,7 +235,7 @@ class Parser
 
         // class(kw param) identifier(template args) : inherits {
 
-
+        Error(mToken.Loc, "Class Parsing not yet supported");
         return null;
     }
 
@@ -278,15 +278,10 @@ class Parser
         func.Name = mToken.Value;
 
         //append to function table
-        if(!symtbl.contains(func.Name))
-            symtbl[func.Name] = func;
-        else
+        symtbl.assign(func, (FunctionDeclaration existing, FunctionDeclaration newOne)
         {
-            if(symtbl[func.Name].Kind != NodeKind.FunctionDeclaration)
-                Error(mToken.Loc, "parseDef: already a non-function entry in symbol table with this name");
-
-            (cast(FunctionDeclaration)symtbl[func.Name]).Overrides ~= func;
-        }
+            existing.Overrides ~= newOne;
+        });
 
         //optional: Parse Parameter
         if(peek(1) == TokenType.ROBracket)
@@ -443,16 +438,12 @@ class Parser
         //"var", SimpleDeclaration;
         //SimpleDeclaration = Identifier, [":" TypeIdentifier], ["=" Expression];
         checkType(TokenType.KwVar);
-
-        auto loc = mToken.Loc;
+        auto var = new VariableDeclaration();
+        var.Loc = mToken.Loc;
 
         //expect Identifier after var
         accept(TokenType.Identifier, "Expect Identifier after var keyword");
-        
-        //create new variable declaration at the moment with opaque type
-        auto var = new VariableDeclaration(mToken.Value);
-        var.Loc = loc;
-
+        var.Name = mToken.Value;
 
         switch(peek(1))
         {
@@ -478,15 +469,7 @@ class Parser
                 next();
                 Error(mToken.Loc, "Unkown token in variable declaration");
         }
-
-        /*
-        //check for initalizer
-        if(peek(1) == TokenType.Assign)
-        {
-
-        }
-        */
-        
+       
         accept(TokenType.Semicolon, "Missing semicolon after variable declaration");
 
         return var;
@@ -539,37 +522,34 @@ class Parser
         //TODO symbol table? each block has one?
         auto block = new BlockStatement();
         block.Loc = mToken.Loc;
-        block.SymTable = mSymTable.push(block);
-        mSymTable = block.SymTable;
+        block.SymTable = mSymTable = mSymTable.push(block);
 
         //parse until "}"
         while(mToken.Type != TokenType.CCBracket && peek(1) != TokenType.CCBracket)
         {
             next();
             
-            //ignore newlines, comments
-            if(mToken.Type == TokenType.EOL || mToken.Type == TokenType.Comment || mToken.Type == TokenType.Semicolon)
+            //ignore semicolons
+            if(mToken.Type == TokenType.Semicolon)
                 continue;
 
-            //a Block can only contain declarations and statements
-
-            if(mToken.Type == TokenType.KwVar)
+            switch(mToken.Type)
             {
-                auto var = parseVar();
-                mSymTable[var.Name] = var;
-                var.Parent = block;
-                continue;
-            }
+                case TokenType.KwVar:
+                    auto var = parseVar();
+                    block.SymTable[var.Name] = var;
+                    var.Parent = block;
+                    continue;
 
-            //Declarations:
-            //var, val, def, class, trait, type
-            if(isIn!TokenType(mToken.Type, [TokenType.KwLet, TokenType.KwDef, TokenType.KwClass]))
-            {
-                //parseDeclarations
-                continue;
-            }
+                case TokenType.KwLet:
+                case TokenType.KwDef: 
+                case TokenType.KwClass:
+                    continue;
 
-   
+                default:
+                    break;
+            }
+ 
             //Whens here try to be statment
             auto stat = parseStatement();
             if(stat !is null)
@@ -580,6 +560,7 @@ class Parser
         }
         //go over } ?
         next();
+        //accept(TokenType.CCBracket, "");
 
         mSymTable = block.SymTable.pop();
         
@@ -952,11 +933,11 @@ class Parser
     /**
     * Require a special type next
     */
-    private void accept(TokenType t, string error)
+    private void accept(TokenType t, string error, string file = __FILE__, size_t line = __LINE__)
     {
         next();
         if(mToken.Type != t)
-            Error(mToken.Loc, error);
+            Error(mToken.Loc, error, file, line);
     }
 
     /**
@@ -1010,7 +991,6 @@ class Parser
     {
         return mLex.Src;
     }
-
 
     /**
     * Log Event

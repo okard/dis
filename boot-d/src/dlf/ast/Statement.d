@@ -65,6 +65,7 @@ final class ExpressionStatement : Statement
     public this(Expression expr)
     {
         Expr = expr;
+        expr.Parent = this;
     }
 
     ///Mixin for Kind Declaration
@@ -133,7 +134,7 @@ final class ForEachStatement : Statement
 final class WhileStatement : Statement
 {
     /// Post test condition, While or DoWhile
-    bool PostTest = false;
+    bool PostCondition = false;
 
     ///Loop Condition
     public Expression Condition;

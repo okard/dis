@@ -165,6 +165,14 @@ final class VariableDeclaration : Declaration
         VarDataType = type;
     }
 
+    /**
+    * Ctor
+    */
+    public this(DataType type = OpaqueType.Instance)
+    {
+        VarDataType = type;
+    }
+
     /// Mixin for Kind Declaration
     mixin(IsKind("VariableDeclaration"));
 }

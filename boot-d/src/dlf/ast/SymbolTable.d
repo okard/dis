@@ -89,6 +89,24 @@ final class SymbolTable
     }
 
     /**
+    * Assign Entry
+    */
+    public void assign(T : Declaration)(T symbol, void delegate(T symA, T symB) concat)
+    {
+        //append to function table
+        if(!this.contains(symbol.Name))
+            this[symbol.Name] = symbol;
+        else
+        {
+            //types must match
+            if(this[symbol.Name].Kind != symbol.Kind)
+                throw new Exception("Wrong kind of symbol already in symbol table");
+   
+            concat(cast(T)this[symbol.Name], symbol);
+        }
+    }
+
+    /**
     * Creates a new SymbolTable
     */
     public SymbolTable push(Node owner)

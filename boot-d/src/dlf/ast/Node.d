@@ -104,6 +104,7 @@ abstract class Node
     /// Kind (immutable)? function?
     @property public abstract NodeKind Kind();
 
+    //TODO remove that
     /// Self Pointer for (crazy) dispatch replace
     public Node Self;
 
