@@ -115,6 +115,7 @@ enum TokenType //: ubyte//c main
     KwTrait,        // trait
     KwType,         // type
     KwConst,        // const
+    KwRef,          // ref
     KwImport,       // import
     KwIf,           // if
     KwElse,         // else
@@ -216,6 +217,7 @@ string toString(TokenType tok)
     case TokenType.KwTrait:     return "trait";
     case TokenType.KwType:      return "type";
     case TokenType.KwConst:     return "const";
+    case TokenType.KwRef:       return "ref";
     case TokenType.KwImport:    return "import";
     case TokenType.KwIf:        return "if";
     case TokenType.KwElse:      return "else";

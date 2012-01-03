@@ -79,6 +79,7 @@ class CCodeGen : ObjectGen, Visitor
         srcDir = buildPath(ctx.Backend.ObjDir, "tmpDisSrc");
         //TODO create dir
         assert(srcDir.isDir(), "Target src dir isn't a directory");
+        writer.SourceDirectory = srcDir;
 
         // Primary/Builtin Types
         VoidType.Instance.CodeGen = ctype("void");
@@ -93,7 +94,9 @@ class CCodeGen : ObjectGen, Visitor
         ULongType.Instance.CodeGen = ctype("unsigned long");
         FloatType.Instance.CodeGen = ctype("float");
         DoubleType.Instance.CodeGen = ctype("double");
-      
+
+        
+        VoidType.PtrInstance.CodeGen = ctype("void*");
         
         //special case utf8 -> 4 byte chars?
         //types[CharType.Instance] = ;
@@ -129,7 +132,7 @@ class CCodeGen : ObjectGen, Visitor
                 continue;
             
             // CodeGen for Import
-            p = writer.Package(srcDir, id.Package.Name);
+            p = writer.Package(id.Package.Name);
             autoDispatch(id.Package);
             //detect if one import has recompiled then this source should be recompiled too?
             //Imports to compile before? 
@@ -140,8 +143,7 @@ class CCodeGen : ObjectGen, Visitor
         //check modification date if exists
         
         //Create C Package
-        p = writer.Package(srcDir, pd.Name);
-        //add a header node
+        p = writer.Package(pd.Name);
         pd.CodeGen = cheader(p.Header.name);
         
         //start creating definitions
@@ -200,15 +202,8 @@ class CCodeGen : ObjectGen, Visitor
     {
         //two steps
 
-        
-
         //Overrides
         mapDispatch(fd.Overrides);
-
-        
-        //generate c main wrapper
-        if(fd.Name == "main")
-            genCMain();
 
         foreach(FunctionType ft; fd.Instances)
         {
@@ -219,6 +214,10 @@ class CCodeGen : ObjectGen, Visitor
             //add wrapper c main
           
         }
+
+        //generate c main wrapper
+        if(fd.Name == "main")
+            genCMain();
     }
 
     /**
@@ -246,15 +245,16 @@ class CCodeGen : ObjectGen, Visitor
         //TODO gen code for when not yet done? gen declaration?
         string rettype = getgen(ft.ReturnType).Identifier;
         
-        //start writing code
+        //reate function declaration
         p.debugln(funcDecl.Loc);
         p.funcDecl(rettype, name, []);
 
-        //write body
+        //write body aka function definition
         if(ft.Body !is null)
         {
             assert(ft.Body.Kind == NodeKind.BlockStatement, "Sem should rewrite body to block statement");
 
+            //start function definition
             p.funcDef(rettype, name, []);
             
             autoDispatch(ft.Body);
@@ -335,24 +335,8 @@ class CCodeGen : ObjectGen, Visitor
     void visit(BinaryExpression be){  }
 
 
-    /**
-    * Auto Dispatch
-    */
-    private T autoDispatch(T)(T e)
-    {
-        return cast(T)dispatch(e, this);
-    }
-
-    /**
-    * Map Dispatch to Arrays
-    */
-    private void mapDispatch(T)(T[] elements)
-    {
-        for(int i=0; i < elements.length; i++)
-        {
-            autoDispatch(elements[i]);
-        }
-    }
+    /// Mixin Dispatch Utils
+    mixin DispatchUtils!false;
 
    /**
     * Log Event
@@ -405,14 +389,15 @@ class CCodeGen : ObjectGen, Visitor
     }
 
     /**
-    * Compiler AST Extension Nodes
+    * Compiler AST Extension Node for c code backend
+    * C Codegen Node
     */
     private static class CCNode : Node
     {
         //header file name
 
         /// Type List for C Code Identifier
-        enum IdentifierType { Header, Function, Struct, Var, Type};
+        enum IdentifierType { Unkown, Header, Function, Struct, Var, Type};
 
         /// Type of C Code Identifier
         IdentifierType Type;
@@ -426,9 +411,26 @@ class CCodeGen : ObjectGen, Visitor
         //declaration
         //definitions
 
+        //Union
+
+        /**
+        * Create new Compiler AST Node
+        */
+        this()
+        {
+        }
+
+        /**
+        * Create new Compiler AST Node
+        */
+        this(string identifier, IdentifierType type = IdentifierType.Unkown)
+        {
+            Identifier = identifier;
+            Type = type;
+        }
+
         ///Node Kind Mixin
         mixin(IsKind("Backend"));
-
     }
 
 }

@@ -46,6 +46,8 @@ class Semantic : Visitor
     //Semantic Logger
     private LogSource log = Log("Semantic");
 
+    private scope TypeAnalysis typeResolver;
+
     /// Current Symbol Table
     private SymbolTable mSymTable;
 
@@ -62,11 +64,15 @@ class Semantic : Visitor
 
     //context? libraries doesnt have a main function?
 
-    //Functions for types (resolving)
-    mixin TypeAnalysis;
 
-    //Functions for declarations
-    mixin DeclAnalysis;
+    /**
+    * Ctor
+    */
+    public this()
+    {
+        typeResolver = new TypeAnalysis(this);
+    }
+
 
 
     /**
@@ -75,6 +81,9 @@ class Semantic : Visitor
     */
     public Node run(Node astNode)
     {
+        //resolve types
+        dispatch(astNode, typeResolver);
+    
         //scope instanciatio classes
 
         //TODO Multiple Runs?
@@ -86,6 +95,8 @@ class Semantic : Visitor
     */
     public PackageDeclaration run(PackageDeclaration pd)
     {
+        //resolve types
+        dispatch(pd, typeResolver);
         return autoDispatch(pd);
     }
 
@@ -114,18 +125,7 @@ class Semantic : Visitor
     void visit(ImportDeclaration impDecl)
     {
         // Info
-        Information("Semantic: ImportDecl %s", impDecl.Name);
-
-        //semantic check for available PackageDeclarations
-        if(impDecl.Package !is null)
-        {
-            impDecl.Package = autoDispatch(impDecl.Package);
-        }
-        else
-        {
-            Error("\tImport %s has not been solved", impDecl.Name);
-            fatal("Can't proceed with unsolved import");
-        }
+        debug Information("Semantic: ImportDecl %s", impDecl.Name);
 
         //semantic on package should have been run
 
@@ -170,9 +170,9 @@ class Semantic : Visitor
         Information("Semantic FuncSym %s", func.Name);
 
 
-        analyzeFuncParam(func);
+        //analyzeFuncParam(func);
         //analyze statement and rewrite to block
-        analyzeFuncStmt(func);
+        //analyzeFuncStmt(func);
 
 
         //Cases:
@@ -202,7 +202,7 @@ class Semantic : Visitor
         if(func.Name == "main")
         {
             Information("Main Function detected");
-            analyzeMainFunc(func);
+            //analyzeMainFunc(func);
         }
 
         //analyze body for template first when instance get created?
@@ -214,9 +214,9 @@ class Semantic : Visitor
         foreach(FunctionDeclaration fdo; func.Overrides)
         {
             //first solve parameter array (resolve datatypes, detect complete
-            analyzeFuncParam(fdo);
+            //analyzeFuncParam(fdo);
             //analyze statement and rewrite to block
-            analyzeFuncStmt(fdo);
+            //analyzeFuncStmt(fdo);
         }
         
         //go through overrides
@@ -228,32 +228,6 @@ class Semantic : Visitor
     */
     void visit(VariableDeclaration var)
     {
-        Information("Semantic: VarDecl %s", var.Name);
-
-        //Do Semantic Analysis for Initializer Expression if available
-        if(var.Initializer !is null)
-            var.Initializer = autoDispatch(var.Initializer);
-
-        //Set Datatype for Variable
-        if(IsOpaque(var.VarDataType))
-        {
-            if(var.Initializer !is null)
-            {
-                var.VarDataType = var.Initializer.ReturnType;
-                Information("\tResolved var type: %s", var.VarDataType);
-            }
-        }
-
-        //DataType of Variable and Initializer must match
-        if(var.Initializer !is null)
-        {   
-            //for class types generate constructor call?
-            //check for allowed conversions?
-            // implize_t]icit casts check
-            Information("\tVarType: %s, InitType: %s", var.VarDataType,var.Initializer.ReturnType); 
-            //assert(var.VarDataType == var.Initializer.ReturnType);
-        }
-
     }
 
     /**
@@ -261,19 +235,6 @@ class Semantic : Visitor
     */
     void visit(BlockStatement block)
     {
-        Information("Semantic: BlockStmt");
-
-        mSymTable = block.SymTable;
-
-        //analyze the declarations inside of blockstatement
-        //what is when parent is function, parameter variables
-        
-        foreach(Declaration sym; block.SymTable)
-            dispatch(sym, this);
-
-        //check each statement
-        mapDispatch(block.Statements);
-
     }
 
     /**
@@ -314,15 +275,15 @@ class Semantic : Visitor
         if(fexpr.Kind == NodeKind.IdentifierExpression)
         {
             Information("\t Is IdentifierExpression -> Try to resolve type");
-            auto resolve = resolve(cast(IdentifierExpression)fexpr);
+            //auto resolve = resolve(cast(IdentifierExpression)fexpr);
 
-            if(resolve !is null)
+            /*if(resolve !is null)
             {
                 Information("\t Resolve type: %s", resolve);
                 //TODO fix this
                 //extend(call.Function, resolve);
                 call.Function.Semantic = resolve;
-            }
+            }*/
             //look foreach
             //get function declaration
         }
@@ -407,7 +368,7 @@ class Semantic : Visitor
     /**
     * Semantic Information Log
     */
-    private void Information(T...)(string s, T args)
+    package void Information(T...)(string s, T args)
     {
         log.log!(LogType.Information)(s, args);
     }
@@ -415,7 +376,7 @@ class Semantic : Visitor
     /**
     * Semantic Error Log
     */
-    private void Error(T...)(string s, T args)
+    package void Error(T...)(string s, T args)
     {
         log.log!(LogType.Error)(s, args);
     }
@@ -423,7 +384,7 @@ class Semantic : Visitor
     /**
     * Fatal semantic error
     */
-    private void fatal(string msg = "")
+    package void Fatal(string msg = "")
     {
          throw new SemanticException(msg);
     }
@@ -436,7 +397,7 @@ class Semantic : Visitor
         if(!cond)
         {
             Error(message);
-            fatal(message);
+            Fatal(message);
         }
     }
 

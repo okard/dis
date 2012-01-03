@@ -23,6 +23,7 @@ public import dlf.ast.Declaration;
 public import dlf.ast.Statement;
 public import dlf.ast.Expression;
 public import dlf.ast.Annotation;
+public import dlf.ast.SymbolTable;
 
 /**
 * AST Visitor
@@ -36,13 +37,22 @@ public interface Visitor
     void visit(ImportDeclaration);
     void visit(FunctionDeclaration);
     void visit(VariableDeclaration);
+    //Value
+    //Constant
     void visit(ClassDeclaration);
     void visit(TraitDeclaration);
+    //Struct
+    //Alias
+    //Enum
+    //Variant
 
     //Statements
     void visit(BlockStatement);
     void visit(ExpressionStatement);
     void visit(ReturnStatement);
+    //For
+    //ForEach
+    //While
 
     //Expressions
     void visit(LiteralExpression);
@@ -81,23 +91,41 @@ Node dispatch(Node n, Visitor v, bool mod = false)
         case NodeKind.PackageDeclaration: v.visit(cast(PackageDeclaration)n); break;
         case NodeKind.ImportDeclaration: v.visit(cast(ImportDeclaration)n); break;
         case NodeKind.VariableDeclaration: v.visit(cast(VariableDeclaration)n); break;
+        //Value
+        //Constant
         case NodeKind.FunctionDeclaration: v.visit(cast(FunctionDeclaration)n); break;
         case NodeKind.ClassDeclaration: v.visit(cast(ClassDeclaration)n); break;
         case NodeKind.TraitDeclaration: v.visit(cast(TraitDeclaration)n); break;
+        //Struct
+        //Alias
+        //Enum
+        //Variant
 
         //Statements
         case NodeKind.BlockStatement: v.visit(cast(BlockStatement)n); break;
         case NodeKind.ExpressionStatement: v.visit(cast(ExpressionStatement)n); break;
         case NodeKind.ReturnStatement: v.visit(cast(ReturnStatement)n); break;
+        //For
+        //ForEach
+        //While
         
         //Expressions
         case NodeKind.LiteralExpression: v.visit(cast(LiteralExpression)n); break;
         case NodeKind.CallExpression: v.visit(cast(CallExpression)n); break;
         case NodeKind.IdentifierExpression: v.visit(cast(IdentifierExpression)n); break;
-        case NodeKind.AssignExpression: v.visit(cast(AssignExpression)n); break;
         case NodeKind.BinaryExpression: v.visit(cast(BinaryExpression)n); break;
+        //UnaryExpression
+        //If
+        //Switch
+        
+        case NodeKind.AssignExpression: v.visit(cast(AssignExpression)n); break;
 
         //Types
+        //Builtin
+        //FunctionType
+        //ClassType
+        //Unsovled
+        //Pointer/Array/
 
         //Special
         case NodeKind.Semantic: assert(false, "Can't dispatch special semantic node");
@@ -111,3 +139,42 @@ Node dispatch(Node n, Visitor v, bool mod = false)
     return mod && (n.Self !is null) ? n.Self : n;
 }
     
+
+
+/**
+* Dispatch template utils
+*/
+mixin template DispatchUtils(bool modify)
+{
+    /**
+    * Auto Dispatch
+    */
+    private T autoDispatch(T)(T e)
+    {
+        return cast(T)dispatch(e, this, modify);
+    }
+
+    /**
+    * Map Dispatch to Arrays
+    */
+    private void mapDispatch(T)(T[] elements)
+    {
+        for(int i=0; i < elements.length; i++)
+        {
+            elements[i] = autoDispatch(elements[i]);
+        }
+    }
+
+    /**
+    * SymbolTable Dispatch
+    */
+    private void symDispatch(SymbolTable symTable)
+    {
+         //go through declarations
+        foreach(Declaration d; symTable)
+        {
+            assert(symTable[d.Name] == d);
+            symTable[d.Name] = autoDispatch(d);
+        }
+    }
+}

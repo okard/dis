@@ -33,6 +33,9 @@ struct CCodeWriter
     //TODO Parameter for creation?
     //TODO Clean up splitting writer functions (Source/Header)
 
+    /// Source Directory
+    private string sourceDirectory;
+
     /// Package List
     private CPackage[] packages;
 
@@ -195,17 +198,38 @@ struct CCodeWriter
   
     //Options? BOTH, HEADER, SOURCE 
     
-    CPackage Package(string dir, string name)
+    CPackage Package(string name)
     {
-        assert(dir.isDir(), "Directory for writing source files isn't a directory");
+        assert(sourceDirectory.isDir(), "No valid directory for writing source files");
 
         auto pack = new CPackage();
         packages ~= pack;
 
         //TODO std.path does not work with dots in name
-        pack.Header = File(buildPath(dir, setExtension(name.replace(".", "_"),".h")), "w");
-        pack.Source = File(buildPath(dir, setExtension(name.replace(".", "_"),".c")), "w");
+        pack.Header = File(buildPath(this.SourceDirectory, setExtension(name.replace(".", "_"),".h")), "w");
+        pack.Source = File(buildPath(this.SourceDirectory, setExtension(name.replace(".", "_"),".c")), "w");
         return pack;
+    }
+
+
+    /**
+    * Set Source Directory
+    */
+    @property
+    void SourceDirectory(string dir)
+    {
+        assert(dir.isDir(), "Directory for writing source files isn't a directory");
+        sourceDirectory = dir;
+    }
+
+    
+    /**
+    * Get Source Directory
+    */
+    @property
+    string SourceDirectory()
+    {
+        return sourceDirectory;
     }
 
 

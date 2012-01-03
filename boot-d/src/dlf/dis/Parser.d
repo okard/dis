@@ -110,6 +110,8 @@ class Parser
         //open source file and set ignore tokens
         mLex.open(src);
         mLex.Ignore = [TokenType.Comment, TokenType.EOL];
+        //create a event hook for some kind of tokens for example to parse comment tokens
+        //the tokens does not go through regular getToken function of lexer?
         
         //go to first token
         next();
@@ -313,6 +315,8 @@ class Parser
                 if(mToken.Type != TokenType.RCBracket)
                     Error(mToken.Loc, "parseDef: expected ) after parameters"); 
             }
+            else
+                next;
         }
         
 
@@ -350,7 +354,7 @@ class Parser
                 return;
 
             default:
-                Error(mToken.Loc, "Invalid token for function definition");
+                Error(mToken.Loc, "Missing function body");
         }
     }
 
@@ -367,6 +371,7 @@ class Parser
         //- ...
 
         FunctionParameter param = FunctionParameter();
+        param.Type = OpaqueType.Instance;
         param.Index = 0;
 
         switch(mToken.Type)

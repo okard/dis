@@ -170,6 +170,8 @@ final class UnsolvedType : DataType
 {
     /// The datatype in string representation
     string TypeString;
+    //CompositeIdentifier
+
     //ctor
     this(string type){ TypeString = type; }
     /// to string

@@ -78,12 +78,13 @@ struct Any
 unittest
 {
     import std.stdio;
+    import std.exception;
 
     Any p = 5;
     int i = cast(int)p;
     assert(i == 5);
     
     p = "foo bar";
-    //i = cast(int)p; // error cant cast
+    assertThrown!Exception(cast(int)p);
     writeln("[TEST] Any Tests passed");
 }

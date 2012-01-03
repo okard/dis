@@ -33,13 +33,19 @@ mixin template DeclAnalysis()
     {
         //detect if template function or not
 
+        ushort pindex = 0;
         foreach(FunctionParameter p; fd.Parameter)
         {
-            log.Information("Param '%s' Type: '%s'", p.Name is null ? "<null>" : p.Name, p.Type);
-            //type should not been Unkown or unsolved
+            //assert(p.Type.Kind() != NodeKind.UnsolvedType);
+
+            p.Index = pindex++;
             //p.Type
             //p.Name
             //p.Vararg
+            if(IsOpaque(p.Type))
+                fd.IsTemplate = true;
+
+            log.Information("%d. Param '%s' Type: '%s'", p.Index, p.Name is null ? "<null>" : p.Name, p.Type);
         }
     }
 

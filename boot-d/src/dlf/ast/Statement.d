@@ -30,7 +30,8 @@ import dlf.ast.SymbolTable;
 */
 abstract class Statement : Node
 {
-    //index?
+    /// Index of Statement in containing construct
+    uint Index = 0; 
 } 
 
 /**

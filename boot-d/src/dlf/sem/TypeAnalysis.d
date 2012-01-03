@@ -18,15 +18,192 @@
 ******************************************************************************/
 module dlf.sem.TypeAnalysis;
 
-/*
+import dlf.ast.Type;
+import dlf.ast.SymbolTable;
+import dlf.ast.Visitor;
+import dlf.sem.Semantic;
+
+/**
+* Type Analysis
+*/
 class TypeAnalysis : Visitor
 {
+
+    /// Core Semantic Object
+    private Semantic sem;
+
+    /// Symbol Table
+    private SymbolTable symTable;
+
+    /**
+    * Constructor
+    */
+    this(Semantic sem)
+    {
+        this.sem = sem;
+    }
+    
+    ///////////////////////////////////////////////////////////////////////////
+    //Declarations
+
+    /// Package Declaration
+    void visit(PackageDeclaration pd)
+    {
+        mapDispatch(pd.Imports);
+        symDispatch(pd.SymTable);
+    }
+
+    /// Import Declaration
+    void visit(ImportDeclaration id)
+    {
+        //semantic check for available PackageDeclarations
+        if(id.Package !is null)
+        {
+            id.Package = autoDispatch(id.Package);
+        }
+        else
+        {
+            sem.Error("\tImport %s has not been solved", id.Name);
+            sem.Fatal("Can't proceed with unsolved import");
+        }
+    }
+
+    /// Function Declaration
+    void visit(FunctionDeclaration fd)
+    {
+        //Function Types
+
+        //Overrides
+        mapDispatch(fd.Overrides);
+
+
+        //bodies
+        autoDispatch(fd.Body);
+
+        //look for ExpressionStatement bodies
+    }
+
+    /// Variable Declaration
+    void visit(VariableDeclaration vd)
+    {
+        sem.Information("Semantic: VarDecl %s", vd.Name);
+
+        //Do Semantic Analysis for Initializer Expression if available
+        if(vd.Initializer !is null)
+            vd.Initializer = autoDispatch(vd.Initializer);
+
+        //Set Datatype for Variable
+        if(IsOpaque(vd.VarDataType))
+        {
+            if(vd.Initializer !is null)
+            {
+                vd.VarDataType = vd.Initializer.ReturnType;
+                sem.Information("\tResolved var type: %s", vd.VarDataType);
+            }
+        }
+
+        //DataType of Variable and Initializer must match
+        if(vd.Initializer !is null)
+        {   
+            //for class types generate constructor call?
+            //check for allowed conversions?
+            // implize_t]icit casts check
+            sem.Information("\tVarType: %s, InitType: %s", vd.VarDataType, vd.Initializer.ReturnType); 
+            //assert(var.VarDataType == var.Initializer.ReturnType);
+        }
+    }
+
+    //Value
+    //Constant
+    void visit(ClassDeclaration){}
+    void visit(TraitDeclaration){}
+    //Struct
+    //Alias
+    //Enum
+    //Variant
+
+    ///////////////////////////////////////////////////////////////////////////
+    //Statements
+
+    /// Block Statement
+    void visit(BlockStatement bs)
+    {
+        sem.Information("Semantic: BlockStmt");
+
+        symTable = bs.SymTable;
+
+        //analyze the declarations inside of blockstatement
+        //what is when parent is function, parameter variables
+        symDispatch(bs.SymTable);
+
+        //check each statement
+        mapDispatch(bs.Statements);
+    }
+
+    /// Expression Statement
+    void visit(ExpressionStatement es)
+    {
+        es.Expr = autoDispatch(es.Expr);
+    }
+
+    /// Return Statement
+    void visit(ReturnStatement)
+    {
+        //return type matches function type?
+    }
+
+    //For
+    //ForEach
+    //While
+
+    ///////////////////////////////////////////////////////////////////////////
+    //Expressions
+    void visit(LiteralExpression){}
+    
+    void visit(CallExpression)
+    {
+        //call expressions can generate function instances
+    }
+
+    void visit(IdentifierExpression){}
+    
+    void visit(AssignExpression){}
+    
+
+    /// Binary
+    void visit(BinaryExpression)
+    {
+        // analyze left, right
+
+        //some operator have boolean type
+        
+        //type matching
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    //Annotations
+
+    ///////////////////////////////////////////////////////////////////////////
+    //Types
+    
+
+    /// Mixin Dispatch Utils
+    mixin DispatchUtils!true;
+
+    /**
+    * Is opaque type
+    */
+    private static bool IsOpaque(DataType t)
+    {
+        return t == OpaqueType.Instance;
+    }
 }
-*/
+
 
 /**
 * Semantic Functions for Types
 */
+/*
 mixin template TypeAnalysis()
 {
 
@@ -36,7 +213,7 @@ mixin template TypeAnalysis()
     * Get the Declaration of a IdentifierExpression
     * e.g. "this.foo.bar.x" is a VariableDeclaration(int)
     */
-    private Declaration resolve(IdentifierExpression di)
+    /*private Declaration resolve(IdentifierExpression di)
     {
         assert(mSymTable is null, "Resolve IdentifierExpression: SymbolTable is null");
 
@@ -67,13 +244,7 @@ mixin template TypeAnalysis()
         
 
         return null;
-    }
+    }*/
 
-    /**
-    * Is opaque type
-    */
-    private static bool IsOpaque(DataType t)
-    {
-        return t == OpaqueType.Instance;
-    }
-}
+ 
+//}

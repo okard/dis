@@ -129,6 +129,7 @@ class FunctionDeclaration : Declaration
     /// Overrides of this function
     public FunctionDeclaration[] Overrides;
 
+    //required store functiontypes directly with bodies? InstanceBodies.keys
     /// The function types used for template funcs
     public FunctionType[] Instances;
     
