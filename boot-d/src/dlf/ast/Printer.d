@@ -175,16 +175,6 @@ class Printer : Visitor
     }
 
     /**
-    * Print Assign Expression
-    */
-    void visit(AssignExpression ae)
-    {
-        dispatch(ae.Target, this);
-        write(" = ");
-        dispatch(ae.Value, this);
-    }
-
-    /**
     * Print Binary Expression
     */
     void visit(BinaryExpression be)

@@ -102,10 +102,12 @@ final class CallExpression : Expression
 final class BinaryExpression : Expression
 {
     /// OP + - * / % ** ^ && ||
-    public enum Operator : ubyte { Add, Sub, Mul, Div, Mod, Power, And, Or, Xor }
+    public enum Operator : ubyte { Add, Sub, Mul, Div, Mod, Power, And, Or, Xor,
+                                   Assign }
 
     /// Operator
     Operator Op; 
+
     /// Left Expression
     Expression Left;
 
@@ -135,20 +137,14 @@ final class UnaryExpression : Expression
 }
 
 /**
-* Assign Expression
+* Lambda Expression
 */
-final class AssignExpression : Expression
+final class LambdaExpression : Expression
 {
-    //assign operator: =, +=, -=, *=, /=
+    //arguments
+    //body
 
-    /// The Target
-    Expression Target;
-
-    /// The Value assigning to target
-    Expression Value;
-
-    ///Mixin for Kind Declaration
-    mixin(IsKind("AssignExpression"));
+    //functionDeclaration -> anonymous function
 }
 
 /**

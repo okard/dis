@@ -331,7 +331,6 @@ class CCodeGen : ObjectGen, Visitor
     
     void visit(CallExpression fc){  }
     void visit(IdentifierExpression di){  }
-    void visit(AssignExpression ae){  }
     void visit(BinaryExpression be){  }
 
 

@@ -166,9 +166,7 @@ class TypeAnalysis : Visitor
     }
 
     void visit(IdentifierExpression){}
-    
-    void visit(AssignExpression){}
-    
+      
 
     /// Binary
     void visit(BinaryExpression)

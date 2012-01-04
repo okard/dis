@@ -52,11 +52,19 @@ struct CompositeIdentifier
     }
 
     /**
-    * To string
+    * To string with default seperator
     */
     string toString()
     {
         return join(idents, ".");
+    }
+
+    /**
+    * to string with given seperator
+    */
+    string toString(string sep)
+    {
+        return join(idents, sep);
     }
 
     /**
@@ -70,6 +78,7 @@ struct CompositeIdentifier
     /**
     * Count of elements
     */
+    @property
     auto length()
     {
         return idents.length;

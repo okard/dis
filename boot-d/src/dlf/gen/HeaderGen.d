@@ -70,7 +70,6 @@ class HeaderGen : Visitor
     void visit(LiteralExpression le){  }
     void visit(CallExpression ce){  }
     void visit(IdentifierExpression di){  }
-    void visit(AssignExpression ae){  }
     void visit(BinaryExpression be){  }
 
     /**

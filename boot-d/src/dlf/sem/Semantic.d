@@ -46,6 +46,7 @@ class Semantic : Visitor
     //Semantic Logger
     private LogSource log = Log("Semantic");
 
+    /// Type Resolver Run
     private scope TypeAnalysis typeResolver;
 
     /// Current Symbol Table
@@ -301,15 +302,6 @@ class Semantic : Visitor
         // auto decl = resolve(IdentifierExpression di)
         // -> assign(di, decl);
         // di.ReturnType = decl.Type
-    }
-
-    /**
-    * Semantic Pass for Assign Expression
-    */
-    void visit(AssignExpression ae)
-    {
-        //look for Target must be a declared value?
-        //look for type match
     }
     
     /**

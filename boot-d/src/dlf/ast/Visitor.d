@@ -58,7 +58,6 @@ public interface Visitor
     void visit(LiteralExpression);
     void visit(CallExpression);
     void visit(IdentifierExpression);
-    void visit(AssignExpression);
     void visit(BinaryExpression);
 
     //Annotations
@@ -117,8 +116,6 @@ Node dispatch(Node n, Visitor v, bool mod = false)
         //UnaryExpression
         //If
         //Switch
-        
-        case NodeKind.AssignExpression: v.visit(cast(AssignExpression)n); break;
 
         //Types
         //Builtin
@@ -142,7 +139,7 @@ Node dispatch(Node n, Visitor v, bool mod = false)
 
 
 /**
-* Dispatch template utils
+* Dispatch utils template 
 */
 mixin template DispatchUtils(bool modify)
 {

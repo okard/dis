@@ -100,10 +100,13 @@ struct FunctionParameter
 {
     /// Parameter Name
     string Name;
+    
     /// DataType of Parameter
     DataType Type;
+    
     /// Is it a Vararg Parameter
     bool Vararg = false;
+    
     /// Index No, Position of Parameter
     ushort Index;
 

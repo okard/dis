@@ -687,22 +687,13 @@ class Parser
             case TokenType.Semicolon:
                 return expr;
 
-            //Binary Assign Expression:
-            case TokenType.Assign:
-                auto a = new AssignExpression();
-                a.Target = expr;
-                expr.Parent = a;
-                next; next;
-                auto b = parseExpression();
-                a.Value = b;
-                b.Parent = a;
-                return a;
-
             //Binary Math Expressions
             case TokenType.Add:
             case TokenType.Sub:
             case TokenType.Mul:
             case TokenType.Div:
+            //Binary Assign Expression
+            case TokenType.Assign:
                 next;
                 auto be = new BinaryExpression();
                 be.Op = getBinaryOperator(mToken.Type);
@@ -728,10 +719,14 @@ class Parser
     {
         switch(type)
         {
+            //Math Expressions
             case TokenType.Add: return BinaryExpression.Operator.Add;
             case TokenType.Sub: return BinaryExpression.Operator.Sub;
             case TokenType.Mul: return BinaryExpression.Operator.Mul;
             case TokenType.Div: return BinaryExpression.Operator.Div;
+
+            //Assign Expressions
+            case TokenType.Assign: return BinaryExpression.Operator.Assign;
 
             default: 
                 throw new Exception("Not valid binary operator");
