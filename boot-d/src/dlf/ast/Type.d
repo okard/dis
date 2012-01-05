@@ -286,6 +286,9 @@ class StructType : DataType
 
     /// Struct Fields
     public DataType Fields[];
+
+
+    mixin(IsKind("StructType"));
 }
 
 /**
@@ -301,6 +304,8 @@ class ClassType : DataType
     //template arguments specifications
     //classname!(datatypes, ...)
     //trait types
+
+    mixin(IsKind("ClassType"));
 }
 
 /**
@@ -310,6 +315,9 @@ class TraitType : DataType
 {
     ///The original trait declaration
     TraitDeclaration TraitDecl;
+
+
+    mixin(IsKind("TraitType"));
 }
 
 

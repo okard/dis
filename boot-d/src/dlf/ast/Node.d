@@ -71,6 +71,7 @@ public enum NodeKind : uint
     OpaqueType,
     UnsolvedType,
     FunctionType,
+    StructType,
     ClassType,
     TraitType,
 
@@ -137,10 +138,11 @@ bool isExpression(Node n) { return n.Kind >= NodeKind.Expression && n.Kind < Nod
 /// Is DataType
 bool isDataType(Node n) { return n.Kind >= NodeKind.DataType && n.Kind < NodeKind.Annotation; }
 
-//TODO isAnnotation
+/// Is Annotation
+bool isAnnotation(Node n) { return n.Kind >= NodeKind.Annotation && n.Kind < NodeKind.Comment; }
 
-/// is Backend Node
+/// Is Backend Node
 bool isBackendNode(Node n) { return n is null ? false : n.Kind == NodeKind.Backend; }
 
-/// is Semantic Node
+/// Is Semantic Node
 bool isSemanticNode(Node n) { return n is null ? false : n.Kind == NodeKind.Semantic; }

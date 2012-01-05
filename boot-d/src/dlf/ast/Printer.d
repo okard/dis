@@ -151,7 +151,7 @@ class Printer : Visitor
     */
     void visit(CallExpression call) 
     {
-        writet("%s(", call.Function.toString());
+        writet("%s(", call.Func.toString());
 
         foreach(arg; call.Arguments)
         {
@@ -252,10 +252,10 @@ class Printer : Visitor
     */
     public static string toString(CallExpression fc)
     {
-        if(fc.Function is null) return "No function expression set";
+        if(fc.Func is null) return "No function expression set";
 
         //add arguments
-        return "Call: " ~ toString(fc.Function);
+        return "Call: " ~ toString(fc.Func);
     }
 
     /**

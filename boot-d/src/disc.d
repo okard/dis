@@ -196,7 +196,7 @@ class DisCompiler
         }
 
         auto parser = new Parser();
-        auto semantic = new Semantic();
+        auto semantic = new Semantic(ctx);
         auto cgen = new CCodeGen(ctx);
         auto hdrgen = new HeaderGen();
         auto docgen = new DocGen();
@@ -319,6 +319,7 @@ class DisCompiler
         //Look for Import Files
         foreach(imp; pack.Imports)
         {
+            log.Information("Handle import: %s", imp.ImportIdentifier.toString());
             //TODO logging
             // look into packages
             // look into other sources if one matches this package

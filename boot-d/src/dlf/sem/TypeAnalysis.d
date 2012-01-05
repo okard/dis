@@ -49,6 +49,7 @@ class TypeAnalysis : Visitor
     /// Package Declaration
     void visit(PackageDeclaration pd)
     {
+        symTable = pd.SymTable;
         mapDispatch(pd.Imports);
         symDispatch(pd.SymTable);
     }
@@ -115,8 +116,8 @@ class TypeAnalysis : Visitor
 
     //Value
     //Constant
-    void visit(ClassDeclaration){}
-    void visit(TraitDeclaration){}
+    void visit(ClassDeclaration cd){}
+    void visit(TraitDeclaration td){}
     //Struct
     //Alias
     //Enum
@@ -130,7 +131,9 @@ class TypeAnalysis : Visitor
     {
         sem.Information("Semantic: BlockStmt");
 
+        //symtable
         symTable = bs.SymTable;
+        scope(exit)symTable = symTable.pop();
 
         //analyze the declarations inside of blockstatement
         //what is when parent is function, parameter variables
@@ -138,6 +141,7 @@ class TypeAnalysis : Visitor
 
         //check each statement
         mapDispatch(bs.Statements);
+
     }
 
     /// Expression Statement
@@ -147,7 +151,7 @@ class TypeAnalysis : Visitor
     }
 
     /// Return Statement
-    void visit(ReturnStatement)
+    void visit(ReturnStatement rs)
     {
         //return type matches function type?
     }
@@ -158,22 +162,61 @@ class TypeAnalysis : Visitor
 
     ///////////////////////////////////////////////////////////////////////////
     //Expressions
-    void visit(LiteralExpression){}
-    
-    void visit(CallExpression)
+
+    /// Literal Expression
+    void visit(LiteralExpression le)
     {
+
+    }
+    
+    /// Call Expression
+    void visit(CallExpression ce)
+    {
+        ce.Func = autoDispatch(ce.Func);
+
+        //ce.Func == IdentifierExpression for example
+        assert(ce.Func.ReturnType.Kind == NodeKind.FunctionType, "Can't call a non function");
+
+        //target expression should be a function type
         //call expressions can generate function instances
     }
 
-    void visit(IdentifierExpression){}
+    /// Identifier Expression 
+    void visit(IdentifierExpression ie)
+    {
+        //detect target
+        //resolve ie.Decl 
+        //ie.ReturnType = targettype
+    }
       
 
-    /// Binary
-    void visit(BinaryExpression)
+    /// Binary Expression
+    void visit(BinaryExpression be)
     {
         // analyze left, right
+        be.Left = autoDispatch(be.Left);
+        be.Right = autoDispatch(be.Right);
+
+        
+        //final
+        switch(be.Op)
+        {
+
+        case BinaryExpression.Operator.Assign:
+            assert(be.Left.Kind == NodeKind.IdentifierExpression);
+            break;
+
+        default:
+        }
 
         //some operator have boolean type
+        //some operator works with numbers
+
+        //rewrite operator calls for classes?
+        //be.Left is class operator call
+
+        //assign expressions -> verify variable type
+        //IsVariable(be.Left) (IdentifierExpr)
         
         //type matching
     }

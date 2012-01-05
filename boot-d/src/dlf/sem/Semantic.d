@@ -22,6 +22,8 @@ import std.string;
 
 import dlf.basic.Log;
 
+import dlf.Context;
+
 import dlf.ast.Node;
 import dlf.ast.Visitor;
 import dlf.ast.Declaration;
@@ -52,6 +54,9 @@ class Semantic : Visitor
     /// Current Symbol Table
     private SymbolTable mSymTable;
 
+    /// Context
+    private Context context;
+
     //rules
     //semantic passes?
 
@@ -69,12 +74,11 @@ class Semantic : Visitor
     /**
     * Ctor
     */
-    public this()
+    public this(Context ctx)
     {
+        this.context = ctx;
         typeResolver = new TypeAnalysis(this);
     }
-
-
 
     /**
     * Run semantic passes 
@@ -253,6 +257,7 @@ class Semantic : Visitor
     */
     void visit(ReturnStatement rs)
     {
+        rs.Expr = autoDispatch(rs.Expr);
         //check rs.Expr returntype must match parent return type
     }
 
@@ -262,14 +267,14 @@ class Semantic : Visitor
     void visit(CallExpression call)
     {
         //TODO class Function Calls
-        Information("Semantic: FuncCall %s", call.Function.toString());
+        Information("Semantic: FuncCall %s", call.Func.toString());
 
         //Create Function instances here
         
         //check for function
         //call.mFunction.NType() == NodeType.DotIdentifier
         //Look for parameter type matching
-        auto fexpr = call.Function;
+        auto fexpr = call.Func;
         
         //Expression to Function
 
@@ -400,6 +405,17 @@ class Semantic : Visitor
     ref LogEvent OnLog()
     {
         return log.OnLog;
+    }
+
+    
+    /**
+    * Get the context
+    */
+    @property
+    package
+    ref Context SemContext()
+    {
+        return context;
     }
     
     /**

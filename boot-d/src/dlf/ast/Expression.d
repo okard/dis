@@ -66,6 +66,9 @@ final class IdentifierExpression : Expression
     /// Alias This the Composite Identifier
     alias Identifier this;
 
+    /// Target Declaration
+    public Declaration Decl;
+
     /**
     * To String
     */
@@ -84,7 +87,7 @@ final class IdentifierExpression : Expression
 final class CallExpression : Expression
 {
     ///Expression to retrieve a function type
-    Expression Function;
+    Expression Func;
 
     /// Arguments for function call
     Expression[] Arguments;

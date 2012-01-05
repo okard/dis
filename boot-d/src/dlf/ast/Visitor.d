@@ -148,6 +148,8 @@ mixin template DispatchUtils(bool modify)
     */
     private T autoDispatch(T)(T e)
     {
+        if(e is null) return e;
+
         return cast(T)dispatch(e, this, modify);
     }
 

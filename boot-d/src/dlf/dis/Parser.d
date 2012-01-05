@@ -398,7 +398,7 @@ class Parser
             break;
 
         case TokenType.Vararg:
-            next;
+            //next;
             param.Vararg = true;
             break;
 
@@ -655,7 +655,7 @@ class Parser
 
             //Create Function Call
             auto call = new CallExpression();
-            call.Function = expr;
+            call.Func = expr;
 
             while(peek(1) != TokenType.RCBracket)
             {

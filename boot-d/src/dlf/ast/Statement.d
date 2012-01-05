@@ -43,13 +43,13 @@ abstract class Statement : Node
 */
 final class BlockStatement : Statement
 {
-    ///Symbol Table
+    /// Symbol Table
     public SymbolTable SymTable;
 
-    ///Statements
+    /// Statements
     public Statement[] Statements;
 
-    ///Mixin for Kind Declaration
+    /// Mixin for Kind Declaration
     mixin(IsKind("BlockStatement"));
 }
 
@@ -69,7 +69,7 @@ final class ExpressionStatement : Statement
         expr.Parent = this;
     }
 
-    ///Mixin for Kind Declaration
+    /// Mixin for Kind Declaration
     mixin(IsKind("ExpressionStatement"));
 }
 
@@ -81,13 +81,16 @@ final class ReturnStatement : Statement
     /// The Return Expression
     public Expression Expr;
 
+    /// Function Declaration
+    public FunctionDeclaration Func;
+
     /// Create new Return Statement
     public this(Expression expr)
     {
         Expr = expr;
     }
 
-    ///Mixin for Kind Declaration
+    /// Mixin for Kind Declaration
     mixin(IsKind("ReturnStatement"));
 }
 
@@ -108,7 +111,7 @@ final class ForStatement : Statement
     /// The Body Statement
     public Statement Body;
 
-    ///Mixin for Kind Declaration
+    /// Mixin for Kind Declaration
     mixin(IsKind("ForStatement"));
 }
 
@@ -121,10 +124,10 @@ final class ForEachStatement : Statement
 
     public Expression List;
 
-    ///Body Statement
+    /// Body Statement
     public Statement Body;
 
-    ///Mixin for Kind Declaration
+    /// Mixin for Kind Declaration
     mixin(IsKind("ForEachStatement"));
 }
 
@@ -143,6 +146,23 @@ final class WhileStatement : Statement
     /// Body Statement
     public Statement Body;
 
-    ///Mixin for Kind Declaration
+    /// Mixin for Kind Declaration
     mixin(IsKind("WhileStatement"));
+}
+
+
+/**
+* 'continue' Statement
+*/
+final class ContinueStatement : Statement
+{
+    //target statement
+}
+
+/**
+* 'break' Statement
+*/
+final class BreakStatement : Statement
+{
+    //target statement
 }
