@@ -202,6 +202,10 @@ class TypeAnalysis : Visitor
         switch(be.Op)
         {
 
+        //Add, Sub, Mul, Div, Mod, Power, And, Or, Xor,
+        //LOr, LAnd, 
+        //GT, GTE, LT, LTE
+
         case BinaryExpression.Operator.Assign:
             assert(be.Left.Kind == NodeKind.IdentifierExpression);
             break;
@@ -214,6 +218,8 @@ class TypeAnalysis : Visitor
 
         //rewrite operator calls for classes?
         //be.Left is class operator call
+        //resolveDecl(be.Left) 
+        //return new CallExpression(); Expr = new IdentifierExpression(decl.name)
 
         //assign expressions -> verify variable type
         //IsVariable(be.Left) (IdentifierExpr)

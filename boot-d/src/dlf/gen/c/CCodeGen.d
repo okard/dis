@@ -64,7 +64,8 @@ class CCodeGen : ObjectGen, Visitor
     private string srcDir;
 
     //default header resource
-    //private static const string DisCGenHeader = import("dish.h");
+    private static const string DisCGenHeaderName = "dis.h";
+    private static const string DisCGenHeader = import(DisCGenHeaderName);
 
     /**
     * Ctor
@@ -116,6 +117,9 @@ class CCodeGen : ObjectGen, Visitor
         //Package already compiled
         if(pd.CodeGen !is null)
             return;
+
+        //Write DIS Header
+        std.file.write(buildPath(srcDir, DisCGenHeaderName), DisCGenHeader); 
 
         //check if target header & source file exist
         //
@@ -174,6 +178,8 @@ class CCodeGen : ObjectGen, Visitor
         //extend(pd, new CCNode(filename));
         p.start(pd.Name.toUpper.replace(".", "_"));
 
+        p.include(DisCGenHeaderName);
+
         //include default header dish.h ???
         //Imports
         mapDispatch(pd.Imports);
@@ -200,22 +206,20 @@ class CCodeGen : ObjectGen, Visitor
     */
     void visit(FunctionDeclaration fd)
     {
-        //two steps
-
-        //Overrides
-        mapDispatch(fd.Overrides);
-
+        //generate for each instantiation of (tpl) function
         foreach(FunctionType ft; fd.Instances)
         {
             //Generate code for each function instance
             gen(ft);
-
-            //if dis main is generated
-            //add wrapper c main
-          
+            //fd.Body[ft]
         }
 
+        //generate overrides functions
+        //unique name through mangleing
+        mapDispatch(fd.Overrides);
+
         //generate c main wrapper
+        //main can't be a template so generate c main here
         if(fd.Name == "main")
             genCMain();
     }
@@ -226,6 +230,8 @@ class CCodeGen : ObjectGen, Visitor
     private void gen(FunctionType ft)
     {
         auto funcDecl = to!FunctionDeclaration(ft.FuncDecl);
+
+        //write type information for runtime?
         
         //name for function type
         string name = funcDecl.CallingConv == CallingConvention.C ?
@@ -298,7 +304,10 @@ class CCodeGen : ObjectGen, Visitor
     void visit(ClassDeclaration cd)
     {
         //add to type array?
-        //render for each class instance
+
+        //type information for runtime?
+
+        //generate for each class instance
     }
     
     void visit(TraitDeclaration td)
@@ -320,7 +329,11 @@ class CCodeGen : ObjectGen, Visitor
         autoDispatch(es.Expr);
     }
 
-    void visit(ReturnStatement rt){  }
+    void visit(ReturnStatement rt)
+    {  
+        //save expression result
+        //return it
+    }
 
     //Expressions
     void visit(LiteralExpression le)
@@ -329,8 +342,16 @@ class CCodeGen : ObjectGen, Visitor
     }
     
     
-    void visit(CallExpression fc){  }
-    void visit(IdentifierExpression di){  }
+    void visit(CallExpression fc)
+    {  
+    }
+
+    void visit(IdentifierExpression di)
+    {
+        //TODO how this?
+        // this->foo->bar when reference
+        // this.foo.bar when value type
+    }
     void visit(BinaryExpression be){  }
 
 
