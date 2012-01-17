@@ -83,25 +83,27 @@ class CCodeGen : ObjectGen, Visitor
         writer.SourceDirectory = srcDir;
 
         // Primary/Builtin Types
-        VoidType.Instance.CodeGen = ctype("void");
-        BoolType.Instance.CodeGen = ctype("bool");
-        ByteType.Instance.CodeGen = ctype("char");
-        UByteType.Instance.CodeGen = ctype("unsigned char");
-        ShortType.Instance.CodeGen = ctype("short");
-        UShortType.Instance.CodeGen = ctype("unsigned short");
-        IntType.Instance.CodeGen = ctype("int");
-        UIntType.Instance.CodeGen = ctype("unsigned int");
-        LongType.Instance.CodeGen = ctype("long");
-        ULongType.Instance.CodeGen = ctype("unsigned long");
-        FloatType.Instance.CodeGen = ctype("float");
-        DoubleType.Instance.CodeGen = ctype("double");
+        VoidType.Instance.CodeGen = ctype("dis_void");
+        BoolType.Instance.CodeGen = ctype("dis_bool");
+        ByteType.Instance.CodeGen = ctype("dis_byte");
+        UByteType.Instance.CodeGen = ctype("dis_ubyte");
+        ShortType.Instance.CodeGen = ctype("dis_short");
+        UShortType.Instance.CodeGen = ctype("dis_ushort");
+        IntType.Instance.CodeGen = ctype("dis_int");
+        UIntType.Instance.CodeGen = ctype("dis_uint");
+        LongType.Instance.CodeGen = ctype("dis_long");
+        ULongType.Instance.CodeGen = ctype("dis_uint");
+        FloatType.Instance.CodeGen = ctype("dis_float");
+        DoubleType.Instance.CodeGen = ctype("dis_double");
 
+        VoidType.PtrInstance.CodeGen = ctype("dis_ptr");
         
-        VoidType.PtrInstance.CodeGen = ctype("void*");
-        
+
+        //string_literal = bytearray
+        //string_type = runtime class
+
         //special case utf8 -> 4 byte chars?
         //types[CharType.Instance] = ;
-       
         //string runtime linking 
         //add it ever, failes if used and not linked to rt
         //types[StringType.Instance] = ctype("_Disrt.");
@@ -118,12 +120,9 @@ class CCodeGen : ObjectGen, Visitor
         if(pd.CodeGen !is null)
             return;
 
-        //Write DIS Header
+        //Write Dis Helper Header to src dir
         std.file.write(buildPath(srcDir, DisCGenHeaderName), DisCGenHeader); 
 
-        //check if target header & source file exist
-        //
-        
         //compile imports?
         //compile other packages first or look if they already compile
         //pd.Imports.Package
@@ -134,22 +133,15 @@ class CCodeGen : ObjectGen, Visitor
             //already compiled
             if(id.Package.CodeGen !is null)
                 continue;
-            
-            // CodeGen for Import
-            p = writer.Package(id.Package.Name);
+
+            //first compile imports to get right include names
             autoDispatch(id.Package);
+
             //detect if one import has recompiled then this source should be recompiled too?
             //Imports to compile before? 
             //so assert when its not yet compiled?
         }
 
-        //CCNode Extension for pd
-        //check modification date if exists
-        
-        //Create C Package
-        p = writer.Package(pd.Name);
-        pd.CodeGen = cheader(p.Header.name);
-        
         //start creating definitions
         autoDispatch(pd);
 
@@ -175,6 +167,17 @@ class CCodeGen : ObjectGen, Visitor
     */
     void visit(PackageDeclaration pd)
     { 
+        //Package already compiled
+        if(pd.CodeGen !is null)
+            return;
+
+        //check if target header & source file exist
+        //and check modify date when its not newer than already c code is compiled
+
+        //Create C Package
+        p = writer.Package(pd.Name);
+        pd.CodeGen = cheader(p.Header.name);
+
         //extend(pd, new CCNode(filename));
         p.start(pd.Name.toUpper.replace(".", "_"));
 
@@ -299,6 +302,9 @@ class CCodeGen : ObjectGen, Visitor
     void visit(VariableDeclaration vd)
     {
         //value vs reference type
+
+        //initializer maybe not working here directly (globalvariables?)
+        //p.variable(type, name, initializer);
     }
 
     void visit(ClassDeclaration cd)
@@ -342,8 +348,11 @@ class CCodeGen : ObjectGen, Visitor
     }
     
     
-    void visit(CallExpression fc)
+    void visit(CallExpression ce)
     {  
+        //retrieve functionname
+        //arguments maybe need to be prepared
+        //p.call(name, [args]);
     }
 
     void visit(IdentifierExpression di)
@@ -352,7 +361,13 @@ class CCodeGen : ObjectGen, Visitor
         // this->foo->bar when reference
         // this.foo.bar when value type
     }
-    void visit(BinaryExpression be){  }
+
+    void visit(BinaryExpression be)
+    {  
+        //write be.Left
+        //write op
+        //write be.Right
+    }
 
 
     /// Mixin Dispatch Utils
@@ -430,6 +445,8 @@ class CCodeGen : ObjectGen, Visitor
         //is ptr type?
         //declaration
         //definitions
+
+        //objfile
 
         //Union
 

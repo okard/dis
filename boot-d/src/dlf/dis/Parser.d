@@ -174,24 +174,32 @@ class Parser
             { 
             //import
             case TokenType.KwImport: 
+                pkg.Imports ~= parseImport();
                 break;
             //function
             case TokenType.KwDef:
-                    //TODO give symbol table as scope?
-                    parseDef(pkg.SymTable); 
+                //TODO give symbol table as scope?
+                parseDef(pkg.SymTable); 
                 break;
             //struct
             case TokenType.KwStruct:
+                 Error(mToken.Loc, "Struct parsing not yet supported");
                 break;
             //class
+            case TokenType.KwObj:
             case TokenType.KwClass: 
+                Error(mToken.Loc, "Class parsing not yet supported");
                 break;
   
             //VarDecl
             //ValDecl
             //TraitDecl
+
+            case TokenType.EOF:
+                break;
             default:
-                //Error(mToken.Loc, "Not valid package element");
+                log.Information("Not valid token in package declaration: %s", mToken.toString());
+                Error(mToken.Loc, "Not valid package element");
             }
         }
 
@@ -285,6 +293,7 @@ class Parser
         //get name
         func.Name = mToken.Value;
 
+        //move to upper code and change this to return a declaration
         //append to function table
         symtbl.assign(func, (FunctionDeclaration existing, FunctionDeclaration newOne)
         {

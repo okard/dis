@@ -28,4 +28,6 @@ typedef void* dis_ptr;
 //for C11 add static_assert for sizeof
 //e.g. static_assert(sizeof(void *) == 4, "64-bit code generation is not supported.");
 
+//map runtime types
+
 #endif

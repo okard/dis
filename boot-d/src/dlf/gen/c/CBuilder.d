@@ -46,7 +46,7 @@ struct CBuilder
     private static string[] objfiles;
 
     /**
-    * Build Source Files
+    * Compile source files to object files
     */ 
     void compile(Context ctx, string[] sources)
     {
@@ -56,21 +56,29 @@ struct CBuilder
         //TODO this can be threaded
         foreach(string src; sources)
         {
-            string[] args;
-            args ~= compilerExec;
-            args ~= compilerFlags;
-            if(ctx.Platform != TargetPlatform.Windows)
-                args ~= "-fPIC";
-            string objfile = buildPath(ctx.Backend.ObjDir, setExtension(baseName(src), ".o"));
-            args ~= ["-o", objfile] ;
-            args ~= src;
-
-            //d1 tango has process handling, d2 phobos has nothing .....
-
-            exec(args);
-
-            objfiles ~= objfile;
+            objfiles ~= compile(ctx, src);
         }  
+    }
+
+    /**
+    * Compile a single source file to object
+    */ 
+    string compile(Context ctx, string source)
+    {
+        string[] args;
+        args ~= compilerExec;
+        args ~= compilerFlags;
+        if(ctx.Platform != TargetPlatform.Windows)
+            args ~= "-fPIC";
+        string objfile = buildPath(ctx.Backend.ObjDir, setExtension(baseName(source), ".o"));
+        args ~= ["-o", objfile] ;
+        args ~= source;
+
+        //d1 tango has process handling, d2 phobos has nothing .....
+        //TODO nice process handling
+        exec(args);
+
+        return objfile;
     }
 
     /**

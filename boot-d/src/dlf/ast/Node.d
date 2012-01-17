@@ -41,6 +41,7 @@ public enum NodeKind : uint
     ValueDeclaration,
     ConstantDeclaration,
     ClassDeclaration,
+    StructDeclaration,
     TraitDeclaration,
     EnumDeclaration,
     AliasDeclaration,

@@ -214,7 +214,7 @@ final class StructDeclaration : Declaration
     public CallingConvention CallingConv;
 
     /// Mixin for Kind Declaration
-    mixin(IsKind("ClassDeclaration"));
+    mixin(IsKind("StructDeclaration"));
 }
 
 

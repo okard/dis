@@ -172,10 +172,11 @@ class TypeAnalysis : Visitor
     /// Call Expression
     void visit(CallExpression ce)
     {
+        //resolve identifier
         ce.Func = autoDispatch(ce.Func);
 
         //ce.Func == IdentifierExpression for example
-        assert(ce.Func.ReturnType.Kind == NodeKind.FunctionType, "Can't call a non function");
+        //assert(ce.Func.ReturnType.Kind == NodeKind.FunctionType, "Can't call a non function");
 
         //target expression should be a function type
         //call expressions can generate function instances
