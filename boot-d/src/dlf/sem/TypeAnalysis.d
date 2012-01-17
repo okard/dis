@@ -186,6 +186,9 @@ class TypeAnalysis : Visitor
             //here a function instance from template can be created
         }
 
+        //lambda
+        //delegate
+
 
         //ce.Func == IdentifierExpression for example
         //assert(ce.Func.ReturnType.Kind == NodeKind.FunctionType, "Can't call a non function");
@@ -206,6 +209,7 @@ class TypeAnalysis : Visitor
         //ie.length
         //ie.first //this
 
+        //go up
         Declaration decl;
 
         if(symTable.contains(ie.first))
@@ -228,7 +232,7 @@ class TypeAnalysis : Visitor
             while(sym !is null);
         }
             
-        ie.Decl = decl;
+        
 
         //go down
         if(ie.length > 1)
@@ -239,6 +243,8 @@ class TypeAnalysis : Visitor
 
             //ie.Decl.getSymbolTable
         }
+        else
+            ie.Decl = decl;
 
         //return type?
         //go up until identifier is complete
@@ -267,7 +273,7 @@ class TypeAnalysis : Visitor
         //LOr, LAnd, 
         //GT, GTE, LT, LTE
 
-        case BinaryExpression.Operator.Assign:
+        case BinaryOperator.Assign:
             assert(be.Left.Kind == NodeKind.IdentifierExpression);
             break;
 

@@ -724,18 +724,18 @@ class Parser
     /**
     * Get binary operator for token type
     */
-    private BinaryExpression.Operator getBinaryOperator(TokenType type)
+    private BinaryOperator getBinaryOperator(TokenType type)
     {
         switch(type)
         {
             //Math Expressions
-            case TokenType.Add: return BinaryExpression.Operator.Add;
-            case TokenType.Sub: return BinaryExpression.Operator.Sub;
-            case TokenType.Mul: return BinaryExpression.Operator.Mul;
-            case TokenType.Div: return BinaryExpression.Operator.Div;
+            case TokenType.Add: return BinaryOperator.Add;
+            case TokenType.Sub: return BinaryOperator.Sub;
+            case TokenType.Mul: return BinaryOperator.Mul;
+            case TokenType.Div: return BinaryOperator.Div;
 
             //Assign Expressions
-            case TokenType.Assign: return BinaryExpression.Operator.Assign;
+            case TokenType.Assign: return BinaryOperator.Assign;
 
             default: 
                 throw new Exception("Not valid binary operator");

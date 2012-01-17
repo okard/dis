@@ -100,16 +100,22 @@ final class CallExpression : Expression
 
 
 /**
+* Binary Operator
+*  + - * / % ** ^ && ||
+*/
+public enum BinaryOperator : ubyte 
+{ 
+    Add, Sub, Mul, Div, Mod, Power, And, Or, Xor,
+    Assign 
+}
+
+/**
 * Binary Expression
 */
 final class BinaryExpression : Expression
 {
-    /// OP + - * / % ** ^ && ||
-    public enum Operator : ubyte { Add, Sub, Mul, Div, Mod, Power, And, Or, Xor,
-                                   Assign }
-
     /// Operator
-    Operator Op; 
+    BinaryOperator Op; 
 
     /// Left Expression
     Expression Left;
@@ -122,15 +128,20 @@ final class BinaryExpression : Expression
 }
 
 /**
+* Unary Operator
+*/
+public enum UnaryOperator : ubyte 
+{ 
+    Not, Neg, PostIncr, PreIncr, PostDecr, PreDecr 
+}
+
+/**
 * Unary Expression
 */
 final class UnaryExpression : Expression
 {
-    /// Valid Operators
-    public enum Operator : ubyte { Not }
-
     /// The Operator
-    Operator Op;
+    UnaryOperator Op;
 
     /// The Expression
     Expression Expr;
