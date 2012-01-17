@@ -22,4 +22,8 @@
 * tests/
     
     Language tests
+
+## Contact
+
+    Jabber: okard on jabber.ccc.de
     
