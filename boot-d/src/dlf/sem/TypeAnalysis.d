@@ -175,6 +175,18 @@ class TypeAnalysis : Visitor
         //resolve identifier
         ce.Func = autoDispatch(ce.Func);
 
+
+        if(ce.Func.Kind == NodeKind.IdentifierExpression)
+        {
+            auto ie = cast(IdentifierExpression)ce.Func;
+            
+            //if ie.Decl == FunctionDeclaration
+            //
+            //decl == functions its required to detect right instance for call
+            //here a function instance from template can be created
+        }
+
+
         //ce.Func == IdentifierExpression for example
         //assert(ce.Func.ReturnType.Kind == NodeKind.FunctionType, "Can't call a non function");
 
@@ -185,7 +197,55 @@ class TypeAnalysis : Visitor
     /// Identifier Expression 
     void visit(IdentifierExpression ie)
     {
-        //detect target
+        sem.Information("IdentifierExpr: %s", ie.toString());
+
+        //find first start entry
+
+        //starts with this -> first class
+
+        //ie.length
+        //ie.first //this
+
+        Declaration decl;
+
+        if(symTable.contains(ie.first))
+        {
+            decl = symTable[ie.first];
+    
+        }
+        else
+        {
+            auto sym = symTable;
+            do
+            {
+                if(sym.contains(ie.first))
+                {
+                    decl = sym[ie.first];
+                    break;
+                }
+                sym = sym.pop();
+            }
+            while(sym !is null);
+        }
+            
+        ie.Decl = decl;
+
+        //go down
+        if(ie.length > 1)
+        {
+            //go down to last element 
+            //ie.get(1), ie.get(2)
+            //strict symbol matching
+
+            //ie.Decl.getSymbolTable
+        }
+
+        //return type?
+        //go up until identifier is complete
+
+        sem.Information("Found %s", ie.Decl.Name);
+
+       
         //resolve ie.Decl 
         //ie.ReturnType = targettype
     }

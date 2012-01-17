@@ -29,7 +29,7 @@ final class SymbolTable
 {
     /// Prev Symbol Table
     private SymbolTable mPrev;
-    
+
     /// Owner Node of SymbolTable
     public Node Owner;
     
