@@ -492,7 +492,9 @@ class Parser
             case TokenType.Assign:
                 next(); //token is now "="-Assign
                 next(); //now its start of expression
-                var.Initializer = parseExpression();
+                auto expr = parseExpression();
+                expr.Parent = var;
+                var.Initializer = expr;
                 break;
             case TokenType.Semicolon:
                 break;
@@ -619,6 +621,8 @@ class Parser
                 case TokenType.KwLet:
                 case TokenType.KwDef: 
                 case TokenType.KwClass:
+                case TokenType.KwObj:
+                    Error(mToken.Loc, "Not yet implemented");
                     continue;
 
                 default:
@@ -856,6 +860,7 @@ class Parser
         checkType(TokenType.Identifier);
 
         auto di = new IdentifierExpression();
+        di.Loc = mToken.Loc;
         di.append(mToken.Value);
 
         //expect dot
@@ -897,7 +902,9 @@ class Parser
         switch(mToken.Value)
         {
             case "unittest":
-                return new UnitTestAnnotation();
+                auto uta = new UnitTestAnnotation();
+                uta.Loc = mToken.Loc;
+                return uta; 
             default:
                 Error(mToken.Loc, "Invalid annotation");
         }
