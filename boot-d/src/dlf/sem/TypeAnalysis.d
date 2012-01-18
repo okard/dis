@@ -241,6 +241,10 @@ class TypeAnalysis : Visitor
             //ie.get(1), ie.get(2)
             //strict symbol matching
 
+            //AstNodes with SymbolTable
+            //Decl: Package, Struct, Class, Trait, Functions 
+            //Stmt: BlockStatement
+
             //ie.Decl.getSymbolTable
         }
         else

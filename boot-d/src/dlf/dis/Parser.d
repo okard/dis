@@ -173,22 +173,54 @@ class Parser
             switch(mToken.Type)
             { 
             //import
-            case TokenType.KwImport: 
-                pkg.Imports ~= parseImport();
+            case TokenType.KwImport:
+                ImportDeclaration imp = parseImport();
+                imp.Parent = pkg;
+                pkg.Imports ~= imp;
                 break;
             //function
             case TokenType.KwDef:
                 //TODO give symbol table as scope?
-                parseDef(pkg.SymTable); 
+                FunctionDeclaration dcl = parseDef(); 
+                dcl.Parent = pkg;
+
+                pkg.SymTable.assign(dcl, (FunctionDeclaration existing, FunctionDeclaration newOne)
+                {
+                    debug log.Information("Add override to function %s", existing.Name);
+                    existing.Overrides ~= newOne;
+                });
+                //assign here
                 break;
             //struct
             case TokenType.KwStruct:
-                 Error(mToken.Loc, "Struct parsing not yet supported");
+                Declaration dcl = parseStruct();
+                dcl.Parent = pkg;
+
+                pkg.SymTable.assign(dcl, (Declaration existing, Declaration newOne)
+                {
+                    Error(newOne.Loc, "Can't override structures");
+                });
                 break;
             //class
             case TokenType.KwObj:
-            case TokenType.KwClass: 
-                Error(mToken.Loc, "Class parsing not yet supported");
+                Declaration dcl = parseClass();
+                dcl.Parent = pkg;
+                
+                pkg.SymTable.assign(dcl, (Declaration existing, Declaration newOne)
+                {
+                    Error(newOne.Loc, "Can't override class names, please use templated classes instead");
+                });
+                break;
+
+            case TokenType.KwType:
+                Declaration dcl = parseType();
+                dcl.Parent = pkg;
+
+                pkg.SymTable.assign(dcl, (Declaration existing, Declaration newOne)
+                {
+                    Error(newOne.Loc, "Can't override type declarations");
+                });
+                
                 break;
   
             //VarDecl
@@ -247,7 +279,7 @@ class Parser
     private ClassDeclaration parseClass()
     {
         //must be class class
-        checkType(TokenType.KwClass);
+        checkType(TokenType.KwObj);
 
         // class(kw param) identifier(template args) : inherits {
 
@@ -258,7 +290,7 @@ class Parser
     /**
     * Parse Method Definitions
     */
-    private void parseDef(SymbolTable symtbl)
+    private FunctionDeclaration parseDef()
     {
         //top level node must be PackageDeclaration,(ClassDeclaration) 
         //def{(Calling Convention)} Identifier(Parameter) ReturnType
@@ -292,13 +324,6 @@ class Parser
 
         //get name
         func.Name = mToken.Value;
-
-        //move to upper code and change this to return a declaration
-        //append to function table
-        symtbl.assign(func, (FunctionDeclaration existing, FunctionDeclaration newOne)
-        {
-            existing.Overrides ~= newOne;
-        });
 
         //optional: Parse Parameter
         if(peek(1) == TokenType.ROBracket)
@@ -340,7 +365,7 @@ class Parser
         if(peek(1) == TokenType.Semicolon)
         {
             next();
-            return;
+            return func;
         }
 
         //after declaration followed  { or = or ; or is end of declaration
@@ -354,17 +379,20 @@ class Parser
                 auto b = parseBlock();
                 b.Parent = func;
                 func.Body = b;
-                return;
+                return func;
 
             // = <statement or expression>
             case TokenType.Assign:
                 next();
                 func.Body = parseStatement();
-                return;
+                return func;
 
             default:
                 Error(mToken.Loc, "Missing function body");
         }
+
+        //never got here?
+        return null;
     }
 
     /**
@@ -458,6 +486,34 @@ class Parser
         accept(TokenType.Semicolon, "Missing semicolon after variable declaration");
 
         return var;
+    }
+
+
+    /**
+    * Parse a structure
+    */
+    private Declaration parseStruct()
+    {
+        //must be struct 
+        checkType(TokenType.KwStruct);
+        Error(mToken.Loc, "Struct Parsing not yet supported");
+        return null;
+    }   
+
+    /**
+    * Parse a typedef
+    */
+    private Declaration parseType()
+    {
+        //must be struct 
+        checkType(TokenType.KwType);
+
+        //alias
+        //enum
+        //variant
+
+        Error(mToken.Loc, "Type Parsing not yet supported");
+        return null;
     }
 
     //=========================================================================

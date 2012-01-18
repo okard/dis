@@ -86,6 +86,14 @@ class Semantic : Visitor
     */
     public Node run(Node astNode)
     {
+        //prepare runtime imports for package types
+        if(astNode.Kind == NodeKind.PackageDeclaration)
+        {
+            //setDefaultImports(astNode);
+        }
+        
+    
+
         //resolve types
         dispatch(astNode, typeResolver);
     

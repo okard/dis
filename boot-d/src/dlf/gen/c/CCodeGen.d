@@ -98,8 +98,7 @@ class CCodeGen : ObjectGen, Visitor
 
         VoidType.PtrInstance.CodeGen = ctype("dis_ptr");
         
-
-        //string_literal = bytearray
+        //string_literal = Byte8.ArrayType
         //string_type = runtime class
 
         //special case utf8 -> 4 byte chars?
