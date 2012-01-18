@@ -223,9 +223,20 @@ class Parser
                 
                 break;
   
-            //VarDecl
-            //ValDecl
-            //TraitDecl
+            //Variables
+            case TokenType.KwVar:
+                Error(mToken.Loc, "Variable in Package not yet implemented");
+                break;
+
+            //Value Type (immutable)
+            case TokenType.KwLet:
+                Error(mToken.Loc, "Let in Package not yet implemented");
+                break;
+
+            //Trait Type
+            case TokenType.KwTrait:
+                Error(mToken.Loc, "Trait in Package not yet implemented");
+                break;
 
             case TokenType.EOF:
                 break;
@@ -374,7 +385,7 @@ class Parser
             //block {}
             case TokenType.COBracket:
                 next();
-                debug writefln("function block");
+                debug log.Information("function block");
                 //parse the block
                 auto b = parseBlock();
                 b.Parent = func;
@@ -384,7 +395,14 @@ class Parser
             // = <statement or expression>
             case TokenType.Assign:
                 next();
-                func.Body = parseStatement();
+                auto bdy = new BlockStatement();
+                bdy.Parent = func;
+                Statement stmt = parseStatement();
+                if(stmt.Kind == NodeKind.ExpressionStatement)
+                    stmt = new ReturnStatement(to!ExpressionStatement(stmt).Expr);
+                stmt.Parent = bdy;
+                bdy.Statements ~= stmt;
+                func.Body = bdy;
                 return func;
 
             default:
@@ -492,11 +510,17 @@ class Parser
     /**
     * Parse a structure
     */
-    private Declaration parseStruct()
+    private StructDeclaration parseStruct()
     {
         //must be struct 
         checkType(TokenType.KwStruct);
         Error(mToken.Loc, "Struct Parsing not yet supported");
+
+        //struct name : inherits { fields, methods }
+        //field -> name : type;
+        //method -> def ...
+
+        
         return null;
     }   
 
@@ -507,6 +531,11 @@ class Parser
     {
         //must be struct 
         checkType(TokenType.KwType);
+
+        //type name identifier 
+        //type name = 
+            //type name = identifier
+            //type name = {
 
         //alias
         //enum
@@ -615,7 +644,7 @@ class Parser
 
     /**
     * Parse a For Loop
-    * For or Foreach
+    * ForStatement or ForeachStatement
     */
     private Statement parseFor()
     {

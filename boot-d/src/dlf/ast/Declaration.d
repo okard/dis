@@ -127,7 +127,7 @@ class FunctionDeclaration : Declaration
     public DataType ReturnType;
 
     /// Has a Body (BlockStatement, Statement, Expression)
-    public Statement Body;
+    public BlockStatement Body;
 
     /// Overrides of this function
     public FunctionDeclaration[] Overrides;
