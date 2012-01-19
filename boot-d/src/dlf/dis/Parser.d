@@ -516,14 +516,63 @@ class Parser
     {
         //must be struct 
         checkType(TokenType.KwStruct);
-        Error(mToken.Loc, "Struct Parsing not yet supported");
 
-        //struct name : inherits { fields, methods }
-        //field -> name : type;
-        //method -> def ...
+        auto st = new StructDeclaration();
+        st.SymTable = mSymTable = mSymTable.push(st);
+        scope(exit) mSymTable = st.SymTable.pop();
 
-        
-        return null;
+        accept(TokenType.Identifier, "Expect identifier after struct");
+        st.Name = mToken.Value;
+
+        next;
+        if(mToken.Type == TokenType.Colon)
+        {
+            next;
+            st.BaseIdentifier = parseIdentifierExpression();
+        }
+
+
+        if(mToken.Type == TokenType.Semicolon)
+        {
+            next;
+            return st;
+        }
+
+        if(mToken.Type != TokenType.COBracket)
+            Error(mToken.Loc, "Expected { for struct declaration");
+
+        //inner struct
+        next;
+        while(mToken.Type != TokenType.CCBracket)
+        {
+            switch(mToken.Type)
+            {
+                case TokenType.Identifier:
+                    auto var = new VariableDeclaration();
+                    var.Name = mToken.Value;
+                    accept(TokenType.Colon, "Expect ':' after field identifier");
+                    next;
+                    var.VarDataType = parseDataType();
+
+                    st.SymTable.assign(cast(Declaration)var, (Declaration existing, Declaration newOne)
+                    {
+                        Error(newOne.Loc, "Duplicated field in struct");
+                    });
+                    accept(TokenType.Semicolon, "Expect ';' after field declaration");
+
+                    debug log.Information("Struct Field %s %s", var.Name, var.VarDataType.toString());
+                    next;
+                    break;
+                case TokenType.KwDef:
+                    Error(mToken.Loc, "Functions in structs not yet supported");
+                    break;
+
+                default:
+                    Error(mToken.Loc, "Invalid token " ~ mToken.toString());
+            }
+        }
+
+        return st;
     }   
 
     /**
@@ -600,6 +649,7 @@ class Parser
         auto block = new BlockStatement();
         block.Loc = mToken.Loc;
         block.SymTable = mSymTable = mSymTable.push(block);
+        scope(exit) mSymTable = block.SymTable.pop();
 
         //parse until "}"
         while(mToken.Type != TokenType.CCBracket && peek(1) != TokenType.CCBracket)
@@ -641,7 +691,7 @@ class Parser
         next();
         //accept(TokenType.CCBracket, "expected } after block statement");
 
-        mSymTable = block.SymTable.pop();
+       
         
         return block;
     }

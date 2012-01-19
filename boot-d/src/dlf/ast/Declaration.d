@@ -213,6 +213,12 @@ final class StructDeclaration : Declaration
     /// Calling Convention
     public CallingConvention CallingConv;
 
+    /// Inherits from Base
+    public IdentifierExpression BaseIdentifier;
+    
+    /// Base Resolved
+    public Declaration BaseStruct;
+    
     /// Mixin for Kind Declaration
     mixin(IsKind("StructDeclaration"));
 }
