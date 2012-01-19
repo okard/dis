@@ -60,6 +60,7 @@ class HeaderGen : Visitor
     void visit(VariableDeclaration vd){  }
     void visit(ClassDeclaration cd){  }
     void visit(TraitDeclaration td){  }
+    void visit(StructDeclaration sd){}
 
     //Statements
     void visit(BlockStatement bs){  }

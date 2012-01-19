@@ -118,7 +118,7 @@ class TypeAnalysis : Visitor
     //Constant
     void visit(ClassDeclaration cd){}
     void visit(TraitDeclaration td){}
-    //Struct
+    void visit(StructDeclaration sd){}
     //Alias
     //Enum
     //Variant
@@ -210,12 +210,11 @@ class TypeAnalysis : Visitor
         //ie.first //this
 
         //go up
-        Declaration decl;
+        Declaration decl = null;
 
         if(symTable.contains(ie.first))
         {
             decl = symTable[ie.first];
-    
         }
         else
         {
@@ -232,26 +231,38 @@ class TypeAnalysis : Visitor
             while(sym !is null);
         }
             
-        
+        if(decl is null)
+        {
+            sem.Error("Can't find first entry identifier %s", ie.first);
+            sem.Fatal("Failed type resolve");
+        }
 
         //go down
         if(ie.length > 1)
         {
-            //go down to last element 
-            //ie.get(1), ie.get(2)
-            //strict symbol matching
+            debug sem.Information("Search down");
+            auto sym = getSymbolTable(decl);
 
-            //AstNodes with SymbolTable
-            //Decl: Package, Struct, Class, Trait, Functions 
-            //Stmt: BlockStatement
-
-            //ie.Decl.getSymbolTable
+            /*
+            for(int i=1; i< ie.length; i++)
+            {
+                if(!sym.contains(ie[i]));
+            }
+            */
         }
         else
+        {
             ie.Decl = decl;
+        }
 
         //return type?
         //go up until identifier is complete
+
+        if(ie.Decl is null)
+        {
+            sem.Error("Can't resolve identifier %s", ie.toString());
+            sem.Fatal("Failed type resolve");
+        }
 
         sem.Information("Found %s", ie.Decl.Name);
 
@@ -314,6 +325,34 @@ class TypeAnalysis : Visitor
     private static bool IsOpaque(DataType t)
     {
         return t == OpaqueType.Instance;
+    }
+
+    /**
+    * Reveive symbol table from a node that has one
+    */
+    private static SymbolTable getSymbolTable(Node n)
+    {
+        //Decl: Package, Struct, Class, Trait,
+        //Stmt: BlockStatement
+
+        switch(n.Kind)
+        {
+            case NodeKind.PackageDeclaration:
+                return (cast(PackageDeclaration)n).SymTable;
+            case NodeKind.StructDeclaration:
+                return (cast(StructDeclaration)n).SymTable;
+            case NodeKind.ClassDeclaration:
+                return (cast(ClassDeclaration)n).SymTable;
+            //case NodeKind.TraitDeclaration:
+            //    return (cast(TraitDeclaration)n).SymTable;
+            case NodeKind.FunctionDeclaration:
+                return (cast(FunctionDeclaration)n).Body.SymTable;
+            case NodeKind.BlockStatement:
+                return (cast(BlockStatement)n).SymTable;
+
+            default:
+                throw new Exception("These node has no symboltable");
+        }
     }
 }
 

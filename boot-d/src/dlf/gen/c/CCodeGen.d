@@ -314,6 +314,8 @@ class CCodeGen : ObjectGen, Visitor
 
         //generate for each class instance
     }
+
+    void visit(StructDeclaration sd){}
     
     void visit(TraitDeclaration td)
     {  

@@ -152,6 +152,9 @@ class Semantic : Visitor
         //Remove not required imports
     }
 
+
+    void visit(StructDeclaration sd){}
+
     /**
     * Class Semantic Check
     */

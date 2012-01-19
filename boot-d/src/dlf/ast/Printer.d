@@ -116,6 +116,8 @@ class Printer : Visitor
     void visit(ClassDeclaration cd){}
     void visit(TraitDeclaration td){}
 
+    void visit(StructDeclaration sd){}
+
     /**
     * Visit Block Statement
     */

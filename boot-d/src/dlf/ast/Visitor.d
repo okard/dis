@@ -41,6 +41,7 @@ public interface Visitor
     //Constant
     void visit(ClassDeclaration);
     void visit(TraitDeclaration);
+    void visit(StructDeclaration);
     //Struct
     //Alias
     //Enum
@@ -95,6 +96,7 @@ Node dispatch(Node n, Visitor v, bool mod = false)
         case NodeKind.FunctionDeclaration: v.visit(cast(FunctionDeclaration)n); break;
         case NodeKind.ClassDeclaration: v.visit(cast(ClassDeclaration)n); break;
         case NodeKind.TraitDeclaration: v.visit(cast(TraitDeclaration)n); break;
+        case NodeKind.StructDeclaration: v.visit(cast(StructDeclaration)n); break;
         //Struct
         //Alias
         //Enum
