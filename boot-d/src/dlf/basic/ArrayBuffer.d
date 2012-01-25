@@ -112,6 +112,7 @@ unittest
 {
     import std.stdio;
     import std.conv;
+    import std.exception;
 
     auto ab = ArrayBuffer!int(8);
 
@@ -136,10 +137,8 @@ unittest
     for(uint i = 0; i < 8; i++)
         assert(ab[i] == i+4);
 
-    bool exc = false;
-    try { ab.addAfter(66); }
-    catch { exc = true;}
-    assert(exc  == true);
+
+    assertThrown!Exception(ab.addAfter(66));
 
     writeln("[TEST] ArrayBuffer Tests passed");
 }

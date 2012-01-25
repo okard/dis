@@ -449,6 +449,10 @@ class Lexer
         mKeywords["null"] = TokenType.KwNull;
         mKeywords["true"] = TokenType.KwTrue;
         mKeywords["false"] = TokenType.KwFalse;
+
+        mKeywords["private"] = TokenType.KwPrivate;
+        mKeywords["public"] = TokenType.KwPublic;
+        mKeywords["protected"] = TokenType.KwProtected;
     }
 
     /**

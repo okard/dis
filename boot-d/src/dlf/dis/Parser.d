@@ -60,7 +60,7 @@ class Parser
     private SymbolTable mSymTable;
 
     /// Current flags
-    private Declaration.Flags flags;
+    private DeclarationFlags flags;
 
     /// Internal Types (Builtin)
     public static DataType[string] InternalTypes;
@@ -169,6 +169,8 @@ class Parser
         {
             next();
             //parseDeclarations
+
+            //parseDeclarationFlags();
 
             switch(mToken.Type)
             { 
@@ -1039,6 +1041,44 @@ class Parser
         Error(mToken.Loc, "Not a valid datatype");
         return OpaqueType.Instance;
     }
+
+    /**
+    * Parse Flags
+    */
+    private void parseDeclarationFlags()
+    {
+        //parse all available flags
+        switch(mToken.Type)
+        {
+            case TokenType.KwPrivate:
+                flags &= DeclarationFlags.Private;
+                next;
+                parseDeclarationFlags();
+                break;
+            case TokenType.KwPublic:
+                flags &= DeclarationFlags.Public;
+                next;
+                parseDeclarationFlags();
+                break;
+            case TokenType.KwProtected:
+                flags &= DeclarationFlags.Protected;
+                next;
+                parseDeclarationFlags();
+                break;
+            default:
+                return;
+        }
+    }
+
+    /**
+    * Assign Declaration Flags
+    */
+    private void assignDeclarationFlags(Declaration d)
+    {
+        d.Flags = flags;
+        flags = DeclarationFlags.Blank;
+    }
+
 
     /**
     * next n token

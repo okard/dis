@@ -128,6 +128,11 @@ class CCodeGen : ObjectGen, Visitor
         foreach(ImportDeclaration id; pd.Imports)
         {
             assert(id.Package !is null, "Import Package not parsed");
+
+            //header files doesn't require compilation
+            //libraries getting linked
+            if(id.Package.IsHeader)
+                continue;
             
             //already compiled
             if(id.Package.CodeGen !is null)

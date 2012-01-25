@@ -108,6 +108,7 @@ class Semantic : Visitor
     */
     public PackageDeclaration run(PackageDeclaration pd)
     {
+        //prepare step?
         //resolve types
         dispatch(pd, typeResolver);
         return autoDispatch(pd);

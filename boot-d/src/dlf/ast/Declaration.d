@@ -30,19 +30,37 @@ import dlf.ast.Expression;
 import dlf.ast.Special;
 import dlf.ast.SymbolTable;
 
+/// Flags for Declaration
+enum DeclarationFlags : ushort 
+{ 
+    Blank=0,
+    //information hiding
+    Private=1, 
+    Protected=2, 
+    Public=4, 
+    Package=8, 
+    
+    //modifiers
+    Static=16, 
+    Final=32, 
+    Const=64, 
+    Abstract=128 
+} 
+
 /**
 * Basic Class for Declaration
 */
 abstract class Declaration : Node
 {
-    /// Flags for Declaration
-    enum Flags : ushort { Private=1, Protected=2, Public=4, Package=8, 
-                          Static=16, Final=32, Const=64, Abstract=128 } 
-    
     /// Name
     public string Name;
 
+    /// Flags
+    public DeclarationFlags Flags;
+
     // FQN ?? Full Qualified Name
+
+    /// Annotations
 
     //uint Index;
 }
@@ -66,6 +84,9 @@ final class PackageDeclaration : Declaration
 
     /// Runtime enabled
     bool RuntimeEnabled = true;
+
+    /// Is a Header Package
+    bool IsHeader = false;
 
     /// Modification Date
     SysTime modificationDate;
@@ -140,10 +161,13 @@ class FunctionDeclaration : Declaration
     public Statement[FunctionType] InstanceBodies;
     
     /// Is Template Function (here?)
-    bool IsTemplate;
+    public bool IsTemplate;
 
     /// Is a extension method declaration
     public bool IsExtensionMethod;
+
+    /// Is nested function
+    public bool IsNested;
 
     /// Calling Convention
     public CallingConvention CallingConv;
@@ -162,6 +186,8 @@ final class VariableDeclaration : Declaration
 
     /// Initializer
     public Expression Initializer;
+
+    //is Parameter?
 
     /**
     * Ctor

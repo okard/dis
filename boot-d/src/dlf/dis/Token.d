@@ -131,6 +131,9 @@ enum TokenType //: ubyte//c main
     KwNull,         // null
     KwTrue,         // true
     KwFalse,        // false
+    KwPrivate,      // private
+    KwPublic,       // public
+    KwProtected,    // protected
 
     //Missing: private, public, protected, ref
 
@@ -233,6 +236,9 @@ string toString(TokenType tok)
     case TokenType.KwNull:      return "null";
     case TokenType.KwTrue:      return "true";
     case TokenType.KwFalse:     return "false";
+    case TokenType.KwPrivate:   return "private";
+    case TokenType.KwPublic:    return "public";
+    case TokenType.KwProtected: return "protected";
     case TokenType.Comment:     return "<comment>";
     }
 }
