@@ -101,11 +101,12 @@ final class CallExpression : Expression
 
 /**
 * Binary Operator
-*  + - * / % ** ^ && ||
+*  + - * / % ** & | ^ && || ~
+*  = += -= *= /= %= **= &= |= ^=
 */
 public enum BinaryOperator : ubyte 
 { 
-    Add, Sub, Mul, Div, Mod, Power, And, Or, Xor,
+    Add, Sub, Mul, Div, Mod, Power, And, Or, Xor, LAnd, LOr, Concat,
     Assign 
 }
 
@@ -129,6 +130,7 @@ final class BinaryExpression : Expression
 
 /**
 * Unary Operator
+* !Expr -Expr Expr++ ++Expr Expr-- --Expr
 */
 public enum UnaryOperator : ubyte 
 { 
@@ -187,8 +189,9 @@ final class SwitchExpression : Expression
     ///Condition?
     Expression Condition;
 
-        //cases
+    //cases
     //default case
+        //CaseExpression?
 
     ///Mixin for Kind Declaration
     mixin(IsKind("SwitchExpression"));

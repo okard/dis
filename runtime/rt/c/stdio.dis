@@ -29,5 +29,5 @@ def(C) printf(format : ptr, ...) : int;
 
 
 //stdin, stdout and stderr
-//var(c) stdin : ptr = $external;
-//var(ce) stdin: ptr;
+//var(C) stdin : ptr = $external;
+//var(C, External) stdin: ptr;

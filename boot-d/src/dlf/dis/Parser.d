@@ -282,6 +282,8 @@ class Parser
         }
 
         imp.Name = imp.ImportIdentifier.toString();
+
+        accept(TokenType.Semicolon, "Expect Semicolon after import declaration");
         
         return imp;
     }
@@ -531,6 +533,7 @@ class Parser
         {
             next;
             st.BaseIdentifier = parseIdentifierExpression();
+            next;
         }
 
 

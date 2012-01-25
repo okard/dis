@@ -28,7 +28,7 @@ import dlf.basic.Location;
 /**
 * All kinds of ast nodes
 */
-public enum NodeKind : uint
+public enum NodeKind : ushort
 {
     Unkown,
 

@@ -54,14 +54,22 @@ public interface Visitor
     //For
     //ForEach
     //While
+    //Break
+    //Continue
 
     //Expressions
     void visit(LiteralExpression);
     void visit(CallExpression);
     void visit(IdentifierExpression);
     void visit(BinaryExpression);
+    //Unary
+    //IfExpression
+    //SwitchExpression
+    //Lambda
+    
 
     //Annotations
+    //UnitTest
 
     //Types
     

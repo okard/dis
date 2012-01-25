@@ -25,6 +25,7 @@ import dlf.basic.Location;
 import dlf.ast.Node;
 import dlf.ast.Visitor;
 import dlf.ast.Type;
+import dlf.ast.Annotation;
 import dlf.ast.Statement;
 import dlf.ast.Expression;
 import dlf.ast.Special;
@@ -35,16 +36,16 @@ enum DeclarationFlags : ushort
 { 
     Blank=0,
     //information hiding
-    Private=1, 
-    Protected=2, 
-    Public=4, 
-    Package=8, 
+    Private= 1 << 0, 
+    Protected= 1 << 1, 
+    Public= 1 << 2, 
+    Package= 1 << 3, 
     
     //modifiers
-    Static=16, 
-    Final=32, 
-    Const=64, 
-    Abstract=128 
+    Static= 1 << 4, 
+    Final= 1 << 5, 
+    Const= 1 << 6, 
+    Abstract= 1 << 7 
 } 
 
 /**
@@ -55,12 +56,14 @@ abstract class Declaration : Node
     /// Name
     public string Name;
 
+    /// Full Qualified Name
+    public string FQN;
+
     /// Flags
     public DeclarationFlags Flags;
 
-    // FQN ?? Full Qualified Name
-
     /// Annotations
+    public Annotation[] Annotations;
 
     //uint Index;
 }
@@ -149,6 +152,9 @@ class FunctionDeclaration : Declaration
 
     /// Has a Body (BlockStatement, Statement, Expression)
     public BlockStatement Body;
+
+    //public Statement[] Body
+    //public SymbolTable
 
     /// Overrides of this function
     public FunctionDeclaration[] Overrides;

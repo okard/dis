@@ -32,8 +32,11 @@ import rt.typeinfo;
 obj object
 {
     const typeinfo : ti_object*;
+
     //allocator
     //toString
+    //toHash
+    //
 }
 
 
