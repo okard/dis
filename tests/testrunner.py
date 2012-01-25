@@ -6,6 +6,7 @@ import subprocess
 # Settings:
 TEST_DIR = os.path.dirname(__file__) # test path (is script path)
 DISC = os.path.join(TEST_DIR, "../boot-d/disc.sh") # the compiler executable
+LIBDIR = os.path.join(TEST_DIR, "../boot-d/bin/") # libraries e.g. runtime
 OBJDIR = os.path.join(TEST_DIR, ".objdis") # object files for test compilation
 BINDIR = os.path.join(TEST_DIR, ".testbin") # test binaries
 
@@ -88,7 +89,7 @@ def compileTest(spec, testfile):
         if SPECCOMPRESULT in spec:
             expected = int(spec[SPECCOMPRESULT])
             if expected == ret:
-                sys.stdout.write(OKGREEN+"Success"+ENDC);
+                sys.stdout.write(OKGREEN+"Compile Success"+ENDC);
                 return os.path.join(BINDIR, binname)
             else:
                 if ret == 0:
@@ -119,9 +120,24 @@ def runTest(spec, testExec):
     if testExec == None:
         sys.stdout.write(FAIL+"No Binary"+ENDC);
         return
+        
+    runenv = os.environ
+    runenv["LD_LIBRARY_PATH"] = LIBDIR + ":" + runenv["LD_LIBRARY_PATH"]
+     
+    cmd = [testExec]
+    fnull = open(os.devnull, 'w')
+    ret = subprocess.call(cmd, stdout = fnull, env=runenv) #stdout = fnull
+    fnull.close()
+    
+    expected = int(spec[SPECRUNRESULT])
+    
+    if ret == expected:
+        sys.stdout.write(OKGREEN+"Exc Success: {0}".format(ret)+ENDC);
+    else:
+        sys.stdout.write(OKGREEN+"Exc Failed: {0}".format(ret)+ENDC);
     
     #run file
-    sys.stdout.write(OKGREEN+"Success"+ENDC);
+    
     
 # -----------------------------------------------------------------------------
 # run main
