@@ -43,7 +43,7 @@ def main(argv=None):
         sys.stdout.write("(")
         runTest(spec, binary)
         sys.stdout.write(")")
-        print(" Desc: {0} ({1})".format(spec.get(SPECDESC, ""), testfile),)
+        print("{1} <{0}>".format(spec.get(SPECDESC, ""), testfile),)
    
     # print results
     
@@ -87,25 +87,34 @@ def compileTest(spec, testfile):
         
         #look for expected CompileResult
         if SPECCOMPRESULT in spec:
+            
+            color = FAIL
             expected = int(spec[SPECCOMPRESULT])
+            
+            #detect status
             if expected == ret:
-                sys.stdout.write(OKGREEN+"Compile Success"+ENDC);
+                color = OKGREEN
+                
+            if ret == 0:
+                write(color, "Compiled");
+            elif ret == 1:
+                write(color, "Usage Error");
+            elif ret == 2:
+                write(color, "Lexer Error");
+            elif ret == 3:
+                write(color, "Parser Error");
+            elif ret == 4:
+                write(color, "Semantic Error");
+            else:
+                write(color, "Unkown Result: {0}".format(ret));
+           
+            if ret == 0:
                 return os.path.join(BINDIR, binname)
             else:
-                if ret == 0:
-                    sys.stdout.write(FAIL+"Compiled but has not to"+ENDC);
-                elif ret == 1:
-                    sys.stdout.write(FAIL+"Usage Error"+ENDC);
-                elif ret == 2:
-                    sys.stdout.write(FAIL+"Lexer Error"+ENDC);
-                elif ret == 3:
-                    sys.stdout.write(FAIL+"Parser Error"+ENDC);
-                elif ret == 4:
-                    sys.stdout.write(FAIL+"Semantic Error"+ENDC);
-                else:
-                    sys.stdout.write(FAIL+"Unkown Result: {0}".format(ret)+ENDC);
+                return None
+           
         else:
-            sys.stdout.write(WARNING+"Missing Spec (Result: {0})".format(ret)+ENDC);
+            write(WARNING, "Missing Spec (Result: {0})".format(ret));
         #return binary at success
         return None
     except OSError:
@@ -117,27 +126,38 @@ def compileTest(spec, testfile):
 # Run a single test
 def runTest(spec, testExec):
     
+    # check if binary is available
     if testExec == None:
-        sys.stdout.write(FAIL+"No Binary"+ENDC);
+        color = FAIL
+        if int(spec.get(SPECCOMPRESULT, "0")) != 0:
+            color = OKGREEN
+        write(color, "No Binary");
         return
         
+    #LD Path
     runenv = os.environ
     runenv["LD_LIBRARY_PATH"] = LIBDIR + ":" + runenv["LD_LIBRARY_PATH"]
      
+    # Run File
     cmd = [testExec]
     fnull = open(os.devnull, 'w')
-    ret = subprocess.call(cmd, stdout = fnull, env=runenv) #stdout = fnull
+    ret = subprocess.call(cmd, stdout = fnull, env=runenv)
     fnull.close()
     
-    expected = int(spec[SPECRUNRESULT])
+    expected = int(spec.get(SPECRUNRESULT, "0"))
     
+    # print result
     if ret == expected:
-        sys.stdout.write(OKGREEN+"Exc Success: {0}".format(ret)+ENDC);
+        write(OKGREEN, "Exc Success: {0}".format(ret))
     else:
-        sys.stdout.write(OKGREEN+"Exc Failed: {0}".format(ret)+ENDC);
+        write(OKGREEN, "Exc Failed: {0}".format(ret));
     
-    #run file
-    
+# -----------------------------------------------------------------------------
+# Helper Function for colored output 
+def write(color, msg):
+    sys.stdout.write(color);
+    sys.stdout.write(msg);
+    sys.stdout.write(ENDC);
     
 # -----------------------------------------------------------------------------
 # run main
