@@ -43,7 +43,11 @@ def main(argv=None):
         sys.stdout.write("(")
         runTest(spec, binary)
         sys.stdout.write(")")
-        print("{1} <{0}>".format(spec.get(SPECDESC, ""), testfile),)
+        
+        normalFile = os.path.abspath(testfile)
+        normalFile = normalFile[len(os.path.abspath(TEST_DIR))+1:]
+        
+        print(" {1} <{0}>".format(spec.get(SPECDESC, ""), normalFile),)
    
     # print results
     
@@ -119,7 +123,7 @@ def compileTest(spec, testfile):
         return None
     except OSError:
         #return null?
-        sys.stdout.write("Cant start compiler")
+        sys.stdout.write("Can't start compiler")
         return None
  
 # -----------------------------------------------------------------------------

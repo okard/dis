@@ -4,7 +4,7 @@
 //# RunResult: 0
 //# Type: Runnable
 
-package milestone1;
+package tests.examples.milestone1;
 
 def(C) printf(format: char*, T...): int;
 
