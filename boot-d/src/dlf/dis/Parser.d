@@ -109,7 +109,7 @@ class Parser
 
         //open source file and set ignore tokens
         mLex.open(src);
-        mLex.Ignore = [TokenType.Comment, TokenType.EOL];
+        mLex.Ignore = [TokenType.Comment, TokenType.DocComment, TokenType.EOL];
         //create a event hook for some kind of tokens for example to parse comment tokens
         //the tokens does not go through regular getToken function of lexer?
         
@@ -297,6 +297,17 @@ class Parser
         checkType(TokenType.KwObj);
 
         // class(kw param) identifier(template args) : inherits {
+        //parseKeywordParameter();
+
+        accept(TokenType.Identifier, "Expects identifier for class");
+
+        if(peek(1) == TokenType.Colon)
+        {
+            next;
+            parseDataType();
+        }
+        
+         
 
         Error(mToken.Loc, "Class Parsing not yet supported");
         return null;
@@ -399,11 +410,11 @@ class Parser
             // = <statement or expression>
             case TokenType.Assign:
                 next();
-                auto bdy = new BlockStatement();
+                auto bdy = new BlockStmt();
                 bdy.Parent = func;
                 Statement stmt = parseStatement();
-                if(stmt.Kind == NodeKind.ExpressionStatement)
-                    stmt = new ReturnStatement(to!ExpressionStatement(stmt).Expr);
+                if(stmt.Kind == NodeKind.ExpressionStmt)
+                    stmt = new ReturnStmt(to!ExpressionStmt(stmt).Expr);
                 stmt.Parent = bdy;
                 bdy.Statements ~= stmt;
                 func.Body = bdy;
@@ -630,12 +641,12 @@ class Parser
         //return
         case TokenType.KwReturn:
             next;
-            return new ReturnStatement(parseExpression());
+            return new ReturnStmt(parseExpression());
         //Expression
         default:
             auto exp = parseExpression();
             accept(TokenType.Semicolon, "Missing semicolon after expression statement");
-            auto es =  new ExpressionStatement(exp);
+            auto es =  new ExpressionStmt(exp);
             exp.Parent = es;
             return es;
         }
@@ -645,13 +656,13 @@ class Parser
     * Parse Block {}
     * Parse Complete Block
     */
-    private BlockStatement parseBlock()
+    private BlockStmt parseBlock()
     {
         //start token is "{"
         checkType(TokenType.COBracket);
 
         //TODO symbol table? each block has one?
-        auto block = new BlockStatement();
+        auto block = new BlockStmt();
         block.Loc = mToken.Loc;
         block.SymTable = mSymTable = mSymTable.push(block);
         scope(exit) mSymTable = block.SymTable.pop();
@@ -714,7 +725,7 @@ class Parser
     /**
     * Parse While Loop
     */
-    private WhileStatement parseWhile()
+    private WhileStmt parseWhile()
     {
         checkType(TokenType.KwWhile);
         throw new ParserException(mToken.Loc, "Can't parse while statements at the moment");
@@ -723,7 +734,7 @@ class Parser
     /**
     * Parse Do-While Loop
     */
-    private WhileStatement parseDoWhile()
+    private WhileStmt parseDoWhile()
     {
         checkType(TokenType.KwDo);
         throw new ParserException(mToken.Loc, "Can't parse do-while statements at the moment");
@@ -1008,6 +1019,10 @@ class Parser
                 //!(datatypes)
                 case TokenType.Not: 
                     Error(mToken.Loc, "template instance datatypes not yet supported");
+                    break;
+
+                case TokenType.KwRef:
+                    Error(mToken.Loc, "reference datatypes not yet supported");
                     break;
 
                 case TokenType.Mul:

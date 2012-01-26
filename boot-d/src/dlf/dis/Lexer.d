@@ -232,6 +232,8 @@ class Lexer
         //block comment
         if(c == '*')
         {
+            //check for doc comment /**
+
             //readUntil "*/"
             while(true)
             {

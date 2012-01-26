@@ -48,9 +48,9 @@ public interface Visitor
     //Variant
 
     //Statements
-    void visit(BlockStatement);
-    void visit(ExpressionStatement);
-    void visit(ReturnStatement);
+    void visit(BlockStmt);
+    void visit(ExpressionStmt);
+    void visit(ReturnStmt);
     //For
     //ForEach
     //While
@@ -111,9 +111,9 @@ Node dispatch(Node n, Visitor v, bool mod = false)
         //Variant
 
         //Statements
-        case NodeKind.BlockStatement: v.visit(cast(BlockStatement)n); break;
-        case NodeKind.ExpressionStatement: v.visit(cast(ExpressionStatement)n); break;
-        case NodeKind.ReturnStatement: v.visit(cast(ReturnStatement)n); break;
+        case NodeKind.BlockStmt: v.visit(cast(BlockStmt)n); break;
+        case NodeKind.ExpressionStmt: v.visit(cast(ExpressionStmt)n); break;
+        case NodeKind.ReturnStmt: v.visit(cast(ReturnStmt)n); break;
         //For
         //ForEach
         //While

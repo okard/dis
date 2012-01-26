@@ -101,12 +101,14 @@ final class CallExpression : Expression
 
 /**
 * Binary Operator
-*  + - * / % ** & | ^ && || ~
-*  = += -= *= /= %= **= &= |= ^=
+*  + - * / % ** & | ^ && || < > ~ 
+*  << >> 
+*  = += -= *= /= %= **= &= |= ^= <= >= !=
 */
 public enum BinaryOperator : ubyte 
 { 
     Add, Sub, Mul, Div, Mod, Power, And, Or, Xor, LAnd, LOr, Concat,
+    //Shift
     Assign 
 }
 

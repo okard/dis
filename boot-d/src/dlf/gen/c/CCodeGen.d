@@ -140,6 +140,7 @@ class CCodeGen : ObjectGen, Visitor
 
             //first compile imports to get right include names
             autoDispatch(id.Package);
+            builder.compile(ctx, [p.SourceFile]);
 
             //detect if one import has recompiled then this source should be recompiled too?
             //Imports to compile before? 
@@ -265,7 +266,7 @@ class CCodeGen : ObjectGen, Visitor
         //write body aka function definition
         if(ft.Body !is null)
         {
-            assert(ft.Body.Kind == NodeKind.BlockStatement, "Sem should rewrite body to block statement");
+            assert(ft.Body.Kind == NodeKind.BlockStmt, "Sem should rewrite body to block statement");
 
             //start function definition
             p.funcDef(rettype, name, []);
@@ -328,7 +329,7 @@ class CCodeGen : ObjectGen, Visitor
     }
 
     //Statements
-    void visit(BlockStatement bs)
+    void visit(BlockStmt bs)
     {  
         p.blockStart();
         //write variables
@@ -336,12 +337,12 @@ class CCodeGen : ObjectGen, Visitor
         p.blockEnd();
     }
     
-    void visit(ExpressionStatement es)
+    void visit(ExpressionStmt es)
     {  
         autoDispatch(es.Expr);
     }
 
-    void visit(ReturnStatement rt)
+    void visit(ReturnStmt rt)
     {  
         //save expression result
         //return it

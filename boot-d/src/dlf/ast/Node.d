@@ -49,12 +49,12 @@ public enum NodeKind : ushort
 
     //Statement
     Statement,
-    BlockStatement,
-    ExpressionStatement,
-    ReturnStatement,
-    ForStatement,
-    ForEachStatement,
-    WhileStatement,
+    BlockStmt,
+    ExpressionStmt,
+    ReturnStmt,
+    ForStmt,
+    ForEachStmt,
+    WhileStmt,
 
     //Expression
     Expression,
@@ -104,7 +104,7 @@ abstract class Node
     public Node CodeGen;
 
     /// Kind (immutable)? function?
-    @property public abstract NodeKind Kind();
+    @property public abstract const NodeKind Kind() const;
 
     //TODO remove that
     /// Self Pointer for (crazy) dispatch replace
@@ -115,6 +115,7 @@ abstract class Node
     */
     public void valid()
     {
+        
     }
 }
 
@@ -123,7 +124,7 @@ abstract class Node
 */
 string IsKind(string name)
 {
-    return "@property public override NodeKind Kind(){ return NodeKind."~name~"; }";
+    return "@property public override const NodeKind Kind() const{ return NodeKind."~name~"; }";
 }
 
 

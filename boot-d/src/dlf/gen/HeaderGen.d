@@ -63,9 +63,9 @@ class HeaderGen : Visitor
     void visit(StructDeclaration sd){}
 
     //Statements
-    void visit(BlockStatement bs){  }
-    void visit(ExpressionStatement es){  }
-    void visit(ReturnStatement rs){  }
+    void visit(BlockStmt bs){  }
+    void visit(ExpressionStmt es){  }
+    void visit(ReturnStmt rs){  }
 
     //Expressions
     void visit(LiteralExpression le){  }

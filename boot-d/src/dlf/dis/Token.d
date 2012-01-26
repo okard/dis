@@ -146,7 +146,8 @@ enum TokenType //: ubyte//c main
     // -data for structs and flat data types
 
     //Comment Tokens, DocComments
-    Comment
+    Comment,
+    DocComment
 }
 
 
@@ -240,6 +241,7 @@ string toString(TokenType tok)
     case TokenType.KwPublic:    return "public";
     case TokenType.KwProtected: return "protected";
     case TokenType.Comment:     return "<comment>";
+    case TokenType.DocComment:  return "<doccomment>";
     }
 }
 

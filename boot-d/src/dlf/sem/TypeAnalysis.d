@@ -127,7 +127,7 @@ class TypeAnalysis : Visitor
     //Statements
 
     /// Block Statement
-    void visit(BlockStatement bs)
+    void visit(BlockStmt bs)
     {
         sem.Information("Semantic: BlockStmt");
 
@@ -145,13 +145,13 @@ class TypeAnalysis : Visitor
     }
 
     /// Expression Statement
-    void visit(ExpressionStatement es)
+    void visit(ExpressionStmt es)
     {
         es.Expr = autoDispatch(es.Expr);
     }
 
     /// Return Statement
-    void visit(ReturnStatement rs)
+    void visit(ReturnStmt rs)
     {
         //return type matches function type?
     }
@@ -202,14 +202,7 @@ class TypeAnalysis : Visitor
     {
         sem.Information("IdentifierExpr: %s", ie.toString());
 
-        //find first start entry
-
-        //starts with this -> first class
-
-        //ie.length
-        //ie.first //this
-
-        //go up
+        //go up, find first start entry
         Declaration decl = null;
 
         if(symTable.contains(ie.first))
@@ -231,13 +224,14 @@ class TypeAnalysis : Visitor
             while(sym !is null);
         }
             
+        //no start point
         if(decl is null)
         {
             sem.Error("Can't find first entry identifier %s", ie.first);
             sem.Fatal("Failed type resolve");
         }
 
-        //go down
+        //go down, search the right last part of identifier
         if(ie.length > 1)
         {
             debug sem.Information("Search down");
@@ -255,9 +249,7 @@ class TypeAnalysis : Visitor
             ie.Decl = decl;
         }
 
-        //return type?
-        //go up until identifier is complete
-
+        //dont find the right declaration
         if(ie.Decl is null)
         {
             sem.Error("Can't resolve identifier %s", ie.toString());
@@ -265,8 +257,6 @@ class TypeAnalysis : Visitor
         }
 
         sem.Information("Found %s", ie.Decl.Name);
-
-       
         //resolve ie.Decl 
         //ie.ReturnType = targettype
     }
@@ -347,11 +337,11 @@ class TypeAnalysis : Visitor
             //    return (cast(TraitDeclaration)n).SymTable;
             case NodeKind.FunctionDeclaration:
                 return (cast(FunctionDeclaration)n).Body.SymTable;
-            case NodeKind.BlockStatement:
-                return (cast(BlockStatement)n).SymTable;
+            case NodeKind.BlockStmt:
+                return (cast(BlockStmt)n).SymTable;
 
             default:
-                throw new Exception("These node has no symboltable");
+                throw new Semantic.SemanticException("These node has no symboltable");
         }
     }
 }

@@ -43,16 +43,13 @@ import std.stdio;
 /**
 * Semantic Pass for AST
 */
-class Semantic
+final class Semantic
 {
     //Semantic Logger
     private LogSource log = Log("Semantic");
 
     /// Type Resolver Run
-    private scope TypeAnalysis typeResolver;
-
-    /// Current Symbol Table
-    private SymbolTable mSymTable;
+    private TypeAnalysis typeResolver;
 
     /// Context
     private Context context;
@@ -100,11 +97,10 @@ class Semantic
         return pd;
     }
 
-
     /**
     * Semantic Information Log
     */
-    package void Information(T...)(string s, T args)
+    package final void Information(T...)(string s, T args)
     {
         log.log!(LogType.Information)(s, args);
     }
@@ -112,7 +108,7 @@ class Semantic
     /**
     * Semantic Error Log
     */
-    package void Error(T...)(string s, T args)
+    package final void Error(T...)(string s, T args)
     {
         log.log!(LogType.Error)(s, args);
     }
@@ -120,7 +116,7 @@ class Semantic
     /**
     * Fatal semantic error
     */
-    package void Fatal(string msg = "")
+    package final void Fatal(string msg = "")
     {
          throw new SemanticException(msg);
     }

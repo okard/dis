@@ -66,6 +66,8 @@ abstract class Declaration : Node
     public Annotation[] Annotations;
 
     //uint Index;
+
+    //TODO DocComment
 }
 
 /// Supported Calling Conventions for classes and functions
@@ -151,7 +153,7 @@ class FunctionDeclaration : Declaration
     public DataType ReturnType;
 
     /// Has a Body (BlockStatement, Statement, Expression)
-    public BlockStatement Body;
+    public BlockStmt Body;
 
     //public Statement[] Body
     //public SymbolTable
@@ -264,6 +266,14 @@ final class ClassDeclaration : Declaration
     /// Symbol Table
     public SymbolTable SymTable;
 
+
+    public FunctionDeclaration Ctor;
+    public FunctionDeclaration Dtor;
+
+    //static ctor, dtor
+
+    
+
     //BaseClass / Parent Class 
     //Multi inheritance?
     //Traits
@@ -272,7 +282,8 @@ final class ClassDeclaration : Declaration
     //VariableDeclaration[] Variables;
     //FunctionSymbols[] Methods;
 
-    //Is Template
+    /// Is Template Class
+    public bool IsTemplate;
 
     public ClassType[] Instances;
 

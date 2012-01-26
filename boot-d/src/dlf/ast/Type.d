@@ -202,7 +202,21 @@ class PointerType : DataType
     ///toString
     override string toString() 
     { 
-        return PointType.toString() ~ "*"; 
+        return "ptr " ~ PointType.toString(); 
+    }
+}
+
+/**
+* Reference Type
+*/
+class ReferenceType : DataType
+{
+    public DataType RefType;
+
+    ///toString
+    override string toString() 
+    { 
+        return "ref " ~ RefType.toString(); 
     }
 }
 

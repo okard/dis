@@ -41,7 +41,7 @@ abstract class Statement : Node
 * Can have classes, functions, ...
 * Occurs in Functions, Loops, LambdaExpressions, ...
 */
-final class BlockStatement : Statement
+final class BlockStmt : Statement
 {
     /// Symbol Table
     public SymbolTable SymTable;
@@ -50,14 +50,14 @@ final class BlockStatement : Statement
     public Statement[] Statements;
 
     /// Mixin for Kind Declaration
-    mixin(IsKind("BlockStatement"));
+    mixin(IsKind("BlockStmt"));
 }
 
 /**
 * A Expression Statement
 * e.g. Function Call, Assign Expression
 */
-final class ExpressionStatement : Statement
+final class ExpressionStmt : Statement
 {
     /// Expression
     public Expression Expr;
@@ -70,13 +70,13 @@ final class ExpressionStatement : Statement
     }
 
     /// Mixin for Kind Declaration
-    mixin(IsKind("ExpressionStatement"));
+    mixin(IsKind("ExpressionStmt"));
 }
 
 /**
 * Return Statement
 */
-final class ReturnStatement : Statement
+final class ReturnStmt : Statement
 {
     /// The Return Expression
     public Expression Expr;
@@ -91,13 +91,13 @@ final class ReturnStatement : Statement
     }
 
     /// Mixin for Kind Declaration
-    mixin(IsKind("ReturnStatement"));
+    mixin(IsKind("ReturnStmt"));
 }
 
 /**
 * For Statement
 */
-final class ForStatement : Statement
+final class ForStmt : Statement
 {
     /// Initialization Statements
     public Statement[] InitializerStmts;
@@ -112,13 +112,13 @@ final class ForStatement : Statement
     public Statement Body;
 
     /// Mixin for Kind Declaration
-    mixin(IsKind("ForStatement"));
+    mixin(IsKind("ForStmt"));
 }
 
 /**
 * For-Each Statement
 */
-final class ForEachStatement : Statement
+final class ForEachStmt : Statement
 {
     //public VariableDeclaration Var;
 
@@ -128,14 +128,14 @@ final class ForEachStatement : Statement
     public Statement Body;
 
     /// Mixin for Kind Declaration
-    mixin(IsKind("ForEachStatement"));
+    mixin(IsKind("ForEachStmt"));
 }
 
 /**
 * While Statement
 * Do-While Statement
 */
-final class WhileStatement : Statement
+final class WhileStmt : Statement
 {
     /// Post test condition, While or DoWhile
     bool PostCondition = false;
@@ -147,14 +147,14 @@ final class WhileStatement : Statement
     public Statement Body;
 
     /// Mixin for Kind Declaration
-    mixin(IsKind("WhileStatement"));
+    mixin(IsKind("WhileStmt"));
 }
 
 
 /**
 * 'continue' Statement
 */
-final class ContinueStatement : Statement
+final class ContinueStmt : Statement
 {
     //target statement
 }
@@ -162,7 +162,7 @@ final class ContinueStatement : Statement
 /**
 * 'break' Statement
 */
-final class BreakStatement : Statement
+final class BreakStmt : Statement
 {
     //target statement
 }

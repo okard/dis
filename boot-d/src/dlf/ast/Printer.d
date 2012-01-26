@@ -121,7 +121,7 @@ class Printer : Visitor
     /**
     * Visit Block Statement
     */
-    void visit(BlockStatement bs)
+    void visit(BlockStmt bs)
     {
         writetln("{");
         tabDeepness++;
@@ -139,14 +139,14 @@ class Printer : Visitor
     /**
     * Visit ExpressionStatement
     */
-    void visit(ExpressionStatement expr) 
+    void visit(ExpressionStmt expr) 
     {
         writet("");
         dispatch(expr.Expr, this);
         writeln();
     }
 
-    void visit(ReturnStatement rs){  }
+    void visit(ReturnStmt rs){  }
 
     /**
     * FunctionCall
@@ -244,7 +244,7 @@ class Printer : Visitor
     {
         switch(stat.Kind)
         {
-            case NodeKind.ExpressionStatement: return toString((cast(ExpressionStatement)stat).Expr);
+            case NodeKind.ExpressionStmt: return toString((cast(ExpressionStmt)stat).Expr);
             default: return "<unkown statement>";
         }
     }
