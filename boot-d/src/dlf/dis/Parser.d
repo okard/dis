@@ -127,13 +127,13 @@ class Parser
     /**
     * Parse package
     */
-    public PackageDeclaration parsePackage()
+    public PackageDecl parsePackage()
     {
         //package identifier;
         checkType(TokenType.KwPackage);
         
         //Create new Package Declaration
-        auto pkg = new PackageDeclaration();
+        auto pkg = new PackageDecl();
         pkg.Loc = mToken.Loc;
         pkg.modificationDate = Src.modificationDate;
         pkg.SymTable = new SymbolTable(pkg, null);
@@ -318,7 +318,7 @@ class Parser
     */
     private FunctionDeclaration parseDef()
     {
-        //top level node must be PackageDeclaration,(ClassDeclaration) 
+        //top level node must be PackageDecl,(ClassDeclaration) 
         //def{(Calling Convention)} Identifier(Parameter) ReturnType
         // Block {}
         checkType(TokenType.KwDef);

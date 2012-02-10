@@ -113,13 +113,13 @@ class DisCompiler
     private Context ctx;
 
     /// Store parsed packages package name or file
-    private PackageDeclaration[string] packages;
+    private PackageDecl[string] packages;
 
     /// a full package
     private struct Pkg
     {
         SourceFile file;
-        PackageDeclaration ast; 
+        PackageDecl ast; 
         //Object File for Package
     }
 
@@ -300,7 +300,7 @@ class DisCompiler
     /**
     * dump parser
     */
-    private void dumpParser(PackageDeclaration pd)
+    private void dumpParser(PackageDecl pd)
     {
         //Print out
         auto printer = new Printer();
@@ -312,7 +312,7 @@ class DisCompiler
     /**
     * Handle Imports
     */
-    private void handleImports(PackageDeclaration pack)
+    private void handleImports(PackageDecl pack)
     {
         //TODO paths as parameter
         //TODO handle import foo.* (this modifies the ast)

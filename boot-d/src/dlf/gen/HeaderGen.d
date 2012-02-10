@@ -36,7 +36,7 @@ class HeaderGen : Visitor
     /**
     * Create Header
     */
-    void create(PackageDeclaration pd, string path)
+    void create(PackageDecl pd, string path)
     {
         //path.isDir();
 
@@ -49,7 +49,7 @@ class HeaderGen : Visitor
     }
 
     //Declarations
-    void visit(PackageDeclaration pd)    
+    void visit(PackageDecl pd)    
     { 
         //write package definition
 

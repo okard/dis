@@ -111,9 +111,9 @@ class CCodeGen : ObjectGen, Visitor
     /**
     * Compile Package
     */
-    void compile(PackageDeclaration pd)
+    void compile(PackageDecl pd)
     {
-        assert(pd !is null, "PackageDeclaration is null");
+        assert(pd !is null, "PackageDecl is null");
         
         //Package already compiled
         if(pd.CodeGen !is null)
@@ -170,7 +170,7 @@ class CCodeGen : ObjectGen, Visitor
     /**
     * Compile Package Declaration
     */
-    void visit(PackageDeclaration pd)
+    void visit(PackageDecl pd)
     { 
         //Package already compiled
         if(pd.CodeGen !is null)

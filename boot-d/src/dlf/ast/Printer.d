@@ -55,7 +55,7 @@ class Printer : Visitor
     /**
     * Visit Package Declaration
     */
-    void visit(PackageDeclaration pd)
+    void visit(PackageDecl pd)
     {
         writetln("%sPackage: %s",tabs(),  pd.Name);
 

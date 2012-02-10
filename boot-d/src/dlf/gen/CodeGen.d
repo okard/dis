@@ -64,8 +64,8 @@ interface ObjectGen
 {
     import dlf.ast.Declaration;
     
-    void compile(PackageDeclaration pd);
-    //string[] compile(Context ctx, PackageDeclaration pd);
+    void compile(PackageDecl pd);
+    //string[] compile(Context ctx, PackageDecl pd);
 }
 
 

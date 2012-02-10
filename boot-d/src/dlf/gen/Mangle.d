@@ -75,7 +75,7 @@ static class Mangle
 
             switch(d.Kind)
             {
-                case NodeKind.PackageDeclaration: 
+                case NodeKind.PackageDecl: 
                     name = "pkg" ~ to!(string)(d.Name.length) ~ d.Name.replace(".","_") ~ name; 
                     break;
                 case NodeKind.FunctionDeclaration: 
@@ -130,7 +130,7 @@ static class Mangle
 
             switch(d.Kind)
             {
-                case NodeKind.PackageDeclaration:
+                case NodeKind.PackageDecl:
                     name = d.Name ~ name;
                     break;
                 case NodeKind.ClassDeclaration:

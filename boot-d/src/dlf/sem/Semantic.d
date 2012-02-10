@@ -71,7 +71,7 @@ final class Semantic
     public Node run(Node astNode)
     {
         //prepare runtime imports for package types
-        if(astNode.Kind == NodeKind.PackageDeclaration)
+        if(astNode.Kind == NodeKind.PackageDecl)
         {
             //setDefaultImports(astNode);
         }
@@ -88,11 +88,11 @@ final class Semantic
     /**
     * Run semantic for a package
     */
-    public PackageDeclaration run(PackageDeclaration pd)
+    public PackageDecl run(PackageDecl pd)
     {
         //prepare step?
         //resolve types
-        pd = cast(PackageDeclaration)dispatch(pd, typeResolver);
+        pd = cast(PackageDecl)dispatch(pd, typeResolver);
 
         return pd;
     }

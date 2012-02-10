@@ -76,7 +76,7 @@ public enum CallingConvention {None, C, Dis}
 /**
 * Package
 */
-final class PackageDeclaration : Declaration
+final class PackageDecl : Declaration
 {
     /// Package Identifier
     CompositeIdentifier PackageIdentifier;
@@ -97,7 +97,7 @@ final class PackageDeclaration : Declaration
     SysTime modificationDate;
     
     /// Mixin for Kind Declaration
-    mixin(IsKind("PackageDeclaration"));
+    mixin(IsKind("PackageDecl"));
 }
 
 /**
@@ -112,7 +112,7 @@ final class ImportDeclaration : Declaration
     bool IsWildcardImport;
 
     /// The associated package node
-    PackageDeclaration Package;
+    PackageDecl Package;
 
     /// Mixin for Kind Declaration
     mixin(IsKind("ImportDeclaration"));

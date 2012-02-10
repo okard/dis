@@ -47,7 +47,7 @@ class TypeAnalysis : Visitor
     //Declarations
 
     /// Package Declaration
-    void visit(PackageDeclaration pd)
+    void visit(PackageDecl pd)
     {
         symTable = pd.SymTable;
         mapDispatch(pd.Imports);
@@ -57,7 +57,7 @@ class TypeAnalysis : Visitor
     /// Import Declaration
     void visit(ImportDeclaration id)
     {
-        //semantic check for available PackageDeclarations
+        //semantic check for available PackageDecls
         if(id.Package !is null)
         {
             id.Package = autoDispatch(id.Package);
@@ -327,8 +327,8 @@ class TypeAnalysis : Visitor
 
         switch(n.Kind)
         {
-            case NodeKind.PackageDeclaration:
-                return (cast(PackageDeclaration)n).SymTable;
+            case NodeKind.PackageDecl:
+                return (cast(PackageDecl)n).SymTable;
             case NodeKind.StructDeclaration:
                 return (cast(StructDeclaration)n).SymTable;
             case NodeKind.ClassDeclaration:
