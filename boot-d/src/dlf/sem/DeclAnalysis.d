@@ -29,7 +29,7 @@ mixin template DeclAnalysis()
     /**
     * Analyze the function parameter definition
     */
-    private void analyzeFuncParam(ref FunctionDeclaration fd)
+    private void analyzeFuncParam(ref FunctionDecl fd)
     {
         //detect if template function or not
 
@@ -52,7 +52,7 @@ mixin template DeclAnalysis()
     /**
     * Analyze the function statement
     */ 
-    private void analyzeFuncStmt(ref FunctionDeclaration fd)
+    private void analyzeFuncStmt(ref FunctionDecl fd)
     {
         if(fd.Body is null) return;
 
@@ -75,7 +75,7 @@ mixin template DeclAnalysis()
     /**
     * Analyze Main Function
     */
-    private void analyzeMainFunc(ref FunctionDeclaration func)
+    private void analyzeMainFunc(ref FunctionDecl func)
     {
         assert(func.Name == "main");
 

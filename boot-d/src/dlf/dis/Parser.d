@@ -183,10 +183,10 @@ class Parser
             //function
             case TokenType.KwDef:
                 //TODO give symbol table as scope?
-                FunctionDeclaration dcl = parseDef(); 
+                FunctionDecl dcl = parseDef(); 
                 dcl.Parent = pkg;
 
-                pkg.SymTable.assign(dcl, (FunctionDeclaration existing, FunctionDeclaration newOne)
+                pkg.SymTable.assign(dcl, (FunctionDecl existing, FunctionDecl newOne)
                 {
                     debug log.Information("Add override to function %s", existing.Name);
                     existing.Overrides ~= newOne;
@@ -316,14 +316,14 @@ class Parser
     /**
     * Parse Method Definitions
     */
-    private FunctionDeclaration parseDef()
+    private FunctionDecl parseDef()
     {
         //top level node must be PackageDecl,(ClassDeclaration) 
         //def{(Calling Convention)} Identifier(Parameter) ReturnType
         // Block {}
         checkType(TokenType.KwDef);
 
-        auto func = new FunctionDeclaration();
+        auto func = new FunctionDecl();
         func.ReturnType = OpaqueType.Instance;
         func.Loc = mToken.Loc;
     

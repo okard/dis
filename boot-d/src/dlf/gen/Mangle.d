@@ -78,7 +78,7 @@ static class Mangle
                 case NodeKind.PackageDecl: 
                     name = "pkg" ~ to!(string)(d.Name.length) ~ d.Name.replace(".","_") ~ name; 
                     break;
-                case NodeKind.FunctionDeclaration: 
+                case NodeKind.FunctionDecl: 
                     name = "fnc" ~ to!(string)(d.Name.length) ~ d.Name ~ name; 
                     break;
                 case NodeKind.StructDeclaration:

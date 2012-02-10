@@ -36,7 +36,7 @@ public enum NodeKind : ushort
     Declaration,
     PackageDecl,
     ImportDecl,
-    FunctionDeclaration,
+    FunctionDecl,
     VariableDeclaration,
     ValueDeclaration,
     ConstantDeclaration,

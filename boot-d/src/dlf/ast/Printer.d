@@ -69,7 +69,7 @@ class Printer : Visitor
     /**
     * Visit FunctionSymbol
     */
-    void visit(FunctionDeclaration fd)
+    void visit(FunctionDecl fd)
     {
         writet("def(%s): %s(", toString(fd.CallingConv), to!Declaration(fd.Parent).Name);
 
@@ -88,7 +88,7 @@ class Printer : Visitor
         if(fd.Body !is null)
             dispatch(fd.Body, this);
 
-        foreach(FunctionDeclaration fdo; fd.Overrides)
+        foreach(FunctionDecl fdo; fd.Overrides)
             visit(fdo);
     }
 

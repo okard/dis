@@ -162,7 +162,7 @@ final class LambdaExpression : Expression
     //arguments
     //body
 
-    //functionDeclaration -> anonymous function
+    //FunctionDecl -> anonymous function
 }
 
 /**

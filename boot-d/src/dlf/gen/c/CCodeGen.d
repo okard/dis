@@ -212,7 +212,7 @@ class CCodeGen : ObjectGen, Visitor
     /**
     * Compile FunctionSymbol
     */
-    void visit(FunctionDeclaration fd)
+    void visit(FunctionDecl fd)
     {
         //generate for each instantiation of (tpl) function
         foreach(FunctionType ft; fd.Instances)
@@ -237,7 +237,7 @@ class CCodeGen : ObjectGen, Visitor
     */
     private void gen(FunctionType ft)
     {
-        auto funcDecl = to!FunctionDeclaration(ft.FuncDecl);
+        auto funcDecl = to!FunctionDecl(ft.FuncDecl);
 
         //write type information for runtime?
         

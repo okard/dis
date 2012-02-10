@@ -144,7 +144,7 @@ struct FunctionParameter
 /**
 * A Function Base
 */
-class FunctionDeclaration : Declaration
+class FunctionDecl : Declaration
 {
     /// The Function Parameters
     public FunctionParameter[] Parameter;
@@ -159,7 +159,7 @@ class FunctionDeclaration : Declaration
     //public SymbolTable
 
     /// Overrides of this function
-    public FunctionDeclaration[] Overrides;
+    public FunctionDecl[] Overrides;
 
     //required store functiontypes directly with bodies? InstanceBodies.keys
     /// The function types used for template funcs
@@ -181,7 +181,7 @@ class FunctionDeclaration : Declaration
     public CallingConvention CallingConv;
 
     /// Mixin for Kind Declaration
-    mixin(IsKind("FunctionDeclaration"));
+    mixin(IsKind("FunctionDecl"));
 }
 
 /**
@@ -267,8 +267,8 @@ final class ClassDeclaration : Declaration
     public SymbolTable SymTable;
 
 
-    public FunctionDeclaration Ctor;
-    public FunctionDeclaration Dtor;
+    public FunctionDecl Ctor;
+    public FunctionDecl Dtor;
 
     //static ctor, dtor
 

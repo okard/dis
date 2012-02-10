@@ -70,7 +70,7 @@ class TypeAnalysis : Visitor
     }
 
     /// Function Declaration
-    void visit(FunctionDeclaration fd)
+    void visit(FunctionDecl fd)
     {
         //Function Types
 
@@ -180,7 +180,7 @@ class TypeAnalysis : Visitor
         {
             auto ie = cast(IdentifierExpression)ce.Func;
             
-            //if ie.Decl == FunctionDeclaration
+            //if ie.Decl == FunctionDecl
             //
             //decl == functions its required to detect right instance for call
             //here a function instance from template can be created
@@ -335,8 +335,8 @@ class TypeAnalysis : Visitor
                 return (cast(ClassDeclaration)n).SymTable;
             //case NodeKind.TraitDeclaration:
             //    return (cast(TraitDeclaration)n).SymTable;
-            case NodeKind.FunctionDeclaration:
-                return (cast(FunctionDeclaration)n).Body.SymTable;
+            case NodeKind.FunctionDecl:
+                return (cast(FunctionDecl)n).Body.SymTable;
             case NodeKind.BlockStmt:
                 return (cast(BlockStmt)n).SymTable;
 

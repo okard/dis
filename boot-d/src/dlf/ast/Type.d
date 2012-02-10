@@ -262,7 +262,7 @@ class FunctionType : DataType
 {
     /// The base function declaration of this type, Parent
     @property
-    public auto FuncDecl() { return cast(FunctionDeclaration)Parent; }
+    public auto FuncDecl() { return cast(FunctionDecl)Parent; }
 
     /// The function type arguments
     public DataType[] Arguments;

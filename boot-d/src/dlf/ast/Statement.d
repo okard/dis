@@ -82,7 +82,7 @@ final class ReturnStmt : Statement
     public Expression Expr;
 
     /// Function Declaration
-    public FunctionDeclaration Func;
+    public FunctionDecl Func;
 
     /// Create new Return Statement
     public this(Expression expr)
