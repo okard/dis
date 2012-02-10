@@ -36,8 +36,22 @@ enum LogType : ubyte
     Fatal = 6
 }
 
+
+struct LogMessage
+{
+    LogSource source;
+    SysTime time;
+    LogType type;
+    string msg;
+}
+
+public alias void delegate(const ref LogMessage) LogEvent2;
+
 /// Log Event Definition
 public alias Signal!(LogSource, SysTime, LogType, string) LogEvent;
+
+
+
 
 /**
 * Log Source
@@ -46,6 +60,8 @@ struct LogSource
 {
     // Log Source Name
     private string mName;
+
+    //file
 
     //Log Event
     private LogEvent evLog;
@@ -70,7 +86,7 @@ struct LogSource
     /**
     * Verbose Log
     */
-    public void Verbose(T...)(T args)
+    public final void Verbose(T...)(T args)
     {
        log!(LogType.Verbose)(args);
     }
@@ -78,7 +94,7 @@ struct LogSource
     /**
     * Debug Log
     */
-    public void Debug(T...)(T args)
+    public final void Debug(T...)(T args)
     {
        log!(LogType.Debug)(args);
     }
@@ -86,7 +102,7 @@ struct LogSource
     /**
     * Information Log
     */
-    public void Information(T...)(T args)
+    public final void Information(T...)(T args)
     {
        log!(LogType.Information)(args);
     }
@@ -94,7 +110,7 @@ struct LogSource
     /**
     * Warning Log
     */
-    public void Warning(T...)(T args)
+    public final void Warning(T...)(T args)
     {
        log!(LogType.Warning)(args);
     }
@@ -102,7 +118,7 @@ struct LogSource
     /**
     * Error Log
     */
-    public void Error(T...)(T args)
+    public final void Error(T...)(T args)
     {
        log!(LogType.Error)(args);
     }
@@ -136,21 +152,26 @@ struct LogSource
 
 }
 
+/**
+* Log
+*/
 final static class Log
 {
     //all log sources
     private static LogSource[string] logSources;
     
     //static core log source
-    private static LogSource mLog;
+    private static LogSource rootLog;
+
+    public alias rootLog this;
 
     /**
     * Initialize Log
     */
     static this()
     {
-        mLog = LogSource("");
-        logSources[""] = mLog;
+        rootLog = LogSource("");
+        logSources[""] = rootLog;
     }
 
     /**
@@ -158,13 +179,13 @@ final static class Log
     */
     static LogSource opCall()
     {
-        return mLog;
+        return rootLog;
     }
 
     /**
     * Get a specific Log Source
     */
-    static LogSource opCall(string s)
+    static LogSource opCall(string s, bool register = true)
     {
         if (__ctfe)
             return LogSource(s);
@@ -175,7 +196,9 @@ final static class Log
             if(ls == null)
             {
                 logSources[s] = LogSource(s);
-                logSources[s].OnLog += &mLog.OnLog.opCall;
+                if(register)
+                    logSources[s].OnLog += &rootLog.OnLog.opCall;
+
                 ls = &logSources[s];
             }
            
@@ -190,7 +213,6 @@ final static class Log
     {
         return opCall(s);
     }
-
 }
 
 /**
@@ -222,7 +244,7 @@ public LogEvent.Dg FileListener(string file, LogType minimal)
 
     auto f = File(file, "a");
 
-    return (LogSource ls, SysTime t, LogType ty,string msg)
+    return (LogSource ls, SysTime t, LogType ty, string msg)
     {
         if(ty >= minimal)
             f.writefln("%1$s: %2$s", ls.Name, msg);
@@ -239,10 +261,11 @@ unittest
     scope(exit) Log().OnLog.clear();
 
     auto s = Log.Test; 
-    s.OnLog += (LogSource ls, SysTime t, LogType ty,string msg){
+    s.OnLog += (LogSource ls, SysTime t, LogType ty, string msg){
         assert(ls.Name == "Test");
         assert(msg == "foo");
     };
+
 
     s.Information("%s", "foo");
     s.log!(LogType.Verbose)("%s", "foo");

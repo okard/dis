@@ -51,23 +51,26 @@ struct Signal(T...)
     void opOpAssign(string s)(Dg dg) 
         if (s == "-") 
     {
-        int i = 0;
-        
-        //remove all dg
-        while(true)
+        synchronized
         {
-            if( i >= dgHandler.length)
-                break;
-
-            if(dgHandler[i] == dg)
+            int i = 0;
+            
+            //remove all dg
+            while(true)
             {
-                //swap with tail and clear tail
-                dgHandler[i] = dgHandler[dgHandler.length-1];
-                dgHandler.length -= 1;
-                continue;
-            }
+                if( i >= dgHandler.length)
+                    break;
 
-            i++;
+                if(dgHandler[i] == dg)
+                {
+                    //swap with tail and clear tail
+                    dgHandler[i] = dgHandler[dgHandler.length-1];
+                    dgHandler.length -= 1;
+                    continue;
+                }
+
+                i++;
+            }
         }
     } 
 
@@ -87,23 +90,26 @@ struct Signal(T...)
     void opOpAssign(string s)(Fn fn) 
         if (s == "-") 
     {
-        int i = 0;
-        
-        //remove all fn
-        while(true)
+        synchronized
         {
-            if( i >= fnHandler.length)
-                break;
-
-            if(fnHandler[i] == fn)
+            int i = 0;
+            
+            //remove all fn
+            while(true)
             {
-                //swap with tail and clear tail
-                fnHandler[i] = fnHandler[fnHandler.length-1];
-                fnHandler.length -= 1;
-                continue;
-            }
+                if( i >= fnHandler.length)
+                    break;
 
-            i++;
+                if(fnHandler[i] == fn)
+                {
+                    //swap with tail and clear tail
+                    fnHandler[i] = fnHandler[fnHandler.length-1];
+                    fnHandler.length -= 1;
+                    continue;
+                }
+
+                i++;
+            }
         }
     } 
 

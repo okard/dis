@@ -20,6 +20,7 @@ module dlf.basic.Settings;
 
 import std.stdio;
 import std.string;
+import std.regex;
 
 /**
 * Class for Configuration Handling
@@ -36,14 +37,21 @@ class Settings
     private static const char GROUP_CLOSE = ']';
     private static const char COMMENT = '#';
 
+
+    private static Regex!char groupRegEx = regex("\\[.*\\]");
+
+
+
+
+
     /**
     * Load a file
     */
-    void load(string filename)
+    public void load(string filename)
     {
         auto f = File(filename, "r");
         
-        char[] line;
+        string line;
 
         while (f.readln(line))
         {
@@ -51,11 +59,21 @@ class Settings
             if(l[0] == '#')
                 continue;
 
+            auto m = match(l, groupRegEx);
+ 
+
             //[name]
             //key=name
         }
     }
 
+
+    public string getString(string group, string key)
+    {
+        string value = keys[group][key];
+
+        return value;
+    }
 
     //get(string group, string
 
