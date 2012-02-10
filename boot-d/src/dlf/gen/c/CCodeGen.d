@@ -125,7 +125,7 @@ class CCodeGen : ObjectGen, Visitor
         //compile imports?
         //compile other packages first or look if they already compile
         //pd.Imports.Package
-        foreach(ImportDeclaration id; pd.Imports)
+        foreach(ImportDecl id; pd.Imports)
         {
             assert(id.Package !is null, "Import Package not parsed");
 
@@ -202,7 +202,7 @@ class CCodeGen : ObjectGen, Visitor
     /**
     * Compile Import Declarations
     */
-    void visit(ImportDeclaration id)
+    void visit(ImportDecl id)
     {
         //imports are includes
         //get compile header name

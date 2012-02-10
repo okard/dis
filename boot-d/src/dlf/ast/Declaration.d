@@ -85,7 +85,7 @@ final class PackageDecl : Declaration
     public SymbolTable SymTable;
 
     /// Imports
-    ImportDeclaration[] Imports;
+    ImportDecl[] Imports;
 
     /// Runtime enabled
     bool RuntimeEnabled = true;
@@ -103,7 +103,7 @@ final class PackageDecl : Declaration
 /**
 * Import Declaration
 */
-final class ImportDeclaration : Declaration
+final class ImportDecl : Declaration
 {
     /// Import Identifier
     CompositeIdentifier ImportIdentifier;
@@ -115,7 +115,7 @@ final class ImportDeclaration : Declaration
     PackageDecl Package;
 
     /// Mixin for Kind Declaration
-    mixin(IsKind("ImportDeclaration"));
+    mixin(IsKind("ImportDecl"));
 }
 
 

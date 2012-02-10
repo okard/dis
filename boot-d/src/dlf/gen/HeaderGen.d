@@ -55,7 +55,7 @@ class HeaderGen : Visitor
 
     }
     
-    void visit(ImportDeclaration id){  }
+    void visit(ImportDecl id){  }
     void visit(FunctionDeclaration fd){  }
     void visit(VariableDeclaration vd){  }
     void visit(ClassDeclaration cd){  }

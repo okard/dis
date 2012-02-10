@@ -55,7 +55,7 @@ class TypeAnalysis : Visitor
     }
 
     /// Import Declaration
-    void visit(ImportDeclaration id)
+    void visit(ImportDecl id)
     {
         //semantic check for available PackageDecls
         if(id.Package !is null)

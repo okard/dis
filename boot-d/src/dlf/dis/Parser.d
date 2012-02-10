@@ -176,7 +176,7 @@ class Parser
             { 
             //import
             case TokenType.KwImport:
-                ImportDeclaration imp = parseImport();
+                ImportDecl imp = parseImport();
                 imp.Parent = pkg;
                 pkg.Imports ~= imp;
                 break;
@@ -254,11 +254,11 @@ class Parser
     /**
     * Parse Import Declaration
     */
-    private ImportDeclaration parseImport()
+    private ImportDecl parseImport()
     {
         //import std.io.stream;
         checkType(TokenType.KwImport);
-        auto imp = new ImportDeclaration;
+        auto imp = new ImportDecl;
         imp.Loc = mToken.Loc;
 
         //import followed by identifier import foo = asdasd

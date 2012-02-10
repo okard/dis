@@ -95,7 +95,7 @@ class Printer : Visitor
     /**
     * Print Imports
     */
-    void visit(ImportDeclaration imp)
+    void visit(ImportDecl imp)
     {
     }
     
