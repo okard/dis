@@ -116,9 +116,9 @@ class TypeAnalysis : Visitor
 
     //Value
     //Constant
-    void visit(ClassDeclaration cd){}
-    void visit(TraitDeclaration td){}
-    void visit(StructDeclaration sd){}
+    void visit(ClassDecl cd){}
+    void visit(TraitDecl td){}
+    void visit(StructDecl sd){}
     //Alias
     //Enum
     //Variant
@@ -329,12 +329,12 @@ class TypeAnalysis : Visitor
         {
             case NodeKind.PackageDecl:
                 return (cast(PackageDecl)n).SymTable;
-            case NodeKind.StructDeclaration:
-                return (cast(StructDeclaration)n).SymTable;
-            case NodeKind.ClassDeclaration:
-                return (cast(ClassDeclaration)n).SymTable;
-            //case NodeKind.TraitDeclaration:
-            //    return (cast(TraitDeclaration)n).SymTable;
+            case NodeKind.StructDecl:
+                return (cast(StructDecl)n).SymTable;
+            case NodeKind.ClassDecl:
+                return (cast(ClassDecl)n).SymTable;
+            //case NodeKind.TraitDecl:
+            //    return (cast(TraitDecl)n).SymTable;
             case NodeKind.FunctionDecl:
                 return (cast(FunctionDecl)n).Body.SymTable;
             case NodeKind.BlockStmt:

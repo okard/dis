@@ -230,16 +230,16 @@ final class ValDecl : Declaration
 /**
 * Constant Declaration
 */
-final class ConstantDeclaration : Declaration
+final class ConstDecl : Declaration
 {
     /// Mixin for Kind Declaration
-    mixin(IsKind("ConstantDeclaration"));
+    mixin(IsKind("ConstDecl"));
 }
 
 /**
 * Structure Declaration
 */
-final class StructDeclaration : Declaration
+final class StructDecl : Declaration
 {
     /// Symbol Table
     public SymbolTable SymTable;
@@ -254,14 +254,14 @@ final class StructDeclaration : Declaration
     public Declaration BaseStruct;
     
     /// Mixin for Kind Declaration
-    mixin(IsKind("StructDeclaration"));
+    mixin(IsKind("StructDecl"));
 }
 
 
 /**
 * Class Declaration
 */
-final class ClassDeclaration : Declaration
+final class ClassDecl : Declaration
 {
     /// Symbol Table
     public SymbolTable SymTable;
@@ -289,48 +289,48 @@ final class ClassDeclaration : Declaration
 
 
     /// Mixin for Kind Declaration
-    mixin(IsKind("ClassDeclaration"));
+    mixin(IsKind("ClassDecl"));
 }
 
 /**
 * Trait Declaration
 */
-final class TraitDeclaration : Declaration
+final class TraitDecl : Declaration
 {
     //TraitType?
     //Variables, Methods, Properties
 
     /// Mixin for Kind Declaration
-    mixin(IsKind("TraitDeclaration"));
+    mixin(IsKind("TraitDecl"));
 }
 
 /**
 * Alias Declaration
 */
-final class AliasDeclaration : Declaration
+final class AliasDecl : Declaration
 {
     /// The target type
     DataType AliasType;
 
     /// Mixin for Kind Declaration
-    mixin(IsKind("AliasDeclaration"));
+    mixin(IsKind("AliasDecl"));
 }
 
 /**
 * Enum Type
 */
-final class EnumDeclaration : Declaration
+final class EnumDecl : Declaration
 {
     /// Mixin for Kind Declaration
-    mixin(IsKind("EnumDeclaration"));
+    mixin(IsKind("EnumDecl"));
 }
 
 /**
 * Variant Declaration
 */
-final class VariantDeclaration : Declaration
+final class VariantDecl : Declaration
 {
     /// Mixin for Kind Declaration
-    mixin(IsKind("VariantDeclaration"));
+    mixin(IsKind("VariantDecl"));
 }
 

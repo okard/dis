@@ -312,7 +312,7 @@ class CCodeGen : ObjectGen, Visitor
         //p.variable(type, name, initializer);
     }
 
-    void visit(ClassDeclaration cd)
+    void visit(ClassDecl cd)
     {
         //add to type array?
 
@@ -321,9 +321,9 @@ class CCodeGen : ObjectGen, Visitor
         //generate for each class instance
     }
 
-    void visit(StructDeclaration sd){}
+    void visit(StructDecl sd){}
     
-    void visit(TraitDeclaration td)
+    void visit(TraitDecl td)
     {  
         //add to type array?
     }

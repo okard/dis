@@ -291,7 +291,7 @@ class Parser
     /**
     * Parse a Class
     */
-    private ClassDeclaration parseClass()
+    private ClassDecl parseClass()
     {
         //must be class class
         checkType(TokenType.KwObj);
@@ -318,7 +318,7 @@ class Parser
     */
     private FunctionDecl parseDef()
     {
-        //top level node must be PackageDecl,(ClassDeclaration) 
+        //top level node must be PackageDecl,(ClassDecl) 
         //def{(Calling Convention)} Identifier(Parameter) ReturnType
         // Block {}
         checkType(TokenType.KwDef);
@@ -527,12 +527,12 @@ class Parser
     /**
     * Parse a structure
     */
-    private StructDeclaration parseStruct()
+    private StructDecl parseStruct()
     {
         //must be struct 
         checkType(TokenType.KwStruct);
 
-        auto st = new StructDeclaration();
+        auto st = new StructDecl();
         st.SymTable = mSymTable = mSymTable.push(st);
         scope(exit) mSymTable = st.SymTable.pop();
 

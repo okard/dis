@@ -81,13 +81,13 @@ static class Mangle
                 case NodeKind.FunctionDecl: 
                     name = "fnc" ~ to!(string)(d.Name.length) ~ d.Name ~ name; 
                     break;
-                case NodeKind.StructDeclaration:
+                case NodeKind.StructDecl:
                     name = "sct" ~ to!(string)(d.Name.length) ~ d.Name ~ name; 
                     break;
-                case NodeKind.ClassDeclaration: 
+                case NodeKind.ClassDecl: 
                     name = "cls" ~ to!(string)(d.Name.length) ~ d.Name ~ name; 
                     break;
-                case NodeKind.TraitDeclaration: 
+                case NodeKind.TraitDecl: 
                     name = "trt" ~ to!(string)(d.Name.length) ~ d.Name ~ name; 
                     break;
 
@@ -133,7 +133,7 @@ static class Mangle
                 case NodeKind.PackageDecl:
                     name = d.Name ~ name;
                     break;
-                case NodeKind.ClassDeclaration:
+                case NodeKind.ClassDecl:
                     name = "_cls" ~ d.Name ~ name;
                     break;
                 case NodeKind.FunctionSymbol:

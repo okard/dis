@@ -113,10 +113,10 @@ class Printer : Visitor
     /**
     * Class
     */
-    void visit(ClassDeclaration cd){}
-    void visit(TraitDeclaration td){}
+    void visit(ClassDecl cd){}
+    void visit(TraitDecl td){}
 
-    void visit(StructDeclaration sd){}
+    void visit(StructDecl sd){}
 
     /**
     * Visit Block Statement

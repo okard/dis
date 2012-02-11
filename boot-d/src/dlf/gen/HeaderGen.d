@@ -58,9 +58,9 @@ class HeaderGen : Visitor
     void visit(ImportDecl id){  }
     void visit(FunctionDecl fd){  }
     void visit(VarDecl vd){  }
-    void visit(ClassDeclaration cd){  }
-    void visit(TraitDeclaration td){  }
-    void visit(StructDeclaration sd){}
+    void visit(ClassDecl cd){  }
+    void visit(TraitDecl td){  }
+    void visit(StructDecl sd){}
 
     //Statements
     void visit(BlockStmt bs){  }

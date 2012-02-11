@@ -294,7 +294,7 @@ class FunctionType : DataType
 class StructType : DataType
 {
     /// Struct Declaration
-    public StructDeclaration StructDecl;
+    public StructDecl Decl;
     
     //TODO indexes, offsets
 
@@ -311,7 +311,7 @@ class StructType : DataType
 class ClassType : DataType
 {
     /// The original class declaration
-    public ClassDeclaration ClassDecl;
+    public ClassDecl Decl;
 
     //Template Classes can have subclasstypes?
     //Parent Class
@@ -328,7 +328,7 @@ class ClassType : DataType
 class TraitType : DataType
 {
     ///The original trait declaration
-    TraitDeclaration TraitDecl;
+    TraitDecl Decl;
 
 
     mixin(IsKind("TraitType"));
