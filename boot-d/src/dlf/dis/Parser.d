@@ -968,7 +968,7 @@ class Parser
         switch(mToken.Value)
         {
             case "unittest":
-                auto uta = new UnitTestAnnotation();
+                auto uta = new TestAnnotation();
                 uta.Loc = mToken.Loc;
                 return uta; 
             default:

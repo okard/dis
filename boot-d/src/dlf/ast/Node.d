@@ -78,7 +78,7 @@ public enum NodeKind : ushort
 
     //Annotation,
     Annotation,
-    UnitTestAnnotation,
+    TestAnnotation,
 
     //Special
     Comment,
