@@ -332,6 +332,8 @@ unittest
 {
     // Test Source String
     import io = std.stdio;
+    import conv = std.conv;
+    import std.c.stdio;
 
     auto ss = new SourceString("abcd efgh ijkl mnop qrst uvwx yz");
     ss.name = "<unittestsource>";
@@ -349,13 +351,18 @@ unittest
     assert(ss.getChar() == 'a');
 
 
-    /*
+    
     // Test Source file
-    auto temp = io.File.tmpfile();
-    temp.writeln("abcd efgh ijkl mnop qrst uvwx yz");
+    char[L_tmpnam] buffer;
+    tmpnam (buffer.ptr);
+    string filename = conv.to!string(buffer);
+
+    auto f = io.File(filename, "w");
+    f.writeln("abcd efgh ijkl mnop qrst uvwx yz");
+    f.close();
 
     auto sf = new SourceFile();
-    sf.open(temp.name);
+    sf.open(filename);
     
     assert(sf.getChar() == 'a');
     assert(sf.getChar() == 'b');
@@ -368,10 +375,6 @@ unittest
 
     sf.reset();
     assert(sf.getChar() == 'a');
-
-    temp.close();
-    */
-
 
     io.writeln("[TEST] Source Tests passed");
 }
