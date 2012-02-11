@@ -304,7 +304,7 @@ class CCodeGen : ObjectGen, Visitor
     }
     
 
-    void visit(VariableDeclaration vd)
+    void visit(VarDecl vd)
     {
         //value vs reference type
 

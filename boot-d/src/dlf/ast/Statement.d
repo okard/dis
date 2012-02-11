@@ -120,7 +120,7 @@ final class ForStmt : Statement
 */
 final class ForEachStmt : Statement
 {
-    //public VariableDeclaration Var;
+    //public VarDecl Var;
 
     public Expression List;
 

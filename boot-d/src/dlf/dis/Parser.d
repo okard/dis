@@ -482,12 +482,12 @@ class Parser
     /**
     * Parse Variables
     */
-    private VariableDeclaration parseVar()
+    private VarDecl parseVar()
     {
         //"var", SimpleDeclaration;
         //SimpleDeclaration = Identifier, [":" TypeIdentifier], ["=" Expression];
         checkType(TokenType.KwVar);
-        auto var = new VariableDeclaration();
+        auto var = new VarDecl();
         var.Loc = mToken.Loc;
 
         //expect Identifier after var
@@ -564,7 +564,7 @@ class Parser
             switch(mToken.Type)
             {
                 case TokenType.Identifier:
-                    auto var = new VariableDeclaration();
+                    auto var = new VarDecl();
                     var.Name = mToken.Value;
                     accept(TokenType.Colon, "Expect ':' after field identifier");
                     next;

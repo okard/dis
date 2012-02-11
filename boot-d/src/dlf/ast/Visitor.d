@@ -36,7 +36,7 @@ public interface Visitor
     void visit(PackageDecl);
     void visit(ImportDecl);
     void visit(FunctionDecl);
-    void visit(VariableDeclaration);
+    void visit(VarDecl);
     //Value
     //Constant
     void visit(ClassDeclaration);
@@ -98,7 +98,7 @@ Node dispatch(Node n, Visitor v, bool mod = false)
         //Declarations
         case NodeKind.PackageDecl: v.visit(cast(PackageDecl)n); break;
         case NodeKind.ImportDecl: v.visit(cast(ImportDecl)n); break;
-        case NodeKind.VariableDeclaration: v.visit(cast(VariableDeclaration)n); break;
+        case NodeKind.VarDecl: v.visit(cast(VarDecl)n); break;
         //Value
         //Constant
         case NodeKind.FunctionDecl: v.visit(cast(FunctionDecl)n); break;

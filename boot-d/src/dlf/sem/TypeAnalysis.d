@@ -85,7 +85,7 @@ class TypeAnalysis : Visitor
     }
 
     /// Variable Declaration
-    void visit(VariableDeclaration vd)
+    void visit(VarDecl vd)
     {
         sem.Information("Semantic: VarDecl %s", vd.Name);
 

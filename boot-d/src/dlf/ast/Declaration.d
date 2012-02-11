@@ -187,7 +187,7 @@ class FunctionDecl : Declaration
 /**
 * Variable Declaration (var)
 */
-final class VariableDeclaration : Declaration
+final class VarDecl : Declaration
 {
     /// Variable Type
     public DataType VarDataType;
@@ -215,7 +215,7 @@ final class VariableDeclaration : Declaration
     }
 
     /// Mixin for Kind Declaration
-    mixin(IsKind("VariableDeclaration"));
+    mixin(IsKind("VarDecl"));
 }
 
 /**
@@ -279,7 +279,7 @@ final class ClassDeclaration : Declaration
     //Traits
     //Mixins
 
-    //VariableDeclaration[] Variables;
+    //VarDecl[] Variables;
     //FunctionSymbols[] Methods;
 
     /// Is Template Class

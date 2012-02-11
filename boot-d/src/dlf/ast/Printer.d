@@ -103,7 +103,7 @@ class Printer : Visitor
     /**
     * Print Variable Declaration
     */
-    void visit(VariableDeclaration vd)
+    void visit(VarDecl vd)
     {
         writet("var %s : %s = ", vd.Name, vd.VarDataType.toString());
         dispatch(vd.Initializer, this);
