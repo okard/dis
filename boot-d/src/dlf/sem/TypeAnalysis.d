@@ -164,21 +164,21 @@ class TypeAnalysis : Visitor
     //Expressions
 
     /// Literal Expression
-    void visit(LiteralExpression le)
+    void visit(LiteralExpr le)
     {
 
     }
     
     /// Call Expression
-    void visit(CallExpression ce)
+    void visit(CallExpr ce)
     {
         //resolve identifier
         ce.Func = autoDispatch(ce.Func);
 
 
-        if(ce.Func.Kind == NodeKind.IdentifierExpression)
+        if(ce.Func.Kind == NodeKind.IdentExpr)
         {
-            auto ie = cast(IdentifierExpression)ce.Func;
+            auto ie = cast(IdentExpr)ce.Func;
             
             //if ie.Decl == FunctionDecl
             //
@@ -190,7 +190,7 @@ class TypeAnalysis : Visitor
         //delegate
 
 
-        //ce.Func == IdentifierExpression for example
+        //ce.Func == IdentExpr for example
         //assert(ce.Func.ReturnType.Kind == NodeKind.FunctionType, "Can't call a non function");
 
         //target expression should be a function type
@@ -198,7 +198,7 @@ class TypeAnalysis : Visitor
     }
 
     /// Identifier Expression 
-    void visit(IdentifierExpression ie)
+    void visit(IdentExpr ie)
     {
         sem.Information("IdentifierExpr: %s", ie.toString());
 
@@ -263,7 +263,7 @@ class TypeAnalysis : Visitor
       
 
     /// Binary Expression
-    void visit(BinaryExpression be)
+    void visit(BinaryExpr be)
     {
         // analyze left, right
         be.Left = autoDispatch(be.Left);
@@ -279,7 +279,7 @@ class TypeAnalysis : Visitor
         //GT, GTE, LT, LTE
 
         case BinaryOperator.Assign:
-            assert(be.Left.Kind == NodeKind.IdentifierExpression);
+            assert(be.Left.Kind == NodeKind.IdentExpr);
             break;
 
         default:
@@ -291,7 +291,7 @@ class TypeAnalysis : Visitor
         //rewrite operator calls for classes?
         //be.Left is class operator call
         //resolveDecl(be.Left) 
-        //return new CallExpression(); Expr = new IdentifierExpression(decl.name)
+        //return new CallExpr(); Expr = new IdentExpr(decl.name)
 
         //assign expressions -> verify variable type
         //IsVariable(be.Left) (IdentifierExpr)

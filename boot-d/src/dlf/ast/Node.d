@@ -58,14 +58,14 @@ public enum NodeKind : ushort
 
     //Expression
     Expression,
-    LiteralExpression,
-    IdentifierExpression,
-    CallExpression,
-    BinaryExpression,
-    UnaryExpression,
-    AssignExpression,
-    IfExpression,
-    SwitchExpression,
+    LiteralExpr,
+    IdentExpr,
+    CallExpr,
+    BinaryExpr,
+    UnaryExpr,
+    AssignExpr,
+    IfExpr,
+    SwitchExpr,
     
     //DataType
     DataType,

@@ -151,7 +151,7 @@ class Printer : Visitor
     /**
     * FunctionCall
     */
-    void visit(CallExpression call) 
+    void visit(CallExpr call) 
     {
         writet("%s(", call.Func.toString());
 
@@ -166,7 +166,7 @@ class Printer : Visitor
     /**
     * Print Literals
     */
-    void visit(LiteralExpression le)
+    void visit(LiteralExpr le)
     {
         if(le.ReturnType == StringType.Instance)
         {
@@ -179,7 +179,7 @@ class Printer : Visitor
     /**
     * Print Binary Expression
     */
-    void visit(BinaryExpression be)
+    void visit(BinaryExpr be)
     {
         dispatch(be.Left, this);
         write(" <op> ");
@@ -189,7 +189,7 @@ class Printer : Visitor
     /**
     * Visit Dot Identifier
     */
-    void visit(IdentifierExpression di)
+    void visit(IdentExpr di)
     {
         write(di.toString());
     }
@@ -230,9 +230,9 @@ class Printer : Visitor
     {
         switch(exp.Kind)
         {
-            case NodeKind.IdentifierExpression: return (cast(IdentifierExpression) exp).toString();
-            case NodeKind.CallExpression: return toString(cast(CallExpression) exp);
-            case NodeKind.LiteralExpression: return (cast(LiteralExpression)exp).Value;
+            case NodeKind.IdentExpr: return (cast(IdentExpr) exp).toString();
+            case NodeKind.CallExpr: return toString(cast(CallExpr) exp);
+            case NodeKind.LiteralExpr: return (cast(LiteralExpr)exp).Value;
             default: return "<unkown expression>";
         }
     }
@@ -252,7 +252,7 @@ class Printer : Visitor
     /**
     * FunctionCall to string
     */
-    public static string toString(CallExpression fc)
+    public static string toString(CallExpr fc)
     {
         if(fc.Func is null) return "No function expression set";
 

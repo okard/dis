@@ -68,10 +68,10 @@ class HeaderGen : Visitor
     void visit(ReturnStmt rs){  }
 
     //Expressions
-    void visit(LiteralExpression le){  }
-    void visit(CallExpression ce){  }
-    void visit(IdentifierExpression di){  }
-    void visit(BinaryExpression be){  }
+    void visit(LiteralExpr le){  }
+    void visit(CallExpr ce){  }
+    void visit(IdentExpr di){  }
+    void visit(BinaryExpr be){  }
 
     /**
     * Auto Dispatch

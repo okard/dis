@@ -36,12 +36,12 @@ abstract class Expression : Node
 /**
 * Literal Expression Node
 */
-final class LiteralExpression : Expression
+final class LiteralExpr : Expression
 {
     /// Value
     public string Value;
 
-    /// Create new LiteralExpression
+    /// Create new LiteralExpr
     public this(string value, DataType returnType)
     {
         Value = value;
@@ -49,16 +49,16 @@ final class LiteralExpression : Expression
     }
 
     ///Mixin for Kind Declaration
-    mixin(IsKind("LiteralExpression"));
+    mixin(IsKind("LiteralExpr"));
 }
 
 //
 
 /**
-* IdentifierExpression
+* IdentExpr
 * e.g. foo.bar.x.y
 */
-final class IdentifierExpression : Expression
+final class IdentExpr : Expression
 {
     /// The Composite Identifier
     public CompositeIdentifier Identifier;
@@ -78,13 +78,13 @@ final class IdentifierExpression : Expression
     }
 
     ///Mixin for Kind Declaration
-    mixin(IsKind("IdentifierExpression"));
+    mixin(IsKind("IdentExpr"));
 }
 
 /**
 * A Function Call
 */
-final class CallExpression : Expression
+final class CallExpr : Expression
 {
     ///Expression to retrieve a function type
     Expression Func;
@@ -95,7 +95,7 @@ final class CallExpression : Expression
     //return type is mFunction.solve().mReturnType
 
     ///Mixin for Kind Declaration
-    mixin(IsKind("CallExpression"));
+    mixin(IsKind("CallExpr"));
 }
 
 
@@ -115,7 +115,7 @@ public enum BinaryOperator : ubyte
 /**
 * Binary Expression
 */
-final class BinaryExpression : Expression
+final class BinaryExpr : Expression
 {
     /// Operator
     BinaryOperator Op; 
@@ -127,7 +127,7 @@ final class BinaryExpression : Expression
     Expression Right;
 
     /// Mixin for Kind Declaration
-    mixin(IsKind("BinaryExpression"));
+    mixin(IsKind("BinaryExpr"));
 }
 
 /**
@@ -142,7 +142,7 @@ public enum UnaryOperator : ubyte
 /**
 * Unary Expression
 */
-final class UnaryExpression : Expression
+final class UnaryExpr : Expression
 {
     /// The Operator
     UnaryOperator Op;
@@ -151,7 +151,7 @@ final class UnaryExpression : Expression
     Expression Expr;
 
     /// Mixin for Kind Declaration
-    mixin(IsKind("UnaryExpression"));
+    mixin(IsKind("UnaryExpr"));
 }
 
 /**
@@ -168,25 +168,25 @@ final class LambdaExpression : Expression
 /**
 * If Expression
 */
-final class IfExpression : Expression
+final class IfExpr : Expression
 {
     /// Condition
     Expression Condition;
     
     /// Else Ifs Expressions
-    IfExpression[] ElseIfsExpr;
+    IfExpr[] ElseIfsExpr;
 
     /// Else Expression
     Expression ElseExpr;
 
     ///Mixin for Kind Declaration
-    mixin(IsKind("IfExpression"));
+    mixin(IsKind("IfExpr"));
 }
 
 /**
 * Switch Expression
 */
-final class SwitchExpression : Expression
+final class SwitchExpr : Expression
 {
     ///Condition?
     Expression Condition;
@@ -196,5 +196,5 @@ final class SwitchExpression : Expression
         //CaseExpression?
 
     ///Mixin for Kind Declaration
-    mixin(IsKind("SwitchExpression"));
+    mixin(IsKind("SwitchExpr"));
 }

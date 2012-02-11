@@ -156,7 +156,7 @@ class Parser
 
         //parse package identifier
         accept(TokenType.Identifier, "Expected Identifier after package");
-        auto di = parseIdentifierExpression();
+        auto di = parseIdentExpr();
         pkg.Name = di.toString();
 
         //Look for semicolon
@@ -543,7 +543,7 @@ class Parser
         if(mToken.Type == TokenType.Colon)
         {
             next;
-            st.BaseIdentifier = parseIdentifierExpression();
+            st.BaseIdentifier = parseIdentExpr();
             next;
         }
 
@@ -758,38 +758,38 @@ class Parser
         {
             // Keyword Expressions
             case TokenType.KwIf: 
-                expr = parseIfExpression();
+                expr = parseIfExpr();
                 break;
             case TokenType.KwSwitch: 
-                expr = parseSwitchExpression();
+                expr = parseSwitchExpr();
                 break;
 
             // Literal Expressions
             //TODO Pay Attention for next Token when it is an op
             case TokenType.String:
                 //TODO Fix it, a String Literal is a pointer to a char[] array
-                expr = new LiteralExpression(mToken.Value, StringType.Instance);
+                expr = new LiteralExpr(mToken.Value, StringType.Instance);
                 expr.Loc = mToken.Loc;
                 break;
             case TokenType.Char:
-                expr =  new LiteralExpression(mToken.Value, CharType.Instance); 
+                expr =  new LiteralExpr(mToken.Value, CharType.Instance); 
                 expr.Loc = mToken.Loc;
                 break;
             case TokenType.Integer:
-                expr = new LiteralExpression(mToken.Value, IntType.Instance); 
+                expr = new LiteralExpr(mToken.Value, IntType.Instance); 
                 expr.Loc = mToken.Loc;
                 break;
             case TokenType.Float:
-                expr = new LiteralExpression(mToken.Value, FloatType.Instance); 
+                expr = new LiteralExpr(mToken.Value, FloatType.Instance); 
                 expr.Loc = mToken.Loc;
                 break;
             case TokenType.Double:
-                expr = new LiteralExpression(mToken.Value, DoubleType.Instance);
+                expr = new LiteralExpr(mToken.Value, DoubleType.Instance);
                 expr.Loc = mToken.Loc;
                 break;
             case TokenType.KwTrue:
             case TokenType.KwFalse:
-                expr = new LiteralExpression(mToken.Value, BoolType.Instance);
+                expr = new LiteralExpr(mToken.Value, BoolType.Instance);
                 expr.Loc = mToken.Loc;
                 break;
 
@@ -798,7 +798,7 @@ class Parser
 
             case TokenType.KwThis: 
                 /*identifier?*/
-                //expr = parseIdentifierExpression();
+                //expr = parseIdentExpr();
                 break;
             case TokenType.ROBracket: 
                 expr = parseExpression;
@@ -806,7 +806,7 @@ class Parser
                 break;
             case TokenType.Identifier:
                 /*look under switch*/ 
-                expr = parseIdentifierExpression();
+                expr = parseIdentExpr();
                 break;
             default:
                 Error(mToken.Loc, "No valid token for parse an expression");
@@ -818,7 +818,7 @@ class Parser
             next();
 
             //Create Function Call
-            auto call = new CallExpression();
+            auto call = new CallExpr();
             call.Func = expr;
 
             while(peek(1) != TokenType.RCBracket)
@@ -859,7 +859,7 @@ class Parser
             //Binary Assign Expression
             case TokenType.Assign:
                 next;
-                auto be = new BinaryExpression();
+                auto be = new BinaryExpr();
                 be.Op = getBinaryOperator(mToken.Type);
                 be.Left = expr;
                 expr.Parent = be;
@@ -900,7 +900,7 @@ class Parser
     /**
     * Parse If Expression
     */
-    private Expression parseIfExpression()
+    private Expression parseIfExpr()
     {
         checkType(TokenType.KwIf);
         Error(mToken.Loc, "TODO: Can't parse If Expressions yet");
@@ -911,7 +911,7 @@ class Parser
     /**
     * Parse Switch Expression
     */
-    private Expression parseSwitchExpression()
+    private Expression parseSwitchExpr()
     {
         checkType(TokenType.KwSwitch);
         Error(mToken.Loc, "TODO: Can't parse Switch Expressions yet");
@@ -921,11 +921,11 @@ class Parser
     /**
     * Parse Identifier
     */
-    private IdentifierExpression parseIdentifierExpression()
+    private IdentExpr parseIdentExpr()
     {
         checkType(TokenType.Identifier);
 
-        auto di = new IdentifierExpression();
+        auto di = new IdentExpr();
         di.Loc = mToken.Loc;
         di.append(mToken.Value);
 

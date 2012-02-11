@@ -248,7 +248,7 @@ final class StructDecl : Declaration
     public CallingConvention CallingConv;
 
     /// Inherits from Base
-    public IdentifierExpression BaseIdentifier;
+    public IdentExpr BaseIdentifier;
     
     /// Base Resolved
     public Declaration BaseStruct;

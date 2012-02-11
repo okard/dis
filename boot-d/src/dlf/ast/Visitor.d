@@ -58,13 +58,13 @@ public interface Visitor
     //Continue
 
     //Expressions
-    void visit(LiteralExpression);
-    void visit(CallExpression);
-    void visit(IdentifierExpression);
-    void visit(BinaryExpression);
+    void visit(LiteralExpr);
+    void visit(CallExpr);
+    void visit(IdentExpr);
+    void visit(BinaryExpr);
     //Unary
-    //IfExpression
-    //SwitchExpression
+    //IfExpr
+    //SwitchExpr
     //Lambda
     
 
@@ -78,7 +78,7 @@ public interface Visitor
     //voids with ref for modification or not?
     //handle in dispatch so pd = dispatch(pd) works?
     //but remove the requirement of return variables?
-    //in-out visitor void visit(LiteralExpression in, Node out);
+    //in-out visitor void visit(LiteralExpr in, Node out);
     //disable special ranges (declarations, statements, expression, types, and so on)
 }
 
@@ -119,11 +119,11 @@ Node dispatch(Node n, Visitor v, bool mod = false)
         //While
         
         //Expressions
-        case NodeKind.LiteralExpression: v.visit(cast(LiteralExpression)n); break;
-        case NodeKind.CallExpression: v.visit(cast(CallExpression)n); break;
-        case NodeKind.IdentifierExpression: v.visit(cast(IdentifierExpression)n); break;
-        case NodeKind.BinaryExpression: v.visit(cast(BinaryExpression)n); break;
-        //UnaryExpression
+        case NodeKind.LiteralExpr: v.visit(cast(LiteralExpr)n); break;
+        case NodeKind.CallExpr: v.visit(cast(CallExpr)n); break;
+        case NodeKind.IdentExpr: v.visit(cast(IdentExpr)n); break;
+        case NodeKind.BinaryExpr: v.visit(cast(BinaryExpr)n); break;
+        //UnaryExpr
         //If
         //Switch
 
