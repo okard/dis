@@ -221,10 +221,10 @@ final class VarDecl : Declaration
 /**
 * Value Declaration
 */
-final class ValueDeclaration : Declaration
+final class ValDecl : Declaration
 {
     /// Mixin for Kind Declaration
-    mixin(IsKind("ValueDeclaration"));
+    mixin(IsKind("ValDecl"));
 }
 
 /**
