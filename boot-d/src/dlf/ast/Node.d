@@ -59,7 +59,7 @@ public enum NodeKind : ushort
     //Expression
     Expression,
     LiteralExpr,
-    IdentExpr,
+    DotExpr,
     CallExpr,
     BinaryExpr,
     UnaryExpr,
@@ -70,6 +70,7 @@ public enum NodeKind : ushort
     //DataType
     DataType,
     OpaqueType,
+    DotType,
     UnsolvedType,
     FunctionType,
     StructType,

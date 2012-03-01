@@ -52,13 +52,12 @@ final class LiteralExpr : Expression
     mixin(IsKind("LiteralExpr"));
 }
 
-//
 
 /**
-* IdentExpr
+* DotExpr
 * e.g. foo.bar.x.y
 */
-final class IdentExpr : Expression
+final class DotExpr : Expression
 {
     /// The Composite Identifier
     public CompositeIdentifier Identifier;
@@ -78,7 +77,7 @@ final class IdentExpr : Expression
     }
 
     ///Mixin for Kind Declaration
-    mixin(IsKind("IdentExpr"));
+    mixin(IsKind("DotExpr"));
 }
 
 /**

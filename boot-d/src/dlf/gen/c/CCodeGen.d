@@ -362,7 +362,7 @@ class CCodeGen : ObjectGen, Visitor
         //p.call(name, [args]);
     }
 
-    void visit(IdentExpr di)
+    void visit(DotExpr di)
     {
         //TODO how this?
         // this->foo->bar when reference

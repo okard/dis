@@ -51,7 +51,7 @@ class Parser
     private LogSource log = Log("Parser");
 
     /// Lexer
-    private scope Lexer mLex;
+    private scope Lexer lexer;
 
     /// Current Token
     private Token mToken;
@@ -65,12 +65,15 @@ class Parser
     /// Internal Types (Builtin)
     public static DataType[string] InternalTypes;
 
+
+    //currentScope { Package, Class, Function, Trait, }
+
     /**
     * Ctor
     */
     public this()
     {
-        mLex = new Lexer();
+        lexer = new Lexer();
     }
 
     /**
@@ -108,8 +111,8 @@ class Parser
             throw new Exception("No Source available");
 
         //open source file and set ignore tokens
-        mLex.open(src);
-        mLex.Ignore = [TokenType.Comment, TokenType.DocComment, TokenType.EOL];
+        lexer.open(src);
+        lexer.Ignore = [TokenType.Comment, TokenType.DocComment, TokenType.EOL];
         //create a event hook for some kind of tokens for example to parse comment tokens
         //the tokens does not go through regular getToken function of lexer?
         
@@ -156,7 +159,7 @@ class Parser
 
         //parse package identifier
         accept(TokenType.Identifier, "Expected Identifier after package");
-        auto di = parseIdentExpr();
+        auto di = parseDotExpr();
         pkg.Name = di.toString();
 
         //Look for semicolon
@@ -293,20 +296,32 @@ class Parser
     */
     private ClassDecl parseClass()
     {
+        //SYNTAX: class(kw param) identifier(template args) : inherits {
+        
         //must be class class
         checkType(TokenType.KwObj);
+        auto classDecl = new ClassDecl();
 
-        // class(kw param) identifier(template args) : inherits {
         //parseKeywordParameter();
 
         accept(TokenType.Identifier, "Expects identifier for class");
+        classDecl.Name = mToken.Value;
 
+        //template ()
+        if(peek(1) == TokenType.ROBracket)
+        {
+            Error(mToken.Loc, "Template Class Parsing not yet supported");
+        }
+
+        //inheritance
         if(peek(1) == TokenType.Colon)
         {
             next;
             parseDataType();
+            // comma value for multi-inheritance and traits
         }
         
+        accept(TokenType.COBracket, "Expects { for class declaration");
          
 
         Error(mToken.Loc, "Class Parsing not yet supported");
@@ -536,18 +551,20 @@ class Parser
         st.SymTable = mSymTable = mSymTable.push(st);
         scope(exit) mSymTable = st.SymTable.pop();
 
+        //struct name
         accept(TokenType.Identifier, "Expect identifier after struct");
         st.Name = mToken.Value;
 
+        //inheritance
         next;
         if(mToken.Type == TokenType.Colon)
         {
             next;
-            st.BaseIdentifier = parseIdentExpr();
+            st.BaseIdentifier = parseDotExpr();
             next;
         }
 
-
+        //definition
         if(mToken.Type == TokenType.Semicolon)
         {
             next;
@@ -641,7 +658,8 @@ class Parser
         //return
         case TokenType.KwReturn:
             next;
-            return new ReturnStmt(parseExpression());
+            auto expr = parseExpression();
+            return new ReturnStmt(expr);
         //Expression
         default:
             auto exp = parseExpression();
@@ -798,7 +816,7 @@ class Parser
 
             case TokenType.KwThis: 
                 /*identifier?*/
-                //expr = parseIdentExpr();
+                //expr = parseDotExpr();
                 break;
             case TokenType.ROBracket: 
                 expr = parseExpression;
@@ -806,7 +824,7 @@ class Parser
                 break;
             case TokenType.Identifier:
                 /*look under switch*/ 
-                expr = parseIdentExpr();
+                expr = parseDotExpr();
                 break;
             default:
                 Error(mToken.Loc, "No valid token for parse an expression");
@@ -820,6 +838,8 @@ class Parser
             //Create Function Call
             auto call = new CallExpr();
             call.Func = expr;
+
+            //TODO named args
 
             while(peek(1) != TokenType.RCBracket)
             {
@@ -921,11 +941,11 @@ class Parser
     /**
     * Parse Identifier
     */
-    private IdentExpr parseIdentExpr()
+    private DotExpr parseDotExpr()
     {
         checkType(TokenType.Identifier);
 
-        auto di = new IdentExpr();
+        auto di = new DotExpr();
         di.Loc = mToken.Loc;
         di.append(mToken.Value);
 
@@ -968,6 +988,7 @@ class Parser
         switch(mToken.Value)
         {
             case "unittest":
+            case "test":
                 auto uta = new TestAnnotation();
                 uta.Loc = mToken.Loc;
                 return uta; 
@@ -1007,6 +1028,7 @@ class Parser
             {
                 //. - composite datatype
                 case TokenType.Dot: 
+                    //DotType
                     Error(mToken.Loc, "composited datatypes not yet supported");
                     break;
 
@@ -1105,7 +1127,7 @@ class Parser
     {
         while(n > 0)
         {
-            mToken = mLex.getToken();
+            mToken = lexer.getToken();
             n--;
         }
     }
@@ -1125,7 +1147,7 @@ class Parser
     */
     private TokenType peek(ushort lookahead = 1)
     {
-        return mLex.peekToken(lookahead).Type;
+        return lexer.peekToken(lookahead).Type;
     }
 
     /**
@@ -1169,7 +1191,7 @@ class Parser
     @property 
     public Source Src()
     {
-        return mLex.Src;
+        return lexer.Src;
     }
 
     /**

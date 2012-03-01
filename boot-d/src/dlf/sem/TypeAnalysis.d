@@ -176,9 +176,9 @@ class TypeAnalysis : Visitor
         ce.Func = autoDispatch(ce.Func);
 
 
-        if(ce.Func.Kind == NodeKind.IdentExpr)
+        if(ce.Func.Kind == NodeKind.DotExpr)
         {
-            auto ie = cast(IdentExpr)ce.Func;
+            auto ie = cast(DotExpr)ce.Func;
             
             //if ie.Decl == FunctionDecl
             //
@@ -190,7 +190,7 @@ class TypeAnalysis : Visitor
         //delegate
 
 
-        //ce.Func == IdentExpr for example
+        //ce.Func == DotExpr for example
         //assert(ce.Func.ReturnType.Kind == NodeKind.FunctionType, "Can't call a non function");
 
         //target expression should be a function type
@@ -198,7 +198,7 @@ class TypeAnalysis : Visitor
     }
 
     /// Identifier Expression 
-    void visit(IdentExpr ie)
+    void visit(DotExpr ie)
     {
         sem.Information("IdentifierExpr: %s", ie.toString());
 
@@ -279,7 +279,7 @@ class TypeAnalysis : Visitor
         //GT, GTE, LT, LTE
 
         case BinaryOperator.Assign:
-            assert(be.Left.Kind == NodeKind.IdentExpr);
+            assert(be.Left.Kind == NodeKind.DotExpr);
             break;
 
         default:
@@ -291,7 +291,7 @@ class TypeAnalysis : Visitor
         //rewrite operator calls for classes?
         //be.Left is class operator call
         //resolveDecl(be.Left) 
-        //return new CallExpr(); Expr = new IdentExpr(decl.name)
+        //return new CallExpr(); Expr = new DotExpr(decl.name)
 
         //assign expressions -> verify variable type
         //IsVariable(be.Left) (IdentifierExpr)

@@ -22,6 +22,7 @@ import dlf.ast.Node;
 import dlf.ast.Visitor;
 import dlf.ast.Declaration;
 import dlf.ast.Statement;
+import dlf.ast.Special;
 import dlf.basic.Util;
 
 /**
@@ -163,8 +164,22 @@ final class OpaqueType : DataType
 }
 
 /**
+* A composite type name
+*/
+final class DotType : DataType
+{
+    CompositeIdentifier identifier;
+    alias identifier this;
+
+    DataType ResolvedType;
+
+    mixin(IsKind("DotType"));
+}
+
+/**
 * Unsolved Type
 * Type setted, but not yet solved
+* Replaced through dot type
 */
 final class UnsolvedType : DataType
 {
