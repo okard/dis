@@ -87,6 +87,8 @@ final class PackageDecl : Declaration
     /// Imports
     ImportDecl[] Imports;
 
+    //TODO Defined Versions
+
     /// Runtime enabled
     bool RuntimeEnabled = true;
 
@@ -191,6 +193,7 @@ final class VarDecl : Declaration
 {
     /// Variable Type
     public DataType VarDataType;
+    //TODO naming
 
     /// Initializer
     public Expression Initializer;
@@ -248,7 +251,7 @@ final class StructDecl : Declaration
     public CallingConvention CallingConv;
 
     /// Inherits from Base
-    public DotExpr BaseIdentifier;
+    public DotIdExpr BaseIdentifier;
     
     /// Base Resolved
     public Declaration BaseStruct;

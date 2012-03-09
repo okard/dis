@@ -61,13 +61,12 @@ enum TokenType //: ubyte//c main
     SharpSign,      // #
     Dollar,         // $
 
-    //Binary & Math Operator
+    //Binary
     Add,            // +
     Sub,            // -
     Mul,            // *
     Div,            // /
     Mod,            // %
-    Not,            // ! Prefix Not, Postfix Tmpl Instance
     Xor,            // ^
     And,            // &
     Or,             // |
@@ -81,13 +80,18 @@ enum TokenType //: ubyte//c main
     LOr,            // || Logic Or
     Equal,          // ==
     NotEqual,       // !=
-    
+
     ConcatAssign,   // ~=
     AddAssign,      // +=
     SubAssign,      // -=
     MulAssign,      // *=
     DivAssign,      // /=
     XorAssign,      // ^=
+    
+    //Unary Operator
+    Not,            // ! Prefix Not, Postfix Tmpl Instance
+    Incr,           //++
+    Decr,           //--
 
     // := special assign?
     // <<
@@ -139,7 +143,6 @@ enum TokenType //: ubyte//c main
 
     //To think about: 
     // -op, operator overloading 
-    // -obj, classes or singletons 
     // -asm inline assembler (parse as string???)
     // -dsl[linq] for embedded dsl, compiler plugins
     // -ptr for pointer types
@@ -158,6 +161,7 @@ string toString(TokenType tok)
 {
     final switch(tok)
     {
+    //Special
     case TokenType.None:        return "<None>";
     case TokenType.EOF:         return "<EOF>";
     case TokenType.Identifier:  return "<Identifier>";
@@ -169,6 +173,7 @@ string toString(TokenType tok)
     case TokenType.Hex:         return "<Hex>";
     case TokenType.Binary:      return "<Binary>";
     case TokenType.EOL:         return "<EOL>";
+    //Default
     case TokenType.Semicolon:   return ";";
     case TokenType.Comma:       return ",";
     case TokenType.Dot:         return ".";
@@ -210,6 +215,10 @@ string toString(TokenType tok)
     case TokenType.MulAssign:   return "*=";
     case TokenType.DivAssign:   return "/=";
     case TokenType.XorAssign:   return "^=";
+    //Unary Operator
+    case TokenType.Incr:        return "++";
+    case TokenType.Decr:        return "--";
+
     //Keywords
     case TokenType.KwPackage:   return "package";
     case TokenType.KwDef:       return "def";

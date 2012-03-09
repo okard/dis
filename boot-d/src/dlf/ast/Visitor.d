@@ -23,6 +23,7 @@ public import dlf.ast.Declaration;
 public import dlf.ast.Statement;
 public import dlf.ast.Expression;
 public import dlf.ast.Annotation;
+public import dlf.ast.Type;
 public import dlf.ast.SymbolTable;
 
 /**
@@ -60,7 +61,7 @@ public interface Visitor
     //Expressions
     void visit(LiteralExpr);
     void visit(CallExpr);
-    void visit(DotExpr);
+    void visit(DotIdExpr);
     void visit(BinaryExpr);
     //Unary
     //IfExpr
@@ -72,6 +73,8 @@ public interface Visitor
     //UnitTest
 
     //Types
+    DataType visit(DataType);
+
     
     }
 
@@ -121,18 +124,16 @@ Node dispatch(Node n, Visitor v, bool mod = false)
         //Expressions
         case NodeKind.LiteralExpr: v.visit(cast(LiteralExpr)n); break;
         case NodeKind.CallExpr: v.visit(cast(CallExpr)n); break;
-        case NodeKind.DotExpr: v.visit(cast(DotExpr)n); break;
+        case NodeKind.DotIdExpr: v.visit(cast(DotIdExpr)n); break;
         case NodeKind.BinaryExpr: v.visit(cast(BinaryExpr)n); break;
         //UnaryExpr
         //If
         //Switch
 
         //Types
-        //Builtin
-        //FunctionType
-        //ClassType
-        //Unsovled
-        //Pointer/Array/
+        case NodeKind.DataType: v.visit(cast(DataType)n); break;
+        case NodeKind.DotType: v.visit(cast(DataType)n); break;
+
 
         //Special
         case NodeKind.Semantic: assert(false, "Can't dispatch special semantic node");

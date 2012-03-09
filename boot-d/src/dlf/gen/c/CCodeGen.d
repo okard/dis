@@ -362,7 +362,7 @@ class CCodeGen : ObjectGen, Visitor
         //p.call(name, [args]);
     }
 
-    void visit(DotExpr di)
+    void visit(DotIdExpr di)
     {
         //TODO how this?
         // this->foo->bar when reference
@@ -376,6 +376,8 @@ class CCodeGen : ObjectGen, Visitor
         //write be.Right
     }
 
+
+    DataType visit(DataType dt){ return dt; }
 
     /// Mixin Dispatch Utils
     mixin DispatchUtils!false;

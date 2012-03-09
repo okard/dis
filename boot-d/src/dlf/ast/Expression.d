@@ -53,32 +53,7 @@ final class LiteralExpr : Expression
 }
 
 
-/**
-* DotExpr
-* e.g. foo.bar.x.y
-*/
-final class DotExpr : Expression
-{
-    /// The Composite Identifier
-    public CompositeIdentifier Identifier;
 
-    /// Alias This the Composite Identifier
-    alias Identifier this;
-
-    /// Target Declaration
-    public Declaration Decl;
-
-    /**
-    * To String
-    */
-    override string toString() 
-    {   
-        return Identifier.toString();
-    }
-
-    ///Mixin for Kind Declaration
-    mixin(IsKind("DotExpr"));
-}
 
 /**
 * A Function Call
@@ -106,15 +81,21 @@ final class CallExpr : Expression
 */
 public enum BinaryOperator : ubyte 
 { 
+    // Binary Ops
     Add, Sub, Mul, Div, Mod, Power, And, Or, Xor, LAnd, LOr, Concat,
-    //Shift
-    Assign 
+    // Shifts
+    LLShift, LRShift, ALShift, ARShift,
+    // Assign Ops
+    Assign, AddAssign, SubAssign, MulAssign, DivAssign, ModAssign, PowerAssign, 
+            AndAssign, OrAssign, XorAssign, ConcatAssign,
+    // Special Dot Op
+    Dot
 }
 
 /**
 * Binary Expression
 */
-final class BinaryExpr : Expression
+class BinaryExpr : Expression
 {
     /// Operator
     BinaryOperator Op; 
@@ -127,6 +108,49 @@ final class BinaryExpr : Expression
 
     /// Mixin for Kind Declaration
     mixin(IsKind("BinaryExpr"));
+}
+
+/**
+* Dot Expression
+* eg. this.foobar.abc
+*     super.callit
+*     abc.foo
+*/
+final class DotExpr : BinaryExpr
+{
+    public this()
+    {
+        Op = BinaryOperator.Dot;
+    }
+}
+
+/**
+* DotIdExpr
+* e.g. foo.bar.x.y
+*/
+final class DotIdExpr : Expression
+{
+    /// The Composite Identifier
+    public CompositeIdentifier Identifier;
+
+    /// Alias This the Composite Identifier
+    alias Identifier this;
+
+    /// Target Declaration
+    public Declaration Decl;
+
+    //this, super, ....
+
+    /**
+    * To String
+    */
+    override string toString() 
+    {   
+        return Identifier.toString();
+    }
+
+    ///Mixin for Kind Declaration
+    mixin(IsKind("DotIdExpr"));
 }
 
 /**

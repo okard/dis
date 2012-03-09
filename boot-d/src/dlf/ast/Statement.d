@@ -169,3 +169,18 @@ final class BreakStmt : Statement
 
 //Try Catch Finally Throw
 
+final class ThrowStmt : Statement
+{
+}
+
+final class TryStmt : Statement
+{
+}
+
+final class CatchStmt : Statement
+{
+}
+
+final class FinallyStmt : Statement
+{
+}

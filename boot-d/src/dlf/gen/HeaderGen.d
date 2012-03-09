@@ -28,7 +28,7 @@ import dlf.ast.Visitor;
 /**
 * Generate Dis Header
 */
-class HeaderGen : Visitor
+class HeaderGen
 {
     /// Header File
     private File hdr;
@@ -45,7 +45,7 @@ class HeaderGen : Visitor
 
         //hdr = File(file, "w");
         
-        dispatchAuto(pd);
+        //dispatchAuto(pd);
     }
 
     //Declarations
@@ -70,25 +70,11 @@ class HeaderGen : Visitor
     //Expressions
     void visit(LiteralExpr le){  }
     void visit(CallExpr ce){  }
-    void visit(DotExpr di){  }
+    void visit(DotIdExpr di){  }
     void visit(BinaryExpr be){  }
 
-    /**
-    * Auto Dispatch
-    */
-    private T dispatchAuto(T)(T e)
-    {
-        return cast(T)dispatch(e, this);
-    }
 
-    /**
-    * Map Dispatch to Arrays
-    */
-    private void mapDispatch(T)(T[] elements)
-    {
-        for(int i=0; i < elements.length; i++)
-        {
-            dispatchAuto(elements[i]);
-        }
-    }
+    //DataType
+    DataType visit(DataType dt){ return dt; }
+
 }

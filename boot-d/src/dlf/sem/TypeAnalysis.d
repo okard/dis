@@ -93,6 +93,9 @@ class TypeAnalysis : Visitor
         if(vd.Initializer !is null)
             vd.Initializer = autoDispatch(vd.Initializer);
 
+        //Solve Type
+        vd.VarDataType = autoDispatch(vd.VarDataType);
+
         //Set Datatype for Variable
         if(IsOpaque(vd.VarDataType))
         {
@@ -176,9 +179,9 @@ class TypeAnalysis : Visitor
         ce.Func = autoDispatch(ce.Func);
 
 
-        if(ce.Func.Kind == NodeKind.DotExpr)
+        if(ce.Func.Kind == NodeKind.DotIdExpr)
         {
-            auto ie = cast(DotExpr)ce.Func;
+            auto ie = cast(DotIdExpr)ce.Func;
             
             //if ie.Decl == FunctionDecl
             //
@@ -190,7 +193,7 @@ class TypeAnalysis : Visitor
         //delegate
 
 
-        //ce.Func == DotExpr for example
+        //ce.Func == DotIdExpr for example
         //assert(ce.Func.ReturnType.Kind == NodeKind.FunctionType, "Can't call a non function");
 
         //target expression should be a function type
@@ -198,7 +201,7 @@ class TypeAnalysis : Visitor
     }
 
     /// Identifier Expression 
-    void visit(DotExpr ie)
+    void visit(DotIdExpr ie)
     {
         sem.Information("IdentifierExpr: %s", ie.toString());
 
@@ -279,7 +282,7 @@ class TypeAnalysis : Visitor
         //GT, GTE, LT, LTE
 
         case BinaryOperator.Assign:
-            assert(be.Left.Kind == NodeKind.DotExpr);
+            assert(be.Left.Kind == NodeKind.DotIdExpr);
             break;
 
         default:
@@ -291,7 +294,7 @@ class TypeAnalysis : Visitor
         //rewrite operator calls for classes?
         //be.Left is class operator call
         //resolveDecl(be.Left) 
-        //return new CallExpr(); Expr = new DotExpr(decl.name)
+        //return new CallExpr(); Expr = new DotIdExpr(decl.name)
 
         //assign expressions -> verify variable type
         //IsVariable(be.Left) (IdentifierExpr)
@@ -304,7 +307,23 @@ class TypeAnalysis : Visitor
 
     ///////////////////////////////////////////////////////////////////////////
     //Types
+
+    DataType visit(DataType dt)
+    { 
+        //TODO resolve DotType here
+        //same as DotIdExpr? 
+
+        //make a solve CompositeIdentifier?
+        //difference in structure array types template instances, create instances here for templates?
+
+        return dt; 
+    }
     
+
+    
+    ///////////////////////////////////////////////////////////////////////////
+    //Internal
+
 
     /// Mixin Dispatch Utils
     mixin DispatchUtils!true;

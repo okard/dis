@@ -51,7 +51,9 @@ abstract class DataType : Node
         {
             return _PtrInstance;
         }
-     }
+    }
+
+    //RefType instead of Ptr Type
 
     mixin(IsKind("DataType"));
 }
@@ -173,29 +175,13 @@ final class DotType : DataType
 
     DataType ResolvedType;
 
+    //DataType left;
+
     mixin(IsKind("DotType"));
 }
 
-/**
-* Unsolved Type
-* Type setted, but not yet solved
-* Replaced through dot type
-*/
-final class UnsolvedType : DataType
-{
-    /// The datatype in string representation
-    string TypeString;
-    //CompositeIdentifier
 
-    //ctor
-    this(string type){ TypeString = type; }
-    /// to string
-    override string toString() { return TypeString; };
-    mixin(IsKind("UnsolvedType"));
-}
-
-//unparsed datatype?
-// string array?
+// string array? / char array / byte array 
 
 
 /**
@@ -205,19 +191,19 @@ final class UnsolvedType : DataType
 class PointerType : DataType 
 {
     ///The Type this PoiThe Intelligent Transport Layer - nterType points to
-    public DataType PointType;
+    public DataType PtrType;
 
     ///Create new PointerType
     public this(DataType t)
     {
-        PointType = t;
+        PtrType = t;
         //TODO cache with static opcall?
     }
 
     ///toString
     override string toString() 
     { 
-        return "ptr " ~ PointType.toString(); 
+        return "ptr " ~ PtrType.toString(); 
     }
 }
 

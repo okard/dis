@@ -28,7 +28,7 @@ enum TargetType { Executable, StaticLib, SharedLib, Binary }
 enum TargetPlatform { Linux, MacOSX, Windows }
 
 /// Target Arch
-enum TargetArch { x86_32, x86_64, ARM }
+enum TargetArch { x86_32, x86_64, ARM, DisVM }
 
 /**
 * Global Compiler Context
@@ -48,6 +48,9 @@ class Context
     bool EnableRuntime = true;
 
     //parser context
+
+    ///Libraries to Link
+    string[] libs; 
 
     ///Semantic Context
     SemanticContext Semantic;

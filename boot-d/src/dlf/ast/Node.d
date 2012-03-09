@@ -59,9 +59,10 @@ public enum NodeKind : ushort
     //Expression
     Expression,
     LiteralExpr,
-    DotExpr,
     CallExpr,
     BinaryExpr,
+    DotExpr,
+    DotIdExpr,
     UnaryExpr,
     AssignExpr,
     IfExpr,

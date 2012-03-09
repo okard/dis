@@ -7,4 +7,5 @@ then
   exit 1
 fi
 
-find $1 -name "*.d" | xargs sed -i "s/$2/$3/gi"
+find $1 -name "*.d" | xargs sed -i "s/$2/$3/g"
+

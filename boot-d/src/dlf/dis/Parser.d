@@ -159,7 +159,7 @@ class Parser
 
         //parse package identifier
         accept(TokenType.Identifier, "Expected Identifier after package");
-        auto di = parseDotExpr();
+        auto di = parseDotIdExpr();
         pkg.Name = di.toString();
 
         //Look for semicolon
@@ -560,7 +560,7 @@ class Parser
         if(mToken.Type == TokenType.Colon)
         {
             next;
-            st.BaseIdentifier = parseDotExpr();
+            st.BaseIdentifier = parseDotIdExpr();
             next;
         }
 
@@ -816,7 +816,7 @@ class Parser
 
             case TokenType.KwThis: 
                 /*identifier?*/
-                //expr = parseDotExpr();
+                //expr = parseDotIdExpr();
                 break;
             case TokenType.ROBracket: 
                 expr = parseExpression;
@@ -824,7 +824,9 @@ class Parser
                 break;
             case TokenType.Identifier:
                 /*look under switch*/ 
-                expr = parseDotExpr();
+                auto die = new DotIdExpr();
+                die.append(mToken.Value);
+                expr = die;
                 break;
             default:
                 Error(mToken.Loc, "No valid token for parse an expression");
@@ -889,6 +891,15 @@ class Parser
                 right.Parent = be;
                 return be;
 
+            case TokenType.Dot:
+                auto de = new DotExpr();
+                expr.Parent = de;
+
+                de.Left = expr;
+                next(2);
+                de.Right = parseExpression();
+                return de;
+
             //TODO Unary Post Expressions expr++, expr--
 
             default:
@@ -941,11 +952,11 @@ class Parser
     /**
     * Parse Identifier
     */
-    private DotExpr parseDotExpr()
+    private DotIdExpr parseDotIdExpr()
     {
         checkType(TokenType.Identifier);
 
-        auto di = new DotExpr();
+        auto di = new DotIdExpr();
         di.Loc = mToken.Loc;
         di.append(mToken.Value);
 
@@ -1028,7 +1039,11 @@ class Parser
             {
                 //. - composite datatype
                 case TokenType.Dot: 
-                    //DotType
+
+                    //auto dt = new DotType()
+                    //dt.Name = mToken.Identifier;
+                    //dt.Left = parseDataType(); //disable AOBracket and def for dot type
+                    //return dt;
                     Error(mToken.Loc, "composited datatypes not yet supported");
                     break;
 
@@ -1061,7 +1076,9 @@ class Parser
                          //parse
                          //return unsolved type
                          //presolving
-                         return InternalTypes.get(mToken.Value, new UnsolvedType(mToken.Value));
+                         auto preType = new DotType();
+                         preType.append(mToken.Value);
+                         return InternalTypes.get(mToken.Value, preType);
             }
             
         }
