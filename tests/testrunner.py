@@ -140,6 +140,9 @@ def runTest(spec, testExec):
         
     #LD Path
     runenv = os.environ
+    if "LD_LIBRARY_PATH" not in  runenv:
+        runenv["LD_LIBRARY_PATH"] = ""
+        
     runenv["LD_LIBRARY_PATH"] = LIBDIR + ":" + runenv["LD_LIBRARY_PATH"]
      
     # Run File
