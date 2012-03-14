@@ -27,11 +27,15 @@ import dlf.ast.Declaration;
 */
 final class SymbolTable
 {
-    /// Prev Symbol Table
-    private SymbolTable mPrev;
+    //Prev Table
+    public SymbolTable Prev;
+    //Next Table
+    public SymbolTable Next;
 
     /// Owner Node of SymbolTable
     public Node Owner;
+
+    //TODO Use Interface for SymbolTable owner
     
     /// the symbols
     private Declaration mSymbols[string];
@@ -39,10 +43,10 @@ final class SymbolTable
     /**
     * Create new SymbolTable
     */
-    public this(Node Owner, SymbolTable parent)
+    public this(Node Owner, SymbolTable prev)
     {
         this.Owner = Owner;
-        this.mPrev = parent;
+        this.Prev = prev;
     }
 
     /**
@@ -104,31 +108,6 @@ final class SymbolTable
    
             concat(cast(T)this[symbol.Name], symbol);
         }
-    }
-
-    /**
-    * Creates a new SymbolTable
-    */
-    public SymbolTable push(Node owner)
-    {
-        auto st = new SymbolTable(owner, this);
-        return st;
-    }
-
-    /**
-    * Popes Table and get parent
-    */
-    public SymbolTable pop()
-    {
-        return mPrev;
-    }
-
-    /**
-    * Is Head
-    */
-    public bool isHead()
-    {
-        return !(mPrev is null);
     }
 
 

@@ -57,7 +57,7 @@ class Parser
     private Token mToken;
 
     /// Current SymbolTable
-    private SymbolTable mSymTable;
+    private SymbolTable symTable;
 
     /// Current flags
     private DeclarationFlags flags;
@@ -140,7 +140,7 @@ class Parser
         pkg.Loc = mToken.Loc;
         pkg.modificationDate = Src.modificationDate;
         pkg.SymTable = new SymbolTable(pkg, null);
-        mSymTable = pkg.SymTable;
+        symTable = pkg.SymTable;
 
         //parameterized keywords
         if(peek(1) == TokenType.ROBracket)
@@ -548,8 +548,8 @@ class Parser
         checkType(TokenType.KwStruct);
 
         auto st = new StructDecl();
-        st.SymTable = mSymTable = mSymTable.push(st);
-        scope(exit) mSymTable = st.SymTable.pop();
+        st.SymTable = symTable = new SymbolTable(st, symTable);
+        scope(exit) symTable = st.SymTable.Prev;
 
         //struct name
         accept(TokenType.Identifier, "Expect identifier after struct");
@@ -682,8 +682,8 @@ class Parser
         //TODO symbol table? each block has one?
         auto block = new BlockStmt();
         block.Loc = mToken.Loc;
-        block.SymTable = mSymTable = mSymTable.push(block);
-        scope(exit) mSymTable = block.SymTable.pop();
+        block.SymTable = symTable = new SymbolTable(block, symTable);
+        scope(exit) symTable = symTable.Prev;
 
         //parse until "}"
         while(mToken.Type != TokenType.CCBracket && peek(1) != TokenType.CCBracket)
@@ -1034,7 +1034,7 @@ class Parser
         if(mToken.Type == TokenType.Identifier)
         {
 
-            //TODO parseDataTypes
+            //TODO parseDataType
             switch(peek(1))
             {
                 //. - composite datatype
@@ -1059,8 +1059,10 @@ class Parser
                     break;
 
                 case TokenType.KwRef:
-                    Error(mToken.Loc, "reference datatypes not yet supported");
-                    break;
+                    auto reftype = new ReferenceType();
+                    next;
+                    reftype.RefType = parseDataType();
+                    return reftype;
 
                 case TokenType.Mul:
                      Error(mToken.Loc, "pointer datatypes not yet supported");
@@ -1070,15 +1072,16 @@ class Parser
                     //pointer type
                     break;
 
-                default: 
-                         //InternalTypes[mToken.Value]
-                         //internal lookup
-                         //parse
-                         //return unsolved type
-                         //presolving
-                         auto preType = new DotType();
-                         preType.append(mToken.Value);
-                         return InternalTypes.get(mToken.Value, preType);
+                default:
+                    //IdType
+                    //InternalTypes[mToken.Value]
+                    //internal lookup
+                    //parse
+                    //return unsolved type
+                    //presolving
+                    auto preType = new DotType();
+                    preType.append(mToken.Value);
+                    return InternalTypes.get(mToken.Value, preType);
             }
             
         }

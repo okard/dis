@@ -37,7 +37,7 @@ import dlf.ast.Annotation;
 /**
 * AST Printer
 */
-class Printer : Visitor
+class Printer
 {
 
     /// Tab Count
@@ -49,6 +49,12 @@ class Printer : Visitor
     public void print(Node astNode)
     {
         dispatch(astNode, this);
+    }
+
+    //TODO Remove this dummy when visitor interface is inheriting
+    //To do this, fix semantic and ast first
+    public void dispatch(Node n, Printer p)
+    {
     }
 
     //=========================================================================

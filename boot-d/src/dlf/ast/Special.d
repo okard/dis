@@ -94,3 +94,13 @@ struct CompositeIdentifier
 }
 
 
+/*
+mixin?
+interface SymbolTableOwner
+{
+    //getter for symbol table
+    SymbolTable SymTable();
+}
+*/
+
+

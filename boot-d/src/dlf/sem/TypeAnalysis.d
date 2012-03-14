@@ -136,7 +136,7 @@ class TypeAnalysis : Visitor
 
         //symtable
         symTable = bs.SymTable;
-        scope(exit)symTable = symTable.pop();
+        scope(exit)symTable = symTable.Prev;
 
         //analyze the declarations inside of blockstatement
         //what is when parent is function, parameter variables
@@ -222,7 +222,7 @@ class TypeAnalysis : Visitor
                     decl = sym[ie.first];
                     break;
                 }
-                sym = sym.pop();
+                sym = sym.Prev;
             }
             while(sym !is null);
         }
@@ -310,6 +310,8 @@ class TypeAnalysis : Visitor
 
     DataType visit(DataType dt)
     { 
+        //Check for Ref Ref Types
+        //Check for Ptr Ptr Types
         //TODO resolve DotType here
         //same as DotIdExpr? 
 
