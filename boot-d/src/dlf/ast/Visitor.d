@@ -34,15 +34,15 @@ public interface Visitor
     public 
     {
     //Declarations
-    void visit(PackageDecl);
-    void visit(ImportDecl);
-    void visit(FunctionDecl);
-    void visit(VarDecl);
+    Declaration visit(PackageDecl);
+    Declaration visit(ImportDecl);
+    Declaration visit(FunctionDecl);
+    Declaration visit(VarDecl);
     //Value
     //Constant
-    void visit(ClassDecl);
-    void visit(TraitDecl);
-    void visit(StructDecl);
+    Declaration visit(ClassDecl);
+    Declaration visit(TraitDecl);
+    Declaration visit(StructDecl);
     //Struct
     //Alias
     //Enum

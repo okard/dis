@@ -159,8 +159,22 @@ class Parser
 
         //parse package identifier
         accept(TokenType.Identifier, "Expected Identifier after package");
-        auto di = parseDotIdExpr();
-        pkg.Name = di.toString();
+
+        pkg.PackageIdentifier.append(mToken.Value);
+
+        while(peek(1) == TokenType.Dot)
+        {
+            next;
+            switch(peek(1))
+            {
+                case TokenType.Identifier: 
+                    next; pkg.PackageIdentifier.append(mToken.Value); break;
+                default:
+                    Error(mToken.Loc, "parsePackage: expect identifier dot");
+            }
+        }
+
+        pkg.Name = pkg.PackageIdentifier.toString();
 
         //Look for semicolon
         accept(TokenType.Semicolon, "Expected Semicolon after package declaration");

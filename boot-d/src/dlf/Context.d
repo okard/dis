@@ -18,6 +18,8 @@
 ******************************************************************************/
 module dlf.Context;
 
+import dlf.ast.Declaration;
+
 /// Target Type
 enum TargetType { Executable, StaticLib, SharedLib, Binary }
 
@@ -73,6 +75,8 @@ class Context
     bool EnableRuntime = true;
 
     //parser context
+
+    PackageDecl[] Packages;
 
     ///Libraries to Link
     string[] libs; 

@@ -30,6 +30,15 @@ import dlf.basic.Location;
 */
 struct CCodeWriter
 {
+    //Scopes of current writing
+    enum CScope
+    {
+        Global,
+        StructDecl,
+        FuncDecl
+    }
+
+
     //TODO Parameter for creation?
     //TODO Clean up splitting writer functions (Source/Header)
 

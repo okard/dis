@@ -170,11 +170,11 @@ class CCodeGen : ObjectGen, Visitor
     /**
     * Compile Package Declaration
     */
-    void visit(PackageDecl pd)
+    Declaration visit(PackageDecl pd)
     { 
         //Package already compiled
         if(pd.CodeGen !is null)
-            return;
+            return pd;
 
         //check if target header & source file exist
         //and check modify date when its not newer than already c code is compiled
@@ -197,22 +197,27 @@ class CCodeGen : ObjectGen, Visitor
             autoDispatch(d);
         
         p.close();
+
+        return pd;
     }
 
     /**
     * Compile Import Declarations
     */
-    void visit(ImportDecl id)
+    Declaration visit(ImportDecl id)
     {
         //imports are includes
         //get compile header name
         //p.include(getgen(id.Package).Identifier);
+
+
+        return id;
     }
 
     /**
     * Compile FunctionSymbol
     */
-    void visit(FunctionDecl fd)
+    Declaration visit(FunctionDecl fd)
     {
         //generate for each instantiation of (tpl) function
         foreach(FunctionType ft; fd.Instances)
@@ -230,6 +235,9 @@ class CCodeGen : ObjectGen, Visitor
         //main can't be a template so generate c main here
         if(fd.Name == "main")
             genCMain();
+
+
+        return fd;
     }
 
     /**
@@ -304,28 +312,37 @@ class CCodeGen : ObjectGen, Visitor
     }
     
 
-    void visit(VarDecl vd)
+    Declaration visit(VarDecl vd)
     {
         //value vs reference type
 
         //initializer maybe not working here directly (globalvariables?)
         //p.variable(type, name, initializer);
+
+        return vd;
     }
 
-    void visit(ClassDecl cd)
+    Declaration visit(ClassDecl cd)
     {
         //add to type array?
 
         //type information for runtime?
 
         //generate for each class instance
+
+
+        return cd;
     }
 
-    void visit(StructDecl sd){}
+    Declaration visit(StructDecl sd)
+    {
+        return sd;
+    }
     
-    void visit(TraitDecl td)
+    Declaration visit(TraitDecl td)
     {  
         //add to type array?
+        return td;
     }
 
     //Statements

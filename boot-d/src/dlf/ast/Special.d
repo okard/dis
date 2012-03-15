@@ -59,6 +59,14 @@ struct CompositeIdentifier
         return idents[i];
     }
 
+      /**
+    * Index Access for Types
+    */
+    public string opIndex(long l)
+    {
+        return idents[l];
+    }
+
     /**
     * To string with default seperator
     */

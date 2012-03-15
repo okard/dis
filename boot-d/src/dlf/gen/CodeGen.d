@@ -32,11 +32,14 @@ interface ObjectGen
     import dlf.ast.Declaration;
     
     void compile(PackageDecl pd);
-    //string[] compile(Context ctx, PackageDecl pd);
+
+    //package to object file
+    //string compile(Context ctx, PackageDecl pd);
 }
 
 /**
 * Binary Generation
+* aka Link object files together
 */
 interface BinaryGen
 {

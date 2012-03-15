@@ -47,15 +47,17 @@ class TypeAnalysis : Visitor
     //Declarations
 
     /// Package Declaration
-    void visit(PackageDecl pd)
+    Declaration visit(PackageDecl pd)
     {
         symTable = pd.SymTable;
         mapDispatch(pd.Imports);
         symDispatch(pd.SymTable);
+
+        return pd;
     }
 
     /// Import Declaration
-    void visit(ImportDecl id)
+    Declaration visit(ImportDecl id)
     {
         //semantic check for available PackageDecls
         if(id.Package !is null)
@@ -67,10 +69,12 @@ class TypeAnalysis : Visitor
             sem.Error("\tImport %s has not been solved", id.Name);
             sem.Fatal("Can't proceed with unsolved import");
         }
+
+        return id;
     }
 
     /// Function Declaration
-    void visit(FunctionDecl fd)
+    Declaration visit(FunctionDecl fd)
     {
         //Function Types
 
@@ -82,10 +86,12 @@ class TypeAnalysis : Visitor
         autoDispatch(fd.Body);
 
         //look for ExpressionStatement bodies
+
+        return fd;
     }
 
     /// Variable Declaration
-    void visit(VarDecl vd)
+    Declaration visit(VarDecl vd)
     {
         sem.Information("Semantic: VarDecl %s", vd.Name);
 
@@ -115,13 +121,15 @@ class TypeAnalysis : Visitor
             sem.Information("\tVarType: %s, InitType: %s", vd.VarDataType, vd.Initializer.ReturnType); 
             //assert(var.VarDataType == var.Initializer.ReturnType);
         }
+
+        return vd;
     }
 
     //Value
     //Constant
-    void visit(ClassDecl cd){}
-    void visit(TraitDecl td){}
-    void visit(StructDecl sd){}
+    Declaration visit(ClassDecl cd){ return cd;}
+    Declaration visit(TraitDecl td){ return td; }
+    Declaration visit(StructDecl sd){ return sd; }
     //Alias
     //Enum
     //Variant

@@ -73,6 +73,9 @@ final class Semantic
         //prepare runtime imports for package types
         if(astNode.Kind == NodeKind.PackageDecl)
         {
+            //check filename and package decl
+            checkPackageName(cast(PackageDecl)astNode);
+            
             //setDefaultImports(astNode);
         }
         
@@ -90,12 +93,51 @@ final class Semantic
     */
     public PackageDecl run(PackageDecl pd)
     {
+
+        checkPackageName(pd);
         //prepare step?
         //resolve types
         pd = cast(PackageDecl)dispatch(pd, typeResolver);
 
         return pd;
     }
+
+    
+    /**
+    * Package Name and File Path must match
+    */
+    private void checkPackageName(PackageDecl pkg)
+    {    
+        import std.path;
+
+        auto pkgname = pkg.PackageIdentifier;
+        auto pathr = pathSplitter(stripExtension(absolutePath(pkg.Loc.Name)));
+        auto index = pkgname.length-1;
+
+        //namespace module
+        if(pathr.back != pkgname[index])
+            index--;
+
+        //loop through package parts which must be match with directory structure
+        while(index >= 0)
+        {
+            Information("Package Path Check %d %s == %s", index, pathr.back, pkgname[index]);
+            if(pathr.back != pkgname[index])
+            {
+                 Error("package <-> path does not match");
+                 throw new SemanticException("package path validation");
+            }
+            
+            if(index == 0)
+                break;
+
+            //TODO fix pathr.empty
+
+            index--;
+            pathr.popBack();   
+        } 
+    }
+    
 
     /**
     * Semantic Information Log
