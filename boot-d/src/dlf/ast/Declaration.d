@@ -121,6 +121,14 @@ final class ImportDecl : Declaration
 }
 
 
+//not a named declaration
+final class BlockDecl : Declaration
+{
+    /// Symbol Table
+    public SymbolTable SymTable;
+}
+
+
 /**
 * Function Parameter 
 */

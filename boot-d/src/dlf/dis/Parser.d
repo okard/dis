@@ -1056,7 +1056,7 @@ class Parser
 
                     //auto dt = new DotType()
                     //dt.Name = mToken.Identifier;
-                    //dt.Left = parseDataType(); //disable AOBracket and def for dot type
+                    //dt.Right = parseDataType(); //disable AOBracket and def for dot type
                     //return dt;
                     Error(mToken.Loc, "composited datatypes not yet supported");
                     break;
@@ -1073,18 +1073,15 @@ class Parser
                     break;
 
                 case TokenType.KwRef:
-                    auto reftype = new ReferenceType();
                     next;
+                    auto reftype = new ReferenceType();
                     reftype.RefType = parseDataType();
                     return reftype;
 
-                case TokenType.Mul:
-                     Error(mToken.Loc, "pointer datatypes not yet supported");
-                    //ptr(Foobar) instead of Foobar*
-                    // identifier.length -= 1;
-                    // return new PointerType(InternalTypes.get(identifier, OpaqueType.Instance));
-                    //pointer type
-                    break;
+                case TokenType.KwPtr:
+                    next;
+                    auto ptrtype = new PointerType(parseDataType());
+                    return ptrtype;
 
                 default:
                     //IdType

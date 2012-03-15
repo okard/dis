@@ -99,9 +99,18 @@ Node dispatch(Node n, Visitor v, bool mod = false)
     switch(n.Kind)
     {   
         //Declarations
-        case NodeKind.PackageDecl: v.visit(cast(PackageDecl)n); break;
-        case NodeKind.ImportDecl: v.visit(cast(ImportDecl)n); break;
-        case NodeKind.VarDecl: v.visit(cast(VarDecl)n); break;
+        case NodeKind.PackageDecl: 
+            auto r = v.visit(cast(PackageDecl)n);
+            return mod ? r : n;
+
+        case NodeKind.ImportDecl: 
+            auto r =v.visit(cast(ImportDecl)n); 
+            return mod ? r : n;
+
+        case NodeKind.VarDecl: 
+            auto r = v.visit(cast(VarDecl)n);
+            return mod ? r : n;
+
         //Value
         //Constant
         case NodeKind.FunctionDecl: v.visit(cast(FunctionDecl)n); break;
@@ -157,7 +166,7 @@ mixin template DispatchUtils(bool modify)
     /**
     * Auto Dispatch
     */
-    private T autoDispatch(T)(T e)
+    private final T autoDispatch(T)(T e)
     {
         if(e is null) return e;
 
@@ -167,7 +176,7 @@ mixin template DispatchUtils(bool modify)
     /**
     * Map Dispatch to Arrays
     */
-    private void mapDispatch(T)(T[] elements)
+    private final void mapDispatch(T)(T[] elements)
     {
         for(int i=0; i < elements.length; i++)
         {
@@ -178,7 +187,7 @@ mixin template DispatchUtils(bool modify)
     /**
     * SymbolTable Dispatch
     */
-    private void symDispatch(SymbolTable symTable)
+    private final void symDispatch(SymbolTable symTable)
     {
          //go through declarations
         foreach(Declaration d; symTable)

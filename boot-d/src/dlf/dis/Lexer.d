@@ -436,6 +436,7 @@ class Lexer
         mKeywords["type"] = TokenType.KwType;
         mKeywords["const"] = TokenType.KwConst;
         mKeywords["ref"] = TokenType.KwRef;
+        mKeywords["ptr"] = TokenType.KwPtr;
         mKeywords["import"] = TokenType.KwImport;
         mKeywords["if"] = TokenType.KwIf;
         mKeywords["else"] = TokenType.KwElse;
