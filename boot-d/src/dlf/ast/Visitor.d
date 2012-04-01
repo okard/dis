@@ -49,9 +49,9 @@ public interface Visitor
     //Variant
 
     //Statements
-    void visit(BlockStmt);
-    void visit(ExpressionStmt);
-    void visit(ReturnStmt);
+    Statement visit(BlockStmt);
+    Statement visit(ExpressionStmt);
+    Statement visit(ReturnStmt);
     //For
     //ForEach
     //While

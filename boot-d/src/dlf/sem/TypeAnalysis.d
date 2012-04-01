@@ -138,7 +138,7 @@ class TypeAnalysis : Visitor
     //Statements
 
     /// Block Statement
-    void visit(BlockStmt bs)
+    Statement visit(BlockStmt bs)
     {
         sem.Information("Semantic: BlockStmt");
 
@@ -153,18 +153,21 @@ class TypeAnalysis : Visitor
         //check each statement
         mapDispatch(bs.Statements);
 
+        return bs;
     }
 
     /// Expression Statement
-    void visit(ExpressionStmt es)
+    Statement visit(ExpressionStmt es)
     {
         es.Expr = autoDispatch(es.Expr);
+        return es;
     }
 
     /// Return Statement
-    void visit(ReturnStmt rs)
+    Statement visit(ReturnStmt rs)
     {
         //return type matches function type?
+        return rs;
     }
 
     //For

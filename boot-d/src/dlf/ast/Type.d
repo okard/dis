@@ -170,9 +170,11 @@ final class OpaqueType : DataType
 */
 final class DotType : DataType
 {
-    CompositeIdentifier identifier;
-    alias identifier this;
 
+    string Value;
+
+    DataType Right;
+    
     DataType ResolvedType;
 
     //DataType left;

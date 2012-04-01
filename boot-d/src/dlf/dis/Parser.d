@@ -1029,6 +1029,7 @@ class Parser
     private DataType parseDataType()
     {
         //TODO Complete parseDataType 
+        //TODO Parse Options inner datatypes are retricted
 
         //x -> Identifier
         //int -> Identifier (BuiltIn Type)
@@ -1041,6 +1042,8 @@ class Parser
         //x.y.z! -> Template instantiation
         //x.y.z* -> Pointer Type
         //[ x | xxx] -> constraints?
+        //ref x -> reference type
+        //ptr y -> pointer type
 
         // Identifier
         if(mToken.Type == TokenType.Identifier)
@@ -1051,16 +1054,15 @@ class Parser
             {
                 //. - composite datatype
                 case TokenType.Dot: 
-
-                    //auto dt = new DotType()
-                    //dt.Name = mToken.Identifier;
-                    //dt.Right = parseDataType(); //disable AOBracket and def for dot type
-                    //return dt;
-                    Error(mToken.Loc, "composited datatypes not yet supported");
-                    break;
+                    auto dt = new DotType();
+                    dt.Value = mToken.Value;
+                    next(2);
+                    dt.Right = parseDataType();
+                    return dt;
 
                 //[ (datatype) ]
                 case TokenType.AOBracket: 
+                    //Array Size Number Token
                     Error(mToken.Loc, "array datatypes not yet supported");
                     break;
 
@@ -1089,7 +1091,7 @@ class Parser
                     //return unsolved type
                     //presolving
                     auto preType = new DotType();
-                    preType.append(mToken.Value);
+                    preType.Value = mToken.Value;
                     return InternalTypes.get(mToken.Value, preType);
             }
             
@@ -1098,6 +1100,7 @@ class Parser
         // Delegate Type
         if(mToken.Type == TokenType.KwDef)
         {
+            //def(datatype,...) : datatype
             Error(mToken.Loc, "delegate types not yet supported");
         }
 

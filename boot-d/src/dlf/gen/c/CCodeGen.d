@@ -346,23 +346,26 @@ class CCodeGen : ObjectGen, Visitor
     }
 
     //Statements
-    void visit(BlockStmt bs)
+    Statement visit(BlockStmt bs)
     {  
         p.blockStart();
         //write variables
         //write statements
         p.blockEnd();
+        return bs;
     }
     
-    void visit(ExpressionStmt es)
+    Statement visit(ExpressionStmt es)
     {  
         autoDispatch(es.Expr);
+        return es;
     }
 
-    void visit(ReturnStmt rt)
+    Statement visit(ReturnStmt rt)
     {  
         //save expression result
         //return it
+        return rt;
     }
 
     //Expressions
