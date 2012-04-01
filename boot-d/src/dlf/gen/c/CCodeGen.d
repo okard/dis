@@ -369,31 +369,36 @@ class CCodeGen : ObjectGen, Visitor
     }
 
     //Expressions
-    void visit(LiteralExpr le)
+    Expression visit(LiteralExpr le)
     {  
         //write value
+        return le;
     }
     
     
-    void visit(CallExpr ce)
+    Expression visit(CallExpr ce)
     {  
         //retrieve functionname
         //arguments maybe need to be prepared
         //p.call(name, [args]);
+        return ce;
     }
 
-    void visit(DotIdExpr di)
+    Expression visit(DotIdExpr di)
     {
         //TODO how this?
         // this->foo->bar when reference
         // this.foo.bar when value type
+
+        return di;
     }
 
-    void visit(BinaryExpr be)
+    Expression visit(BinaryExpr be)
     {  
         //write be.Left
         //write op
         //write be.Right
+        return be;
     }
 
 

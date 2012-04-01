@@ -828,7 +828,8 @@ class Parser
 
             case TokenType.KwThis: 
                 /*identifier?*/
-                //expr = parseDotIdExpr();
+                //this accessor?
+                //var te = new ThisExpr();
                 break;
             case TokenType.ROBracket: 
                 expr = parseExpression;
@@ -840,6 +841,11 @@ class Parser
                 die.append(mToken.Value);
                 expr = die;
                 break;
+
+            case TokenType.Dollar:
+                Error(mToken.Loc, "Compile time functions not yet implemented");
+                break;
+
             default:
                 Error(mToken.Loc, "No valid token for parse an expression");
         }

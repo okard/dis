@@ -100,17 +100,15 @@ abstract class Node
     public Location Loc;
 
     /// Storage for Semantic Node
+    //TODO Make this struct?
     public Node Semantic;
 
     /// Storage for CodeGen Node
+    //TODO Make this struct?
     public Node CodeGen;
 
     /// Kind (immutable)? function?
     @property public abstract const NodeKind Kind() const;
-
-    //TODO remove that
-    /// Self Pointer for (crazy) dispatch replace
-    public Node Self;
 
     /**
     * Validator Function

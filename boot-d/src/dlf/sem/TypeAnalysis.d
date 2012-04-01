@@ -178,13 +178,13 @@ class TypeAnalysis : Visitor
     //Expressions
 
     /// Literal Expression
-    void visit(LiteralExpr le)
+    Expression  visit(LiteralExpr le)
     {
-
+        return le;
     }
     
     /// Call Expression
-    void visit(CallExpr ce)
+    Expression visit(CallExpr ce)
     {
         //resolve identifier
         ce.Func = autoDispatch(ce.Func);
@@ -209,10 +209,12 @@ class TypeAnalysis : Visitor
 
         //target expression should be a function type
         //call expressions can generate function instances
+
+        return ce;
     }
 
     /// Identifier Expression 
-    void visit(DotIdExpr ie)
+    Expression visit(DotIdExpr ie)
     {
         sem.Information("IdentifierExpr: %s", ie.toString());
 
@@ -273,11 +275,13 @@ class TypeAnalysis : Visitor
         sem.Information("Found %s", ie.Decl.Name);
         //resolve ie.Decl 
         //ie.ReturnType = targettype
+
+        return ie;
     }
       
 
     /// Binary Expression
-    void visit(BinaryExpr be)
+    Expression visit(BinaryExpr be)
     {
         // analyze left, right
         be.Left = autoDispatch(be.Left);
@@ -311,6 +315,7 @@ class TypeAnalysis : Visitor
         //IsVariable(be.Left) (IdentifierExpr)
         
         //type matching
+        return be;
     }
 
     ///////////////////////////////////////////////////////////////////////////

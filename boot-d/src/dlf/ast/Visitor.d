@@ -59,10 +59,10 @@ public interface Visitor
     //Continue
 
     //Expressions
-    void visit(LiteralExpr);
-    void visit(CallExpr);
-    void visit(DotIdExpr);
-    void visit(BinaryExpr);
+    Expression visit(LiteralExpr);
+    Expression visit(CallExpr);
+    Expression visit(DotIdExpr);
+    Expression visit(BinaryExpr);
     //Unary
     //IfExpr
     //SwitchExpr
@@ -85,75 +85,68 @@ public interface Visitor
     //disable special ranges (declarations, statements, expression, types, and so on)
 }
 
+private auto doVisit(T)(const bool mod, Node n, Visitor v)
+{
+    auto r = v.visit(cast(T)n);
+    return mod ? r : n;
+} 
 
 /**
 * Dispatch Function General
 */
-Node dispatch(Node n, Visitor v, bool mod = false)
+Node dispatch(Node n, Visitor v, const bool mod = false)
 {
     assert(n !is null, "Node shouldn't be null");
     assert(v !is null, "Visitor shouldn't be null");
-    assert(n.Self is null, "A not null self, a dispatch goes wrong");
 
-    /*final*/ 
-    switch(n.Kind)
+    final switch(n.Kind)
     {   
         //Declarations
-        case NodeKind.PackageDecl: 
-            auto r = v.visit(cast(PackageDecl)n);
-            return mod ? r : n;
-
-        case NodeKind.ImportDecl: 
-            auto r =v.visit(cast(ImportDecl)n); 
-            return mod ? r : n;
-
-        case NodeKind.VarDecl: 
-            auto r = v.visit(cast(VarDecl)n);
-            return mod ? r : n;
+        case NodeKind.PackageDecl: return doVisit!PackageDecl(mod, n, v);
+        case NodeKind.ImportDecl: return doVisit!ImportDecl(mod, n, v);
+        case NodeKind.VarDecl: return doVisit!VarDecl(mod, n, v);
 
         //Value
         //Constant
-        case NodeKind.FunctionDecl: v.visit(cast(FunctionDecl)n); break;
-        case NodeKind.ClassDecl: v.visit(cast(ClassDecl)n); break;
-        case NodeKind.TraitDecl: v.visit(cast(TraitDecl)n); break;
-        case NodeKind.StructDecl: v.visit(cast(StructDecl)n); break;
+        case NodeKind.FunctionDecl: return doVisit!FunctionDecl(mod, n, v);
+        case NodeKind.ClassDecl: return doVisit!ClassDecl(mod, n, v);
+        case NodeKind.TraitDecl: return doVisit!TraitDecl(mod, n, v);
+        case NodeKind.StructDecl: return doVisit!StructDecl(mod, n, v);
         //Struct
         //Alias
         //Enum
         //Variant
 
         //Statements
-        case NodeKind.BlockStmt: v.visit(cast(BlockStmt)n); break;
-        case NodeKind.ExpressionStmt: v.visit(cast(ExpressionStmt)n); break;
-        case NodeKind.ReturnStmt: v.visit(cast(ReturnStmt)n); break;
+        case NodeKind.BlockStmt: return doVisit!BlockStmt(mod, n, v);
+        case NodeKind.ExpressionStmt: return doVisit!ExpressionStmt(mod, n, v);
+        case NodeKind.ReturnStmt: return doVisit!ReturnStmt(mod, n, v);
         //For
         //ForEach
         //While
         
         //Expressions
-        case NodeKind.LiteralExpr: v.visit(cast(LiteralExpr)n); break;
-        case NodeKind.CallExpr: v.visit(cast(CallExpr)n); break;
-        case NodeKind.DotIdExpr: v.visit(cast(DotIdExpr)n); break;
-        case NodeKind.BinaryExpr: v.visit(cast(BinaryExpr)n); break;
+        case NodeKind.LiteralExpr: return doVisit!LiteralExpr(mod, n, v);
+        case NodeKind.CallExpr: return doVisit!CallExpr(mod, n, v);
+        case NodeKind.DotIdExpr: return doVisit!DotIdExpr(mod, n, v);
+        case NodeKind.BinaryExpr: return doVisit!BinaryExpr(mod, n, v);
         //UnaryExpr
         //If
         //Switch
 
         //Types
-        case NodeKind.DataType: v.visit(cast(DataType)n); break;
-        case NodeKind.DotType: v.visit(cast(DataType)n); break;
+        case NodeKind.DataType: return doVisit!DataType(mod, n, v);
+        case NodeKind.DotType: return doVisit!DataType(mod, n, v);
 
 
         //Special
         case NodeKind.Semantic: assert(false, "Can't dispatch special semantic node");
         case NodeKind.Backend: assert(false, "Can't dispatch special backend node"); 
     
-        default: assert(false, "Missing dispatch case");
+        //default: assert(false, "Missing dispatch case");
     }
 
-    assert(!(!mod && (n.Self !is null)), "Only with mod enabled a self should be set");
-         
-    return mod && (n.Self !is null) ? n.Self : n;
+    assert(false, "should not get here");
 }
     
 
