@@ -572,7 +572,7 @@ class Parser
         if(mToken.Type == TokenType.Colon)
         {
             next;
-            st.BaseIdentifier = parseDotIdExpr();
+            st.BaseType = parseDataType();
             next;
         }
 
@@ -794,6 +794,9 @@ class Parser
                 expr = parseSwitchExpr();
                 break;
 
+            //ref expr
+            //ptr expr
+
             // Literal Expressions
             //TODO Pay Attention for next Token when it is an op
             case TokenType.String:
@@ -837,9 +840,9 @@ class Parser
                 break;
             case TokenType.Identifier:
                 /*look under switch*/ 
-                auto die = new DotIdExpr();
-                die.append(mToken.Value);
-                expr = die;
+                auto ie = new IdExpr();
+                ie.Id = mToken.Value;
+                expr = ie;
                 break;
 
             case TokenType.Dollar:
@@ -878,13 +881,6 @@ class Parser
             expr = call;
         }
 
-        //array index expression []
-        if(peek(1) == TokenType.AOBracket)
-        {
-            Error(mToken.Loc, "Array index expressions [] not yet supported");
-        }
-
-        
         //check next token for binary expressions
         switch(peek(1))
         {
@@ -918,11 +914,20 @@ class Parser
                 de.Right = parseExpression();
                 return de;
 
-            //TODO Unary Post Expressions expr++, expr--
+            //TODO Unary Post Expressions expr++, expr--, [] ?
+
+
+            //array index expression []
+            case TokenType.AOBracket:
+                //[expr], [:expr], [expr:expr]
+                Error(mToken.Loc, "Array index expressions [] not yet supported");
+                break;
 
             default:
                 return expr;
         }
+
+        return expr;
     }
 
     /**
@@ -965,43 +970,6 @@ class Parser
         checkType(TokenType.KwSwitch);
         Error(mToken.Loc, "TODO: Can't parse Switch Expressions yet");
         return null;
-    }
-
-    /**
-    * Parse Identifier
-    */
-    private DotIdExpr parseDotIdExpr()
-    {
-        checkType(TokenType.Identifier);
-
-        auto di = new DotIdExpr();
-        di.Loc = mToken.Loc;
-        di.append(mToken.Value);
-
-        //expect dot
-        bool expDot = true;
-
-        while((peek(1) == TokenType.Identifier) || (peek(1) == TokenType.Dot))
-        {              
-            next();
-            //identifier
-            if(expDot && mToken.Type == TokenType.Identifier)
-            {
-                Error(mToken.Loc, "expected dot to seperate identifiers");
-            }   
-            //dot
-            if(!expDot && mToken.Type == TokenType.Dot)
-            {
-                Error(mToken.Loc, "expected identifier after dot");
-            }
-            
-            expDot = !expDot;
-            
-            if(mToken.Type == TokenType.Identifier)
-                di.append(mToken.Value);
-        }
-
-        return di;
     }
 
     /**

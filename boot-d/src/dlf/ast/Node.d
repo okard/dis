@@ -62,7 +62,7 @@ public enum NodeKind : ushort
     CallExpr,
     BinaryExpr,
     DotExpr,
-    DotIdExpr,
+    IdExpr,
     UnaryExpr,
     AssignExpr,
     IfExpr,

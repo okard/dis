@@ -259,10 +259,7 @@ final class StructDecl : Declaration
     public CallingConvention CallingConv;
 
     /// Inherits from Base
-    public DotIdExpr BaseIdentifier;
-    
-    /// Base Resolved
-    public Declaration BaseStruct;
+    public DataType BaseType;
     
     /// Mixin for Kind Declaration
     mixin(IsKind("StructDecl"));

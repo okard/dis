@@ -190,9 +190,9 @@ class TypeAnalysis : Visitor
         ce.Func = autoDispatch(ce.Func);
 
 
-        if(ce.Func.Kind == NodeKind.DotIdExpr)
+        if(ce.Func.Kind == NodeKind.IdExpr)
         {
-            auto ie = cast(DotIdExpr)ce.Func;
+            auto ie = cast(IdExpr)ce.Func;
             
             //if ie.Decl == FunctionDecl
             //
@@ -204,7 +204,7 @@ class TypeAnalysis : Visitor
         //delegate
 
 
-        //ce.Func == DotIdExpr for example
+        //ce.Func == IdExpr for example
         //assert(ce.Func.ReturnType.Kind == NodeKind.FunctionType, "Can't call a non function");
 
         //target expression should be a function type
@@ -214,13 +214,14 @@ class TypeAnalysis : Visitor
     }
 
     /// Identifier Expression 
-    Expression visit(DotIdExpr ie)
+    Expression visit(IdExpr ie)
     {
         sem.Information("IdentifierExpr: %s", ie.toString());
 
         //go up, find first start entry
         Declaration decl = null;
 
+        /*
         if(symTable.contains(ie.first))
         {
             decl = symTable[ie.first];
@@ -258,12 +259,13 @@ class TypeAnalysis : Visitor
             {
                 if(!sym.contains(ie[i]));
             }
-            */
+            // /
         }
         else
         {
             ie.Decl = decl;
         }
+        */
 
         //dont find the right declaration
         if(ie.Decl is null)
@@ -297,7 +299,7 @@ class TypeAnalysis : Visitor
         //GT, GTE, LT, LTE
 
         case BinaryOperator.Assign:
-            assert(be.Left.Kind == NodeKind.DotIdExpr);
+            assert(be.Left.Kind == NodeKind.IdExpr);
             break;
 
         default:
@@ -309,7 +311,7 @@ class TypeAnalysis : Visitor
         //rewrite operator calls for classes?
         //be.Left is class operator call
         //resolveDecl(be.Left) 
-        //return new CallExpr(); Expr = new DotIdExpr(decl.name)
+        //return new CallExpr(); Expr = new IdExpr(decl.name)
 
         //assign expressions -> verify variable type
         //IsVariable(be.Left) (IdentifierExpr)
@@ -329,7 +331,7 @@ class TypeAnalysis : Visitor
         //Check for Ref Ref Types
         //Check for Ptr Ptr Types
         //TODO resolve DotType here
-        //same as DotIdExpr? 
+        //same as IdExpr? 
 
         //make a solve CompositeIdentifier?
         //difference in structure array types template instances, create instances here for templates?

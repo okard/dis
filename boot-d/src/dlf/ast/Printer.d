@@ -197,7 +197,7 @@ class Printer
     /**
     * Visit Dot Identifier
     */
-    void visit(DotIdExpr di)
+    void visit(IdExpr di)
     {
         write(di.toString());
     }
@@ -240,7 +240,7 @@ class Printer
     {
         switch(exp.Kind)
         {
-            case NodeKind.DotIdExpr: return (cast(DotIdExpr) exp).toString();
+            case NodeKind.IdExpr: return (cast(IdExpr) exp).toString();
             case NodeKind.CallExpr: return toString(cast(CallExpr) exp);
             case NodeKind.LiteralExpr: return (cast(LiteralExpr)exp).Value;
             default: return "<unkown expression>";

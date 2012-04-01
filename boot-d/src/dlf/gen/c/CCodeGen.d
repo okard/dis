@@ -384,7 +384,7 @@ class CCodeGen : ObjectGen, Visitor
         return ce;
     }
 
-    Expression visit(DotIdExpr di)
+    Expression visit(IdExpr di)
     {
         //TODO how this?
         // this->foo->bar when reference

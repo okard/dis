@@ -53,17 +53,6 @@ final class LiteralExpr : Expression
 }
 
 /**
-* IdExpr like a
-* Maybe part of DotExpr (a.b.c)
-*/
-final class IdExpr : Expression
-{
-    public string Id;
-    //Decl?
-}
-
-
-/**
 * A Function Call
 */
 final class CallExpr : Expression
@@ -133,32 +122,27 @@ final class DotExpr : BinaryExpr
 }
 
 /**
-* DotIdExpr
+* IdExpr
 * e.g. foo.bar.x.y
 */
-final class DotIdExpr : Expression
+final class IdExpr : Expression
 {
-    /// The Composite Identifier
-    public CompositeIdentifier Identifier;
-
-    /// Alias This the Composite Identifier
-    alias Identifier this;
+    /// Identifier
+    public string Id;
 
     /// Target Declaration
     public Declaration Decl;
-
-    //this, super, ....
 
     /**
     * To String
     */
     override string toString() 
     {   
-        return Identifier.toString();
+        return Id;
     }
 
     ///Mixin for Kind Declaration
-    mixin(IsKind("DotIdExpr"));
+    mixin(IsKind("IdExpr"));
 }
 
 /**

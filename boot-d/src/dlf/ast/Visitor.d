@@ -61,7 +61,7 @@ public interface Visitor
     //Expressions
     Expression visit(LiteralExpr);
     Expression visit(CallExpr);
-    Expression visit(DotIdExpr);
+    Expression visit(IdExpr);
     Expression visit(BinaryExpr);
     //Unary
     //IfExpr
@@ -128,7 +128,7 @@ Node dispatch(Node n, Visitor v, const bool mod = false)
         //Expressions
         case NodeKind.LiteralExpr: return doVisit!LiteralExpr(mod, n, v);
         case NodeKind.CallExpr: return doVisit!CallExpr(mod, n, v);
-        case NodeKind.DotIdExpr: return doVisit!DotIdExpr(mod, n, v);
+        case NodeKind.IdExpr: return doVisit!IdExpr(mod, n, v);
         case NodeKind.BinaryExpr: return doVisit!BinaryExpr(mod, n, v);
         //UnaryExpr
         //If
