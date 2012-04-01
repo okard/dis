@@ -192,7 +192,7 @@ class TypeAnalysis : Visitor
 
         if(ce.Func.Kind == NodeKind.IdExpr)
         {
-            auto ie = cast(IdExpr)ce.Func;
+            auto ie = ce.Func.to!IdExpr;
             
             //if ie.Decl == FunctionDecl
             //
@@ -327,7 +327,13 @@ class TypeAnalysis : Visitor
     //Types
 
     DataType visit(DataType dt)
-    { 
+    {
+        //resolve
+        if(dt.Kind == NodeKind.DotType)
+        {
+            
+        }
+    
         //Check for Ref Ref Types
         //Check for Ptr Ptr Types
         //TODO resolve DotType here
@@ -367,17 +373,17 @@ class TypeAnalysis : Visitor
         switch(n.Kind)
         {
             case NodeKind.PackageDecl:
-                return (cast(PackageDecl)n).SymTable;
+                return n.to!PackageDecl.SymTable;
             case NodeKind.StructDecl:
-                return (cast(StructDecl)n).SymTable;
+                return n.to!StructDecl.SymTable;
             case NodeKind.ClassDecl:
-                return (cast(ClassDecl)n).SymTable;
+                return n.to!ClassDecl.SymTable;
             //case NodeKind.TraitDecl:
-            //    return (cast(TraitDecl)n).SymTable;
+            //    return n.to!TraitDecl.SymTable;
             case NodeKind.FunctionDecl:
-                return (cast(FunctionDecl)n).Body.SymTable;
+                return n.to!FunctionDecl.Body.SymTable;
             case NodeKind.BlockStmt:
-                return (cast(BlockStmt)n).SymTable;
+                return n.to!BlockStmt.SymTable;
 
             default:
                 throw new Semantic.SemanticException("These node has no symboltable");

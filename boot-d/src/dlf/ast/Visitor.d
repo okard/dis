@@ -87,7 +87,7 @@ public interface Visitor
 
 private auto doVisit(T)(const bool mod, Node n, Visitor v)
 {
-    auto r = v.visit(cast(T)n);
+    auto r = v.visit(n.to!T);
     return mod ? r : n;
 } 
 
@@ -163,7 +163,7 @@ mixin template DispatchUtils(bool modify)
     {
         if(e is null) return e;
 
-        return cast(T)dispatch(e, this, modify);
+        return dispatch(e, this, modify).to!T;
     }
 
     /**

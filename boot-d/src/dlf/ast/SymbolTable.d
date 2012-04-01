@@ -106,7 +106,7 @@ final class SymbolTable
             if(this[symbol.Name].Kind != symbol.Kind)
                 throw new Exception("Wrong kind of symbol already in symbol table");
    
-            concat(cast(T)this[symbol.Name], symbol);
+            concat(this[symbol.Name].to!T, symbol);
         }
     }
 

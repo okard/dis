@@ -110,12 +110,14 @@ abstract class Node
     /// Kind (immutable)? function?
     @property public abstract const NodeKind Kind() const;
 
-    /**
-    * Validator Function
-    */
-    public void valid()
+    @property
+    public final T to(T:Node)()
     {
-        
+        //TODO can be optimized into a static cast
+        assert(T.Kind == this.Kind);
+        T n = cast(T)this;
+        assert(n);
+        return n;
     }
 }
 
@@ -124,7 +126,8 @@ abstract class Node
 */
 string IsKind(string name)
 {
-    return "@property public override const NodeKind Kind() const{ return NodeKind."~name~"; }";
+    return "@property public override const NodeKind Kind() const{ return NodeKind."~name~"; } " ~
+           "@property public final static NodeKind Kind() { return NodeKind."~name~"; } ";
 }
 
 

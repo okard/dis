@@ -66,7 +66,7 @@ static class Mangle
         Node n = f.FuncDecl;
         while(n !is null)
         {
-            Declaration d = cast(Declaration)n;
+            Declaration d = n.to!Declaration;
             if(n is null)
             {
                 n = n.Parent;
@@ -126,7 +126,7 @@ static class Mangle
             if(!isDeclaration(n))
                 continue;
             
-            auto d = cast(Declaration)n;
+            auto d = n.to!Declaration;
 
             switch(d.Kind)
             {

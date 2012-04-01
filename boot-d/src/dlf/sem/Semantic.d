@@ -74,7 +74,7 @@ final class Semantic
         if(astNode.Kind == NodeKind.PackageDecl)
         {
             //check filename and package decl
-            checkPackageName(cast(PackageDecl)astNode);
+            checkPackageName(astNode.to!PackageDecl);
             
             //setDefaultImports(astNode);
         }
@@ -97,7 +97,7 @@ final class Semantic
         checkPackageName(pd);
         //prepare step?
         //resolve types
-        pd = cast(PackageDecl)dispatch(pd, typeResolver);
+        pd = dispatch(pd, typeResolver).to!PackageDecl;
 
         return pd;
     }
