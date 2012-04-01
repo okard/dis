@@ -11,17 +11,17 @@
 
 typedef void dis_void;
 typedef bool dis_bool;
-typedef signed char dis_byte;
-typedef unsigned char dis_ubyte;
-typedef signed short dis_short
-typedef unsigned short dis_ushort;
-typedef signed int dis_int;
-typedef unsigned int dis_uint;
-typedef signed long dis_long;
-typedef unsigned long dis_ulong;
+typedef signed char dis_byte8;
+typedef unsigned char dis_ubyte8;
+typedef signed short dis_short16;
+typedef unsigned short dis_ushort16;
+typedef signed int dis_int32;
+typedef unsigned int dis_uint32;
+typedef signed long dis_long64;
+typedef unsigned long dis_ulong64;
 
-typedef float dis_float;
-typedef double dis_double;
+typedef float dis_float32;
+typedef double dis_double64;
 
 typedef void* dis_ptr;
 

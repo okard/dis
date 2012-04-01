@@ -52,7 +52,15 @@ final class LiteralExpr : Expression
     mixin(IsKind("LiteralExpr"));
 }
 
-
+/**
+* IdExpr like a
+* Maybe part of DotExpr (a.b.c)
+*/
+final class IdExpr : Expression
+{
+    public string Id;
+    //Decl?
+}
 
 
 /**

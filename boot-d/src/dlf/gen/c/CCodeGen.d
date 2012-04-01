@@ -85,16 +85,16 @@ class CCodeGen : ObjectGen, Visitor
         // Primary/Builtin Types
         VoidType.Instance.CodeGen = ctype("dis_void");
         BoolType.Instance.CodeGen = ctype("dis_bool");
-        ByteType.Instance.CodeGen = ctype("dis_byte");
-        UByteType.Instance.CodeGen = ctype("dis_ubyte");
-        ShortType.Instance.CodeGen = ctype("dis_short");
-        UShortType.Instance.CodeGen = ctype("dis_ushort");
-        IntType.Instance.CodeGen = ctype("dis_int");
-        UIntType.Instance.CodeGen = ctype("dis_uint");
-        LongType.Instance.CodeGen = ctype("dis_long");
-        ULongType.Instance.CodeGen = ctype("dis_uint");
-        FloatType.Instance.CodeGen = ctype("dis_float");
-        DoubleType.Instance.CodeGen = ctype("dis_double");
+        Byte8Type.Instance.CodeGen = ctype("dis_byte8");
+        UByte8Type.Instance.CodeGen = ctype("dis_ubyte8");
+        Short16Type.Instance.CodeGen = ctype("dis_short16");
+        UShort16Type.Instance.CodeGen = ctype("dis_ushort16");
+        Int32Type.Instance.CodeGen = ctype("dis_int32");
+        UInt32Type.Instance.CodeGen = ctype("dis_uint32");
+        Long64Type.Instance.CodeGen = ctype("dis_long64");
+        ULong64Type.Instance.CodeGen = ctype("dis_uint64");
+        Float32Type.Instance.CodeGen = ctype("dis_float32");
+        Double64Type.Instance.CodeGen = ctype("dis_double64");
 
         VoidType.PtrInstance.CodeGen = ctype("dis_ptr");
         

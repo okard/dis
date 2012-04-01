@@ -84,20 +84,18 @@ class Parser
         //Primary
         InternalTypes["void"] = VoidType.Instance;
         InternalTypes["bool"] = BoolType.Instance;
-        InternalTypes["byte"] = ByteType.Instance;
-        InternalTypes["ubyte"] = UByteType.Instance;
-        InternalTypes["short"] = ShortType.Instance;
-        InternalTypes["ushort"] = UShortType.Instance;
-        InternalTypes["int"] = IntType.Instance;
-        InternalTypes["uint"] = UIntType.Instance;
-        InternalTypes["long"] = LongType.Instance;
-        InternalTypes["ulong"] = ULongType.Instance;
-        InternalTypes["float"] = FloatType.Instance;
-        InternalTypes["double"] = DoubleType.Instance;
+        InternalTypes["byte8"] = Byte8Type.Instance;
+        InternalTypes["ubyte8"] = UByte8Type.Instance;
+        InternalTypes["short16"] = Short16Type.Instance;
+        InternalTypes["ushort16"] = UShort16Type.Instance;
+        InternalTypes["int32"] = Int32Type.Instance;
+        InternalTypes["uint32"] = UInt32Type.Instance;
+        InternalTypes["long64"] = Long64Type.Instance;
+        InternalTypes["ulong64"] = ULong64Type.Instance;
+        InternalTypes["float32"] = Float32Type.Instance;
+        InternalTypes["double64"] = Double64Type.Instance;
 
-        
         //special:
-        InternalTypes["ptr"] = VoidType.Instance.PtrInstance;
         InternalTypes["char"] = CharType.Instance;
         InternalTypes["string"] = StringType.Instance;
     }
@@ -808,15 +806,15 @@ class Parser
                 expr.Loc = mToken.Loc;
                 break;
             case TokenType.Integer:
-                expr = new LiteralExpr(mToken.Value, IntType.Instance); 
+                expr = new LiteralExpr(mToken.Value, Int32Type.Instance); 
                 expr.Loc = mToken.Loc;
                 break;
             case TokenType.Float:
-                expr = new LiteralExpr(mToken.Value, FloatType.Instance); 
+                expr = new LiteralExpr(mToken.Value, Float32Type.Instance); 
                 expr.Loc = mToken.Loc;
                 break;
             case TokenType.Double:
-                expr = new LiteralExpr(mToken.Value, DoubleType.Instance);
+                expr = new LiteralExpr(mToken.Value, Double64Type.Instance);
                 expr.Loc = mToken.Loc;
                 break;
             case TokenType.KwTrue:

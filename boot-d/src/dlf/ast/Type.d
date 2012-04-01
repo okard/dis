@@ -75,82 +75,82 @@ final class BoolType : DataType
 }
 
 /// 8 Bit signed
-final class ByteType : DataType
+final class Byte8Type : DataType
 {
-    override string toString() { return "byte"; }
-    mixin Singleton!ByteType;
+    override string toString() { return "byte8"; }
+    mixin Singleton!Byte8Type;
     mixin PtrTypeSingleton;
 }
 
 /// 8 Bit unsigned
-final class UByteType : DataType
+final class UByte8Type : DataType
 {
-    override string toString() { return "ubyte"; }
-    mixin Singleton!UByteType;
+    override string toString() { return "ubyte8"; }
+    mixin Singleton!UByte8Type;
     mixin PtrTypeSingleton;
 }
 
 /// 16 Bit
-final class ShortType : DataType
+final class Short16Type : DataType
 {
-    override string toString() { return "short"; }
-    mixin Singleton!ShortType;
+    override string toString() { return "short16"; }
+    mixin Singleton!Short16Type;
     mixin PtrTypeSingleton;
 }
 
 /// 16 Bit
-final class UShortType : DataType
+final class UShort16Type : DataType
 {
-    override string toString() { return "ushort"; }
-    mixin Singleton!UShortType;
+    override string toString() { return "ushort16"; }
+    mixin Singleton!UShort16Type;
     mixin PtrTypeSingleton;
 }
 
 /// 32 Bit
-final class IntType : DataType
+final class Int32Type : DataType
 {
-    override string toString() { return "int"; }
-    mixin Singleton!IntType;
+    override string toString() { return "int32"; }
+    mixin Singleton!Int32Type;
     mixin PtrTypeSingleton;
 }
 
 /// 32 Bit
-final class UIntType : DataType
+final class UInt32Type : DataType
 {
-    override string toString() { return "uint"; }
-    mixin Singleton!UIntType;
+    override string toString() { return "uint32"; }
+    mixin Singleton!UInt32Type;
     mixin PtrTypeSingleton;
 }
 
 /// 64 Bit
-final class LongType : DataType
+final class Long64Type : DataType
 {
-    override string toString() { return "long"; }
-    mixin Singleton!LongType;
+    override string toString() { return "long64"; }
+    mixin Singleton!Long64Type;
     mixin PtrTypeSingleton;
 }
 
 /// 64 Bit
-final class ULongType : DataType
+final class ULong64Type : DataType
 {
-    override string toString() { return "ulong"; }
-    mixin Singleton!ULongType;
+    override string toString() { return "ulong64"; }
+    mixin Singleton!ULong64Type;
     mixin PtrTypeSingleton;
 }
 
 /// 32 Bit Floating Point IEEE754
-final class FloatType : DataType
+final class Float32Type : DataType
 {
-    override string toString() { return "float"; }
-    mixin Singleton!FloatType;
+    override string toString() { return "float32"; }
+    mixin Singleton!Float32Type;
     mixin PtrTypeSingleton;
 }
 
 /// 64 Bit Floating Point IEEE754
-final class DoubleType : DataType
+final class Double64Type : DataType
 {
-    override string toString() { return "double"; }
-    mixin Singleton!DoubleType;
+    override string toString() { return "double64"; }
+    mixin Singleton!Double64Type;
     mixin PtrTypeSingleton;
 }
 
