@@ -72,7 +72,6 @@ public enum NodeKind : ushort
     DataType,
     OpaqueType,
     DotType,
-    UnsolvedType,
     FunctionType,
     StructType,
     ClassType,
@@ -114,7 +113,7 @@ abstract class Node
     public final T to(T:Node)()
     {
         //TODO can be optimized into a static cast
-        assert(T.Kind == this.Kind);
+        //assert(T.Kind == this.Kind, "Missmatch "~this.toString());
         T n = cast(T)this;
         assert(n);
         return n;

@@ -225,6 +225,7 @@ class ReferenceType : DataType
 
 /**
 * Char Type
+* byte array?
 */
 class CharType : DataType
 {
@@ -237,6 +238,7 @@ class CharType : DataType
 /**
 * String Type aka ArrayType(CharType)?
 * Runtime Type
+* byte array
 */
 class StringType : DataType
 { 
@@ -265,7 +267,7 @@ class FunctionType : DataType
 {
     /// The base function declaration of this type, Parent
     @property
-    public auto FuncDecl() { return cast(FunctionDecl)Parent; }
+    public auto FuncDecl() { return Parent.to!FunctionDecl; }
 
     /// The function type arguments
     public DataType[] Arguments;

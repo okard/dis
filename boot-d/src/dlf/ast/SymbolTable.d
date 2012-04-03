@@ -29,6 +29,7 @@ final class SymbolTable
 {
     //Prev Table
     public SymbolTable Prev;
+
     //Next Table
     public SymbolTable Next;
 

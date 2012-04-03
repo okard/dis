@@ -26,6 +26,8 @@ public import dlf.ast.Annotation;
 public import dlf.ast.Type;
 public import dlf.ast.SymbolTable;
 
+debug import std.stdio;
+
 /**
 * AST Visitor
 */
@@ -99,7 +101,7 @@ Node dispatch(Node n, Visitor v, const bool mod = false)
     assert(n !is null, "Node shouldn't be null");
     assert(v !is null, "Visitor shouldn't be null");
 
-    final switch(n.Kind)
+    switch(n.Kind)
     {   
         //Declarations
         case NodeKind.PackageDecl: return doVisit!PackageDecl(mod, n, v);
@@ -136,14 +138,22 @@ Node dispatch(Node n, Visitor v, const bool mod = false)
 
         //Types
         case NodeKind.DataType: return doVisit!DataType(mod, n, v);
-        case NodeKind.DotType: return doVisit!DataType(mod, n, v);
+        case NodeKind.OpaqueType: return doVisit!OpaqueType(mod, n, v);
+        case NodeKind.DotType: return doVisit!DotType(mod, n, v);
+        case NodeKind.FunctionType: return doVisit!FunctionType(mod, n, v);
+        case NodeKind.StructType: return doVisit!StructType(mod, n, v);
+        case NodeKind.ClassType: return doVisit!ClassType(mod, n, v);
+        case NodeKind.TraitType: return doVisit!TraitType(mod, n, v);
 
 
         //Special
         case NodeKind.Semantic: assert(false, "Can't dispatch special semantic node");
         case NodeKind.Backend: assert(false, "Can't dispatch special backend node"); 
     
-        //default: assert(false, "Missing dispatch case");
+        default:
+            debug writeln(n.toString());
+            assert(false, "Missing dispatch case");
+            
     }
 
     assert(false, "should not get here");

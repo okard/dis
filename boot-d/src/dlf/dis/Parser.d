@@ -97,7 +97,6 @@ class Parser
 
         //special:
         InternalTypes["char"] = CharType.Instance;
-        InternalTypes["string"] = StringType.Instance;
     }
 
     /**
@@ -599,7 +598,7 @@ class Parser
                     next;
                     var.VarDataType = parseDataType();
 
-                    st.SymTable.assign(cast(Declaration)var, (Declaration existing, Declaration newOne)
+                    st.SymTable.assign(var.to!Declaration, (Declaration existing, Declaration newOne)
                     {
                         Error(newOne.Loc, "Duplicated field in struct");
                     });
@@ -801,10 +800,12 @@ class Parser
             //TODO Pay Attention for next Token when it is an op
             case TokenType.String:
                 //TODO Fix it, a String Literal is a pointer to a char[] array
+                // ref fixed size byte array
                 expr = new LiteralExpr(mToken.Value, StringType.Instance);
                 expr.Loc = mToken.Loc;
                 break;
             case TokenType.Char:
+                // ref fixed size byte array
                 expr =  new LiteralExpr(mToken.Value, CharType.Instance); 
                 expr.Loc = mToken.Loc;
                 break;

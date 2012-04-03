@@ -331,7 +331,11 @@ class TypeAnalysis : Visitor
         //resolve
         if(dt.Kind == NodeKind.DotType)
         {
+            auto ct = dt.to!DotType;
             
+            //find dt.Value in SymTable
+            //Ignore Variables, Constants, Values,
+            //dt.Value
         }
     
         //Check for Ref Ref Types
