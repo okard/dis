@@ -175,6 +175,8 @@ final class DotType : DataType
 
     DataType Right;
     
+
+    Declaration ResolvedDecl;
     DataType ResolvedType;
 
     //DataType left;

@@ -335,6 +335,15 @@ class TypeAnalysis : Visitor
         if(dt.Kind == NodeKind.DotType)
         {
             auto ct = dt.to!DotType;
+
+            //bottom up search for symbol
+            for(size_t i=symTables.length-1; i >= 0; i++)
+            {
+                if(symTables[i].contains(ct.Value))
+                    ct.ResolvedDecl = symTables[i][ct.Value];
+            }
+
+            //top down search
             
             //find dt.Value in SymTable
             //Ignore Variables, Constants, Values,

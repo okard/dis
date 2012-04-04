@@ -71,7 +71,15 @@ struct Stack(T)
         return mStackArr[mCount-1];
     }
 
-    //TODO opIndex
+
+    /**
+    * Element on Index?
+    */
+    T opIndex(size_t index)
+    {
+        assert(index < mCount);
+        return mStackArr[index];
+    }
 
     /**
     * Count of elements
@@ -114,6 +122,10 @@ unittest
 
     for(uint i = 0; i < 10; i++)
         stack.push(i);
+
+    assert(stack[0] == 0);
+    assert(stack[5] == 5);
+    assert(stack[stack.length-1] == stack.top);
     
     assert(stack.length() == 10);
 
