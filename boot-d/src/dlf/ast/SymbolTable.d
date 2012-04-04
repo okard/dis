@@ -27,12 +27,6 @@ import dlf.ast.Declaration;
 */
 final class SymbolTable
 {
-    //Prev Table
-    public SymbolTable Prev;
-
-    //Next Table
-    public SymbolTable Next;
-
     /// Owner Node of SymbolTable
     public Node Owner;
 
@@ -44,10 +38,9 @@ final class SymbolTable
     /**
     * Create new SymbolTable
     */
-    public this(Node Owner, SymbolTable prev)
+    public this(Node Owner)
     {
         this.Owner = Owner;
-        this.Prev = prev;
     }
 
     /**

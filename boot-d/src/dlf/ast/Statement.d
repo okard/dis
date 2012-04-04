@@ -99,6 +99,8 @@ final class ReturnStmt : Statement
 */
 final class ForStmt : Statement
 {
+    /// Symbol Table?
+
     /// Initialization Statements
     public Statement[] InitializerStmts;
 

@@ -71,6 +71,8 @@ struct Stack(T)
         return mStackArr[mCount-1];
     }
 
+    //TODO opIndex
+
     /**
     * Count of elements
     */

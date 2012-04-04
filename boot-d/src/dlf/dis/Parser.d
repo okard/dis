@@ -56,8 +56,8 @@ class Parser
     /// Current Token
     private Token mToken;
 
-    /// Current SymbolTable
-    private SymbolTable symTable;
+    /// Symbol Tables
+    private Stack!SymbolTable symTables;
 
     /// Current flags
     private DeclarationFlags flags;
@@ -136,8 +136,9 @@ class Parser
         auto pkg = new PackageDecl();
         pkg.Loc = mToken.Loc;
         pkg.modificationDate = Src.modificationDate;
-        pkg.SymTable = new SymbolTable(pkg, null);
-        symTable = pkg.SymTable;
+        pkg.SymTable = new SymbolTable(pkg);
+        symTables.push(pkg.SymTable);
+        scope(exit) symTables.pop();
 
         //parameterized keywords
         if(peek(1) == TokenType.ROBracket)
@@ -251,7 +252,7 @@ class Parser
 
             //Trait Type
             case TokenType.KwTrait:
-                Error(mToken.Loc, "Trait in Package not yet implemented");
+                Error(mToken.Loc, "Trait iblock.SymTablen Package not yet implemented");
                 break;
 
             case TokenType.EOF:
@@ -559,8 +560,9 @@ class Parser
         checkType(TokenType.KwStruct);
 
         auto st = new StructDecl();
-        st.SymTable = symTable = new SymbolTable(st, symTable);
-        scope(exit) symTable = st.SymTable.Prev;
+        st.SymTable = new SymbolTable(st);
+        symTables.push(st.SymTable);
+        scope(exit) symTables.pop();
 
         //struct name
         accept(TokenType.Identifier, "Expect identifier after struct");
@@ -693,8 +695,9 @@ class Parser
         //TODO symbol table? each block has one?
         auto block = new BlockStmt();
         block.Loc = mToken.Loc;
-        block.SymTable = symTable = new SymbolTable(block, symTable);
-        scope(exit) symTable = symTable.Prev;
+        block.SymTable = new SymbolTable(block);
+        symTables.push(block.SymTable);
+        scope(exit) symTables.pop();
 
         //parse until "}"
         while(mToken.Type != TokenType.CCBracket && peek(1) != TokenType.CCBracket)

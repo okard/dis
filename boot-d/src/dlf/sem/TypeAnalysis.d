@@ -18,6 +18,8 @@
 ******************************************************************************/
 module dlf.sem.TypeAnalysis;
 
+import dlf.basic.Stack;
+
 import dlf.ast.Type;
 import dlf.ast.SymbolTable;
 import dlf.ast.Visitor;
@@ -28,12 +30,11 @@ import dlf.sem.Semantic;
 */
 class TypeAnalysis : Visitor
 {
-
     /// Core Semantic Object
     private Semantic sem;
 
-    /// Symbol Table
-    private SymbolTable symTable;
+    /// Symbol Tables
+    private Stack!SymbolTable symTables;
 
     /**
     * Constructor
@@ -49,7 +50,9 @@ class TypeAnalysis : Visitor
     /// Package Declaration
     Declaration visit(PackageDecl pd)
     {
-        symTable = pd.SymTable;
+        symTables.push(pd.SymTable);
+        scope(exit) symTables.pop();    
+
         mapDispatch(pd.Imports);
         symDispatch(pd.SymTable);
 
@@ -143,8 +146,8 @@ class TypeAnalysis : Visitor
         sem.Information("Semantic: BlockStmt");
 
         //symtable
-        symTable = bs.SymTable;
-        scope(exit)symTable = symTable.Prev;
+        symTables.push(bs.SymTable);
+        scope(exit) symTables.pop();
 
         //analyze the declarations inside of blockstatement
         //what is when parent is function, parameter variables
