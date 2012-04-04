@@ -24,6 +24,7 @@ import dlf.ast.Declaration;
 
 /**
 * SymbolTable
+* TypeDecl
 */
 final struct SymbolTable
 {
@@ -110,4 +111,26 @@ final struct SymbolTable
         //binding: extern 
     }
 
-} 
+}
+
+//For InstanceDecl?
+final struct DataTable
+{
+    /// Owner Node (Should be TypeDecl)
+    private Node Owner;
+
+    /// Instances
+    private InstanceDecl data[string];
+
+    /**
+    * Symbol Table contains entry
+    */
+    public bool contains(string value)
+    {
+        return cast(bool)(value in data);
+    }
+
+    //calculate size
+
+}
+

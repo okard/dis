@@ -24,7 +24,6 @@ THE SOFTWARE.
 */
 package rt.c.stdio;
 
-
 def(C) printf(format : ptr, ...) : int;
 
 

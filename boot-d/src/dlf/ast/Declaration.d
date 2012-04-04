@@ -217,9 +217,10 @@ class FunctionDecl : TypeDecl
 */
 final class StructDecl : TypeDecl
 {
-    /// Symbol Table
+    /// Symbol Table (Functions and so on)
     public SymbolTable SymTable;
 
+    /// Data in Struct
     public InstanceDecl[string] Data;
 
     /// Calling Convention

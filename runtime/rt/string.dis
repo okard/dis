@@ -29,11 +29,11 @@ import rt.object;
 /**
 * The string class
 */
-struct string : object
+obj string : object
 {
-    mem : ptr;
-    length : uint;
-    size : uint;
+    mem : ptr void;
+    length : uint32;
+    size : uint32;
 
     //ctor(str: byte8[])
 }
