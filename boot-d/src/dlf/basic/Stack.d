@@ -71,6 +71,15 @@ struct Stack(T)
         return mStackArr[mCount-1];
     }
 
+    /**
+    * Bottom element
+    */
+    @property
+    T bottom()
+    {
+        assert(mStackArr !is null);
+        return mStackArr[0];
+    }
 
     /**
     * Element on Index?
@@ -123,7 +132,8 @@ unittest
     for(uint i = 0; i < 10; i++)
         stack.push(i);
 
-    assert(stack[0] == 0);
+    assert(stack.bottom == 0);
+    assert(stack[0] == stack.bottom);
     assert(stack[5] == 5);
     assert(stack[stack.length-1] == stack.top);
     

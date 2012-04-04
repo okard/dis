@@ -77,6 +77,9 @@ public interface Visitor
     //Types
     DataType visit(DataType);
 
+    //RefType
+    //
+
     
     }
 
@@ -140,6 +143,7 @@ Node dispatch(Node n, Visitor v, const bool mod = false)
         case NodeKind.DataType: return doVisit!DataType(mod, n, v);
         case NodeKind.OpaqueType: return doVisit!OpaqueType(mod, n, v);
         case NodeKind.DotType: return doVisit!DotType(mod, n, v);
+        //ref type
         case NodeKind.FunctionType: return doVisit!FunctionType(mod, n, v);
         case NodeKind.StructType: return doVisit!StructType(mod, n, v);
         case NodeKind.ClassType: return doVisit!ClassType(mod, n, v);

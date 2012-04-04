@@ -296,6 +296,19 @@ class FunctionType : DataType
 }
 
 /**
+* Something like that?
+* Whats about Template Type Instancing?
+*/
+final class DeclarationType : DataType
+{
+    public Declaration Decl;
+
+    //For template instancing?
+    public DataType[] Arguments;
+}
+
+
+/**
 * Struct Type
 */
 class StructType : DataType

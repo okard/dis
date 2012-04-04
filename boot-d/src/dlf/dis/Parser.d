@@ -57,7 +57,7 @@ class Parser
     private Token mToken;
 
     /// Symbol Tables
-    private Stack!SymbolTable symTables;
+    private Stack!(SymbolTable*) symTables;
 
     /// Current flags
     private DeclarationFlags flags;
@@ -136,8 +136,8 @@ class Parser
         auto pkg = new PackageDecl();
         pkg.Loc = mToken.Loc;
         pkg.modificationDate = Src.modificationDate;
-        pkg.SymTable = new SymbolTable(pkg);
-        symTables.push(pkg.SymTable);
+        pkg.SymTable = SymbolTable(pkg);
+        symTables.push(&pkg.SymTable);
         scope(exit) symTables.pop();
 
         //parameterized keywords
@@ -560,8 +560,8 @@ class Parser
         checkType(TokenType.KwStruct);
 
         auto st = new StructDecl();
-        st.SymTable = new SymbolTable(st);
-        symTables.push(st.SymTable);
+        st.SymTable = SymbolTable(st);
+        symTables.push(&st.SymTable);
         scope(exit) symTables.pop();
 
         //struct name
@@ -695,8 +695,8 @@ class Parser
         //TODO symbol table? each block has one?
         auto block = new BlockStmt();
         block.Loc = mToken.Loc;
-        block.SymTable = new SymbolTable(block);
-        symTables.push(block.SymTable);
+        block.SymTable = SymbolTable(block);
+        symTables.push(&block.SymTable);
         scope(exit) symTables.pop();
 
         //parse until "}"

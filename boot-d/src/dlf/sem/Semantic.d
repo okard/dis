@@ -49,11 +49,10 @@ final class Semantic
     private LogSource log = Log("Semantic");
 
     /// Type Resolver Run
-    private TypeAnalysis typeResolver;
+    private scope TypeAnalysis typeResolver;
 
     /// Context
     private Context context;
-
 
     /**
     * Ctor
@@ -204,6 +203,12 @@ final class Semantic
         this(string msg)
         {
             super(msg);
+        }
+
+        /// New Semantic Exception
+        this()
+        {
+            super("Semantic Exception");
         }
     }
 }

@@ -34,7 +34,7 @@ class TypeAnalysis : Visitor
     private Semantic sem;
 
     /// Symbol Tables
-    private Stack!SymbolTable symTables;
+    private Stack!(SymbolTable*) symTables;
 
     /**
     * Constructor
@@ -50,7 +50,7 @@ class TypeAnalysis : Visitor
     /// Package Declaration
     Declaration visit(PackageDecl pd)
     {
-        symTables.push(pd.SymTable);
+        symTables.push(&pd.SymTable);
         scope(exit) symTables.pop();    
 
         mapDispatch(pd.Imports);
@@ -135,7 +135,8 @@ class TypeAnalysis : Visitor
     Declaration visit(StructDecl sd){ return sd; }
     //Alias
     //Enum
-    //Variant
+    //Variant    
+
 
     ///////////////////////////////////////////////////////////////////////////
     //Statements
@@ -146,7 +147,7 @@ class TypeAnalysis : Visitor
         sem.Information("Semantic: BlockStmt");
 
         //symtable
-        symTables.push(bs.SymTable);
+        symTables.push(&bs.SymTable);
         scope(exit) symTables.pop();
 
         //analyze the declarations inside of blockstatement
@@ -194,7 +195,8 @@ class TypeAnalysis : Visitor
 
 
         if(ce.Func.Kind == NodeKind.IdExpr)
-        {
+        {    
+
             auto ie = ce.Func.to!IdExpr;
             
             //if ie.Decl == FunctionDecl
@@ -238,7 +240,8 @@ class TypeAnalysis : Visitor
                 {
                     decl = sym[ie.first];
                     break;
-                }
+                }    
+
                 sym = sym.Prev;
             }
             while(sym !is null);
@@ -249,7 +252,8 @@ class TypeAnalysis : Visitor
         {
             sem.Error("Can't find first entry identifier %s", ie.first);
             sem.Fatal("Failed type resolve");
-        }
+        }    
+
 
         //go down, search the right last part of identifier
         if(ie.length > 1)
@@ -260,7 +264,8 @@ class TypeAnalysis : Visitor
             /*
             for(int i=1; i< ie.length; i++)
             {
-                if(!sym.contains(ie[i]));
+                if(!sym.contains(    
+ie[i]));
             }
             // /
         }
@@ -292,7 +297,8 @@ class TypeAnalysis : Visitor
         be.Left = autoDispatch(be.Left);
         be.Right = autoDispatch(be.Right);
 
-        
+            
+
         //final
         switch(be.Op)
         {
@@ -336,18 +342,24 @@ class TypeAnalysis : Visitor
         {
             auto ct = dt.to!DotType;
 
+            //Declaration 2 Datatype???
+            //Variable/Value/Const are Instancing Declarations
+            //For DataTypes only Declarations of DataTypes are allowed
+
             //bottom up search for symbol
             for(size_t i=symTables.length-1; i >= 0; i++)
             {
                 if(symTables[i].contains(ct.Value))
-                    ct.ResolvedDecl = symTables[i][ct.Value];
+                    ct.ResolvedDecl = (*symTables[i])[ct.Value];
             }
 
             //top down search
+            //use symTables.bottom.Owner
             
-            //find dt.Value in SymTable
-            //Ignore Variables, Constants, Values,
-            //dt.Value
+            //search for ct.Right
+            
+            if(ct.Right is null)
+                return ct;
         }
     
         //Check for Ref Ref Types

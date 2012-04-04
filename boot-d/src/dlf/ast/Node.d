@@ -99,11 +99,11 @@ abstract class Node
     public Location Loc;
 
     /// Storage for Semantic Node
-    //TODO Make this struct?
+    //TODO Make this struct? for different node types different?
     public Node Semantic;
 
     /// Storage for CodeGen Node
-    //TODO Make this struct?
+    //TODO Make this struct? for different node types different?
     public Node CodeGen;
 
     /// Kind (immutable)? function?

@@ -25,7 +25,7 @@ import dlf.ast.Declaration;
 /**
 * SymbolTable
 */
-final class SymbolTable
+final struct SymbolTable
 {
     /// Owner Node of SymbolTable
     public Node Owner;
@@ -103,7 +103,6 @@ final class SymbolTable
             concat(this[symbol.Name].to!T, symbol);
         }
     }
-
 
     private struct Entry
     {

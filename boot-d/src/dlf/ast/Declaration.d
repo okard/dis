@@ -67,8 +67,29 @@ abstract class Declaration : Node
 
     //uint Index;
 
+    //DataType
+
     //TODO DocComment
 }
+
+/**
+* Declaring new Types
+*/
+abstract class TypeDecl : Declaration
+{
+}
+
+/**
+* Declaring new Instances of Types
+*/
+abstract class InstanceDecl : Declaration
+{
+}
+
+
+//Two Subtypes of Declarations
+
+//Instancing and New Type Declaration
 
 /// Supported Calling Conventions for classes and functions
 public enum CallingConvention {None, C, Dis}
@@ -76,7 +97,7 @@ public enum CallingConvention {None, C, Dis}
 /**
 * Package
 */
-final class PackageDecl : Declaration
+final class PackageDecl : TypeDecl
 {
     /// Package Identifier
     CompositeIdentifier PackageIdentifier;
@@ -105,7 +126,7 @@ final class PackageDecl : Declaration
 /**
 * Import Declaration
 */
-final class ImportDecl : Declaration
+final class ImportDecl : TypeDecl
 {
     /// Import Identifier
     CompositeIdentifier ImportIdentifier;
@@ -146,15 +167,13 @@ struct FunctionParameter
     /// Index No, Position of Parameter
     ushort Index;
 
-    //Modifiers/Flags (ref, const, ..., vararg)
-
-    //ContraintType -> DataType
+    //Modifiers/Flags ( ..., vararg)
 }
 
 /**
 * A Function Base
 */
-class FunctionDecl : Declaration
+class FunctionDecl : TypeDecl
 {
     /// The Function Parameters
     public FunctionParameter[] Parameter;
@@ -195,9 +214,103 @@ class FunctionDecl : Declaration
 }
 
 /**
+* Structure Declaration
+*/
+final class StructDecl : TypeDecl
+{
+    /// Symbol Table
+    public SymbolTable SymTable;
+
+    /// Calling Convention
+    public CallingConvention CallingConv;
+
+    /// Inherits from Base
+    public DataType BaseType;
+    
+    /// Mixin for Kind Declaration
+    mixin(IsKind("StructDecl"));
+}
+
+
+/**
+* Class Declaration
+*/
+final class ClassDecl : TypeDecl
+{
+    /// Symbol Table
+    public SymbolTable SymTable;
+
+
+    public FunctionDecl Ctor;
+    public FunctionDecl Dtor;
+
+    //static ctor, dtor
+
+    //BaseClass / Parent Class 
+    //Multi inheritance?
+    //Traits
+    //Mixins
+
+    //VarDecl[] Variables;
+    //FunctionSymbols[] Methods;
+
+    /// Is Template Class
+    public bool IsTemplate;
+
+    public ClassType[] Instances;
+
+
+    /// Mixin for Kind Declaration
+    mixin(IsKind("ClassDecl"));
+}
+
+/**
+* Trait Declaration
+*/
+final class TraitDecl : TypeDecl
+{
+    //TraitType?
+    //Variables, Methods, Properties
+
+    /// Mixin for Kind Declaration
+    mixin(IsKind("TraitDecl"));
+}
+
+/**
+* Alias Declaration
+*/
+final class AliasDecl : TypeDecl
+{
+    /// The target type
+    DataType AliasType;
+
+    /// Mixin for Kind Declaration
+    mixin(IsKind("AliasDecl"));
+}
+
+/**
+* Enum Type
+*/
+final class EnumDecl : TypeDecl
+{
+    /// Mixin for Kind Declaration
+    mixin(IsKind("EnumDecl"));
+}
+
+/**
+* Variant Declaration
+*/
+final class VariantDecl : TypeDecl
+{
+    /// Mixin for Kind Declaration
+    mixin(IsKind("VariantDecl"));
+}
+
+
+/**
 * Variable Declaration (var)
 */
-final class VarDecl : Declaration
+final class VarDecl : InstanceDecl
 {
     /// Variable Type
     public DataType VarDataType;
@@ -232,7 +345,7 @@ final class VarDecl : Declaration
 /**
 * Value Declaration
 */
-final class ValDecl : Declaration
+final class ValDecl : InstanceDecl
 {
     /// Mixin for Kind Declaration
     mixin(IsKind("ValDecl"));
@@ -241,104 +354,9 @@ final class ValDecl : Declaration
 /**
 * Constant Declaration
 */
-final class ConstDecl : Declaration
+final class ConstDecl : InstanceDecl
 {
     /// Mixin for Kind Declaration
     mixin(IsKind("ConstDecl"));
-}
-
-/**
-* Structure Declaration
-*/
-final class StructDecl : Declaration
-{
-    /// Symbol Table
-    public SymbolTable SymTable;
-
-    /// Calling Convention
-    public CallingConvention CallingConv;
-
-    /// Inherits from Base
-    public DataType BaseType;
-    
-    /// Mixin for Kind Declaration
-    mixin(IsKind("StructDecl"));
-}
-
-
-/**
-* Class Declaration
-*/
-final class ClassDecl : Declaration
-{
-    /// Symbol Table
-    public SymbolTable SymTable;
-
-
-    public FunctionDecl Ctor;
-    public FunctionDecl Dtor;
-
-    //static ctor, dtor
-
-    
-
-    //BaseClass / Parent Class 
-    //Multi inheritance?
-    //Traits
-    //Mixins
-
-    //VarDecl[] Variables;
-    //FunctionSymbols[] Methods;
-
-    /// Is Template Class
-    public bool IsTemplate;
-
-    public ClassType[] Instances;
-
-
-    /// Mixin for Kind Declaration
-    mixin(IsKind("ClassDecl"));
-}
-
-/**
-* Trait Declaration
-*/
-final class TraitDecl : Declaration
-{
-    //TraitType?
-    //Variables, Methods, Properties
-
-    /// Mixin for Kind Declaration
-    mixin(IsKind("TraitDecl"));
-}
-
-/**
-* Alias Declaration
-*/
-final class AliasDecl : Declaration
-{
-    /// The target type
-    DataType AliasType;
-
-    /// Mixin for Kind Declaration
-    mixin(IsKind("AliasDecl"));
-}
-
-/**
-* Enum Type
-*/
-final class EnumDecl : Declaration
-{
-    /// Mixin for Kind Declaration
-    mixin(IsKind("EnumDecl"));
-}
-
-/**
-* Variant Declaration
-*/
-final class VariantDecl : Declaration
-{
-    /// Mixin for Kind Declaration
-    mixin(IsKind("VariantDecl"));
 }
 
