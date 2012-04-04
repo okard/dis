@@ -46,6 +46,8 @@ final class BlockStmt : Statement
     /// Symbol Table
     public SymbolTable SymTable;
 
+    public InstanceDecl[string] Data;
+
     /// Statements
     public Statement[] Statements;
 

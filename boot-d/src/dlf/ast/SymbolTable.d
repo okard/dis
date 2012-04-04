@@ -33,7 +33,7 @@ final struct SymbolTable
     //TODO Use Interface for SymbolTable owner
     
     /// the symbols
-    private Declaration mSymbols[string];
+    private TypeDecl mSymbols[string];
     
     /**
     * Create new SymbolTable
@@ -46,7 +46,7 @@ final struct SymbolTable
     /**
     * Index Access for Types
     */
-    public Declaration opIndex(string identifier)
+    public TypeDecl opIndex(string identifier)
     {
         return mSymbols[identifier];
     }
@@ -54,7 +54,7 @@ final struct SymbolTable
     /**
     * Op Index Assign
     */
-    public Declaration opIndexAssign(Declaration dec, string name)
+    public TypeDecl opIndexAssign(TypeDecl dec, string name)
     {
         mSymbols[name] = dec;
         return dec;
@@ -64,11 +64,11 @@ final struct SymbolTable
     * Apply Operator
     * Allow foreach iteration over symboltable
     */
-    int opApply(int delegate(ref Declaration) dg)
+    int opApply(int delegate(ref TypeDecl) dg)
     {   
         int result = 0;
     
-        foreach(string key, Declaration value; mSymbols)
+        foreach(string key, TypeDecl value; mSymbols)
         {
             result = dg(value);
 
@@ -89,7 +89,7 @@ final struct SymbolTable
     /**
     * Assign Entry
     */
-    public void assign(T : Declaration)(T symbol, void delegate(T symA, T symB) concat)
+    public void assign(T : TypeDecl)(T symbol, void delegate(T symA, T symB) concat)
     {
         //append to function table
         if(!this.contains(symbol.Name))

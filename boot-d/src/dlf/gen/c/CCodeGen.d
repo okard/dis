@@ -192,9 +192,7 @@ class CCodeGen : ObjectGen, Visitor
         //Imports
         mapDispatch(pd.Imports);
 
-        //go through declarations
-        foreach(Declaration d; pd.SymTable)
-            autoDispatch(d);
+        symDispatch(pd.SymTable);
         
         p.close();
 

@@ -210,30 +210,30 @@ class Parser
                 break;
             //struct
             case TokenType.KwStruct:
-                Declaration dcl = parseStruct();
+                TypeDecl dcl = parseStruct();
                 dcl.Parent = pkg;
 
-                pkg.SymTable.assign(dcl, (Declaration existing, Declaration newOne)
+                pkg.SymTable.assign(dcl, (TypeDecl existing, TypeDecl newOne)
                 {
                     Error(newOne.Loc, "Can't override structures");
                 });
                 break;
             //class
             case TokenType.KwObj:
-                Declaration dcl = parseClass();
+                TypeDecl dcl = parseClass();
                 dcl.Parent = pkg;
                 
-                pkg.SymTable.assign(dcl, (Declaration existing, Declaration newOne)
+                pkg.SymTable.assign(dcl, (TypeDecl existing, TypeDecl newOne)
                 {
                     Error(newOne.Loc, "Can't override class names, please use templated classes instead");
                 });
                 break;
 
             case TokenType.KwType:
-                Declaration dcl = parseType();
+                TypeDecl dcl = parseType();
                 dcl.Parent = pkg;
 
-                pkg.SymTable.assign(dcl, (Declaration existing, Declaration newOne)
+                pkg.SymTable.assign(dcl, (TypeDecl existing, TypeDecl newOne)
                 {
                     Error(newOne.Loc, "Can't override type declarations");
                 });
@@ -600,10 +600,9 @@ class Parser
                     next;
                     var.VarDataType = parseDataType();
 
-                    st.SymTable.assign(var.to!Declaration, (Declaration existing, Declaration newOne)
-                    {
-                        Error(newOne.Loc, "Duplicated field in struct");
-                    });
+                    //TODO not twice
+                    st.Data[var.Name] = var;
+
                     accept(TokenType.Semicolon, "Expect ';' after field declaration");
 
                     debug log.Information("Struct Field %s %s", var.Name, var.VarDataType.toString());
@@ -624,7 +623,7 @@ class Parser
     /**
     * Parse a typedef
     */
-    private Declaration parseType()
+    private TypeDecl parseType()
     {
         //must be struct 
         checkType(TokenType.KwType);
@@ -712,11 +711,12 @@ class Parser
             {
                 case TokenType.KwVar:
                     auto var = parseVar();
-                    block.SymTable[var.Name] = var;
                     var.Parent = block;
+                    block.Data[var.Name] = var;
                     continue;
 
                 case TokenType.KwLet:
+                case TokenType.KwConst:
                 case TokenType.KwDef: 
                 case TokenType.KwClass:
                 case TokenType.KwObj:

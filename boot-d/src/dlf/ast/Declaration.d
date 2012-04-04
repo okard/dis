@@ -48,6 +48,9 @@ enum DeclarationFlags : ushort
     Abstract= 1 << 7 
 } 
 
+/// Supported Calling Conventions for classes and functions
+public enum CallingConvention {None, C, Dis}
+
 /**
 * Basic Class for Declaration
 */
@@ -86,13 +89,9 @@ abstract class InstanceDecl : Declaration
 {
 }
 
-
 //Two Subtypes of Declarations
 
 //Instancing and New Type Declaration
-
-/// Supported Calling Conventions for classes and functions
-public enum CallingConvention {None, C, Dis}
 
 /**
 * Package
@@ -220,6 +219,8 @@ final class StructDecl : TypeDecl
 {
     /// Symbol Table
     public SymbolTable SymTable;
+
+    public InstanceDecl[string] Data;
 
     /// Calling Convention
     public CallingConvention CallingConv;
