@@ -601,7 +601,7 @@ class Parser
                     var.VarDataType = parseDataType();
 
                     //TODO not twice
-                    st.Data[var.Name] = var;
+                    st.SymTable[var.Name] = var;
 
                     accept(TokenType.Semicolon, "Expect ';' after field declaration");
 
@@ -712,7 +712,7 @@ class Parser
                 case TokenType.KwVar:
                     auto var = parseVar();
                     var.Parent = block;
-                    block.Data[var.Name] = var;
+                    block.SymTable[var.Name] = var;
                     continue;
 
                 case TokenType.KwLet:

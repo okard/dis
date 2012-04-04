@@ -73,6 +73,9 @@ abstract class Declaration : Node
     //DataType
 
     //TODO DocComment
+
+    @property
+    abstract bool IsInstanceDecl();
 }
 
 /**
@@ -80,6 +83,8 @@ abstract class Declaration : Node
 */
 abstract class TypeDecl : Declaration
 {
+    @property
+    final override bool IsInstanceDecl(){return false;}
 }
 
 /**
@@ -87,6 +92,8 @@ abstract class TypeDecl : Declaration
 */
 abstract class InstanceDecl : Declaration
 {
+    @property
+    final override bool IsInstanceDecl(){return true;}
 }
 
 //Two Subtypes of Declarations
@@ -219,9 +226,6 @@ final class StructDecl : TypeDecl
 {
     /// Symbol Table (Functions and so on)
     public SymbolTable SymTable;
-
-    /// Data in Struct
-    public InstanceDecl[string] Data;
 
     /// Calling Convention
     public CallingConvention CallingConv;

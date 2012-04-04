@@ -197,7 +197,7 @@ mixin template DispatchUtils(bool modify)
     private final void symDispatch(SymbolTable symTable)
     {
          //go through declarations
-        foreach(TypeDecl d; symTable)
+        foreach(Declaration d; symTable)
         {
             assert(symTable[d.Name] == d);
             symTable[d.Name] = autoDispatch(d);

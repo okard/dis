@@ -34,7 +34,7 @@ final struct SymbolTable
     //TODO Use Interface for SymbolTable owner
     
     /// the symbols
-    private TypeDecl mSymbols[string];
+    private Declaration symbols[string];
     
     /**
     * Create new SymbolTable
@@ -47,17 +47,20 @@ final struct SymbolTable
     /**
     * Index Access for Types
     */
-    public TypeDecl opIndex(string identifier)
+    public Declaration opIndex(string identifier)
     {
-        return mSymbols[identifier];
+        return symbols[identifier];
     }
 
     /**
     * Op Index Assign
     */
-    public TypeDecl opIndexAssign(TypeDecl dec, string name)
+    public Declaration opIndexAssign(Declaration dec, string name)
     {
-        mSymbols[name] = dec;
+        if(contains(name))
+            throw new Exception("Already in SymbolTable, use assign method for duplicated entries");
+
+        symbols[name] = dec;
         return dec;
     }
 
@@ -65,11 +68,11 @@ final struct SymbolTable
     * Apply Operator
     * Allow foreach iteration over symboltable
     */
-    int opApply(int delegate(ref TypeDecl) dg)
+    int opApply(int delegate(ref Declaration) dg)
     {   
         int result = 0;
     
-        foreach(string key, TypeDecl value; mSymbols)
+        foreach(string key, Declaration value; symbols)
         {
             result = dg(value);
 
@@ -84,24 +87,24 @@ final struct SymbolTable
     */
     public bool contains(string value)
     {
-        return cast(bool)(value in mSymbols);
+        return cast(bool)(value in symbols);
     }
 
     /**
     * Assign Entry
     */
-    public void assign(T : TypeDecl)(T symbol, void delegate(T symA, T symB) concat)
+    public void assign(T : Declaration)(T symbol, void delegate(T symA, T symB) concat)
     {
         //append to function table
         if(!this.contains(symbol.Name))
-            this[symbol.Name] = symbol;
+            symbols[symbol.Name] = symbol;
         else
         {
             //types must match
             if(this[symbol.Name].Kind != symbol.Kind)
                 throw new Exception("Wrong kind of symbol already in symbol table");
    
-            concat(this[symbol.Name].to!T, symbol);
+            concat(symbols[symbol.Name].to!T, symbol);
         }
     }
 
@@ -112,25 +115,3 @@ final struct SymbolTable
     }
 
 }
-
-//For InstanceDecl?
-final struct DataTable
-{
-    /// Owner Node (Should be TypeDecl)
-    private Node Owner;
-
-    /// Instances
-    private InstanceDecl data[string];
-
-    /**
-    * Symbol Table contains entry
-    */
-    public bool contains(string value)
-    {
-        return cast(bool)(value in data);
-    }
-
-    //calculate size
-
-}
-

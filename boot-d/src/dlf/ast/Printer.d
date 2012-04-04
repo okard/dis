@@ -134,7 +134,7 @@ class Printer
         writetln("{");
         tabDeepness++;
 
-        foreach(TypeDecl sym; bs.SymTable)
+        foreach(Declaration sym; bs.SymTable)
             dispatch(sym, this);
 
         //TODO Data

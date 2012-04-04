@@ -297,8 +297,6 @@ ie[i]));
         be.Left = autoDispatch(be.Left);
         be.Right = autoDispatch(be.Right);
 
-            
-
         //final
         switch(be.Op)
         {
@@ -340,6 +338,8 @@ ie[i]));
         //resolve
         if(dt.Kind == NodeKind.DotType)
         {
+            //TODO to extern method
+            //visit(DotType, Declaration start);
             auto ct = dt.to!DotType;
 
             //Declaration 2 Datatype???
@@ -350,13 +350,27 @@ ie[i]));
             for(size_t i=symTables.length-1; i >= 0; i++)
             {
                 if(symTables[i].contains(ct.Value))
-                    ct.ResolvedDecl = (*symTables[i])[ct.Value];
+                {
+                    auto d = (*symTables[i])[ct.Value];
+                    if(d.IsInstanceDecl)
+                    {
+                        sem.Error("DataType references to a instance symbol %s", ct.Value);
+                        break;
+                    }
+                    ct.ResolvedDecl = d;
+                }
             }
 
+            //when nothing found in bottom up search in imports?
             //top down search
+            //search imports 
             //use symTables.bottom.Owner
+            // symTables.bottom.Kind == NodeKind.PackageDecl.
             
             //search for ct.Right
+
+            if(ct.ResolvedDecl is null)
+                sem.Fatal("Can't proceed with unsolved datatype");
             
             if(ct.Right is null)
                 return ct;
