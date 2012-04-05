@@ -34,7 +34,7 @@ class TypeAnalysis : Visitor
     private Semantic sem;
 
     /// Symbol Tables
-    private Stack!(SymbolTable*) symTables;
+    private Stack!(SymbolTable*) symTables = Stack!(SymbolTable*)(128);
 
     /**
     * Constructor
@@ -226,54 +226,18 @@ class TypeAnalysis : Visitor
         //go up, find first start entry
         Declaration decl = null;
 
-        /*
-        if(symTable.contains(ie.first))
+        //Bottom up search
+        for(size_t i=symTables.length-1; i >= 0; i--)
         {
-            decl = symTable[ie.first];
-        }
-        else
-        {
-            auto sym = symTable;
-            do
+            if(symTables[i].contains(ie.Id))
             {
-                if(sym.contains(ie.first))
-                {
-                    decl = sym[ie.first];
-                    break;
-                }    
-
-                sym = sym.Prev;
+                auto d = (*symTables[i])[ie.Id];
+                ie.Decl = d;
             }
-            while(sym !is null);
         }
-            
-        //no start point
-        if(decl is null)
-        {
-            sem.Error("Can't find first entry identifier %s", ie.first);
-            sem.Fatal("Failed type resolve");
-        }    
-
-
-        //go down, search the right last part of identifier
-        if(ie.length > 1)
-        {
-            debug sem.Information("Search down");
-            auto sym = getSymbolTable(decl);
-
-            /*
-            for(int i=1; i< ie.length; i++)
-            {
-                if(!sym.contains(    
-ie[i]));
-            }
-            // /
-        }
-        else
-        {
-            ie.Decl = decl;
-        }
-        */
+        
+        //Static classes are TypeDecl
+        // Variables are InstanceDecl
 
         //dont find the right declaration
         if(ie.Decl is null)
@@ -347,7 +311,7 @@ ie[i]));
             //For DataTypes only Declarations of DataTypes are allowed
 
             //bottom up search for symbol
-            for(size_t i=symTables.length-1; i >= 0; i++)
+            for(size_t i=symTables.length-1; i >= 0; i--)
             {
                 if(symTables[i].contains(ct.Value))
                 {

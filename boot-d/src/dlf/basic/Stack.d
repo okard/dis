@@ -27,7 +27,7 @@ struct Stack(T)
     /// Array with Stack Values
     T[] mStackArr;
     /// Elements in Stack
-    uint mCount;
+    uint mCount = 0;
 
     /**
     * Ctor
@@ -35,8 +35,8 @@ struct Stack(T)
     this(uint size = 256)
     {
         mStackArr = new T[size];
-        mCount = 0;
     }
+
 
     /**
     * Push Value on Stack

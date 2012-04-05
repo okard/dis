@@ -57,7 +57,7 @@ class Parser
     private Token mToken;
 
     /// Symbol Tables
-    private Stack!(SymbolTable*) symTables;
+    private Stack!(SymbolTable*) symTables = Stack!(SymbolTable*)(128);
 
     /// Current flags
     private DeclarationFlags flags;

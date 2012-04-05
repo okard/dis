@@ -200,7 +200,7 @@ mixin template DispatchUtils(bool modify)
         foreach(Declaration d; symTable)
         {
             assert(symTable[d.Name] == d);
-            symTable[d.Name] = autoDispatch(d);
+            symTable.assign(autoDispatch(d));
         }
     }
 }

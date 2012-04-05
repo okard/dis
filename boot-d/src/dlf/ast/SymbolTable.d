@@ -108,6 +108,12 @@ final struct SymbolTable
         }
     }
 
+    //Overwrites
+    public void assign(T : Declaration)(T symbol)
+    {
+        symbols[symbol.Name] = symbol;
+    }
+
     private struct Entry
     {
         //type: variable, function, class, struct 
