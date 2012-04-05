@@ -227,7 +227,7 @@ class TypeAnalysis : Visitor
         Declaration decl = null;
 
         //Bottom up search
-        for(size_t i=symTables.length-1; i >= 0; i--)
+        for(size_t i=symTables.length-1; i > 0; i--)
         {
             if(symTables[i].contains(ie.Id))
             {
@@ -311,7 +311,7 @@ class TypeAnalysis : Visitor
             //For DataTypes only Declarations of DataTypes are allowed
 
             //bottom up search for symbol
-            for(size_t i=symTables.length-1; i >= 0; i--)
+            for(size_t i=symTables.length-1; i > 0; i--)
             {
                 if(symTables[i].contains(ct.Value))
                 {
