@@ -2,6 +2,7 @@
 * dis.h
 * Basic Header File for C Code Generation
 */
+#pragma once
 #ifndef __DIS_H__
 #define __DIS_H__
 

@@ -159,6 +159,8 @@ final class WhileStmt : Statement
 final class ContinueStmt : Statement
 {
     //target statement
+
+    //mixin(IsKind("ContinueStmt"));
 }
 
 /**
@@ -167,22 +169,28 @@ final class ContinueStmt : Statement
 final class BreakStmt : Statement
 {
     //target statement
+    //mixin(IsKind("BreakStmt"));
 }
 
 //Try Catch Finally Throw
 
 final class ThrowStmt : Statement
 {
+    //Expression
+    //mixin(IsKind("ThrowStmt"));
 }
 
 final class TryStmt : Statement
 {
+    //mixin(IsKind("TryStmt"));
 }
 
 final class CatchStmt : Statement
 {
+    //mixin(IsKind("CatchStmt"));
 }
 
 final class FinallyStmt : Statement
 {
+    //mixin(IsKind("FinallyStmt"));
 }

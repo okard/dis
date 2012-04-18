@@ -18,9 +18,11 @@
 ******************************************************************************/
 module dlf.ast.Annotation;
 
-
 import dlf.ast.Node;
 import dlf.ast.Visitor;
+
+//Attribute?
+// TestAttr
 
 /**
 * Annotation Base Class
@@ -33,7 +35,6 @@ abstract class Annotation : Node
     mixin(IsKind("Annotation"));
 }
 
-
 /**
 * UnitTest Annotation
 */
@@ -41,4 +42,14 @@ final class TestAnnotation : Annotation
 {
     //test name
     mixin(IsKind("TestAnnotation"));
+
+    //parameter pre/post methods, depends 
+}
+
+/**
+* Deprecated Annotation
+*/
+final class DeprecatedAnnotation : Annotation
+{
+    //mixin(IsKind("DeprecatedAnnotation"));
 }

@@ -78,7 +78,7 @@ class Context
 
     PackageDecl[] Packages;
 
-    ///Libraries to Link
+    ///Libraries to Link (static, dynamic, ...)
     string[] libs; 
 
     ///Semantic Context

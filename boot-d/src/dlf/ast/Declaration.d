@@ -147,15 +147,6 @@ final class ImportDecl : TypeDecl
     mixin(IsKind("ImportDecl"));
 }
 
-
-//not a named declaration
-final class BlockDecl : Declaration
-{
-    /// Symbol Table
-    public SymbolTable SymTable;
-}
-
-
 /**
 * Function Parameter 
 */

@@ -62,6 +62,9 @@ class Parser
     /// Current flags
     private DeclarationFlags flags;
 
+    /// Current Annotations
+    private Annotation[] annotations;
+
     /// Internal Types (Builtin)
     public static DataType[string] InternalTypes;
 
@@ -122,7 +125,7 @@ class Parser
     //== Declarations =========================================================
     //=========================================================================
 
-    //public Declaration parseDeclaration();
+    //public Declaration[] parseDeclarations();
 
     /**
     * Parse package
@@ -143,7 +146,8 @@ class Parser
         //parameterized keywords
         if(peek(1) == TokenType.ROBracket)
         {
-            next;
+            next(1);
+            //checkType(TokenType.Identifier);
             accept(TokenType.Identifier, "Expected Identifier for Package Keyword Parameter");
             
             switch(mToken.Value)
@@ -206,7 +210,9 @@ class Parser
                     debug log.Information("Add override to function %s", existing.Name);
                     existing.Overrides ~= newOne;
                 });
-                //assign here
+                //assign
+                assignAnnotations(dcl);
+                assignDeclarationFlags(dcl);
                 break;
             //struct
             case TokenType.KwStruct:
@@ -228,7 +234,7 @@ class Parser
                     Error(newOne.Loc, "Can't override class names, please use templated classes instead");
                 });
                 break;
-
+            //type
             case TokenType.KwType:
                 TypeDecl dcl = parseType();
                 dcl.Parent = pkg;
@@ -255,8 +261,14 @@ class Parser
                 Error(mToken.Loc, "Trait iblock.SymTablen Package not yet implemented");
                 break;
 
+            case TokenType.Annotation:
+                auto ano = parseAnnotation();
+                annotations ~= ano;
+                break;
+
             case TokenType.EOF:
                 break;
+
             default:
                 log.Information("Not valid token in package declaration: %s", mToken.toString());
                 Error(mToken.Loc, "Not valid package element");
@@ -334,6 +346,9 @@ class Parser
         }
         
         accept(TokenType.COBracket, "Expects { for class declaration");
+
+
+        //parseDeclarations();
          
 
         Error(mToken.Loc, "Class Parsing not yet supported");
@@ -627,6 +642,27 @@ class Parser
     {
         //must be struct 
         checkType(TokenType.KwType);
+
+        accept(TokenType.Identifier, "Require name for type");
+
+        switch(peek(1))
+        {
+
+        //alias
+        case TokenType.Identifier:
+            auto al = new AliasDecl();
+            al.Name = mToken.Value;
+            next;
+            al.AliasType = parseDataType();
+            return al;
+
+        //enum
+        //variant
+
+        default:
+            next;
+            Error(mToken.Loc, "parseType: No expected token");
+        }
 
         //type name identifier 
         //type name = 
@@ -937,7 +973,7 @@ class Parser
     /**
     * Get binary operator for token type
     */
-    private BinaryOperator getBinaryOperator(TokenType type)
+    private final static BinaryOperator getBinaryOperator(TokenType type)
     {
         switch(type)
         {
@@ -1047,13 +1083,14 @@ class Parser
                 //! datatype -> parseDataType
                 //!(datatypes)
                 case TokenType.Not: 
+                    //TODO Use DeclarationType here? rename templatetype?
                     Error(mToken.Loc, "template instance datatypes not yet supported");
                     break;
 
                 case TokenType.KwRef:
                     next;
-                    auto reftype = new ReferenceType();
-                    reftype.RefType = parseDataType();
+                    auto reftype = new RefType();
+                    reftype.TargetType = parseDataType();
                     return reftype;
 
                 case TokenType.KwPtr:
@@ -1080,8 +1117,8 @@ class Parser
         {
             //def(datatype,...) : datatype
             Error(mToken.Loc, "delegate types not yet supported");
+            //return function type
         }
-
 
         if(mToken.Type == TokenType.AOBracket)
         {
@@ -1121,7 +1158,7 @@ class Parser
     }
 
     /**
-    * Assign Declaration Flags
+    * Assign Declaration Flags and clear them
     */
     private void assignDeclarationFlags(Declaration d)
     {
@@ -1129,6 +1166,14 @@ class Parser
         flags = DeclarationFlags.Blank;
     }
 
+    /**
+    * Assign Annotations and clear them
+    */
+    private void assignAnnotations(Declaration d)
+    {
+        d.Annotations = annotations;
+        annotations.length = 0;
+    }
 
     /**
     * next n token
@@ -1144,6 +1189,7 @@ class Parser
 
     /**
     * Require a special type next
+    * Remove
     */
     private void accept(TokenType t, string error, string file = __FILE__, size_t line = __LINE__)
     {
@@ -1180,19 +1226,21 @@ class Parser
     /**
     * Assert Type
     */
-    private void checkType(TokenType t)
+    private void checkType(TokenType t, string reason="",  string file = __FILE__, size_t line = __LINE__)
     {
         if(mToken.Type != t)
-            throw new ParserException(mToken.Loc, format("Expected %s not %s", dlf.dis.Token.toString(t), mToken.toString()));
+            throw new ParserException(mToken.Loc, format("Expected %s not %s: %s", dlf.dis.Token.toString(t), mToken.toString(), reason), file, line);
     }
 
     /**
     * Assert Type (array variant)
     */
-    private void checkType(TokenType[] tt)
+    private void checkTypes(TokenType[] tt, string file = __FILE__, size_t line = __LINE__)
     {
+        //TODO 
+
         if(!isIn(mToken.Type, tt))
-            throw new ParserException(mToken.Loc, format("Expected [] not %s", mToken.toString()));
+            throw new ParserException(mToken.Loc, format("Expected [] not %s", mToken.toString()), file, line);
     }
     
     /**

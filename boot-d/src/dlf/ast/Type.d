@@ -214,15 +214,17 @@ class PointerType : DataType
 /**
 * Reference Type
 */
-class ReferenceType : DataType
+class RefType : DataType
 {
-    public DataType RefType;
+    public DataType TargetType;
 
     ///toString
     override string toString() 
     { 
-        return "ref " ~ RefType.toString(); 
+        return "ref " ~ TargetType.toString(); 
     }
+
+    mixin(IsKind("RefType"));
 }
 
 /**

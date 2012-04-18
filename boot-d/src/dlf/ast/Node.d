@@ -72,6 +72,7 @@ public enum NodeKind : ushort
     DataType,
     OpaqueType,
     DotType,
+    RefType,
     FunctionType,
     StructType,
     ClassType,
@@ -114,6 +115,7 @@ abstract class Node
     {
         //TODO can be optimized into a static cast
         //assert(T.Kind == this.Kind, "Missmatch "~this.toString());
+        // FuncDecl to Declaration needs special handling
         T n = cast(T)this;
         assert(n);
         return n;

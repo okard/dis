@@ -43,7 +43,7 @@ import dlf.gen.c.CBuilder;
 /**
 * C Code Generator
 */
-class CCodeGen : ObjectGen, Visitor
+class CCodeGen : ObjectGen, BinaryGen, Visitor
 {
     /// Logger
     private LogSource log = Log("CCodeGen");
@@ -79,7 +79,7 @@ class CCodeGen : ObjectGen, Visitor
         
         srcDir = buildPath(ctx.Backend.ObjDir, "tmpDisSrc");
         //TODO create dir
-        assert(srcDir.isDir(), "Target src dir isn't a directory");
+        assert(srcDir.isDir(), "Target src dir isn't a directory: " ~ srcDir);
         writer.SourceDirectory = srcDir;
 
         // Primary/Builtin Types
@@ -156,12 +156,20 @@ class CCodeGen : ObjectGen, Visitor
 
 
     /**
-    * Seperate Static Build Function
+    * Seperate Link Function
     */
     void link(Context ctx)
     {
         //TODO object files as parameter
         builder.link(ctx, CBuilder.objfiles);
+    }
+
+    /**
+    *  Link Interface
+    */
+    void link(Context ctx, string[] objfiles)
+    {
+        builder.link(ctx, objfiles);
     }
 
     //debug infos with #line

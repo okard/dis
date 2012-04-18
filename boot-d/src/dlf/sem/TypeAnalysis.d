@@ -233,8 +233,11 @@ class TypeAnalysis : Visitor
             {
                 auto d = (*symTables[i])[ie.Id];
                 ie.Decl = d;
+                break;
             }
         }
+        
+        //top down search -> look in package imports
         
         //Static classes are TypeDecl
         // Variables are InstanceDecl
