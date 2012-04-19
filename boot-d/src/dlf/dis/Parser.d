@@ -125,6 +125,37 @@ class Parser
     }
 
 
+    /**
+    * Generic Parse try to parse something
+    * return null when nothing match
+    * can only parse keyword initial starts
+    */
+    private Node parse()
+    {
+        switch(mToken.Type)
+        { 
+            //Import
+            case TokenType.KwImport: return parseImport();
+
+            //Instance Decl
+            case TokenType.KwVar: return parseVar();
+            case TokenType.KwLet: return parseLet();
+
+            //Type Decl
+            case TokenType.KwDef: return parseDef();
+            case TokenType.KwStruct: return parseStruct();
+            case TokenType.KwObj: return parseClass();
+            case TokenType.KwTrait: return parseTrait();
+            case TokenType.KwType: return parseType();
+            
+            //Other
+            case TokenType.Annotation: return parseAnnotation();
+
+            default: return null;
+        }
+    }
+
+
     //=========================================================================
     //== Declarations =========================================================
     //=========================================================================
@@ -184,97 +215,69 @@ class Parser
         //Look for semicolon
         next; checkType(TokenType.Semicolon, __traits(identifier, parsePackage));
 
-        //parseDeclarations([ListOfAllowedDeclarations]);
-
         //parse rest of package
         while(mToken.Type != TokenType.EOF)
         {
             next();
-            //parseDeclarations
+            if(mToken.Type == TokenType.EOF) return pkg;
 
-            //parseDeclarationFlags();
+            parseDeclarationFlags();
 
-            switch(mToken.Type)
+            Node n = parse();
+            if(n is null)
+            {
+                log.Information("Not valid token in package declaration: %s", mToken.toString());
+                Error(mToken.Loc, "Not valid package element");
+            }
+
+            n.Parent = pkg;
+            
+            switch(n.Kind)
             { 
             //import
-            case TokenType.KwImport:
-                ImportDecl imp = parseImport();
-                imp.Parent = pkg;
-                pkg.Imports ~= imp;
+            case NodeKind.ImportDecl:
+                pkg.Imports ~= n.to!ImportDecl;
                 break;
             //function
-            case TokenType.KwDef:
-                //TODO give symbol table as scope?
-                FunctionDecl dcl = parseDef(); 
-                dcl.Parent = pkg;
-
-                pkg.SymTable.assign(dcl, (FunctionDecl existing, FunctionDecl newOne)
-                {
-                    debug log.Information("Add override to function %s", existing.Name);
-                    existing.Overrides ~= newOne;
-                });
-                //assign
+            case NodeKind.FunctionDecl:
+                auto dcl = n.to!FunctionDecl;
                 assignAnnotations(dcl);
                 assignDeclarationFlags(dcl);
+                pkg.SymTable.assign(dcl, &symFuncAssign);
                 break;
             //struct
-            case TokenType.KwStruct:
-                TypeDecl dcl = parseStruct();
-                dcl.Parent = pkg;
-
-                pkg.SymTable.assign(dcl, (TypeDecl existing, TypeDecl newOne)
-                {
-                    Error(newOne.Loc, "Can't override structures");
-                });
+            case NodeKind.StructDecl:
+                pkg.SymTable.assign(n.to!StructDecl, genNoAssign!StructDecl("Can't override structures"));
                 break;
             //class
-            case TokenType.KwObj:
-                TypeDecl dcl = parseClass();
-                dcl.Parent = pkg;
-                
-                pkg.SymTable.assign(dcl, (TypeDecl existing, TypeDecl newOne)
-                {
-                    Error(newOne.Loc, "Can't override class names, please use templated classes instead");
-                });
+            case NodeKind.ClassDecl:
+                pkg.SymTable.assign(n.to!ClassDecl, genNoAssign!ClassDecl("Can't override class names, please use templated classes instead"));
                 break;
-            //type
-            case TokenType.KwType:
-                TypeDecl dcl = parseType();
-                dcl.Parent = pkg;
-
-                pkg.SymTable.assign(dcl, (TypeDecl existing, TypeDecl newOne)
-                {
-                    Error(newOne.Loc, "Can't override type declarations");
-                });
-                
-                break;
-  
-            //Variables
-            case TokenType.KwVar:
-                Error(mToken.Loc, "Variable in Package not yet implemented");
-                break;
-
-            //Value Type (immutable)
-            case TokenType.KwLet:
-                Error(mToken.Loc, "Let in Package not yet implemented");
-                break;
-
             //Trait Type
-            case TokenType.KwTrait:
+            case NodeKind.TraitDecl:
                 Error(mToken.Loc, "Trait iblock.SymTablen Package not yet implemented");
                 break;
-
-            case TokenType.Annotation:
-                auto ano = parseAnnotation();
-                annotations ~= ano;
+            //type
+            case NodeKind.AliasDecl:
+            case NodeKind.EnumDecl:
+            case NodeKind.VariantDecl:
+                pkg.SymTable.assign(n.to!TypeDecl, genNoAssign!TypeDecl("Can't override type declarations"));
                 break;
 
-            case TokenType.EOF:
+            //Variables
+            case NodeKind.VarDecl:
+                pkg.SymTable.assign(n.to!VarDecl, genNoAssign!VarDecl("Can't override variable declarations"));
+                break;
+            //Value Type (immutable)
+            case NodeKind.ValDecl:
+                pkg.SymTable.assign(n.to!ValDecl, genNoAssign!ValDecl("Can't override value declarations"));
+                break;
+            //@Annotations/Attributes
+            case TokenType.Annotation:
+                annotations ~= n.to!Annotation;
                 break;
 
             default:
-                log.Information("Not valid token in package declaration: %s", mToken.toString());
-                Error(mToken.Loc, "Not valid package element");
             }
         }
 
@@ -354,7 +357,17 @@ class Parser
         //parseDeclarations();
          
 
-        Error(mToken.Loc, "Class Parsing not yet supported");
+        Error(mToken.Loc, "Class parsing not yet implemented");
+        return null;
+    }
+
+    /**
+    * Parse Trait
+    */
+    private TraitDecl parseTrait()
+    {
+        checkType(TokenType.KwTrait);
+        Error(mToken.Loc, "Trait parsing not yet implemented");
         return null;
     }
 
@@ -371,27 +384,28 @@ class Parser
         auto func = new FunctionDecl();
         func.ReturnType = OpaqueType.Instance;
         func.Loc = mToken.Loc;
-    
-        //TODO assign annotations, attributes parsed before
+        func.SymTable = SymbolTable(func);
+        symTables.push(&func.SymTable);
+        scope(exit) symTables.pop();
 
         //optional: Parse Calling Convention
         if(peek(1) == TokenType.ROBracket)
         {
-            next(2);
-            //identifier aka calling convention
-            checkType(TokenType.Identifier, __traits(identifier, parseDef));
-  
-            switch(mToken.Value.toLower())
+            next(1);
+            auto kwParams = parseKeywordParameter();
+            foreach(p; kwParams)
             {
-            case "c": func.CallingConv = CallingConvention.C; break;
-            case "dis": func.CallingConv = CallingConvention.Dis;break;
-            default: Error(mToken.Loc, "Invalid CallingConvention");
+                switch(p)
+                {
+                case "c": func.CallingConv = CallingConvention.C; break;
+                case "dis": func.CallingConv = CallingConvention.Dis;break;
+                default: Error(mToken.Loc, "Invalid CallingConvention");
+                }
             }
-            
-            next; checkType(TokenType.RCBracket, __traits(identifier, parseDef));
         }
 
-        next; checkType(TokenType.Identifier, __traits(identifier, parseDef));
+        next; 
+        checkType(TokenType.Identifier, __traits(identifier, parseDef));
         func.Name = mToken.Value;
 
         //optional: Parse Parameter
@@ -422,7 +436,6 @@ class Parser
                 next;
         }
         
-
         //optional: look for return value 
         if(peek(1) == TokenType.Colon)
         {
@@ -447,11 +460,12 @@ class Parser
                 //parse the block
                 auto b = parseBlock();
                 b.Parent = func;
-                func.Body = b;
+                func.Body ~= b;
                 return func;
 
             // = <statement or expression>
             case TokenType.Assign:
+                //TODO let semantic rewrite it
                 next();
                 auto bdy = new BlockStmt();
                 bdy.Parent = func;
@@ -460,7 +474,7 @@ class Parser
                     stmt = new ReturnStmt(to!ExpressionStmt(stmt).Expr);
                 stmt.Parent = bdy;
                 bdy.Statements ~= stmt;
-                func.Body = bdy;
+                func.Body ~= bdy;
                 return func;
 
             default:
@@ -566,6 +580,16 @@ class Parser
         checkType(TokenType.Semicolon, "Missing semicolon after variable declaration");
 
         return var;
+    }
+
+    /**
+    * Parse value
+    */
+    private ValDecl parseLet()
+    {
+        checkType(TokenType.KwLet);
+        Error(mToken.Loc, "Value parsing not yet implemented");
+        return null;
     }
 
 
@@ -1211,6 +1235,26 @@ class Parser
     {
         d.Annotations = annotations;
         annotations.length = 0;
+    }
+
+    /**
+    * Helper for symbol table assigns
+    */
+    private auto genNoAssign(T)(string msg, string file = __FILE__, size_t line = __LINE__)
+    {
+        return (T existing, T newOne)
+        {
+            Error(newOne.Loc, msg, file, line);
+        };
+    }
+
+    /**
+    * sym table function assign
+    */
+    private void symFuncAssign(FunctionDecl existing, FunctionDecl newOne)
+    {
+        debug log.Information("Add override to function %s", existing.Name);
+        existing.Overrides ~= newOne;
     }
 
     /**

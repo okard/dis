@@ -178,12 +178,12 @@ class FunctionDecl : TypeDecl
     /// Return Type
     public DataType ReturnType;
 
+    /// The SymbolTable
+    public SymbolTable SymTable;
+
     /// Has a Body (BlockStatement, Statement, Expression)
-    public BlockStmt Body;
-
-    //public Statement[] Body
-    //public SymbolTable
-
+    public Statement[] Body;
+    
     /// Overrides of this function
     public FunctionDecl[] Overrides;
 

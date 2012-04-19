@@ -39,6 +39,8 @@ import dlf.ast.Annotation;
 */
 class Printer
 {
+    /// Mixin Dispatch Utils
+    //mixin DispatchUtils!false;
 
     /// Tab Count
     private ubyte tabDeepness = 0;
@@ -93,8 +95,9 @@ class Printer
 
         writefln(") %s", fd.ReturnType);
 
-        if(fd.Body !is null)
-            dispatch(fd.Body, this);
+        if(fd.Body.length > 0)
+            foreach(stmt; fd.Body)
+                dispatch(stmt, this);
 
         foreach(FunctionDecl fdo; fd.Overrides)
             visit(fdo);

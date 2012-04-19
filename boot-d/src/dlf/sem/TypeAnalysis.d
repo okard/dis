@@ -86,7 +86,7 @@ class TypeAnalysis : Visitor
 
 
         //bodies
-        autoDispatch(fd.Body);
+        mapDispatch(fd.Body);
 
         //look for ExpressionStatement bodies
 
@@ -372,7 +372,7 @@ class TypeAnalysis : Visitor
     }
 
     /**
-    * Reveive symbol table from a node that has one
+    * Receive symbol table from a node that has one
     */
     private static SymbolTable getSymbolTable(Node n)
     {
@@ -390,7 +390,7 @@ class TypeAnalysis : Visitor
             //case NodeKind.TraitDecl:
             //    return n.to!TraitDecl.SymTable;
             case NodeKind.FunctionDecl:
-                return n.to!FunctionDecl.Body.SymTable;
+                return n.to!FunctionDecl.SymTable;
             case NodeKind.BlockStmt:
                 return n.to!BlockStmt.SymTable;
 
