@@ -110,6 +110,10 @@ class Parser
         if(src is null || src.isEof)
             throw new Exception("No Source available");
 
+        //clean up state
+        flags = DeclarationFlags.Blank;
+        annotations.length = 0;
+
         //open source file and set ignore tokens
         lexer.open(src);
         lexer.Ignore = [TokenType.Comment, TokenType.DocComment, TokenType.EOL];
@@ -146,9 +150,8 @@ class Parser
         //parameterized keywords
         if(peek(1) == TokenType.ROBracket)
         {
-            next(1);
-            //checkType(TokenType.Identifier);
-            accept(TokenType.Identifier, "Expected Identifier for Package Keyword Parameter");
+            next(2);
+            checkType(TokenType.Identifier, __traits(identifier, parsePackage));
             
             switch(mToken.Value)
             {
@@ -156,11 +159,11 @@ class Parser
                 default: Error(mToken.Loc, "Not kown Package Keyword Parameter");
             }
             
-            accept(TokenType.RCBracket, "Expected ) after Package Keyword Parameter");
+            next;checkType(TokenType.RCBracket, __traits(identifier, parsePackage));
         }
 
         //parse package identifier
-        accept(TokenType.Identifier, "Expected Identifier after package");
+        next; checkType(TokenType.Identifier, __traits(identifier, parsePackage));
 
         pkg.PackageIdentifier.append(mToken.Value);
 
@@ -179,7 +182,7 @@ class Parser
         pkg.Name = pkg.PackageIdentifier.toString();
 
         //Look for semicolon
-        accept(TokenType.Semicolon, "Expected Semicolon after package declaration");
+        next; checkType(TokenType.Semicolon, __traits(identifier, parsePackage));
 
         //parseDeclarations([ListOfAllowedDeclarations]);
 
@@ -290,8 +293,7 @@ class Parser
 
         //import followed by identifier import foo = asdasd
         
-        accept(TokenType.Identifier, "parseImport: expect identifier after import keyword");
-
+        next; checkType(TokenType.Identifier, __traits(identifier, parseImport));
         imp.ImportIdentifier.append(mToken.Value);
 
         while(peek(1) == TokenType.Dot)
@@ -310,7 +312,7 @@ class Parser
 
         imp.Name = imp.ImportIdentifier.toString();
 
-        accept(TokenType.Semicolon, "Expect Semicolon after import declaration");
+        next; checkType(TokenType.Semicolon, __traits(identifier, parseImport));
         
         return imp;
     }
@@ -328,7 +330,8 @@ class Parser
 
         //parseKeywordParameter();
 
-        accept(TokenType.Identifier, "Expects identifier for class");
+
+        next; checkType(TokenType.Identifier, __traits(identifier, parseClass));
         classDecl.Name = mToken.Value;
 
         //template ()
@@ -345,7 +348,7 @@ class Parser
             // comma value for multi-inheritance and traits
         }
         
-        accept(TokenType.COBracket, "Expects { for class declaration");
+        next; checkType(TokenType.COBracket, __traits(identifier, parseClass));
 
 
         //parseDeclarations();
@@ -374,10 +377,10 @@ class Parser
         //optional: Parse Calling Convention
         if(peek(1) == TokenType.ROBracket)
         {
-            next;
+            next(2);
             //identifier aka calling convention
-            accept(TokenType.Identifier, "parseDef: Expected Identifier for Calling Convention");
-            
+            checkType(TokenType.Identifier, __traits(identifier, parseDef));
+  
             switch(mToken.Value.toLower())
             {
             case "c": func.CallingConv = CallingConvention.C; break;
@@ -385,12 +388,10 @@ class Parser
             default: Error(mToken.Loc, "Invalid CallingConvention");
             }
             
-            accept(TokenType.RCBracket, "parseDef: Expected ) for Calling Conventions");
+            next; checkType(TokenType.RCBracket, __traits(identifier, parseDef));
         }
 
-        accept(TokenType.Identifier, "parseDef: missing function identifier");
-
-        //get name
+        next; checkType(TokenType.Identifier, __traits(identifier, parseDef));
         func.Name = mToken.Value;
 
         //optional: Parse Parameter
@@ -425,14 +426,14 @@ class Parser
         //optional: look for return value 
         if(peek(1) == TokenType.Colon)
         {
-            next; next;
+            next(2);
             func.ReturnType = parseDataType();
         }
 
         //optional: if function declarations closes with ";" it is finished
         if(peek(1) == TokenType.Semicolon)
         {
-            next();
+            next;
             return func;
         }
 
@@ -441,7 +442,7 @@ class Parser
         {
             //block {}
             case TokenType.COBracket:
-                next();
+                next;
                 debug log.Information("function block");
                 //parse the block
                 auto b = parseBlock();
@@ -533,7 +534,8 @@ class Parser
         var.Loc = mToken.Loc;
 
         //expect Identifier after var
-        accept(TokenType.Identifier, "Expect Identifier after var keyword");
+        next; 
+        checkType(TokenType.Identifier, "Expect Identifier after var keyword");
         var.Name = mToken.Value;
 
         switch(peek(1))
@@ -560,7 +562,8 @@ class Parser
                 Error(mToken.Loc, "Unkown token in variable declaration");
         }
        
-        accept(TokenType.Semicolon, "Missing semicolon after variable declaration");
+        next; 
+        checkType(TokenType.Semicolon, "Missing semicolon after variable declaration");
 
         return var;
     }
@@ -580,7 +583,8 @@ class Parser
         scope(exit) symTables.pop();
 
         //struct name
-        accept(TokenType.Identifier, "Expect identifier after struct");
+        next; 
+        checkType(TokenType.Identifier, "Expect identifier after struct");
         st.Name = mToken.Value;
 
         //inheritance
@@ -611,14 +615,16 @@ class Parser
                 case TokenType.Identifier:
                     auto var = new VarDecl();
                     var.Name = mToken.Value;
-                    accept(TokenType.Colon, "Expect ':' after field identifier");
+                    next;
+                    checkType(TokenType.Colon, "Expect ':' after field identifier");
                     next;
                     var.VarDataType = parseDataType();
 
                     //TODO not twice
                     st.SymTable[var.Name] = var;
 
-                    accept(TokenType.Semicolon, "Expect ';' after field declaration");
+                    next;
+                    checkType(TokenType.Semicolon, "Expect ';' after field declaration");
 
                     debug log.Information("Struct Field %s %s", var.Name, var.VarDataType.toString());
                     next;
@@ -643,7 +649,8 @@ class Parser
         //must be struct 
         checkType(TokenType.KwType);
 
-        accept(TokenType.Identifier, "Require name for type");
+        next;
+        checkType(TokenType.Identifier, "Require name for type");
 
         switch(peek(1))
         {
@@ -711,9 +718,11 @@ class Parser
         //Expression
         default:
             auto exp = parseExpression();
-            accept(TokenType.Semicolon, "Missing semicolon after expression statement");
             auto es =  new ExpressionStmt(exp);
             exp.Parent = es;
+
+            next;
+            checkType(TokenType.Semicolon, "Missing semicolon after expression statement");
             return es;
         }
     }
@@ -773,7 +782,7 @@ class Parser
         }
         //go over } ?
         next();
-        //accept(TokenType.CCBracket, "expected } after block statement");
+        //checkType(TokenType.CCBracket, "expected } after block statement");
 
        
         
@@ -876,7 +885,8 @@ class Parser
                 break;
             case TokenType.ROBracket: 
                 expr = parseExpression;
-                accept(TokenType.RCBracket, "require ) after expression");
+                next;
+                checkType(TokenType.RCBracket, "require ) after expression");
                 break;
             case TokenType.Identifier:
                 /*look under switch*/ 
@@ -913,9 +923,10 @@ class Parser
                 auto arg = parseExpression();
                 call.Arguments ~= arg;
                 
-                //accept(TokenType.Comma, "expected ',' between call expression arguments");
+                //checkType(TokenType.Comma, "expected ',' between call expression arguments");
             }
-            accept(TokenType.RCBracket, "expect ) after call expression");
+            next;
+            checkType(TokenType.RCBracket, "expect ) after call expression");
 
             //set expression to call expression;
             expr = call;
@@ -1020,7 +1031,8 @@ class Parser
         // Annotions: @identifier
         checkType(TokenType.Annotation);
 
-        accept(TokenType.Identifier, "Expected Identifier after @ for Annotations");
+        next;
+        checkType(TokenType.Identifier, "Expected Identifier after @ for Annotations");
 
         switch(mToken.Value)
         {
@@ -1188,22 +1200,30 @@ class Parser
     }
 
     /**
-    * Require a special type next
-    * Remove
-    */
-    private void accept(TokenType t, string error, string file = __FILE__, size_t line = __LINE__)
-    {
-        next();
-        if(mToken.Type != t)
-            Error(mToken.Loc, error, file, line);
-    }
-
-    /**
     * Peek token type
     */
     private TokenType peek(ushort lookahead = 1)
     {
         return lexer.peekToken(lookahead).Type;
+    }
+
+    /**
+    * Assert Type
+    */
+    private void checkType(TokenType t, string reason="",  string file = __FILE__, size_t line = __LINE__)
+    {
+        if(mToken.Type != t)
+            throw new ParserException(mToken.Loc, format("Expected %s not %s: %s", dlf.dis.Token.toString(t), mToken.toString(), reason), file, line);
+    }
+
+    /**
+    * Assert Type (array variant)
+    */
+    private void checkTypes(TokenType[] tt, string file = __FILE__, size_t line = __LINE__)
+    {
+        //TODO better message format
+        if(!isIn(mToken.Type, tt))
+            throw new ParserException(mToken.Loc, format("Expected [] not %s", mToken.toString()), file, line);
     }
 
     /**
@@ -1221,26 +1241,6 @@ class Parser
     private void Warning(Location loc, string msg)
     {
         log.Warning("(%s): %s", loc, msg);
-    }
-
-    /**
-    * Assert Type
-    */
-    private void checkType(TokenType t, string reason="",  string file = __FILE__, size_t line = __LINE__)
-    {
-        if(mToken.Type != t)
-            throw new ParserException(mToken.Loc, format("Expected %s not %s: %s", dlf.dis.Token.toString(t), mToken.toString(), reason), file, line);
-    }
-
-    /**
-    * Assert Type (array variant)
-    */
-    private void checkTypes(TokenType[] tt, string file = __FILE__, size_t line = __LINE__)
-    {
-        //TODO 
-
-        if(!isIn(mToken.Type, tt))
-            throw new ParserException(mToken.Loc, format("Expected [] not %s", mToken.toString()), file, line);
     }
     
     /**
