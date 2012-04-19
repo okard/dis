@@ -150,16 +150,16 @@ class Parser
         //parameterized keywords
         if(peek(1) == TokenType.ROBracket)
         {
-            next(2);
-            checkType(TokenType.Identifier, __traits(identifier, parsePackage));
-            
-            switch(mToken.Value)
+            next(1);
+            auto kwParams = parseKeywordParameter();
+            foreach(p; kwParams)
             {
+                switch(p)
+                {
                 case "nr": pkg.RuntimeEnabled = false; break;
                 default: Error(mToken.Loc, "Not kown Package Keyword Parameter");
+                }
             }
-            
-            next;checkType(TokenType.RCBracket, __traits(identifier, parsePackage));
         }
 
         //parse package identifier
@@ -1047,6 +1047,32 @@ class Parser
         
         //never get here
         throw new Exception("");
+    }
+
+    private string[] parseKeywordParameter()
+    {
+        checkType(TokenType.ROBracket, __traits(identifier, parseKeywordParameter));
+        
+        string[] kwParams;
+        
+        while(true)
+        {
+            next;
+            checkType(TokenType.Identifier);
+            kwParams ~= mToken.Value;
+            
+            next;
+            if(mToken.Type == TokenType.Comma)
+                continue;
+            else if(mToken.Type == TokenType.RCBracket)
+                break;
+            else
+                Error(mToken.Loc, "Invalid Token %s".format(mToken.toString()));   
+        }
+
+        checkType(TokenType.RCBracket, __traits(identifier, parseKeywordParameter));
+
+        return kwParams;
     }
 
     /**
