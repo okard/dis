@@ -111,13 +111,13 @@ class CCodeGen : ObjectGen, BinaryGen, Visitor
     /**
     * Compile Package
     */
-    void compile(PackageDecl pd)
+    string compile(PackageDecl pd)
     {
         assert(pd !is null, "PackageDecl is null");
         
         //Package already compiled
         if(pd.CodeGen !is null)
-            return;
+            return null;
 
         //Write Dis Helper Header to src dir
         std.file.write(buildPath(srcDir, DisCGenHeaderName), DisCGenHeader); 
@@ -140,6 +140,7 @@ class CCodeGen : ObjectGen, BinaryGen, Visitor
 
             //first compile imports to get right include names
             autoDispatch(id.Package);
+            //TODO Save object files
             builder.compile(ctx, [p.SourceFile]);
 
             //detect if one import has recompiled then this source should be recompiled too?
@@ -151,17 +152,7 @@ class CCodeGen : ObjectGen, BinaryGen, Visitor
         autoDispatch(pd);
 
         //compile file, create object file for this package (return object file)
-        builder.compile(ctx, [p.SourceFile]);
-    }
-
-
-    /**
-    * Seperate Link Function
-    */
-    void link(Context ctx)
-    {
-        //TODO object files as parameter
-        builder.link(ctx, CBuilder.objfiles);
+        return builder.compile(ctx, [p.SourceFile]);
     }
 
     /**

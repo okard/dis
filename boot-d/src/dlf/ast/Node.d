@@ -74,9 +74,6 @@ public enum NodeKind : ushort
     DotType,
     RefType,
     FunctionType,
-    StructType,
-    ClassType,
-    TraitType,
 
     //Annotation,
     Annotation,

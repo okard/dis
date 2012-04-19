@@ -244,11 +244,13 @@ class DisCompiler
             assert(p.ast !is null, "Semantic analyse on a package should have a valid result");
         }
 
+        string[] objfiles;
+
         //codegen
         log.Information("CodeGen...");
         foreach(Pkg p; pkgs)
         {
-            cgen.compile(p.ast);
+            objfiles ~= cgen.compile(p.ast);
             packages[p.ast.Name] = p.ast;
         }
 
@@ -259,7 +261,7 @@ class DisCompiler
         //prepare object files
 
         //link program
-        cgen.link(ctx);
+        cgen.link(ctx, objfiles);
 
         //For Libraries generate Header Files
         if(ctx.Type == TargetType.StaticLib 

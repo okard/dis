@@ -68,7 +68,6 @@ class Parser
     /// Internal Types (Builtin)
     public static DataType[string] InternalTypes;
 
-
     //currentScope { Package, Class, Function, Trait, }
 
     /**
@@ -418,7 +417,10 @@ class Parser
                 while(true)
                 {
                     next;
-                    func.Parameter ~= parseDefParameter();
+                    //add to symbol table?
+                    auto p = parseDefParameter();
+                    func.Parameter ~= p;
+                    
                     if(peek(1) == TokenType.Comma)
                     {
                         next;

@@ -144,9 +144,6 @@ Node dispatch(Node n, Visitor v, const bool mod = false)
         case NodeKind.DotType: return doVisit!DotType(mod, n, v);
         //ref type
         case NodeKind.FunctionType: return doVisit!FunctionType(mod, n, v);
-        case NodeKind.StructType: return doVisit!StructType(mod, n, v);
-        case NodeKind.ClassType: return doVisit!ClassType(mod, n, v);
-        case NodeKind.TraitType: return doVisit!TraitType(mod, n, v);
 
 
         //Special

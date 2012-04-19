@@ -35,6 +35,7 @@ abstract class DataType : Node
 
      //ptr type
      //type size
+     //offset?
 
      /// Pointer Singleton Mixin
      protected mixin template PtrTypeSingleton()
@@ -170,17 +171,17 @@ final class OpaqueType : DataType
 */
 final class DotType : DataType
 {
+    /// Name
+    string Value; 
 
-    string Value;
-
-    DataType Right;
-    
-
+    /// Resolved Declaration
     Declaration ResolvedDecl;
+    /// Resolved DataType
     DataType ResolvedType;
 
-    //DataType left;
-
+    /// Concat (type.type.type...)
+    DataType Right;
+    
     mixin(IsKind("DotType"));
 }
 
@@ -308,55 +309,3 @@ final class DeclarationType : DataType
     //For template instancing?
     public DataType[] Arguments;
 }
-
-
-/**
-* Struct Type
-*/
-class StructType : DataType
-{
-    /// Struct Declaration
-    public StructDecl Decl;
-    
-    //TODO indexes, offsets
-
-    /// Struct Fields
-    public DataType Fields[];
-
-
-    mixin(IsKind("StructType"));
-}
-
-/**
-* Class Type
-*/
-class ClassType : DataType
-{
-    /// The original class declaration
-    public ClassDecl Decl;
-
-    //Template Classes can have subclasstypes?
-    //Parent Class
-    //template arguments specifications
-    //classname!(datatypes, ...)
-    //trait types
-
-    mixin(IsKind("ClassType"));
-}
-
-/**
-* Trait Type 
-*/
-class TraitType : DataType
-{
-    ///The original trait declaration
-    TraitDecl Decl;
-
-
-    mixin(IsKind("TraitType"));
-}
-
-
-//enum type
-
-//Variant Type

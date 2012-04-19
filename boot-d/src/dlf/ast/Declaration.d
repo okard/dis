@@ -237,25 +237,28 @@ final class ClassDecl : TypeDecl
     /// Symbol Table
     public SymbolTable SymTable;
 
+    //ClassTplArguments Name/DataType/Contraint
+
+    //TODO Template Arguments
+    public ClassDecl BaseClass; 
+
+    //TODO Template Arguments
+    public TraitDecl[] Traits; 
+    
+    public FunctionDecl StaticCtor;
+    public FunctionDecl StaticDtor;
 
     public FunctionDecl Ctor;
     public FunctionDecl Dtor;
 
-    //static ctor, dtor
-
-    //BaseClass / Parent Class 
     //Multi inheritance?
     //Traits
     //Mixins
 
-    //VarDecl[] Variables;
-    //FunctionSymbols[] Methods;
-
     /// Is Template Class
     public bool IsTemplate;
 
-    public ClassType[] Instances;
-
+    //public ClassDecl[DeclarationType] Instances;
 
     /// Mixin for Kind Declaration
     mixin(IsKind("ClassDecl"));
@@ -266,7 +269,7 @@ final class ClassDecl : TypeDecl
 */
 final class TraitDecl : TypeDecl
 {
-    //TraitType?
+    //SymTable
     //Variables, Methods, Properties
 
     /// Mixin for Kind Declaration

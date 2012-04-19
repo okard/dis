@@ -260,6 +260,9 @@ class TypeAnalysis : Visitor
     /// Binary Expression
     Expression visit(BinaryExpr be)
     {
+        if(be.Op == BinaryOperator.Dot)
+            return visit(be.to!DotExpr);
+        
         // analyze left, right
         be.Left = autoDispatch(be.Left);
         be.Right = autoDispatch(be.Right);
@@ -292,6 +295,15 @@ class TypeAnalysis : Visitor
         
         //type matching
         return be;
+    }
+
+    /**
+    * DotExpr 
+    */
+    private Expression visit(DotExpr de)
+    {
+
+        return de;
     }
 
     ///////////////////////////////////////////////////////////////////////////
