@@ -34,6 +34,9 @@ abstract class Statement : Node
     uint Index = 0; 
 } 
 
+
+//TwoKind of Statements with SymbolTable and without
+
 /**
 * Defines a Block {}
 * Is more Declaration?

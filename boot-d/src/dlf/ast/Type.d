@@ -308,4 +308,6 @@ final class DeclarationType : DataType
 
     //For template instancing?
     public DataType[] Arguments;
+
+    mixin(IsKind("DeclarationType"));
 }

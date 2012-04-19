@@ -221,7 +221,13 @@ class TypeAnalysis : Visitor
     /// Identifier Expression 
     Expression visit(IdExpr ie)
     {
-        sem.Information("IdentifierExpr: %s", ie.toString());
+        sem.Information("IdExpr: %s", ie.toString());
+        
+        //already solved?
+        if(ie.Decl !is null)
+            return ie;
+
+        //id with start expression
 
         //go up, find first start entry
         Declaration decl = null;
@@ -260,8 +266,7 @@ class TypeAnalysis : Visitor
     /// Binary Expression
     Expression visit(BinaryExpr be)
     {
-        if(be.Op == BinaryOperator.Dot)
-            return visit(be.to!DotExpr);
+        assert(be.Op != BinaryOperator.Dot);
         
         // analyze left, right
         be.Left = autoDispatch(be.Left);
@@ -300,9 +305,35 @@ class TypeAnalysis : Visitor
     /**
     * DotExpr 
     */
-    private Expression visit(DotExpr de)
+    public Expression visit(DotExpr de)
     {
+        //Visit Left one
+        de.Left = autoDispatch(de.Left);
 
+        //No Declaration Type Replace with call expr
+        //(5+a).foo -> foo(5+a);
+        if(de.Left.ReturnType.Kind != NodeKind.DeclarationType)
+        {
+            auto ce = new CallExpr();
+            ce.Func = de.Right;
+            ce.Arguments ~= de.Left;
+            return autoDispatch(ce);
+        }
+
+        //Right is restricted
+        if(de.Right.Kind != NodeKind.IdExpr 
+        || de.Right.Kind != NodeKind.DotExpr)
+            sem.Error("%s invalid right of DotExpr", de.Right.Loc.toString());
+
+        //visit right has parameter of de.Left.ReturnType
+
+        //search type start from de.Left;
+        // return search(de.Right, de.Left) 
+    
+        //return right
+
+        //TODO assert returning a idexpr not a dotexpr
+    
         return de;
     }
 
@@ -366,6 +397,18 @@ class TypeAnalysis : Visitor
         return dt; 
     }
     
+    ///////////////////////////////////////////////////////////////////////////
+    //Helper
+
+    private Expression search(IdExpr id, Declaration start)
+    {
+        return id;
+    }
+    
+    private DataType search(DotType dt, Declaration start)
+    {
+        return dt;
+    }
 
     
     ///////////////////////////////////////////////////////////////////////////
@@ -389,7 +432,7 @@ class TypeAnalysis : Visitor
     private static SymbolTable getSymbolTable(Node n)
     {
         //Decl: Package, Struct, Class, Trait,
-        //Stmt: BlockStatement
+        //Stmt: if, for, while
 
         switch(n.Kind)
         {
@@ -399,10 +442,12 @@ class TypeAnalysis : Visitor
                 return n.to!StructDecl.SymTable;
             case NodeKind.ClassDecl:
                 return n.to!ClassDecl.SymTable;
-            //case NodeKind.TraitDecl:
-            //    return n.to!TraitDecl.SymTable;
+            case NodeKind.TraitDecl:
+                return n.to!TraitDecl.SymTable;
             case NodeKind.FunctionDecl:
                 return n.to!FunctionDecl.SymTable;
+
+            //TODO Remove Block Stmt
             case NodeKind.BlockStmt:
                 return n.to!BlockStmt.SymTable;
 

@@ -269,7 +269,9 @@ final class ClassDecl : TypeDecl
 */
 final class TraitDecl : TypeDecl
 {
-    //SymTable
+    /// Symbol Table
+    public SymbolTable SymTable;
+
     //Variables, Methods, Properties
 
     /// Mixin for Kind Declaration

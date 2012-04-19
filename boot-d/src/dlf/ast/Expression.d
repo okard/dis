@@ -119,6 +119,8 @@ final class DotExpr : BinaryExpr
     {
         Op = BinaryOperator.Dot;
     }
+
+    mixin(IsKind("DotExpr"));
 }
 
 /**

@@ -232,7 +232,6 @@ struct CCodeWriter
         sourceDirectory = dir;
     }
 
-    
     /**
     * Get Source Directory
     */
@@ -241,7 +240,6 @@ struct CCodeWriter
     {
         return sourceDirectory;
     }
-
 
     /**
     * Get all c source files

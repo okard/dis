@@ -389,6 +389,11 @@ class CCodeGen : ObjectGen, BinaryGen, Visitor
 
         return di;
     }
+    
+    Expression visit(DotExpr de)
+    {
+        return de;
+    }
 
     Expression visit(BinaryExpr be)
     {  
@@ -397,7 +402,6 @@ class CCodeGen : ObjectGen, BinaryGen, Visitor
         //write be.Right
         return be;
     }
-
 
     DataType visit(DataType dt){ return dt; }
 

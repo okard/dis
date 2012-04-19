@@ -74,6 +74,7 @@ public enum NodeKind : ushort
     DotType,
     RefType,
     FunctionType,
+    DeclarationType,
 
     //Annotation,
     Annotation,
