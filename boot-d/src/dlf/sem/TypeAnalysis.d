@@ -227,26 +227,10 @@ class TypeAnalysis : Visitor
         if(ie.Decl !is null)
             return ie;
 
-        //id with start expression
+        //When parent is DotExpr it get resolved in another way
+        assert(ie.Parent.Kind != NodeKind.DotExpr);
 
-        //go up, find first start entry
-        Declaration decl = null;
-
-        //Bottom up search
-        for(size_t i=symTables.length-1; i > 0; i--)
-        {
-            if(symTables[i].contains(ie.Id))
-            {
-                auto d = (*symTables[i])[ie.Id];
-                ie.Decl = d;
-                break;
-            }
-        }
-        
-        //top down search -> look in package imports
-        
-        //Static classes are TypeDecl
-        // Variables are InstanceDecl
+        ie.Decl = search(ie.Id);
 
         //dont find the right declaration
         if(ie.Decl is null)
@@ -328,7 +312,8 @@ class TypeAnalysis : Visitor
         //visit right has parameter of de.Left.ReturnType
 
         //search type start from de.Left;
-        // return search(de.Right, de.Left) 
+        // return search(de.Right, de.Left)
+        // de.Right.Kind
     
         //return right
 
@@ -356,21 +341,17 @@ class TypeAnalysis : Visitor
             //Variable/Value/Const are Instancing Declarations
             //For DataTypes only Declarations of DataTypes are allowed
 
-            //bottom up search for symbol
-            for(size_t i=symTables.length-1; i > 0; i--)
-            {
-                if(symTables[i].contains(ct.Value))
-                {
-                    auto d = (*symTables[i])[ct.Value];
-                    if(d.IsInstanceDecl)
-                    {
-                        sem.Error("DataType references to a instance symbol %s", ct.Value);
-                        break;
-                    }
-                    ct.ResolvedDecl = d;
-                }
-            }
+            assert(ct.Parent.Kind() != NodeKind.DotType);
+            
+            ct.ResolvedDecl = search(ct.Value);
 
+            if(ct.ResolvedDecl is null)
+                sem.Error("Identifier not found %s", ct.Value);
+
+            if(ct.ResolvedDecl.IsInstanceDecl)
+                sem.Error("DataType references to a instance symbol %s", ct.Value);
+            
+       
             //when nothing found in bottom up search in imports?
             //top down search
             //search imports 
@@ -400,14 +381,33 @@ class TypeAnalysis : Visitor
     ///////////////////////////////////////////////////////////////////////////
     //Helper
 
-    private Expression search(IdExpr id, Declaration start)
+
+    //DataType search(DotType dt, Declaration start)
+    //Expression search(IdExpr id, Declaration start)
+
+    private Declaration search(string id, Declaration start = null)
     {
-        return id;
-    }
-    
-    private DataType search(DotType dt, Declaration start)
-    {
-        return dt;
+        //bottom up search for simple id
+        if(start is null)
+        {
+            //Bottom up search
+            for(size_t i=symTables.length-1; i > 0; i--)
+            {
+                if(symTables[i].contains(id))
+                {
+                    auto d = (*symTables[i])[id];
+                    return d;
+                }
+            }
+
+            //top down without start (Package Imports)
+        }
+        
+        //top down search using Declaration start
+        //recursive top down search
+        //get subnodes of start
+            
+        return null;
     }
 
     
