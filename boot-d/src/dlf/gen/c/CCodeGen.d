@@ -404,6 +404,7 @@ class CCodeGen : ObjectGen, BinaryGen, Visitor
     }
 
     DataType visit(DataType dt){ return dt; }
+    DataType visit(DotType dt){ return dt; }
 
     /// Mixin Dispatch Utils
     mixin DispatchUtils!false;

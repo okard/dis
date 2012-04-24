@@ -77,6 +77,7 @@ public interface Visitor
 
     //Types
     DataType visit(DataType);
+    DataType visit(DotType);
 
     //RefType
     //

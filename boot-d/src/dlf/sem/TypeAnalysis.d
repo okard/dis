@@ -84,7 +84,6 @@ class TypeAnalysis : Visitor
         //Overrides
         mapDispatch(fd.Overrides);
 
-
         //bodies
         mapDispatch(fd.Body);
 
@@ -130,9 +129,29 @@ class TypeAnalysis : Visitor
 
     //Value
     //Constant
-    Declaration visit(ClassDecl cd){ return cd;}
-    Declaration visit(TraitDecl td){ return td; }
-    Declaration visit(StructDecl sd){ return sd; }
+    
+    /// Class Declaration
+    Declaration visit(ClassDecl cd)
+    { 
+        return cd;
+    }
+
+    /// Trait Declaration
+    Declaration visit(TraitDecl td)
+    { 
+        return td; 
+    }
+    
+    /// Struct Declaration
+    Declaration visit(StructDecl sd)
+    {
+        sem.Information("Semantic: StructDecl");
+        symTables.push(&sd.SymTable);
+        scope(exit) symTables.pop();
+
+        symDispatch(sd.SymTable);
+        return sd; 
+    }
     //Alias
     //Enum
     //Variant    
@@ -311,14 +330,9 @@ class TypeAnalysis : Visitor
 
         //visit right has parameter of de.Left.ReturnType
 
-        //search type start from de.Left;
-        // return search(de.Right, de.Left)
-        // de.Right.Kind
-    
-        //return right
-
-        //TODO assert returning a idexpr not a dotexpr
-    
+        //search right 
+        //return type = de.right.returntype;
+   
         return de;
     }
 
@@ -330,43 +344,6 @@ class TypeAnalysis : Visitor
 
     DataType visit(DataType dt)
     {
-        //resolve
-        if(dt.Kind == NodeKind.DotType)
-        {
-            //TODO to extern method
-            //visit(DotType, Declaration start);
-            auto ct = dt.to!DotType;
-
-            //Declaration 2 Datatype???
-            //Variable/Value/Const are Instancing Declarations
-            //For DataTypes only Declarations of DataTypes are allowed
-
-            assert(ct.Parent.Kind() != NodeKind.DotType);
-            
-            ct.ResolvedDecl = search(ct.Value);
-
-            if(ct.ResolvedDecl is null)
-                sem.Error("Identifier not found %s", ct.Value);
-
-            if(ct.ResolvedDecl.IsInstanceDecl)
-                sem.Error("DataType references to a instance symbol %s", ct.Value);
-            
-       
-            //when nothing found in bottom up search in imports?
-            //top down search
-            //search imports 
-            //use symTables.bottom.Owner
-            // symTables.bottom.Kind == NodeKind.PackageDecl.
-            
-            //search for ct.Right
-
-            if(ct.ResolvedDecl is null)
-                sem.Fatal("Can't proceed with unsolved datatype");
-            
-            if(ct.Right is null)
-                return ct;
-        }
-    
         //Check for Ref Ref Types
         //Check for Ptr Ptr Types
         //TODO resolve DotType here
@@ -376,6 +353,41 @@ class TypeAnalysis : Visitor
         //difference in structure array types template instances, create instances here for templates?
 
         return dt; 
+    }
+
+
+    public DataType visit(DotType dt)
+    {
+        assert(dt.Parent.Kind() != NodeKind.DotType);
+            
+        dt.ResolvedDecl = search(dt.Value);
+
+        if(dt.ResolvedDecl is null)
+            sem.Error("Identifier not found %s", dt.Value);
+
+        if(dt.ResolvedDecl.IsInstanceDecl)
+            sem.Error("DataType references to a instance symbol %s", dt.Value);
+        
+    
+        //when nothing found in bottom up search in imports?
+        //top down search
+        //search imports 
+        //use symTables.bottom.Owner
+        // symTables.bottom.Kind == NodeKind.PackageDecl.
+        
+        //search for ct.Right
+
+        if(dt.ResolvedDecl is null)
+            sem.Fatal("Can't proceed with unsolved datatype");
+        
+        if(dt.Right is null)
+            return dt;
+        //return here right when it has right
+        //no place holder value
+
+        //TODO assert dt.ResolvedDecl dt.ResolvedType != null
+
+        return dt;
     }
     
     ///////////////////////////////////////////////////////////////////////////
@@ -401,12 +413,18 @@ class TypeAnalysis : Visitor
             }
 
             //top down without start (Package Imports)
+            assert(symTables.bottom.Owner.Kind == NodeKind.PackageDecl, "First SymbolTable in ST Stack should be a package for this kind of searching");
+            //look in imports for id
+
+            return null;
+        }
+
+
+        if(getSymbolTable(start).contains(id))
+        {
+            return getSymbolTable(start)[id];
         }
         
-        //top down search using Declaration start
-        //recursive top down search
-        //get subnodes of start
-            
         return null;
     }
 

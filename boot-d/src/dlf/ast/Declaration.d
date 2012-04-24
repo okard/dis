@@ -45,7 +45,10 @@ enum DeclarationFlags : ushort
     Static= 1 << 4, 
     Final= 1 << 5, 
     Const= 1 << 6, 
-    Abstract= 1 << 7 
+    Abstract= 1 << 7, 
+
+    Internal= 1 << 8, //internal symbol not accessible
+    Export= 1 << 9
 } 
 
 /// Supported Calling Conventions for classes and functions
@@ -76,6 +79,12 @@ abstract class Declaration : Node
 
     @property
     abstract bool IsInstanceDecl();
+
+    
+    final bool hasFlag(DeclarationFlags flag)
+    {
+        return (Flags & flag) == flag;
+    }
 }
 
 /**

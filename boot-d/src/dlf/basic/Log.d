@@ -50,9 +50,6 @@ public alias void delegate(const ref LogMessage) LogEvent2;
 /// Log Event Definition
 public alias Signal!(LogSource, SysTime, LogType, string) LogEvent;
 
-
-
-
 /**
 * Log Source
 */
@@ -65,6 +62,8 @@ struct LogSource
 
     //Log Event
     private LogEvent evLog;
+
+    private LogEvent2[] logEvents;
 
     /**
     * Create new Log Source
@@ -80,7 +79,15 @@ struct LogSource
     public void log(LogType type, T...)(T args)
     {
         auto str = format(args);
-        evLog(this, Clock.currTime(UTC()), type, str);
+        auto time = Clock.currTime(UTC());
+        evLog(this, time, type, str);
+
+        LogMessage msg;
+        msg.source = this;
+        msg.type = type;
+        msg.msg = str;
+        msg.time = time;
+        fireEvent(msg);
     }
 
     /**
@@ -139,6 +146,23 @@ struct LogSource
     public auto ref OnLog()
     {
         return evLog;
+    }
+
+    /**
+    * Assign Log Event
+    */
+    void opOpAssign(string s)(LogEvent2 ev) if (s == "+") 
+    {
+        logEvents += ev;
+    }
+
+    /**
+    * Assign fire Event
+    */
+    private void fireEvent(const ref LogMessage msg)
+    {
+        foreach(e;logEvents)
+            e(msg);
     }
 
     /**
