@@ -23,6 +23,8 @@ import dlf.Context;
 //a compiling interface creates object files
 //a linker interface link them together to final program
 
+//alias ObjFile string;
+
 /**
 * CodeGen Interface
 * Object Generation

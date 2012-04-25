@@ -740,7 +740,9 @@ class Parser
         case TokenType.KwReturn:
             next;
             auto expr = parseExpression();
-            return new ReturnStmt(expr);
+            auto ret =  new ReturnStmt(expr);
+            expr.Parent = ret;
+            return ret;
         //Expression
         default:
             auto exp = parseExpression();
@@ -947,6 +949,7 @@ class Parser
 
                 //parse Expressions for arguments
                 auto arg = parseExpression();
+                arg.Parent = call;
                 call.Arguments ~= arg;
                 
                 //checkType(TokenType.Comma, "expected ',' between call expression arguments");
@@ -989,6 +992,7 @@ class Parser
                 de.Left = expr;
                 next(2);
                 de.Right = parseExpression();
+                de.Right.Parent = de;
                 return de;
 
             //TODO Unary Post Expressions expr++, expr--, [] ?
@@ -1136,6 +1140,7 @@ class Parser
                     dt.Value = mToken.Value;
                     next(2);
                     dt.Right = parseDataType();
+                    dt.Right.Parent = dt;
                     return dt;
 
                 //[ (datatype) ]

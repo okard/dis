@@ -91,6 +91,15 @@ final struct SymbolTable
     }
 
     /**
+    * Count of elements in symbol table
+    */
+    @property
+    public auto count()
+    {
+        return symbols.length;
+    }
+
+    /**
     * Assign Entry
     */
     public void assign(T : Declaration)(T symbol, void delegate(T symA, T symB) concat)

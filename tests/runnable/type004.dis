@@ -6,7 +6,7 @@
 
 package tests.runnable.type004;
 
-type number = byte | short | int | long | float | double;
+type number = byte8 | short16 | int32 | long64 | float32 | double64;
 
 
 def main()
@@ -15,5 +15,4 @@ def main()
 
     i = 5;
     i = 5.0; 
-
 } 

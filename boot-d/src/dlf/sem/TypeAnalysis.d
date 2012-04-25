@@ -50,6 +50,8 @@ class TypeAnalysis : Visitor
     /// Package Declaration
     Declaration visit(PackageDecl pd)
     {
+        sem.Information("Semantic: PackageDecl");
+
         symTables.push(&pd.SymTable);
         scope(exit) symTables.pop();    
 
@@ -62,6 +64,8 @@ class TypeAnalysis : Visitor
     /// Import Declaration
     Declaration visit(ImportDecl id)
     {
+        sem.Information("Semantic: ImportDecl");
+
         //semantic check for available PackageDecls
         if(id.Package !is null)
         {
@@ -79,6 +83,7 @@ class TypeAnalysis : Visitor
     /// Function Declaration
     Declaration visit(FunctionDecl fd)
     {
+        sem.Information("Semantic: FunctionDecl %s", fd.Name);
         //Function Types
 
         //Overrides
@@ -145,7 +150,8 @@ class TypeAnalysis : Visitor
     /// Struct Declaration
     Declaration visit(StructDecl sd)
     {
-        sem.Information("Semantic: StructDecl");
+        sem.Information("Semantic: StructDecl %s", sd.Name);
+
         symTables.push(&sd.SymTable);
         scope(exit) symTables.pop();
 
@@ -182,6 +188,8 @@ class TypeAnalysis : Visitor
     /// Expression Statement
     Statement visit(ExpressionStmt es)
     {
+        sem.Information("Semantic: ExpressionStmt");
+
         es.Expr = autoDispatch(es.Expr);
         return es;
     }
@@ -189,6 +197,7 @@ class TypeAnalysis : Visitor
     /// Return Statement
     Statement visit(ReturnStmt rs)
     {
+        sem.Information("Semantic: ReturnSmt");
         //return type matches function type?
         return rs;
     }
@@ -203,12 +212,16 @@ class TypeAnalysis : Visitor
     /// Literal Expression
     Expression  visit(LiteralExpr le)
     {
+        sem.Information("Semantic: LiteralExpr");
+
         return le;
     }
     
     /// Call Expression
     Expression visit(CallExpr ce)
     {
+        sem.Information("Semantic: CallExpr");
+
         //resolve identifier
         ce.Func = autoDispatch(ce.Func);
 
@@ -246,15 +259,14 @@ class TypeAnalysis : Visitor
         if(ie.Decl !is null)
             return ie;
 
-        //When parent is DotExpr it get resolved in another way
-        assert(ie.Parent.Kind != NodeKind.DotExpr);
+        //sem.Information(ie.Parent.toString());
 
         ie.Decl = search(ie.Id);
 
         //dont find the right declaration
         if(ie.Decl is null)
         {
-            sem.Error("Can't resolve identifier %s", ie.toString());
+            sem.Error("Can't resolve identifier %s", ie.Id);
             sem.Fatal("Failed type resolve");
         }
 
@@ -269,6 +281,8 @@ class TypeAnalysis : Visitor
     /// Binary Expression
     Expression visit(BinaryExpr be)
     {
+        sem.Information("Semantic: BinaryExpr");
+
         assert(be.Op != BinaryOperator.Dot);
         
         // analyze left, right
@@ -310,6 +324,8 @@ class TypeAnalysis : Visitor
     */
     public Expression visit(DotExpr de)
     {
+        sem.Information("Semantic: DotExpr");
+
         //Visit Left one
         de.Left = autoDispatch(de.Left);
 
@@ -344,6 +360,7 @@ class TypeAnalysis : Visitor
 
     DataType visit(DataType dt)
     {
+        sem.Information("Semantic: DataType");
         //Check for Ref Ref Types
         //Check for Ptr Ptr Types
         //TODO resolve DotType here
@@ -355,15 +372,20 @@ class TypeAnalysis : Visitor
         return dt; 
     }
 
-
     public DataType visit(DotType dt)
     {
-        assert(dt.Parent.Kind() != NodeKind.DotType);
+        sem.Information("Semantic: DotType");
+
+        if(dt.Parent !is null && dt.Parent.Kind() != NodeKind.DotType)
+            sem.Error("DotType can not have other parents as DotType");
             
         dt.ResolvedDecl = search(dt.Value);
 
         if(dt.ResolvedDecl is null)
+        {
             sem.Error("Identifier not found %s", dt.Value);
+            sem.Fatal("Type Resolving failed");
+        }
 
         if(dt.ResolvedDecl.IsInstanceDecl)
             sem.Error("DataType references to a instance symbol %s", dt.Value);
@@ -399,11 +421,13 @@ class TypeAnalysis : Visitor
 
     private Declaration search(string id, Declaration start = null)
     {
+        debug dumpSymbolTable();
+
         //bottom up search for simple id
         if(start is null)
         {
             //Bottom up search
-            for(size_t i=symTables.length-1; i > 0; i--)
+            for(int i=symTables.length-1; i >= 0; i--)
             {
                 if(symTables[i].contains(id))
                 {
@@ -419,13 +443,30 @@ class TypeAnalysis : Visitor
             return null;
         }
 
-
         if(getSymbolTable(start).contains(id))
         {
             return getSymbolTable(start)[id];
         }
         
         return null;
+    }
+
+
+    private void dumpSymbolTable()
+    {
+        //Bottom up search
+        for(int i=symTables.length-1; i >= 0; i--)
+        {
+            SymbolTable symTbl = *symTables[i];
+
+            sem.Information("SymbolTable %d Entries: %d : %s", i, symTbl.count, symTbl.Owner.toString());
+
+            foreach(Declaration d; symTbl)
+            {
+                sem.Information("Entry: %s", d.Name);
+            }
+        }
+
     }
 
     
