@@ -142,11 +142,24 @@ Node dispatch(Node n, Visitor v, const bool mod = false)
         //Switch
 
         //Types
-        case NodeKind.DataType: return doVisit!DataType(mod, n, v);
-        case NodeKind.OpaqueType: return doVisit!OpaqueType(mod, n, v);
-        case NodeKind.DotType: return doVisit!DotType(mod, n, v);
-        //ref type
+        case NodeKind.VoidType:
+        case NodeKind.BoolType:
+        case NodeKind.Byte8Type:
+        case NodeKind.UByte8Type:
+        case NodeKind.Short16Type:
+        case NodeKind.UShort16Type:
+        case NodeKind.Int32Type:
+        case NodeKind.UInt32Type:
+        case NodeKind.Long64Type:
+        case NodeKind.ULong64Type:
+        case NodeKind.Float32Type:
+        case NodeKind.Double64Type:
+        case NodeKind.OpaqueType:
+            return doVisit!DataType(mod, n, v);
+        //requires action?
+        //DeclarationType, RefType, PtrType, ArrayType,
         case NodeKind.FunctionType: return doVisit!FunctionType(mod, n, v);
+        case NodeKind.DotType: return doVisit!DotType(mod, n, v);
 
 
         //Special

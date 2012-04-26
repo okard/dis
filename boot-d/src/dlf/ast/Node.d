@@ -69,7 +69,6 @@ public enum NodeKind : ushort
     SwitchExpr,
     
     //DataTypes
-    DataType, //to remove
     //Primary:
     VoidType,
     BoolType,
@@ -83,7 +82,6 @@ public enum NodeKind : ushort
     ULong64Type,
     Float32Type,
     Double64Type,
-
     //Other:
     RefType,
     PtrType,
@@ -155,10 +153,10 @@ bool isDeclaration(Node n) { return n.Kind >= NodeKind.Declaration && n.Kind < N
 bool isStatement(Node n) { return n.Kind >= NodeKind.Statement && n.Kind < NodeKind.Expression; }
 
 /// Is Expression
-bool isExpression(Node n) { return n.Kind >= NodeKind.Expression && n.Kind < NodeKind.DataType; }
+bool isExpression(Node n) { return n.Kind >= NodeKind.Expression && n.Kind < NodeKind.VoidType; }
 
 /// Is DataType
-bool isDataType(Node n) { return n.Kind >= NodeKind.DataType && n.Kind < NodeKind.Annotation; }
+bool isDataType(Node n) { return n.Kind >= NodeKind.VoidType && n.Kind < NodeKind.Annotation; }
 
 /// Is Annotation
 bool isAnnotation(Node n) { return n.Kind >= NodeKind.Annotation && n.Kind < NodeKind.Comment; }

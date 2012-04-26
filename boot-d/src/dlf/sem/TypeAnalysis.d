@@ -353,11 +353,17 @@ class TypeAnalysis : Visitor
 
         switch(ie.Decl.Kind)
         {
+            //Instance Types:
             case NodeKind.VarDecl:
                 ie.ReturnType = ie.Decl.to!VarDecl.VarDataType;
                 break;
+            //const, val
+
+            //Possible Tpl Types wrapped with DeclarationType:
+            case NodeKind.FunctionDecl:
             case NodeKind.StructDecl:
             case NodeKind.ClassDecl:
+            case NodeKind.TraitDecl:
                 auto dt = new DeclarationType();
                 dt.Decl = ie.Decl;
                 ie.ReturnType = dt;
@@ -398,7 +404,7 @@ class TypeAnalysis : Visitor
     public DataType visit(DotType dt)
     out(result)
     {
-        //assert(result.Kind() == NodeKind.DeclarationType);
+        assert(result.Kind() == NodeKind.DeclarationType);
     }
     body
     {
