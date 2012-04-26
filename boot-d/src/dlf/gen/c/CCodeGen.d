@@ -166,6 +166,9 @@ class CCodeGen : ObjectGen, BinaryGen, Visitor
     //debug infos with #line
 
 
+    ///////////////////////////////////////////////////////////////////////////
+    //Declarations
+
     /**
     * Compile Package Declaration
     */
@@ -342,6 +345,15 @@ class CCodeGen : ObjectGen, BinaryGen, Visitor
         return td;
     }
 
+    /// Alias Declaration
+    Declaration visit(AliasDecl ad)
+    {
+        return ad;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Statements
+
     //Statements
     Statement visit(BlockStmt bs)
     {  
@@ -364,6 +376,9 @@ class CCodeGen : ObjectGen, BinaryGen, Visitor
         //return it
         return rt;
     }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Expressions
 
     //Expressions
     Expression visit(LiteralExpr le)
@@ -402,6 +417,9 @@ class CCodeGen : ObjectGen, BinaryGen, Visitor
         //write be.Right
         return be;
     }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // DataTypes
 
     DataType visit(DataType dt){ return dt; }
     DataType visit(DotType dt){ return dt; }

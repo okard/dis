@@ -158,7 +158,13 @@ class TypeAnalysis : Visitor
         symDispatch(sd.SymTable);
         return sd; 
     }
-    //Alias
+    
+    /// Alias Declaration
+    Declaration visit(AliasDecl ad)
+    {
+        return ad;
+    }
+
     //Enum
     //Variant    
 
@@ -358,6 +364,10 @@ class TypeAnalysis : Visitor
                 ie.ReturnType = ie.Decl.to!VarDecl.VarDataType;
                 break;
             //const, val
+
+            case NodeKind.AliasDecl:
+                ie.ReturnType = ie.Decl.to!AliasDecl.AliasType;
+                break;
 
             //Possible Tpl Types wrapped with DeclarationType:
             case NodeKind.FunctionDecl:

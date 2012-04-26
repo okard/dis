@@ -684,6 +684,7 @@ class Parser
             al.Name = mToken.Value;
             next;
             al.AliasType = parseDataType();
+            next; checkType(TokenType.Semicolon, "Expects semicolon after declaration");            
             return al;
 
         //enum

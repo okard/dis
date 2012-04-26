@@ -45,8 +45,7 @@ public interface Visitor
     Declaration visit(ClassDecl);
     Declaration visit(TraitDecl);
     Declaration visit(StructDecl);
-    //Struct
-    //Alias
+    Declaration visit(AliasDecl);
     //Enum
     //Variant
 
@@ -119,7 +118,7 @@ Node dispatch(Node n, Visitor v, const bool mod = false)
         case NodeKind.ClassDecl: return doVisit!ClassDecl(mod, n, v);
         case NodeKind.TraitDecl: return doVisit!TraitDecl(mod, n, v);
         case NodeKind.StructDecl: return doVisit!StructDecl(mod, n, v);
-        //Alias
+        case NodeKind.AliasDecl: return doVisit!AliasDecl(mod, n, v);
         //Enum
         //Variant
 
