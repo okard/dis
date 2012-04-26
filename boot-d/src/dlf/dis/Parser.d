@@ -96,9 +96,6 @@ class Parser
         InternalTypes["ulong64"] = ULong64Type.Instance;
         InternalTypes["float32"] = Float32Type.Instance;
         InternalTypes["double64"] = Double64Type.Instance;
-
-        //special:
-        InternalTypes["char"] = CharType.Instance;
     }
 
     /**
@@ -652,7 +649,7 @@ class Parser
                     next;
                     checkType(TokenType.Semicolon, "Expect ';' after field declaration");
 
-                    debug log.Information("Struct Field %s %s", var.Name, var.VarDataType.toString());
+                    debug log.Information("Struct: %s Field: %s %s", st.Name, var.Name, var.VarDataType.toString());
                     next;
                     break;
                 case TokenType.KwDef:
@@ -875,14 +872,14 @@ class Parser
             // Literal Expressions
             //TODO Pay Attention for next Token when it is an op
             case TokenType.String:
-                //TODO Fix it, a String Literal is a pointer to a char[] array
-                // ref fixed size byte array
-                expr = new LiteralExpr(mToken.Value, StringType.Instance);
+                auto litType = ArrayType.createArrayLiteral(mToken.Value.length);
+                expr = new LiteralExpr(mToken.Value, litType);
                 expr.Loc = mToken.Loc;
                 break;
             case TokenType.Char:
                 // ref fixed size byte array
-                expr =  new LiteralExpr(mToken.Value, CharType.Instance); 
+                auto litType = ArrayType.createArrayLiteral(mToken.Value.length);
+                expr =  new LiteralExpr(mToken.Value, litType); 
                 expr.Loc = mToken.Loc;
                 break;
             case TokenType.Integer:
@@ -922,6 +919,8 @@ class Parser
                 ie.Id = mToken.Value;
                 expr = ie;
                 break;
+
+            //case [] for array initializer
 
             case TokenType.Dollar:
                 Error(mToken.Loc, "Compile time functions not yet implemented");
@@ -1164,7 +1163,7 @@ class Parser
 
                 case TokenType.KwPtr:
                     next;
-                    auto ptrtype = new PointerType(parseDataType());
+                    auto ptrtype = new PtrType(parseDataType());
                     return ptrtype;
 
                 default:

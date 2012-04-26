@@ -21,7 +21,7 @@ module dlf.ast.Annotation;
 import dlf.ast.Node;
 import dlf.ast.Visitor;
 
-//Attribute?
+//TODO Rename to Attribute?
 // TestAttr
 
 /**
@@ -56,3 +56,7 @@ final class DeprecatedAnnotation : Annotation
 
 
 //MainFunction Annotation for declaring a entry points for static/dynamic libraries
+final class LibMainAnnotation : Annotation
+{
+    //mixin(IsKind("LibMainAnnotation"));
+}

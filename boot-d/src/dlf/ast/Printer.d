@@ -181,12 +181,7 @@ class Printer
     */
     void visit(LiteralExpr le)
     {
-        if(le.ReturnType == StringType.Instance)
-        {
-            writef("\"%s\"", replace(le.Value, "\n", "\\n"));
-        }
-        else
-            writef("%s", le.Value);
+        writef("%s", le.Value);
     }
 
     /**

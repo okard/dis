@@ -32,7 +32,7 @@ public enum NodeKind : ushort
 {
     Unkown,
 
-    //Declaration
+    //Declarations
     Declaration,
     PackageDecl,
     ImportDecl,
@@ -47,7 +47,7 @@ public enum NodeKind : ushort
     AliasDecl,
     VariantDecl,
 
-    //Statement
+    //Statements
     Statement,
     BlockStmt,
     ExpressionStmt,
@@ -56,7 +56,7 @@ public enum NodeKind : ushort
     ForEachStmt,
     WhileStmt,
 
-    //Expression
+    //Expressions
     Expression,
     LiteralExpr,
     CallExpr,
@@ -68,13 +68,31 @@ public enum NodeKind : ushort
     IfExpr,
     SwitchExpr,
     
-    //DataType
-    DataType,
-    OpaqueType,
-    DotType,
+    //DataTypes
+    DataType, //to remove
+    //Primary:
+    VoidType,
+    BoolType,
+    Byte8Type,
+    UByte8Type,
+    Short16Type,
+    UShort16Type,
+    Int32Type,
+    UInt32Type,
+    Long64Type,
+    ULong64Type,
+    Float32Type,
+    Double64Type,
+
+    //Other:
     RefType,
+    PtrType,
+    ArrayType,
     FunctionType,
     DeclarationType,
+    // PlaceHolder:
+    OpaqueType,
+    DotType,
 
     //Annotation,
     Annotation,
@@ -125,7 +143,7 @@ abstract class Node
 */
 string IsKind(string name)
 {
-    return "@property public override const NodeKind Kind() const{ return NodeKind."~name~"; } " ~
+    return "@property public override NodeKind Kind(){ return NodeKind."~name~"; } " ~
            "@property public final static NodeKind Kind() { return NodeKind."~name~"; } ";
 }
 

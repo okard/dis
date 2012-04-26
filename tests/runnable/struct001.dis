@@ -4,13 +4,13 @@
 //# RunResult: 0
 //# Type: Runnable
 
-package tests.runnable.type002;
+package tests.runnable.struct001;
 
 //structure type
 struct myStruct
 {
-    i: int;
-    str: string;
+    i: int32;
+    f: float32;
 }
 
 //main function
@@ -18,6 +18,6 @@ def main
 {
     var s: myStruct;
     s.i = 5;
-    s.str = "foo";
+    s.f = 1;
 }
 

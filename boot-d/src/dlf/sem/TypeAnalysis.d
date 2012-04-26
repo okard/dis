@@ -225,10 +225,8 @@ class TypeAnalysis : Visitor
         //resolve identifier
         ce.Func = autoDispatch(ce.Func);
 
-
         if(ce.Func.Kind == NodeKind.IdExpr)
         {    
-
             auto ie = ce.Func.to!IdExpr;
             
             //if ie.Decl == FunctionDecl
@@ -250,32 +248,7 @@ class TypeAnalysis : Visitor
         return ce;
     }
 
-    /// Identifier Expression 
-    Expression visit(IdExpr ie)
-    {
-        sem.Information("IdExpr: %s", ie.toString());
-        
-        //already solved?
-        if(ie.Decl !is null)
-            return ie;
 
-        //sem.Information(ie.Parent.toString());
-
-        ie.Decl = search(ie.Id);
-
-        //dont find the right declaration
-        if(ie.Decl is null)
-        {
-            sem.Error("Can't resolve identifier %s", ie.Id);
-            sem.Fatal("Failed type resolve");
-        }
-
-        sem.Information("Found %s", ie.Decl.Name);
-        //resolve ie.Decl 
-        //ie.ReturnType = targettype
-
-        return ie;
-    }
       
 
     /// Binary Expression
@@ -298,7 +271,7 @@ class TypeAnalysis : Visitor
         //GT, GTE, LT, LTE
 
         case BinaryOperator.Assign:
-            assert(be.Left.Kind == NodeKind.IdExpr);
+            //assert(be.Left.Kind == NodeKind.IdExpr);
             break;
 
         default:
@@ -331,8 +304,11 @@ class TypeAnalysis : Visitor
 
         //No Declaration Type Replace with call expr
         //(5+a).foo -> foo(5+a);
+
+        sem.Information("Left: %s %b", de.Left.ReturnType.toString(), de.Left.ReturnType.Kind != NodeKind.DeclarationType);
         if(de.Left.ReturnType.Kind != NodeKind.DeclarationType)
         {
+            sem.Information("Rewrite DotExpr");
             auto ce = new CallExpr();
             ce.Func = de.Right;
             ce.Arguments ~= de.Left;
@@ -346,10 +322,54 @@ class TypeAnalysis : Visitor
 
         //visit right has parameter of de.Left.ReturnType
 
+
         //search right 
         //return type = de.right.returntype;
    
         return de;
+    }
+
+    /// Identifier Expression 
+    Expression visit(IdExpr ie)
+    {
+        sem.Information("IdExpr: %s", ie.toString());
+        
+        //already solved?
+        if(ie.Decl !is null)
+            return ie;
+
+        //sem.Information(ie.Parent.toString());
+
+        ie.Decl = search(ie.Id);
+
+        //dont find the right declaration
+        if(ie.Decl is null)
+        {
+            sem.Error("Can't resolve identifier %s", ie.Id);
+            sem.Fatal("Failed type resolve");
+        }
+
+        sem.Information("Found %s", ie.Decl.Name);
+
+        switch(ie.Decl.Kind)
+        {
+            case NodeKind.VarDecl:
+                ie.ReturnType = ie.Decl.to!VarDecl.VarDataType;
+                break;
+            case NodeKind.StructDecl:
+            case NodeKind.ClassDecl:
+                auto dt = new DeclarationType();
+                dt.Decl = ie.Decl;
+                ie.ReturnType = dt;
+                break;
+
+            default:
+                sem.Information("Something goes wrong in IdExpr solving");
+        }
+
+        assert(ie.ReturnType !is null);
+
+        return ie;
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -360,7 +380,7 @@ class TypeAnalysis : Visitor
 
     DataType visit(DataType dt)
     {
-        sem.Information("Semantic: DataType");
+        sem.Information("Semantic: DataType %s", dt.toString());
         //Check for Ref Ref Types
         //Check for Ptr Ptr Types
         //TODO resolve DotType here
@@ -372,7 +392,15 @@ class TypeAnalysis : Visitor
         return dt; 
     }
 
+    /**
+    * A dot type returns a DeclarationType
+    */
     public DataType visit(DotType dt)
+    out(result)
+    {
+        //assert(result.Kind() == NodeKind.DeclarationType);
+    }
+    body
     {
         sem.Information("Semantic: DotType");
 
@@ -390,7 +418,6 @@ class TypeAnalysis : Visitor
         if(dt.ResolvedDecl.IsInstanceDecl)
             sem.Error("DataType references to a instance symbol %s", dt.Value);
         
-    
         //when nothing found in bottom up search in imports?
         //top down search
         //search imports 
@@ -401,15 +428,21 @@ class TypeAnalysis : Visitor
 
         if(dt.ResolvedDecl is null)
             sem.Fatal("Can't proceed with unsolved datatype");
+
+        auto declType = new DeclarationType();
+        declType.Decl = dt.ResolvedDecl;
         
         if(dt.Right is null)
-            return dt;
+            return declType;
         //return here right when it has right
         //no place holder value
 
         //TODO assert dt.ResolvedDecl dt.ResolvedType != null
 
-        return dt;
+        //Rewrite to DeclarationType
+
+
+        return declType;
     }
     
     ///////////////////////////////////////////////////////////////////////////
@@ -421,7 +454,7 @@ class TypeAnalysis : Visitor
 
     private Declaration search(string id, Declaration start = null)
     {
-        debug dumpSymbolTable();
+        debug dumpSymbolTables();
 
         //bottom up search for simple id
         if(start is null)
@@ -452,21 +485,24 @@ class TypeAnalysis : Visitor
     }
 
 
-    private void dumpSymbolTable()
+    /**
+    * dumps the current symbol table stack
+    * for debugging
+    */
+    private void dumpSymbolTables()
     {
         //Bottom up search
         for(int i=symTables.length-1; i >= 0; i--)
         {
             SymbolTable symTbl = *symTables[i];
 
-            sem.Information("SymbolTable %d Entries: %d : %s", i, symTbl.count, symTbl.Owner.toString());
+            sem.Information("\tSymbolTable %d Entries: %d : %s", i, symTbl.count, symTbl.Owner.toString());
 
             foreach(Declaration d; symTbl)
             {
-                sem.Information("Entry: %s", d.Name);
+                sem.Information("\t\tEntry: %s", d.Name);
             }
         }
-
     }
 
     

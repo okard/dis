@@ -40,15 +40,15 @@ abstract class DataType : Node
      /// Pointer Singleton Mixin
      protected mixin template PtrTypeSingleton()
      {
-        private static PointerType _PtrInstance;
+        private static PtrType _PtrInstance;
 
         static this()
         {
-            _PtrInstance  = new PointerType(Instance);
+            _PtrInstance  = new PtrType(Instance);
         }
 
         @property
-        public static PointerType PtrInstance()
+        public static PtrType PtrInstance()
         {
             return _PtrInstance;
         }
@@ -156,7 +156,7 @@ final class Double64Type : DataType
 }
 
 /**
-* Not known datatype
+* Not set datatype, place holder
 * For implicit typing
 */
 final class OpaqueType : DataType
@@ -167,33 +167,10 @@ final class OpaqueType : DataType
 }
 
 /**
-* A composite type name
-*/
-final class DotType : DataType
-{
-    /// Name
-    string Value; 
-
-    /// Resolved Declaration
-    Declaration ResolvedDecl;
-    /// Resolved DataType
-    DataType ResolvedType;
-
-    /// Concat (type.type.type...)
-    DataType Right;
-    
-    mixin(IsKind("DotType"));
-}
-
-
-// string array? / char array / byte array 
-
-
-/**
 * PointerType 
 * Ptr to a type
 */
-class PointerType : DataType 
+class PtrType : DataType 
 {
     ///The Type this PoiThe Intelligent Transport Layer - nterType points to
     public DataType PtrType;
@@ -229,40 +206,62 @@ class RefType : DataType
 }
 
 /**
-* Char Type
-* byte array?
-*/
-class CharType : DataType
-{
-    //encoding???
-    override string toString() { return "char"; }
-    mixin Singleton!CharType;
-    mixin PtrTypeSingleton;
-}
-
-/**
-* String Type aka ArrayType(CharType)?
-* Runtime Type
-* byte array
-*/
-class StringType : DataType
-{ 
-    //encoding???
-    override string toString() { return "string"; }
-    mixin Singleton!StringType;
-}
-
-/**
 * Array Type
 */
 class ArrayType : DataType
 {
     /// DataType of Array
-    public DataType ArrType;
+    public DataType TargetType;
     /// Size of Array
-    public uint Size;
+    public ulong Size;
     /// Is Dynamic Array
     public bool Dynamic = false;
+
+
+    //static type for ref byte array
+
+    public static RefType createArrayLiteral(ulong size)
+    {
+        auto arrType = new ArrayType();
+        arrType.TargetType = Byte8Type.Instance;
+        arrType.Size = size;
+        auto refType = new RefType();
+        refType.TargetType = arrType;
+        return refType;
+    }
+}
+
+// string array? / char array / byte array 
+
+/**
+* A composite type name
+*/
+final class DotType : DataType
+{
+    /// Name
+    string Value; 
+
+    /// Resolved Declaration
+    Declaration ResolvedDecl;
+
+    /// Concat (type.type.type...)
+    DataType Right;
+    
+    mixin(IsKind("DotType"));
+}
+
+/**
+* Something like that?
+* Whats about Template Type Instancing?
+*/
+final class DeclarationType : DataType
+{
+    public Declaration Decl;
+
+    //For template instancing?
+    public DataType[] Arguments;
+
+    mixin(IsKind("DeclarationType"));
 }
 
 /**
@@ -298,16 +297,3 @@ class FunctionType : DataType
     mixin(IsKind("FunctionType"));
 }
 
-/**
-* Something like that?
-* Whats about Template Type Instancing?
-*/
-final class DeclarationType : DataType
-{
-    public Declaration Decl;
-
-    //For template instancing?
-    public DataType[] Arguments;
-
-    mixin(IsKind("DeclarationType"));
-}
