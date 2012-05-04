@@ -25,6 +25,7 @@ import dlf.ast.Type;
 
 /**
 * Base Class for Expression
+* TODO: Expressions are Statements?
 */
 abstract class Expression : Node
 {
@@ -52,6 +53,9 @@ final class LiteralExpr : Expression
     mixin(IsKind("LiteralExpr"));
 }
 
+//TODO IntLiteral
+//TODO FloatLiteral
+
 /**
 * A Function Call
 */
@@ -73,13 +77,13 @@ final class CallExpr : Expression
 /**
 * Binary Operator
 *  + - * / % ** & | ^ && || < > ~ 
-*  << >> 
+*  << >> >>> <<<
 *  = += -= *= /= %= **= &= |= ^= <= >= !=
 */
 public enum BinaryOperator : ubyte 
 { 
     // Binary Ops
-    Add, Sub, Mul, Div, Mod, Power, And, Or, Xor, LAnd, LOr, Concat,
+    Add, Sub, Mul, Div, Mod, Pow, And, Or, Xor, LAnd, LOr, Concat,
     // Shifts
     LLShift, LRShift, ALShift, ARShift,
     // Assign Ops
@@ -126,6 +130,7 @@ final class DotExpr : BinaryExpr
 /**
 * IdExpr
 * e.g. foo.bar.x.y
+* TODO is also a literal expr?
 */
 final class IdExpr : Expression
 {

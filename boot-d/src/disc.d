@@ -279,11 +279,11 @@ class DisCompiler
     {
         //create lexer
         auto lex = new Lexer();
-        lex.open(src);
+        lex.load(src);
         
         //print tokens
         writeln("------- START LEXER DUMP ------------------------------");
-        while(lex.getToken().Type != TokenType.EOF)
+        while(lex.nextToken().Type != TokenType.EOF)
         {
             auto t = lex.CurrentToken;
             switch(t.Type)

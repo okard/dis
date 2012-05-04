@@ -111,7 +111,7 @@ class Parser
         annotations.length = 0;
 
         //open source file and set ignore tokens
-        lexer.open(src);
+        lexer.load(src);
         lexer.Ignore = [TokenType.Comment, TokenType.DocComment, TokenType.EOL];
         //create a event hook for some kind of tokens for example to parse comment tokens
         //the tokens does not go through regular getToken function of lexer?
@@ -1271,7 +1271,7 @@ class Parser
     {
         while(n > 0)
         {
-            mToken = lexer.getToken();
+            mToken = lexer.nextToken();
             n--;
         }
     }
