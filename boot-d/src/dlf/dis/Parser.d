@@ -687,6 +687,15 @@ class Parser
             next; checkType(TokenType.Semicolon, "Expects semicolon after declaration");            
             return al;
 
+
+        case TokenType.Colon:
+            //its a enum
+            break;
+
+        case TokenType.Assign:
+            peek(2); //Indentifier vs { 
+            
+            break;
         //enum
         //variant
 

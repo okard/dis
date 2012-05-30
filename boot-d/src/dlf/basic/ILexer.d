@@ -23,4 +23,9 @@ interface ILexer(T)
     */
     T peekToken(ushort n);
 
+    //TODO Hook on special Tokens?
+    //void regHook(T t, ILexer lex) //at token t start using ILexer 
+    //void unHook(); //back to old lexer 
+    // For inline asm?
+
 }

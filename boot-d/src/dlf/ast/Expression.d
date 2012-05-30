@@ -181,8 +181,11 @@ final class UnaryExpr : Expression
 */
 final class LambdaExpression : Expression
 {
-    //arguments
-    //body
+    //has a function type
+    
+    //Parameter[] Arguments
+    
+    //Statement Body
 
     //FunctionDecl -> anonymous function
 }

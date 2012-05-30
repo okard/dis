@@ -101,6 +101,7 @@ final struct SymbolTable
 
     /**
     * Assign Entry
+    * with delegate handler
     */
     public void assign(T : Declaration)(T symbol, void delegate(T symA, T symB) concat)
     {
@@ -117,16 +118,49 @@ final struct SymbolTable
         }
     }
 
-    //Overwrites
-    public void assign(T : Declaration)(T symbol)
+    /**
+    * Direct assign which can replace old symbol
+    */
+    public void assign(T : Declaration)(T symbol, bool replace = true)
     {
+        if(!replace && this.contains(symbol.Name))
+            throw new Exception("Symbol already in SymbolTable");
+
         symbols[symbol.Name] = symbol;
     }
 
+    //TODO what attributes save in ast node what save in symbol table
+
+    //TODO handling sub symbol tables SymbolTable[Node]?
+
+    /*
+    link: http://www.cs.pitt.edu/~mock/cs2210/lectures/lecture9.pdf
+
+    Symbol Table:  Maps symbol names to attributes
+    Common attributes:
+    Name: String
+    Class:Enumeration (storage class)
+    Volatile:Boolean
+    Size:Integer
+    Bitsize:Integer
+    Boundary: Integer
+    Bitbdry:Integer
+    Type:Enumeration or Type referent
+    Basetype:Enumeration or Type referent
+    Machtype:Enumeration
+    Nelts:Integer
+    Register:Boolean
+    Reg:String (register name)
+    Basereg:String
+    Disp:Integer (offset)
+    */
+
+    //Possible Attributs of a Symbol Entry?
     private struct Entry
     {
         //type: variable, function, class, struct 
         //binding: extern 
+
     }
 
 }

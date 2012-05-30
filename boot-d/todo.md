@@ -12,6 +12,8 @@
 
 ## Syntax Tree
 
+* Remove BlockStmt
+
 ## Semantic
 
 ## Codegen

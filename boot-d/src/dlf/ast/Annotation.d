@@ -54,8 +54,9 @@ final class DeprecatedAnnotation : Annotation
     //mixin(IsKind("DeprecatedAnnotation"));
 }
 
-
-//MainFunction Annotation for declaring a entry points for static/dynamic libraries
+/**
+* MainFunction Annotation for declaring a entry points for static/dynamic libraries
+*/
 final class LibMainAnnotation : Annotation
 {
     //mixin(IsKind("LibMainAnnotation"));

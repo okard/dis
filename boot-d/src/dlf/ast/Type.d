@@ -33,6 +33,8 @@ abstract class DataType : Node
      /// is Runtime Type
      public bool isRuntimeType = false;
 
+     //abstract is primarytype
+
      //ptr type
      //type size
      //offset?
@@ -54,6 +56,15 @@ abstract class DataType : Node
         }
     }
 }
+
+abstract class PrimaryType(T, string name) : DataType
+{
+    override string toString() { return name; }
+    mixin Singleton!T;
+    mixin PtrTypeSingleton;
+}
+
+// Add a Basic Primary Type?
 
 /// Void
 final class VoidType : DataType
@@ -245,7 +256,7 @@ class ArrayType : DataType
     }
 }
 
-// string array? / char array / byte array 
+//TODO add alias type for string literals == byte arrays
 
 /**
 * A composite type name
@@ -267,19 +278,22 @@ final class DotType : DataType
 /**
 * Something like that?
 * Whats about Template Type Instancing?
+* Merge with DotType?
 */
 final class DeclarationType : DataType
 {
     mixin(IsKind("DeclarationType"));
 
+    /// Target Declaration
     public Declaration Decl;
 
-    //For template instancing?
+    /// For template instancing?
     public DataType[] Arguments;
 }
 
 /**
 * Defines a Function Signature
+* Used for Anonymous/Declarated Functions 
 */
 class FunctionType : DataType
 { 
@@ -297,11 +311,6 @@ class FunctionType : DataType
 
     /// is a varargs function
     public bool mVarArgs;
-
-    /// Body (for template functions) move to declarations
-    public Statement Body;
-
-    //mangled name?
 
     //match helper function?
 

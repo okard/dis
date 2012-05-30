@@ -47,8 +47,10 @@ enum DeclarationFlags : ushort
     Const= 1 << 6, 
     Abstract= 1 << 7, 
 
-    Internal= 1 << 8, //internal symbol not accessible
-    Export= 1 << 9
+    Internal= 1 << 8, //internal symbol only accessable from package itself
+    Export= 1 << 9    //Export Symbol (For libraries)
+    
+    //when no Internal and no Export only the current compilation has access to the function
 } 
 
 /// Supported Calling Conventions for classes and functions
@@ -92,6 +94,7 @@ abstract class Declaration : Node
 */
 abstract class TypeDecl : Declaration
 {
+    //TODO have all type decl a symbol table? O_o
     @property
     final override bool IsInstanceDecl(){return false;}
 }
@@ -158,6 +161,7 @@ final class ImportDecl : TypeDecl
 
 /**
 * Function Parameter 
+* TODO also a Declaration? for saving in Symbol Table
 */
 struct FunctionParameter
 {
@@ -174,6 +178,11 @@ struct FunctionParameter
     ushort Index;
 
     //Modifiers/Flags ( ..., vararg)
+    // in, out, inout
+    // by-value -> in
+    // by-ref/ptr-const -> in
+    // by-ref/ptr-noconst -> inout
+    //out -> the parameter has to be assigned
 }
 
 /**
@@ -251,22 +260,25 @@ final class ClassDecl : TypeDecl
     //TODO Template Arguments
     public ClassDecl BaseClass; 
 
+    //Multi inheritance?
+    //Mixins
+    //Traits
+
     //TODO Template Arguments
     public TraitDecl[] Traits; 
     
+    //Static Ctor/Dtor
     public FunctionDecl StaticCtor;
     public FunctionDecl StaticDtor;
 
-    public FunctionDecl Ctor;
+    //Normal Ctor/Dtor
+    public FunctionDecl[] Ctor;
     public FunctionDecl Dtor;
-
-    //Multi inheritance?
-    //Traits
-    //Mixins
 
     /// Is Template Class
     public bool IsTemplate;
 
+    //Implementations
     //public ClassDecl[DeclarationType] Instances;
 
     /// Mixin for Kind Declaration
@@ -316,7 +328,6 @@ final class VariantDecl : TypeDecl
     /// Mixin for Kind Declaration
     mixin(IsKind("VariantDecl"));
 }
-
 
 /**
 * Variable Declaration (var)

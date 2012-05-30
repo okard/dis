@@ -164,6 +164,9 @@ final class ContinueStmt : Statement
     //target statement
 
     //mixin(IsKind("ContinueStmt"));
+
+    //support something like "continue if x > 3;"
+    //Expression condition;
 }
 
 /**
@@ -173,6 +176,9 @@ final class BreakStmt : Statement
 {
     //target statement
     //mixin(IsKind("BreakStmt"));
+
+    //support something like "break if x > 3;"
+    //Expression condition;
 }
 
 //Try Catch Finally Throw

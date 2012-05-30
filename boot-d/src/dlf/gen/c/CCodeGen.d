@@ -188,12 +188,16 @@ class CCodeGen : ObjectGen, BinaryGen, Visitor
         //extend(pd, new CCNode(filename));
         p.start(pd.Name.toUpper.replace(".", "_"));
 
+        //include default header dish.h
         p.include(DisCGenHeaderName);
-
-        //include default header dish.h ???
+ 
         //Imports
         mapDispatch(pd.Imports);
 
+        //go through Symbol Table and
+        //create all symbols
+        //TODO split into two steps first fill header (definitions)?
+        //     then fill in the declarations in code
         symDispatch(pd.SymTable);
         
         p.close();
@@ -210,7 +214,6 @@ class CCodeGen : ObjectGen, BinaryGen, Visitor
         //get compile header name
         //p.include(getgen(id.Package).Identifier);
 
-
         return id;
     }
 
@@ -219,11 +222,17 @@ class CCodeGen : ObjectGen, BinaryGen, Visitor
     */
     Declaration visit(FunctionDecl fd)
     {
+        // a function can have multiple instances
+        // templated functions
+        // external function has no body
+        
         //generate for each instantiation of (tpl) function
         foreach(FunctionType ft; fd.Instances)
         {
+            //TODO split because of defintion and decl body code
+            //InstanceBodies
             //Generate code for each function instance
-            gen(ft);
+            gen(ft, fd.InstanceBodies.get(ft, null));
             //fd.Body[ft]
         }
 
@@ -231,11 +240,11 @@ class CCodeGen : ObjectGen, BinaryGen, Visitor
         //unique name through mangleing
         mapDispatch(fd.Overrides);
 
-        //generate c main wrapper
-        //main can't be a template so generate c main here
+        //special case when the dis main is generated
+        //also generate the main c function (calls dis main)
+        //the dis main can't be a template
         if(fd.Name == "main")
             genCMain();
-
 
         return fd;
     }
@@ -243,7 +252,7 @@ class CCodeGen : ObjectGen, BinaryGen, Visitor
     /**
     * Generate Function type
     */
-    private void gen(FunctionType ft)
+    private void gen(FunctionType ft, Statement bodyStmt)
     {
         auto funcDecl = to!FunctionDecl(ft.FuncDecl);
 
@@ -272,14 +281,14 @@ class CCodeGen : ObjectGen, BinaryGen, Visitor
         p.funcDecl(rettype, name, []);
 
         //write body aka function definition
-        if(ft.Body !is null)
+        if(bodyStmt)
         {
-            assert(ft.Body.Kind == NodeKind.BlockStmt, "Sem should rewrite body to block statement");
+            assert(bodyStmt.Kind == NodeKind.BlockStmt, "Sem should rewrite body to block statement");
 
             //start function definition
             p.funcDef(rettype, name, []);
             
-            autoDispatch(ft.Body);
+            autoDispatch(bodyStmt);
         }
     }
 
