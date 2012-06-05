@@ -1,7 +1,7 @@
 
 
 DMD=dmd
-DFLAGS=-w -debug -gc -Isrc -unittest
+DFLAGS=-w -debug -gc -Isrc -unittest -property
 EXE=bin/disc
 LIBDIR=./lib/linux32
 

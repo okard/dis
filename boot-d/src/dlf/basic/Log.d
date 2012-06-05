@@ -233,6 +233,7 @@ final static class Log
     /**
     * Get a specific Log Source
     */
+    @property
     static LogSource opDispatch(string s)()
     {
         return opCall(s);

@@ -120,6 +120,7 @@ final struct SymbolTable
 
     /**
     * Direct assign which can replace old symbol
+    * TODO: Rename to replaceSymbol(), remove seperate replace function?
     */
     public void assign(T : Declaration)(T symbol, bool replace = true)
     {
@@ -127,6 +128,17 @@ final struct SymbolTable
             throw new Exception("Symbol already in SymbolTable");
 
         symbols[symbol.Name] = symbol;
+    }
+
+    /**
+    * Direct access to symbol flags
+    */
+    public DeclarationFlags flags(string symName)
+    {
+        if(!contains(symName))
+            return DeclarationFlags.Blank;
+
+        return symbols[symName].Flags;
     }
 
     //TODO what attributes save in ast node what save in symbol table
@@ -154,6 +166,16 @@ final struct SymbolTable
     Basereg:String
     Disp:Integer (offset)
     */
+
+    enum SymbolType
+    {
+        Unknown,
+        Function,
+        Variable,
+        Import,
+        Struct,
+        Class
+    }
 
     //Possible Attributs of a Symbol Entry?
     private struct Entry

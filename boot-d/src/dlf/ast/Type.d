@@ -300,8 +300,8 @@ class FunctionType : DataType
     mixin(IsKind("FunctionType"));
 
     /// The base function declaration of this type, Parent
-    @property
-    public auto FuncDecl() { return Parent.to!FunctionDecl; }
+    // @property
+    // public auto FuncDecl() { return Parent.to!FunctionDecl; }
 
     /// The function type arguments
     public DataType[] Arguments;

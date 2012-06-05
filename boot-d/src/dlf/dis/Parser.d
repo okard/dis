@@ -190,17 +190,17 @@ class Parser
         }
 
         //parse package identifier
-        next; checkType(TokenType.Identifier, __traits(identifier, parsePackage));
+        next(); checkType(TokenType.Identifier, __traits(identifier, parsePackage));
 
         pkg.PackageIdentifier.append(mToken.Value);
 
         while(peek(1) == TokenType.Dot)
         {
-            next;
+            next();
             switch(peek(1))
             {
                 case TokenType.Identifier: 
-                    next; pkg.PackageIdentifier.append(mToken.Value); break;
+                    next(); pkg.PackageIdentifier.append(mToken.Value); break;
                 default:
                     Error(mToken.Loc, "parsePackage: expect identifier dot");
             }
@@ -209,7 +209,7 @@ class Parser
         pkg.Name = pkg.PackageIdentifier.toString();
 
         //Look for semicolon
-        next; checkType(TokenType.Semicolon, __traits(identifier, parsePackage));
+        next(); checkType(TokenType.Semicolon, __traits(identifier, parsePackage));
 
         //parse rest of package
         while(mToken.Type != TokenType.EOF)
@@ -292,18 +292,18 @@ class Parser
 
         //import followed by identifier import foo = asdasd
         
-        next; checkType(TokenType.Identifier, __traits(identifier, parseImport));
+        next(); checkType(TokenType.Identifier, __traits(identifier, parseImport));
         imp.ImportIdentifier.append(mToken.Value);
 
         while(peek(1) == TokenType.Dot)
         {
-            next;
+            next();
             switch(peek(1))
             {
                 case TokenType.Identifier: 
-                    next; imp.ImportIdentifier.append(mToken.Value); break;
+                    next(); imp.ImportIdentifier.append(mToken.Value); break;
                 case TokenType.Mul:
-                    next; imp.IsWildcardImport = true; break;
+                    next(); imp.IsWildcardImport = true; break;
                 default:
                     Error(mToken.Loc, "parseImport: expect identifier or * after dot");
             }
@@ -311,7 +311,7 @@ class Parser
 
         imp.Name = imp.ImportIdentifier.toString();
 
-        next; checkType(TokenType.Semicolon, __traits(identifier, parseImport));
+        next(); checkType(TokenType.Semicolon, __traits(identifier, parseImport));
         
         return imp;
     }
@@ -330,7 +330,7 @@ class Parser
         //parseKeywordParameter();
 
 
-        next; checkType(TokenType.Identifier, __traits(identifier, parseClass));
+        next(); checkType(TokenType.Identifier, __traits(identifier, parseClass));
         classDecl.Name = mToken.Value;
 
         //template ()
@@ -342,12 +342,12 @@ class Parser
         //inheritance
         if(peek(1) == TokenType.Colon)
         {
-            next;
+            next();
             parseDataType();
             // comma value for multi-inheritance and traits
         }
         
-        next; checkType(TokenType.COBracket, __traits(identifier, parseClass));
+        next(); checkType(TokenType.COBracket, __traits(identifier, parseClass));
 
 
         //parseDeclarations();
@@ -400,7 +400,7 @@ class Parser
             }
         }
 
-        next; 
+        next(); 
         checkType(TokenType.Identifier, __traits(identifier, parseDef));
         func.Name = mToken.Value;
 
@@ -413,18 +413,18 @@ class Parser
             {
                 while(true)
                 {
-                    next;
+                    next();
                     //add to symbol table?
                     auto p = parseDefParameter();
                     func.Parameter ~= p;
                     
                     if(peek(1) == TokenType.Comma)
                     {
-                        next;
+                        next();
                         continue;
                     }
                     else
-                        next;
+                        next();
 
                     break;
                 }
@@ -432,7 +432,7 @@ class Parser
                     Error(mToken.Loc, "parseDef: expected ) after parameters"); 
             }
             else
-                next;
+                next();
         }
         
         //optional: look for return value 
@@ -445,7 +445,7 @@ class Parser
         //optional: if function declarations closes with ";" it is finished
         if(peek(1) == TokenType.Semicolon)
         {
-            next;
+            next();
             return func;
         }
 
@@ -454,7 +454,7 @@ class Parser
         {
             //block {}
             case TokenType.COBracket:
-                next;
+                next();
                 debug log.Information("function block");
                 //parse the block
                 auto b = parseBlock();
@@ -507,24 +507,24 @@ class Parser
 
             if(peek(1) == TokenType.Vararg)
             {
-               next;
+               next();
                param.Vararg = true;
             }
 
             if(peek(1) == TokenType.Colon)
             {
-                next;
+                next();
                 goto case TokenType.Colon;
             }
 
             break;
         case TokenType.Colon:
-            next;
+            next();
             param.Type = parseDataType();
             break;
 
         case TokenType.Vararg:
-            //next;
+            //next();
             param.Vararg = true;
             break;
 
@@ -547,14 +547,14 @@ class Parser
         var.Loc = mToken.Loc;
 
         //expect Identifier after var
-        next; 
+        next(); 
         checkType(TokenType.Identifier, "Expect Identifier after var keyword");
         var.Name = mToken.Value;
 
         switch(peek(1))
         {
             case TokenType.Colon:
-                next; next;
+                next(2);
                 var.VarDataType = parseDataType();
                 
                 //assign can be followed
@@ -575,7 +575,7 @@ class Parser
                 Error(mToken.Loc, "Unkown token in variable declaration");
         }
        
-        next; 
+        next(); 
         checkType(TokenType.Semicolon, "Missing semicolon after variable declaration");
 
         return var;
@@ -606,23 +606,23 @@ class Parser
         scope(exit) symTables.pop();
 
         //struct name
-        next; 
+        next(); 
         checkType(TokenType.Identifier, "Expect identifier after struct");
         st.Name = mToken.Value;
 
         //inheritance
-        next;
+        next();
         if(mToken.Type == TokenType.Colon)
         {
-            next;
+            next();
             st.BaseType = parseDataType();
-            next;
+            next();
         }
 
         //definition
         if(mToken.Type == TokenType.Semicolon)
         {
-            next;
+            next();
             return st;
         }
 
@@ -630,7 +630,7 @@ class Parser
             Error(mToken.Loc, "Expected { for struct declaration");
 
         //inner struct
-        next;
+        next();
         while(mToken.Type != TokenType.CCBracket)
         {
             switch(mToken.Type)
@@ -638,19 +638,19 @@ class Parser
                 case TokenType.Identifier:
                     auto var = new VarDecl();
                     var.Name = mToken.Value;
-                    next;
+                    next();
                     checkType(TokenType.Colon, "Expect ':' after field identifier");
-                    next;
+                    next();
                     var.VarDataType = parseDataType();
 
                     //TODO not twice
                     st.SymTable[var.Name] = var;
 
-                    next;
+                    next();
                     checkType(TokenType.Semicolon, "Expect ';' after field declaration");
 
                     debug log.Information("Struct: %s Field: %s %s", st.Name, var.Name, var.VarDataType.toString());
-                    next;
+                    next();
                     break;
                 case TokenType.KwDef:
                     Error(mToken.Loc, "Functions in structs not yet supported");
@@ -672,7 +672,7 @@ class Parser
         //must be struct 
         checkType(TokenType.KwType);
 
-        next;
+        next();
         checkType(TokenType.Identifier, "Require name for type");
 
         switch(peek(1))
@@ -682,9 +682,9 @@ class Parser
         case TokenType.Identifier:
             auto al = new AliasDecl();
             al.Name = mToken.Value;
-            next;
+            next();
             al.AliasType = parseDataType();
-            next; checkType(TokenType.Semicolon, "Expects semicolon after declaration");            
+            next(); checkType(TokenType.Semicolon, "Expects semicolon after declaration");            
             return al;
 
 
@@ -700,7 +700,7 @@ class Parser
         //variant
 
         default:
-            next;
+            next();
             Error(mToken.Loc, "parseType: No expected token");
         }
 
@@ -745,7 +745,7 @@ class Parser
             return parseWhile();
         //return
         case TokenType.KwReturn:
-            next;
+            next();
             auto expr = parseExpression();
             auto ret =  new ReturnStmt(expr);
             expr.Parent = ret;
@@ -756,7 +756,7 @@ class Parser
             auto es =  new ExpressionStmt(exp);
             exp.Parent = es;
 
-            next;
+            next();
             checkType(TokenType.Semicolon, "Missing semicolon after expression statement");
             return es;
         }
@@ -919,8 +919,8 @@ class Parser
                 //var te = new ThisExpr();
                 break;
             case TokenType.ROBracket: 
-                expr = parseExpression;
-                next;
+                expr = parseExpression();
+                next();
                 checkType(TokenType.RCBracket, "require ) after expression");
                 break;
             case TokenType.Identifier:
@@ -963,7 +963,7 @@ class Parser
                 
                 //checkType(TokenType.Comma, "expected ',' between call expression arguments");
             }
-            next;
+            next();
             checkType(TokenType.RCBracket, "expect ) after call expression");
 
             //set expression to call expression;
@@ -983,12 +983,12 @@ class Parser
             case TokenType.Div:
             //Binary Assign Expression
             case TokenType.Assign:
-                next;
+                next();
                 auto be = new BinaryExpr();
                 be.Op = getBinaryOperator(mToken.Type);
                 be.Left = expr;
                 expr.Parent = be;
-                next;
+                next();
                 auto right = parseExpression();
                 be.Right = right;
                 right.Parent = be;
@@ -1070,7 +1070,7 @@ class Parser
         // Annotions: @identifier
         checkType(TokenType.Annotation);
 
-        next;
+        next();
         checkType(TokenType.Identifier, "Expected Identifier after @ for Annotations");
 
         switch(mToken.Value)
@@ -1096,11 +1096,11 @@ class Parser
         
         while(true)
         {
-            next;
+            next();
             checkType(TokenType.Identifier);
             kwParams ~= mToken.Value;
             
-            next;
+            next();
             if(mToken.Type == TokenType.Comma)
                 continue;
             else if(mToken.Type == TokenType.RCBracket)
@@ -1154,7 +1154,8 @@ class Parser
 
                 //[ (datatype) ]
                 case TokenType.AOBracket: 
-                    //Array Size Number Token
+                    // Array Size Number Token
+                    // ArrayType -> ref Array
                     Error(mToken.Loc, "array datatypes not yet supported");
                     break;
 
@@ -1166,13 +1167,13 @@ class Parser
                     break;
 
                 case TokenType.KwRef:
-                    next;
+                    next();
                     auto reftype = new RefType();
                     reftype.TargetType = parseDataType();
                     return reftype;
 
                 case TokenType.KwPtr:
-                    next;
+                    next();
                     auto ptrtype = new PtrType(parseDataType());
                     return ptrtype;
 
@@ -1216,18 +1217,18 @@ class Parser
         switch(mToken.Type)
         {
             case TokenType.KwPrivate:
-                flags &= DeclarationFlags.Private;
-                next;
+                flags |= DeclarationFlags.Private;
+                next();
                 parseDeclarationFlags();
                 break;
             case TokenType.KwPublic:
-                flags &= DeclarationFlags.Public;
-                next;
+                flags |= DeclarationFlags.Public;
+                next();
                 parseDeclarationFlags();
                 break;
             case TokenType.KwProtected:
-                flags &= DeclarationFlags.Protected;
-                next;
+                flags |= DeclarationFlags.Protected;
+                next();
                 parseDeclarationFlags();
                 break;
             default:
@@ -1240,7 +1241,7 @@ class Parser
     */
     private void assignDeclarationFlags(Declaration d)
     {
-        d.Flags = flags;
+        d.Flags |= flags;
         flags = DeclarationFlags.Blank;
     }
 

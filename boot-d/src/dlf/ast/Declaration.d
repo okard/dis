@@ -205,6 +205,8 @@ class FunctionDecl : TypeDecl
     /// Overrides of this function
     public FunctionDecl[] Overrides;
 
+    //TODO the final generated Declarations can also seperate FunctionDecl? Chaining? see also semantic
+
     //required store functiontypes directly with bodies? InstanceBodies.keys
     /// The function types used for template funcs
     public FunctionType[] Instances;

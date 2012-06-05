@@ -186,7 +186,7 @@ class CCodeGen : ObjectGen, BinaryGen, Visitor
         pd.CodeGen = cheader(p.Header.name);
 
         //extend(pd, new CCNode(filename));
-        p.start(pd.Name.toUpper.replace(".", "_"));
+        p.start(pd.Name.toUpper().replace(".", "_"));
 
         //include default header dish.h
         p.include(DisCGenHeaderName);
@@ -232,7 +232,7 @@ class CCodeGen : ObjectGen, BinaryGen, Visitor
             //TODO split because of defintion and decl body code
             //InstanceBodies
             //Generate code for each function instance
-            gen(ft, fd.InstanceBodies.get(ft, null));
+            gen(fd, ft);
             //fd.Body[ft]
         }
 
@@ -252,16 +252,16 @@ class CCodeGen : ObjectGen, BinaryGen, Visitor
     /**
     * Generate Function type
     */
-    private void gen(FunctionType ft, Statement bodyStmt)
+    private void gen(FunctionDecl fdecl, FunctionType ft)
     {
-        auto funcDecl = to!FunctionDecl(ft.FuncDecl);
+        auto bodyStmt = fdecl.InstanceBodies.get(ft, null);
 
         //write type information for runtime?
         
         //name for function type
-        string name = funcDecl.CallingConv == CallingConvention.C ?
-                      funcDecl.Name :
-                      Mangle.mangle(ft);
+        string name = fdecl.CallingConv == CallingConvention.C ?
+                      fdecl.Name :
+                      Mangle.mangle(fdecl, ft);
 
         log.Information("Function: %s", name);
 
@@ -277,7 +277,7 @@ class CCodeGen : ObjectGen, BinaryGen, Visitor
         string rettype = getgen(ft.ReturnType).Identifier;
         
         //reate function declaration
-        p.debugln(funcDecl.Loc);
+        p.debugln(fdecl.Loc);
         p.funcDecl(rettype, name, []);
 
         //write body aka function definition

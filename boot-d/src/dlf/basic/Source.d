@@ -33,6 +33,7 @@ interface Source
     /**
     * Get current location
     */
+    @property
     public Location Loc();
 
     /**
@@ -53,6 +54,7 @@ interface Source
     /**
     * Is eof
     */
+    @property
     public bool isEof();
 
     /**
