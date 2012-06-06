@@ -121,6 +121,8 @@ abstract class Node
     //TODO Make this struct? for different node types different?
     public Node CodeGen;
 
+    //TODO Node Status for Stage? Parse, Semantic, CodeGen
+
     /// Kind (immutable)? function?
     @property public abstract const NodeKind Kind() const;
 

@@ -1343,9 +1343,9 @@ class Parser
     * Log Event
     */
     @property
-    ref LogEvent OnLog()
+    ref LogSource Logger()
     {
-        return log.OnLog;
+        return log;
     }
 
     ///@property public ParseResult Result();

@@ -178,11 +178,10 @@ final class Semantic
     * Log Event
     */
     @property
-    ref LogEvent OnLog()
+    ref LogSource Logger()
     {
-        return log.OnLog;
+        return log;
     }
-
     
     /**
     * Get the context

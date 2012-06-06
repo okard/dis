@@ -186,3 +186,16 @@ final struct SymbolTable
     }
 
 }
+
+
+/*
+ Refed SymTable for inner Scopes:
+
+    function
+        if
+            for
+        else
+            if
+        while
+        
+*/

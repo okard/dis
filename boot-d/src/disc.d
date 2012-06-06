@@ -130,7 +130,7 @@ class DisCompiler
     {
         this.args = new CommandLineArg(args);
         this.log =  Log.disc;
-        this.log.OnLog += LevelConsoleListener(LogType.Information);
+        this.log.addHandler(LevelConsoleListener(LogType.Information));
 
         //TODO config and command line parsing
 
@@ -203,9 +203,9 @@ class DisCompiler
             
         //logging
         auto logfunc = LevelConsoleListener(LogType.Information);
-        parser.OnLog += logfunc;
-        semantic.OnLog += logfunc;
-        cgen.OnLog += logfunc;
+        parser.Logger.addHandler(logfunc);
+        semantic.Logger.addHandler(logfunc);
+        cgen.Logger.addHandler(logfunc);
 
         log.Information("Parsing...");
         //create packages and parse them
@@ -336,12 +336,12 @@ class DisCompiler
     /**
     * Level Console Log Listener
     */
-    public LogEvent.Dg LevelConsoleListener(LogType minimal)
+    public LogEvent LevelConsoleListener(LogType minimal)
     {
-        return (LogSource ls, SysTime t, LogType ty, string msg)
+        return (const ref LogMessage msg)
         {
-            if(ty >= minimal)
-                writefln("%s", msg);
+            if(msg.type >= minimal)
+                writefln("%s", msg.msg);
         };
     }
 

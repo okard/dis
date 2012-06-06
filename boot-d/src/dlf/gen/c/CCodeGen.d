@@ -436,13 +436,13 @@ class CCodeGen : ObjectGen, BinaryGen, Visitor
     /// Mixin Dispatch Utils
     mixin DispatchUtils!false;
 
-   /**
+    /**
     * Log Event
     */
     @property
-    ref LogEvent OnLog()
+    ref LogSource Logger()
     {
-        return log.OnLog;
+        return log;
     }
 
     /**

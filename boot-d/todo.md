@@ -1,5 +1,8 @@
 # Temporary todo list
 
+## Base
+
+
 ## Lexer
 
 
@@ -13,10 +16,15 @@
 ## Syntax Tree
 
 * Remove BlockStmt
+* Fix SymbolTable Handling (notably for handling nested scopes)
 
 ## Semantic
 
+* Clean up design
+
 ## Codegen
+
+* Clean up handling with already generated nodes
 
 ## Runtime
 

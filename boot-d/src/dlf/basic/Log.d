@@ -36,7 +36,9 @@ enum LogType : ubyte
     Fatal = 6
 }
 
-
+/**
+* Log Message
+*/
 struct LogMessage
 {
     LogSource source;
@@ -45,10 +47,7 @@ struct LogMessage
     string msg;
 }
 
-public alias void delegate(const ref LogMessage) LogEvent2;
-
-/// Log Event Definition
-public alias Signal!(LogSource, SysTime, LogType, string) LogEvent;
+public alias void delegate(const ref LogMessage) LogEvent;
 
 /**
 * Log Source
@@ -60,10 +59,7 @@ struct LogSource
 
     //file
 
-    //Log Event
-    private LogEvent evLog;
-
-    private LogEvent2[] logEvents;
+    private LogEvent[] logEvents;
 
     /**
     * Create new Log Source
@@ -80,7 +76,6 @@ struct LogSource
     {
         auto str = format(args);
         auto time = Clock.currTime(UTC());
-        evLog(this, time, type, str);
 
         LogMessage msg;
         msg.source = this;
@@ -137,23 +132,21 @@ struct LogSource
     {
        log!(LogType.Fatal)(args);
     }
-    
 
     /**
-    * Getting Log event
+    * Add Handler
     */
-    @property
-    public auto ref OnLog()
+    public void addHandler(LogEvent ev)
     {
-        return evLog;
+        logEvents ~= ev;
     }
 
     /**
-    * Assign Log Event
+    * Clear event handler
     */
-    void opOpAssign(string s)(LogEvent2 ev) if (s == "+") 
+    public void clearHandler()
     {
-        logEvents += ev;
+        logEvents.length = 0;
     }
 
     /**
@@ -169,7 +162,7 @@ struct LogSource
     * Getting LogSource Name
     */
     @property
-    public string Name()
+    public string Name() const
     {
         return mName;
     }
@@ -221,7 +214,9 @@ final static class Log
             {
                 logSources[s] = LogSource(s);
                 if(register)
-                    logSources[s].OnLog += &rootLog.OnLog.opCall;
+                {
+                    logSources[s].addHandler(&rootLog.fireEvent);
+                }
 
                 ls = &logSources[s];
             }
@@ -243,12 +238,12 @@ final static class Log
 /**
 * Console Log Listener
 */
-public void ConsoleListener(LogSource ls, SysTime t, LogType ty, string msg)
+public void ConsoleListener(const ref LogMessage msg)
 {
     import std.stdio;
 
     string type;
-    final switch(ty) {
+    final switch(msg.type) {
     case LogType.Verbose: type = "Verbose"; break;
     case LogType.Debug: type = "Debug"; break;
     case LogType.Information: type = "Information"; break;
@@ -257,22 +252,22 @@ public void ConsoleListener(LogSource ls, SysTime t, LogType ty, string msg)
     case LogType.Fatal: type = "Fatal"; break;
     }
 
-    writefln("%1$s %2$s: %3$s", ls.Name, type, msg);
+    writefln("%1$s %2$s: %3$s", msg.source.Name, type, msg.msg);
 }
 
 /**
 * File Log Listener
 */
-public LogEvent.Dg FileListener(string file, LogType minimal)
+public LogEvent FileListener(string file, LogType minimal)
 {
     import std.stdio;
 
     auto f = File(file, "a");
 
-    return (LogSource ls, SysTime t, LogType ty, string msg)
+    return (const ref LogMessage msg)
     {
-        if(ty >= minimal)
-            f.writefln("%1$s: %2$s", ls.Name, msg);
+        if(msg.type >= minimal)
+            f.writefln("%1$s: %2$s", msg.source.Name, msg.msg);
     };
 }
 
@@ -283,13 +278,13 @@ unittest
     import std.stdio;
 
     //clear core log after test
-    scope(exit) Log().OnLog.clear();
+    scope(exit) Log().clearHandler();
 
     auto s = Log.Test; 
-    s.OnLog += (LogSource ls, SysTime t, LogType ty, string msg){
-        assert(ls.Name == "Test");
-        assert(msg == "foo");
-    };
+    s.addHandler((const ref LogMessage msg){
+        assert(msg.source.Name == "Test");
+        assert(msg.msg == "foo");
+    });
 
 
     s.Information("%s", "foo");
