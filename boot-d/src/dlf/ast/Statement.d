@@ -46,9 +46,6 @@ abstract class Statement : Node
 */
 final class BlockStmt : Statement
 {
-    /// Symbol Table
-    public SymbolTable SymTable;
-
     /// Statements
     public Statement[] Statements;
 

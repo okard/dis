@@ -46,7 +46,7 @@ import dlf.gen.c.CBuilder;
 class CCodeGen : ObjectGen, BinaryGen, Visitor
 {
     /// Logger
-    private LogSource log = Log("CCodeGen");
+    private LogSource log = Log.get("CCodeGen");
 
     /// Compile Context
     private Context ctx;
@@ -122,6 +122,8 @@ class CCodeGen : ObjectGen, BinaryGen, Visitor
         //Write Dis Helper Header to src dir
         std.file.write(buildPath(srcDir, DisCGenHeaderName), DisCGenHeader); 
 
+
+        //TODO Compile Exports not here -> in DisCompiler class
         //compile imports?
         //compile other packages first or look if they already compile
         //pd.Imports.Package
@@ -140,15 +142,17 @@ class CCodeGen : ObjectGen, BinaryGen, Visitor
 
             //first compile imports to get right include names
             autoDispatch(id.Package);
+            
             //TODO Save object files
             builder.compile(ctx, [p.SourceFile]);
 
             //detect if one import has recompiled then this source should be recompiled too?
+                //-> set modification date of these package to the newest in imports 
             //Imports to compile before? 
             //so assert when its not yet compiled?
         }
 
-        //start creating definitions
+        //write source code of this package
         autoDispatch(pd);
 
         //compile file, create object file for this package (return object file)
@@ -180,6 +184,7 @@ class CCodeGen : ObjectGen, BinaryGen, Visitor
 
         //check if target header & source file exist
         //and check modify date when its not newer than already c code is compiled
+        //-> if(writer.PackageExists(pd.Name, pd.Loc.modDate))
 
         //Create C Package
         p = writer.Package(pd.Name);

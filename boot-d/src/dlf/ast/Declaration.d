@@ -64,7 +64,7 @@ abstract class Declaration : Node
     /// Name
     public string Name;
 
-    /// Full Qualified Name
+    /// Full Qualified Name (to symbol table?, pay attention with template methods)
     public string FQN;
 
     /// Flags
@@ -148,6 +148,10 @@ final class ImportDecl : TypeDecl
 {
     /// Import Identifier
     CompositeIdentifier ImportIdentifier;
+
+    //TODO Symbol Table?
+
+    //save in components in SymbolTable
 
     /// Wildcard Import (e.g. foo.*)
     bool IsWildcardImport;

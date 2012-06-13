@@ -48,7 +48,7 @@ import dlf.ast.SymbolTable;
 class Parser
 {
     /// Logger
-    private LogSource log = Log("Parser");
+    private LogSource log = Log.get("Parser");
 
     /// Lexer
     private scope Lexer lexer;
@@ -69,6 +69,9 @@ class Parser
     public static DataType[string] InternalTypes;
 
     //currentScope { Package, Class, Function, Trait, }
+        // symTables.first.kind;
+
+    //TODO ParseFlags { Declarations, Expressions, Statements, 
 
     /**
     * Ctor
@@ -219,6 +222,7 @@ class Parser
 
             parseDeclarationFlags();
 
+            //Try to parse something
             Node n = parse();
             if(n is null)
             {
@@ -233,6 +237,8 @@ class Parser
             //import
             case NodeKind.ImportDecl:
                 pkg.Imports ~= n.to!ImportDecl;
+
+                //add imports to symbol table?
                 break;
             //function
             case NodeKind.FunctionDecl:
@@ -251,7 +257,7 @@ class Parser
                 break;
             //Trait Type
             case NodeKind.TraitDecl:
-                Error(mToken.Loc, "Trait iblock.SymTablen Package not yet implemented");
+                Error(mToken.Loc, "Trait in Package not yet implemented");
                 break;
             //type
             case NodeKind.AliasDecl:
@@ -774,8 +780,8 @@ class Parser
         //TODO symbol table? each block has one?
         auto block = new BlockStmt();
         block.Loc = mToken.Loc;
-        block.SymTable = SymbolTable(block);
-        symTables.push(&block.SymTable);
+        auto nestedSymTable = symTables.top.childTable(block);
+        symTables.push(&nestedSymTable);
         scope(exit) symTables.pop();
 
         //parse until "}"
@@ -792,7 +798,7 @@ class Parser
                 case TokenType.KwVar:
                     auto var = parseVar();
                     var.Parent = block;
-                    block.SymTable[var.Name] = var;
+                    nestedSymTable[var.Name] = var;
                     continue;
 
                 case TokenType.KwLet:

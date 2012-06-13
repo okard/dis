@@ -129,7 +129,7 @@ class DisCompiler
     this(string[] args)
     {
         this.args = new CommandLineArg(args);
-        this.log =  Log.disc;
+        this.log =  Log.get("disc");
         this.log.addHandler(LevelConsoleListener(LogType.Information));
 
         //TODO config and command line parsing

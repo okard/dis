@@ -21,10 +21,8 @@ module dlf.basic.Log;
 import std.string;
 import std.datetime;
 
-import dlf.basic.Signal;
-
 /**
-* Log Source
+* Log Priority
 */
 enum LogType : ubyte
 {
@@ -47,6 +45,9 @@ struct LogMessage
     string msg;
 }
 
+/**
+* Log Event alias
+*/
 public alias void delegate(const ref LogMessage) LogEvent;
 
 /**
@@ -54,19 +55,22 @@ public alias void delegate(const ref LogMessage) LogEvent;
 */
 struct LogSource
 {
-    // Log Source Name
+    /// A Log Source Name
     private string mName;
 
-    //file
+    /// The file in which logger exists
+    private string loggerFile;
 
+    /// The logging handler
     private LogEvent[] logEvents;
 
     /**
     * Create new Log Source
     */
-    private this(string name)
+    private this(string name, string file = __FILE__)
     {
         this.mName = name;
+        this.loggerFile = file;
     }
 
     /**
@@ -74,14 +78,11 @@ struct LogSource
     */
     public void log(LogType type, T...)(T args)
     {
-        auto str = format(args);
-        auto time = Clock.currTime(UTC());
-
         LogMessage msg;
         msg.source = this;
         msg.type = type;
-        msg.msg = str;
-        msg.time = time;
+        msg.msg = format(args);
+        msg.time = Clock.currTime(UTC());
         fireEvent(msg);
     }
 
@@ -141,6 +142,8 @@ struct LogSource
         logEvents ~= ev;
     }
 
+    //TODO remove handler
+
     /**
     * Clear event handler
     */
@@ -167,19 +170,29 @@ struct LogSource
         return mName;
     }
 
+    /**
+    * Get file of logger
+    */
+    @property
+    public string File() const
+    {
+        return loggerFile;
+    }
+
 }
 
 /**
-* Log
+* Logging Access Class
 */
 final static class Log
 {
-    //all log sources
+    /// all managed log sources
     private static LogSource[string] logSources;
     
-    //static core log source
+    /// static core log source
     private static LogSource rootLog;
 
+    /// Alias to this
     public alias rootLog this;
 
     /**
@@ -188,13 +201,21 @@ final static class Log
     static this()
     {
         rootLog = LogSource("");
-        logSources[""] = rootLog;
     }
 
     /**
     * Get Default Log Source
     */
-    static LogSource opCall()
+    static ref LogSource opCall()
+    {
+        return rootLog;
+    }
+
+    /**
+    * Root Logger
+    */
+    @property
+    static ref LogSource Root()
     {
         return rootLog;
     }
@@ -202,10 +223,10 @@ final static class Log
     /**
     * Get a specific Log Source
     */
-    static LogSource opCall(string s, bool register = true)
+    static LogSource get(string s, bool register = true, string file = __FILE__)
     {
         if (__ctfe)
-            return LogSource(s);
+            return LogSource(s, file);
         else
         {
             //look in log Sources
@@ -224,16 +245,7 @@ final static class Log
             return *ls;
         }
     }
-
-    /**
-    * Get a specific Log Source
-    */
-    @property
-    static LogSource opDispatch(string s)()
-    {
-        return opCall(s);
-    }
-}
+};
 
 /**
 * Console Log Listener
@@ -280,16 +292,17 @@ unittest
     //clear core log after test
     scope(exit) Log().clearHandler();
 
-    auto s = Log.Test; 
+    auto s = Log.get("Test"); 
     s.addHandler((const ref LogMessage msg){
         assert(msg.source.Name == "Test");
         assert(msg.msg == "foo");
     });
 
-
     s.Information("%s", "foo");
     s.log!(LogType.Verbose)("%s", "foo");
     Log().Information("%s", "foo"); 
+    //logInformation("%s", "abc");
+    Log.Information("%s", "abc");
 
     writeln("[TEST] Log Tests passed");
 }

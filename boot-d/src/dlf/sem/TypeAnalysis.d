@@ -36,6 +36,9 @@ class TypeAnalysis : Visitor
     /// Symbol Tables
     private Stack!(SymbolTable*) symTables = Stack!(SymbolTable*)(128);
 
+
+    //current package for no runtime checks
+
     /**
     * Constructor
     */
@@ -178,12 +181,15 @@ class TypeAnalysis : Visitor
         sem.Information("Semantic: BlockStmt");
 
         //symtable
-        symTables.push(&bs.SymTable);
+
+        //look for BlockStmt childTable
+        auto nestedST = symTables.top.childTable(bs);
+        symTables.push(&nestedST);
         scope(exit) symTables.pop();
 
         //analyze the declarations inside of blockstatement
         //what is when parent is function, parameter variables
-        symDispatch(bs.SymTable);
+        symDispatch(nestedST);
 
         //check each statement
         mapDispatch(bs.Statements);
@@ -472,6 +478,9 @@ class TypeAnalysis : Visitor
     {
         debug dumpSymbolTables();
 
+
+        //TODO search in child tables
+
         //bottom up search for simple id
         if(start is null)
         {
@@ -557,11 +566,6 @@ class TypeAnalysis : Visitor
                 return n.to!TraitDecl.SymTable;
             case NodeKind.FunctionDecl:
                 return n.to!FunctionDecl.SymTable;
-
-            //TODO Remove Block Stmt
-            case NodeKind.BlockStmt:
-                return n.to!BlockStmt.SymTable;
-
             default:
                 throw new Semantic.SemanticException("These node has no symboltable");
         }

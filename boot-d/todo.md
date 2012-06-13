@@ -17,6 +17,7 @@
 
 * Remove BlockStmt
 * Fix SymbolTable Handling (notably for handling nested scopes)
+* clear handling of import related to symbol tables
 
 ## Semantic
 
@@ -29,3 +30,5 @@
 ## Runtime
 
 * Create runtime ABI documentation
+* Create runtime API documentation
+

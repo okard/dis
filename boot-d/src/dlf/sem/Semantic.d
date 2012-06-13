@@ -46,7 +46,7 @@ import std.stdio;
 final class Semantic
 {
     //Semantic Logger
-    private LogSource log = Log("Semantic");
+    private LogSource log = Log.get("Semantic");
 
     /// Type Resolver Run
     private scope TypeAnalysis typeResolver;

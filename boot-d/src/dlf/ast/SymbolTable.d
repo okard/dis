@@ -22,19 +22,27 @@ import dlf.ast.Node;
 import dlf.ast.Declaration;
 
 
+//TODO Special Names? $_import contains import-symbol
+
 /**
 * SymbolTable
 * TypeDecl
 */
 final struct SymbolTable
 {
-    /// Owner Node of SymbolTable
+    /// Owner Node of SymbolTable (to declaration?)
     public Node Owner;
 
     //TODO Use Interface for SymbolTable owner
     
     /// the symbols
     private Declaration symbols[string];
+    
+    //TODO Children Table? nested scopes
+    private SymbolTable[Node] children;
+
+    //save levle?
+    private int level=0;
     
     /**
     * Create new SymbolTable
@@ -122,11 +130,8 @@ final struct SymbolTable
     * Direct assign which can replace old symbol
     * TODO: Rename to replaceSymbol(), remove seperate replace function?
     */
-    public void assign(T : Declaration)(T symbol, bool replace = true)
+    public void replace(Declaration symbol)
     {
-        if(!replace && this.contains(symbol.Name))
-            throw new Exception("Symbol already in SymbolTable");
-
         symbols[symbol.Name] = symbol;
     }
 
@@ -141,9 +146,53 @@ final struct SymbolTable
         return symbols[symName].Flags;
     }
 
+    /**
+    * Get kind of symbol
+    */
+    public NodeKind kind(string symName)
+    {
+        if(!contains(symName))
+            return NodeKind.Unkown;
+
+        return symbols[symName].Kind;
+    }
+
+    /**
+    * Getting Kind of SymbolTable
+    */
+    @property
+    public NodeKind Kind()
+    {
+        assert(Owner !is null);
+        return Owner.Kind;
+    }
+
+    /**
+    * Has child tables
+    */
+    public bool hasChildren()
+    {
+        return children.length > 0;
+    }
+
+
+    public ref SymbolTable childTable(Node n)
+    {
+        if(!(n in children))
+            children[n] = SymbolTable(n);
+        return children[n];
+    }
+
     //TODO what attributes save in ast node what save in symbol table
 
+
+
     //TODO handling sub symbol tables SymbolTable[Node]?
+
+    //TODO type? package,function,class,struct,trait
+
+
+    //struct Entry (Declaration, Imported, State of symbol(parse,sem,gen), IsUsed )
 
     /*
     link: http://www.cs.pitt.edu/~mock/cs2210/lectures/lecture9.pdf
@@ -166,25 +215,6 @@ final struct SymbolTable
     Basereg:String
     Disp:Integer (offset)
     */
-
-    enum SymbolType
-    {
-        Unknown,
-        Function,
-        Variable,
-        Import,
-        Struct,
-        Class
-    }
-
-    //Possible Attributs of a Symbol Entry?
-    private struct Entry
-    {
-        //type: variable, function, class, struct 
-        //binding: extern 
-
-    }
-
 }
 
 
