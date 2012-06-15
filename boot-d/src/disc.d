@@ -129,8 +129,8 @@ class DisCompiler
     this(string[] args)
     {
         this.args = new CommandLineArg(args);
-        this.log =  Log.disc;
-        this.log.OnLog += LevelConsoleListener(LogType.Information);
+        this.log =  Log.get("disc");
+        this.log.addHandler(LevelConsoleListener(LogType.Information));
 
         //TODO config and command line parsing
 
@@ -203,9 +203,9 @@ class DisCompiler
             
         //logging
         auto logfunc = LevelConsoleListener(LogType.Information);
-        parser.OnLog += logfunc;
-        semantic.OnLog += logfunc;
-        cgen.OnLog += logfunc;
+        parser.Logger.addHandler(logfunc);
+        semantic.Logger.addHandler(logfunc);
+        cgen.Logger.addHandler(logfunc);
 
         log.Information("Parsing...");
         //create packages and parse them
@@ -244,11 +244,13 @@ class DisCompiler
             assert(p.ast !is null, "Semantic analyse on a package should have a valid result");
         }
 
+        string[] objfiles;
+
         //codegen
         log.Information("CodeGen...");
         foreach(Pkg p; pkgs)
         {
-            cgen.compile(p.ast);
+            objfiles ~= cgen.compile(p.ast);
             packages[p.ast.Name] = p.ast;
         }
 
@@ -259,7 +261,7 @@ class DisCompiler
         //prepare object files
 
         //link program
-        cgen.link(ctx);
+        cgen.link(ctx, objfiles);
 
         //For Libraries generate Header Files
         if(ctx.Type == TargetType.StaticLib 
@@ -277,11 +279,11 @@ class DisCompiler
     {
         //create lexer
         auto lex = new Lexer();
-        lex.open(src);
+        lex.load(src);
         
         //print tokens
         writeln("------- START LEXER DUMP ------------------------------");
-        while(lex.getToken().Type != TokenType.EOF)
+        while(lex.nextToken().Type != TokenType.EOF)
         {
             auto t = lex.CurrentToken;
             switch(t.Type)
@@ -334,12 +336,12 @@ class DisCompiler
     /**
     * Level Console Log Listener
     */
-    public LogEvent.Dg LevelConsoleListener(LogType minimal)
+    public LogEvent LevelConsoleListener(LogType minimal)
     {
-        return (LogSource ls, SysTime t, LogType ty, string msg)
+        return (const ref LogMessage msg)
         {
-            if(ty >= minimal)
-                writefln("%s", msg);
+            if(msg.type >= minimal)
+                writefln("%s", msg.msg);
         };
     }
 

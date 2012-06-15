@@ -8,9 +8,9 @@ package tests.runnable.oop002;
 
 obj foo
 {
-    var i int = 0;
+    var i : int32 = 0;
 
-    this(i int)
+    this(i int32)
     {
         this.i = i;
     }

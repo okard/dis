@@ -70,7 +70,7 @@ class HeaderGen
     //Expressions
     void visit(LiteralExpr le){  }
     void visit(CallExpr ce){  }
-    void visit(DotIdExpr di){  }
+    void visit(IdExpr di){  }
     void visit(BinaryExpr be){  }
 
 

@@ -34,6 +34,9 @@ abstract class Statement : Node
     uint Index = 0; 
 } 
 
+
+//TwoKind of Statements with SymbolTable and without
+
 /**
 * Defines a Block {}
 * Is more Declaration?
@@ -43,9 +46,6 @@ abstract class Statement : Node
 */
 final class BlockStmt : Statement
 {
-    /// Symbol Table
-    public SymbolTable SymTable;
-
     /// Statements
     public Statement[] Statements;
 
@@ -99,6 +99,8 @@ final class ReturnStmt : Statement
 */
 final class ForStmt : Statement
 {
+    /// Symbol Table?
+
     /// Initialization Statements
     public Statement[] InitializerStmts;
 
@@ -157,6 +159,11 @@ final class WhileStmt : Statement
 final class ContinueStmt : Statement
 {
     //target statement
+
+    //mixin(IsKind("ContinueStmt"));
+
+    //support something like "continue if x > 3;"
+    //Expression condition;
 }
 
 /**
@@ -165,22 +172,31 @@ final class ContinueStmt : Statement
 final class BreakStmt : Statement
 {
     //target statement
+    //mixin(IsKind("BreakStmt"));
+
+    //support something like "break if x > 3;"
+    //Expression condition;
 }
 
 //Try Catch Finally Throw
 
 final class ThrowStmt : Statement
 {
+    //Expression
+    //mixin(IsKind("ThrowStmt"));
 }
 
 final class TryStmt : Statement
 {
+    //mixin(IsKind("TryStmt"));
 }
 
 final class CatchStmt : Statement
 {
+    //mixin(IsKind("CatchStmt"));
 }
 
 final class FinallyStmt : Statement
 {
+    //mixin(IsKind("FinallyStmt"));
 }

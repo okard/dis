@@ -14,10 +14,10 @@ def sqr(x)
 def main()
 {
     //integer
-    var i : int = 5;
+    var i : int32 = 5;
     //assert(sqr(i) == 25);
 
     //double
-    var d : double = 3.0;
+    var d : double64 = 3.0;
     //assert(sqr(d) == 9.0);
 }

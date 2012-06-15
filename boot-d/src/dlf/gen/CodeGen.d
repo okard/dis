@@ -18,43 +18,12 @@
 ******************************************************************************/
 module dlf.gen.CodeGen;
 
-/**
-* Codegen Context
-*/
-struct BackendContext
-{
-    //Libraries to Link
-
-    /// Object files directory
-    string ObjDir;
-
-    /// Binary output directory
-    string OutDir;
-
-    /// Binary output Name
-    string OutFile;
-
-    /// Header directory for library generation
-    string HeaderDir;
-}
+import dlf.Context;
 
 //a compiling interface creates object files
 //a linker interface link them together to final program
 
-//ObjectGen
-//NativeGen?
-//BinaryGen?
-
-/**
-* Binary Generation
-*/
-interface BinaryGen
-{
-    import dlf.Context;
-
-    void link(Context ctx, string[] objfiles);
-}
-
+//alias ObjFile string;
 
 /**
 * CodeGen Interface
@@ -64,8 +33,21 @@ interface ObjectGen
 {
     import dlf.ast.Declaration;
     
-    void compile(PackageDecl pd);
-    //string[] compile(Context ctx, PackageDecl pd);
+    string compile(PackageDecl pd);
+
+    //package to object file
+    //string compile(Context ctx, PackageDecl pd);
+}
+
+/**
+* Binary Generation
+* aka Link object files together
+*/
+interface BinaryGen
+{
+    import dlf.Context;
+
+    void link(Context ctx, string[] objfiles);
 }
 
 

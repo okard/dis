@@ -18,6 +18,8 @@
 ******************************************************************************/
 module dlf.sem.TypeAnalysis;
 
+import dlf.basic.Stack;
+
 import dlf.ast.Type;
 import dlf.ast.SymbolTable;
 import dlf.ast.Visitor;
@@ -28,12 +30,14 @@ import dlf.sem.Semantic;
 */
 class TypeAnalysis : Visitor
 {
-
     /// Core Semantic Object
     private Semantic sem;
 
-    /// Symbol Table
-    private SymbolTable symTable;
+    /// Symbol Tables
+    private Stack!(SymbolTable*) symTables = Stack!(SymbolTable*)(128);
+
+
+    //current package for no runtime checks
 
     /**
     * Constructor
@@ -47,16 +51,24 @@ class TypeAnalysis : Visitor
     //Declarations
 
     /// Package Declaration
-    void visit(PackageDecl pd)
+    Declaration visit(PackageDecl pd)
     {
-        symTable = pd.SymTable;
+        sem.Information("Semantic: PackageDecl");
+
+        symTables.push(&pd.SymTable);
+        scope(exit) symTables.pop();    
+
         mapDispatch(pd.Imports);
         symDispatch(pd.SymTable);
+
+        return pd;
     }
 
     /// Import Declaration
-    void visit(ImportDecl id)
+    Declaration visit(ImportDecl id)
     {
+        sem.Information("Semantic: ImportDecl");
+
         //semantic check for available PackageDecls
         if(id.Package !is null)
         {
@@ -67,25 +79,29 @@ class TypeAnalysis : Visitor
             sem.Error("\tImport %s has not been solved", id.Name);
             sem.Fatal("Can't proceed with unsolved import");
         }
+
+        return id;
     }
 
     /// Function Declaration
-    void visit(FunctionDecl fd)
+    Declaration visit(FunctionDecl fd)
     {
+        sem.Information("Semantic: FunctionDecl %s", fd.Name);
         //Function Types
 
         //Overrides
         mapDispatch(fd.Overrides);
 
-
         //bodies
-        autoDispatch(fd.Body);
+        mapDispatch(fd.Body);
 
         //look for ExpressionStatement bodies
+
+        return fd;
     }
 
     /// Variable Declaration
-    void visit(VarDecl vd)
+    Declaration visit(VarDecl vd)
     {
         sem.Information("Semantic: VarDecl %s", vd.Name);
 
@@ -115,48 +131,87 @@ class TypeAnalysis : Visitor
             sem.Information("\tVarType: %s, InitType: %s", vd.VarDataType, vd.Initializer.ReturnType); 
             //assert(var.VarDataType == var.Initializer.ReturnType);
         }
+
+        return vd;
     }
 
     //Value
     //Constant
-    void visit(ClassDecl cd){}
-    void visit(TraitDecl td){}
-    void visit(StructDecl sd){}
-    //Alias
+    
+    /// Class Declaration
+    Declaration visit(ClassDecl cd)
+    { 
+        return cd;
+    }
+
+    /// Trait Declaration
+    Declaration visit(TraitDecl td)
+    { 
+        return td; 
+    }
+    
+    /// Struct Declaration
+    Declaration visit(StructDecl sd)
+    {
+        sem.Information("Semantic: StructDecl %s", sd.Name);
+
+        symTables.push(&sd.SymTable);
+        scope(exit) symTables.pop();
+
+        symDispatch(sd.SymTable);
+        return sd; 
+    }
+    
+    /// Alias Declaration
+    Declaration visit(AliasDecl ad)
+    {
+        return ad;
+    }
+
     //Enum
-    //Variant
+    //Variant    
+
 
     ///////////////////////////////////////////////////////////////////////////
     //Statements
 
     /// Block Statement
-    void visit(BlockStmt bs)
+    Statement visit(BlockStmt bs)
     {
         sem.Information("Semantic: BlockStmt");
 
         //symtable
-        symTable = bs.SymTable;
-        scope(exit)symTable = symTable.pop();
+
+        //look for BlockStmt childTable
+        auto nestedST = symTables.top.childTable(bs);
+        symTables.push(&nestedST);
+        scope(exit) symTables.pop();
 
         //analyze the declarations inside of blockstatement
         //what is when parent is function, parameter variables
-        symDispatch(bs.SymTable);
+        symDispatch(nestedST);
 
         //check each statement
         mapDispatch(bs.Statements);
 
+        return bs;
     }
 
     /// Expression Statement
-    void visit(ExpressionStmt es)
+    Statement visit(ExpressionStmt es)
     {
+        sem.Information("Semantic: ExpressionStmt");
+
         es.Expr = autoDispatch(es.Expr);
+        return es;
     }
 
     /// Return Statement
-    void visit(ReturnStmt rs)
+    Statement visit(ReturnStmt rs)
     {
+        sem.Information("Semantic: ReturnSmt");
         //return type matches function type?
+        return rs;
     }
 
     //For
@@ -167,21 +222,24 @@ class TypeAnalysis : Visitor
     //Expressions
 
     /// Literal Expression
-    void visit(LiteralExpr le)
+    Expression  visit(LiteralExpr le)
     {
+        sem.Information("Semantic: LiteralExpr");
 
+        return le;
     }
     
     /// Call Expression
-    void visit(CallExpr ce)
+    Expression visit(CallExpr ce)
     {
+        sem.Information("Semantic: CallExpr");
+
         //resolve identifier
         ce.Func = autoDispatch(ce.Func);
 
-
-        if(ce.Func.Kind == NodeKind.DotIdExpr)
-        {
-            auto ie = cast(DotIdExpr)ce.Func;
+        if(ce.Func.Kind == NodeKind.IdExpr)
+        {    
+            auto ie = ce.Func.to!IdExpr;
             
             //if ie.Decl == FunctionDecl
             //
@@ -193,86 +251,29 @@ class TypeAnalysis : Visitor
         //delegate
 
 
-        //ce.Func == DotIdExpr for example
+        //ce.Func == IdExpr for example
         //assert(ce.Func.ReturnType.Kind == NodeKind.FunctionType, "Can't call a non function");
 
         //target expression should be a function type
         //call expressions can generate function instances
+
+        return ce;
     }
 
-    /// Identifier Expression 
-    void visit(DotIdExpr ie)
-    {
-        sem.Information("IdentifierExpr: %s", ie.toString());
 
-        //go up, find first start entry
-        Declaration decl = null;
-
-        if(symTable.contains(ie.first))
-        {
-            decl = symTable[ie.first];
-        }
-        else
-        {
-            auto sym = symTable;
-            do
-            {
-                if(sym.contains(ie.first))
-                {
-                    decl = sym[ie.first];
-                    break;
-                }
-                sym = sym.pop();
-            }
-            while(sym !is null);
-        }
-            
-        //no start point
-        if(decl is null)
-        {
-            sem.Error("Can't find first entry identifier %s", ie.first);
-            sem.Fatal("Failed type resolve");
-        }
-
-        //go down, search the right last part of identifier
-        if(ie.length > 1)
-        {
-            debug sem.Information("Search down");
-            auto sym = getSymbolTable(decl);
-
-            /*
-            for(int i=1; i< ie.length; i++)
-            {
-                if(!sym.contains(ie[i]));
-            }
-            */
-        }
-        else
-        {
-            ie.Decl = decl;
-        }
-
-        //dont find the right declaration
-        if(ie.Decl is null)
-        {
-            sem.Error("Can't resolve identifier %s", ie.toString());
-            sem.Fatal("Failed type resolve");
-        }
-
-        sem.Information("Found %s", ie.Decl.Name);
-        //resolve ie.Decl 
-        //ie.ReturnType = targettype
-    }
       
 
     /// Binary Expression
-    void visit(BinaryExpr be)
+    Expression visit(BinaryExpr be)
     {
+        sem.Information("Semantic: BinaryExpr");
+
+        assert(be.Op != BinaryOperator.Dot);
+        
         // analyze left, right
         be.Left = autoDispatch(be.Left);
         be.Right = autoDispatch(be.Right);
 
-        
         //final
         switch(be.Op)
         {
@@ -282,7 +283,7 @@ class TypeAnalysis : Visitor
         //GT, GTE, LT, LTE
 
         case BinaryOperator.Assign:
-            assert(be.Left.Kind == NodeKind.DotIdExpr);
+            //assert(be.Left.Kind == NodeKind.IdExpr);
             break;
 
         default:
@@ -294,12 +295,103 @@ class TypeAnalysis : Visitor
         //rewrite operator calls for classes?
         //be.Left is class operator call
         //resolveDecl(be.Left) 
-        //return new CallExpr(); Expr = new DotIdExpr(decl.name)
+        //return new CallExpr(); Expr = new IdExpr(decl.name)
 
         //assign expressions -> verify variable type
         //IsVariable(be.Left) (IdentifierExpr)
         
         //type matching
+        return be;
+    }
+
+    /**
+    * DotExpr 
+    */
+    public Expression visit(DotExpr de)
+    {
+        sem.Information("Semantic: DotExpr");
+
+        //Visit Left one
+        de.Left = autoDispatch(de.Left);
+
+        //No Declaration Type Replace with call expr
+        //(5+a).foo -> foo(5+a);
+
+        sem.Information("Left: %s %b", de.Left.ReturnType.toString(), de.Left.ReturnType.Kind != NodeKind.DeclarationType);
+        if(de.Left.ReturnType.Kind != NodeKind.DeclarationType)
+        {
+            sem.Information("Rewrite DotExpr");
+            auto ce = new CallExpr();
+            ce.Func = de.Right;
+            ce.Arguments ~= de.Left;
+            return autoDispatch(ce);
+        }
+
+        //Right is restricted
+        if(de.Right.Kind != NodeKind.IdExpr 
+        || de.Right.Kind != NodeKind.DotExpr)
+            sem.Error("%s invalid right of DotExpr", de.Right.Loc.toString());
+
+        //visit right has parameter of de.Left.ReturnType
+
+
+        //search right 
+        //return type = de.right.returntype;
+   
+        return de;
+    }
+
+    /// Identifier Expression 
+    Expression visit(IdExpr ie)
+    {
+        sem.Information("IdExpr: %s", ie.toString());
+        
+        //already solved?
+        if(ie.Decl !is null)
+            return ie;
+
+        //sem.Information(ie.Parent.toString());
+
+        ie.Decl = search(ie.Id);
+
+        //dont find the right declaration
+        if(ie.Decl is null)
+        {
+            sem.Error("Can't resolve identifier %s", ie.Id);
+            sem.Fatal("Failed type resolve");
+        }
+
+        sem.Information("Found %s", ie.Decl.Name);
+
+        switch(ie.Decl.Kind)
+        {
+            //Instance Types:
+            case NodeKind.VarDecl:
+                ie.ReturnType = ie.Decl.to!VarDecl.VarDataType;
+                break;
+            //const, val
+
+            case NodeKind.AliasDecl:
+                ie.ReturnType = ie.Decl.to!AliasDecl.AliasType;
+                break;
+
+            //Possible Tpl Types wrapped with DeclarationType:
+            case NodeKind.FunctionDecl:
+            case NodeKind.StructDecl:
+            case NodeKind.ClassDecl:
+            case NodeKind.TraitDecl:
+                auto dt = new DeclarationType();
+                dt.Decl = ie.Decl;
+                ie.ReturnType = dt;
+                break;
+
+            default:
+                sem.Information("Something goes wrong in IdExpr solving");
+        }
+
+        assert(ie.ReturnType !is null);
+
+        return ie;
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -309,16 +401,134 @@ class TypeAnalysis : Visitor
     //Types
 
     DataType visit(DataType dt)
-    { 
+    {
+        sem.Information("Semantic: DataType %s", dt.toString());
+        //Check for Ref Ref Types
+        //Check for Ptr Ptr Types
         //TODO resolve DotType here
-        //same as DotIdExpr? 
+        //same as IdExpr? 
 
         //make a solve CompositeIdentifier?
         //difference in structure array types template instances, create instances here for templates?
 
         return dt; 
     }
+
+    /**
+    * A dot type returns a DeclarationType
+    */
+    public DataType visit(DotType dt)
+    out(result)
+    {
+        assert(result.Kind() == NodeKind.DeclarationType);
+    }
+    body
+    {
+        sem.Information("Semantic: DotType");
+
+        if(dt.Parent !is null && dt.Parent.Kind() != NodeKind.DotType)
+            sem.Error("DotType can not have other parents as DotType");
+            
+        dt.ResolvedDecl = search(dt.Value);
+
+        if(dt.ResolvedDecl is null)
+        {
+            sem.Error("Identifier not found %s", dt.Value);
+            sem.Fatal("Type Resolving failed");
+        }
+
+        if(dt.ResolvedDecl.IsInstanceDecl)
+            sem.Error("DataType references to a instance symbol %s", dt.Value);
+        
+        //when nothing found in bottom up search in imports?
+        //top down search
+        //search imports 
+        //use symTables.bottom.Owner
+        // symTables.bottom.Kind == NodeKind.PackageDecl.
+        
+        //search for ct.Right
+
+        if(dt.ResolvedDecl is null)
+            sem.Fatal("Can't proceed with unsolved datatype");
+
+        auto declType = new DeclarationType();
+        declType.Decl = dt.ResolvedDecl;
+        
+        if(dt.Right is null)
+            return declType;
+        //return here right when it has right
+        //no place holder value
+
+        //TODO assert dt.ResolvedDecl dt.ResolvedType != null
+
+        //Rewrite to DeclarationType
+
+
+        return declType;
+    }
     
+    ///////////////////////////////////////////////////////////////////////////
+    //Helper
+
+
+    //DataType search(DotType dt, Declaration start)
+    //Expression search(IdExpr id, Declaration start)
+
+    private Declaration search(string id, Declaration start = null)
+    {
+        debug dumpSymbolTables();
+
+
+        //TODO search in child tables
+
+        //bottom up search for simple id
+        if(start is null)
+        {
+            //Bottom up search
+            for(int i=symTables.length-1; i >= 0; i--)
+            {
+                if(symTables[i].contains(id))
+                {
+                    auto d = (*symTables[i])[id];
+                    return d;
+                }
+            }
+
+            //top down without start (Package Imports)
+            assert(symTables.bottom.Owner.Kind == NodeKind.PackageDecl, "First SymbolTable in ST Stack should be a package for this kind of searching");
+            //look in imports for id
+
+            return null;
+        }
+
+        if(getSymbolTable(start).contains(id))
+        {
+            return getSymbolTable(start)[id];
+        }
+        
+        return null;
+    }
+
+
+    /**
+    * dumps the current symbol table stack
+    * for debugging
+    */
+    private void dumpSymbolTables()
+    {
+        //Bottom up search
+        for(int i=symTables.length-1; i >= 0; i--)
+        {
+            SymbolTable symTbl = *symTables[i];
+
+            sem.Information("\tSymbolTable %d Entries: %d : %s", i, symTbl.count, symTbl.Owner.toString());
+
+            foreach(Declaration d; symTbl)
+            {
+                sem.Information("\t\tEntry: %s", d.Name);
+            }
+        }
+    }
 
     
     ///////////////////////////////////////////////////////////////////////////
@@ -337,28 +547,25 @@ class TypeAnalysis : Visitor
     }
 
     /**
-    * Reveive symbol table from a node that has one
+    * Receive symbol table from a node that has one
     */
     private static SymbolTable getSymbolTable(Node n)
     {
         //Decl: Package, Struct, Class, Trait,
-        //Stmt: BlockStatement
+        //Stmt: if, for, while
 
         switch(n.Kind)
         {
             case NodeKind.PackageDecl:
-                return (cast(PackageDecl)n).SymTable;
+                return n.to!PackageDecl.SymTable;
             case NodeKind.StructDecl:
-                return (cast(StructDecl)n).SymTable;
+                return n.to!StructDecl.SymTable;
             case NodeKind.ClassDecl:
-                return (cast(ClassDecl)n).SymTable;
-            //case NodeKind.TraitDecl:
-            //    return (cast(TraitDecl)n).SymTable;
+                return n.to!ClassDecl.SymTable;
+            case NodeKind.TraitDecl:
+                return n.to!TraitDecl.SymTable;
             case NodeKind.FunctionDecl:
-                return (cast(FunctionDecl)n).Body.SymTable;
-            case NodeKind.BlockStmt:
-                return (cast(BlockStmt)n).SymTable;
-
+                return n.to!FunctionDecl.SymTable;
             default:
                 throw new Semantic.SemanticException("These node has no symboltable");
         }

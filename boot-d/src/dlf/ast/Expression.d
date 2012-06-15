@@ -25,6 +25,7 @@ import dlf.ast.Type;
 
 /**
 * Base Class for Expression
+* TODO: Expressions are Statements?
 */
 abstract class Expression : Node
 {
@@ -52,8 +53,8 @@ final class LiteralExpr : Expression
     mixin(IsKind("LiteralExpr"));
 }
 
-
-
+//TODO IntLiteral
+//TODO FloatLiteral
 
 /**
 * A Function Call
@@ -76,13 +77,13 @@ final class CallExpr : Expression
 /**
 * Binary Operator
 *  + - * / % ** & | ^ && || < > ~ 
-*  << >> 
+*  << >> >>> <<<
 *  = += -= *= /= %= **= &= |= ^= <= >= !=
 */
 public enum BinaryOperator : ubyte 
 { 
     // Binary Ops
-    Add, Sub, Mul, Div, Mod, Power, And, Or, Xor, LAnd, LOr, Concat,
+    Add, Sub, Mul, Div, Mod, Pow, And, Or, Xor, LAnd, LOr, Concat,
     // Shifts
     LLShift, LRShift, ALShift, ARShift,
     // Assign Ops
@@ -122,35 +123,33 @@ final class DotExpr : BinaryExpr
     {
         Op = BinaryOperator.Dot;
     }
+
+    mixin(IsKind("DotExpr"));
 }
 
 /**
-* DotIdExpr
+* IdExpr
 * e.g. foo.bar.x.y
+* TODO is also a literal expr?
 */
-final class DotIdExpr : Expression
+final class IdExpr : Expression
 {
-    /// The Composite Identifier
-    public CompositeIdentifier Identifier;
-
-    /// Alias This the Composite Identifier
-    alias Identifier this;
+    /// Identifier
+    public string Id;
 
     /// Target Declaration
     public Declaration Decl;
-
-    //this, super, ....
 
     /**
     * To String
     */
     override string toString() 
     {   
-        return Identifier.toString();
+        return Id;
     }
 
     ///Mixin for Kind Declaration
-    mixin(IsKind("DotIdExpr"));
+    mixin(IsKind("IdExpr"));
 }
 
 /**
@@ -182,8 +181,11 @@ final class UnaryExpr : Expression
 */
 final class LambdaExpression : Expression
 {
-    //arguments
-    //body
+    //has a function type
+    
+    //Parameter[] Arguments
+    
+    //Statement Body
 
     //FunctionDecl -> anonymous function
 }

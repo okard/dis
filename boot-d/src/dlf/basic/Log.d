@@ -21,10 +21,8 @@ module dlf.basic.Log;
 import std.string;
 import std.datetime;
 
-import dlf.basic.Signal;
-
 /**
-* Log Source
+* Log Priority
 */
 enum LogType : ubyte
 {
@@ -36,7 +34,9 @@ enum LogType : ubyte
     Fatal = 6
 }
 
-
+/**
+* Log Message
+*/
 struct LogMessage
 {
     LogSource source;
@@ -45,33 +45,32 @@ struct LogMessage
     string msg;
 }
 
-public alias void delegate(const ref LogMessage) LogEvent2;
-
-/// Log Event Definition
-public alias Signal!(LogSource, SysTime, LogType, string) LogEvent;
-
-
-
+/**
+* Log Event alias
+*/
+public alias void delegate(const ref LogMessage) LogEvent;
 
 /**
 * Log Source
 */
 struct LogSource
 {
-    // Log Source Name
+    /// A Log Source Name
     private string mName;
 
-    //file
+    /// The file in which logger exists
+    private string loggerFile;
 
-    //Log Event
-    private LogEvent evLog;
+    /// The logging handler
+    private LogEvent[] logEvents;
 
     /**
     * Create new Log Source
     */
-    private this(string name)
+    private this(string name, string file = __FILE__)
     {
         this.mName = name;
+        this.loggerFile = file;
     }
 
     /**
@@ -79,8 +78,12 @@ struct LogSource
     */
     public void log(LogType type, T...)(T args)
     {
-        auto str = format(args);
-        evLog(this, Clock.currTime(UTC()), type, str);
+        LogMessage msg;
+        msg.source = this;
+        msg.type = type;
+        msg.msg = format(args);
+        msg.time = Clock.currTime(UTC());
+        fireEvent(msg);
     }
 
     /**
@@ -130,39 +133,66 @@ struct LogSource
     {
        log!(LogType.Fatal)(args);
     }
-    
 
     /**
-    * Getting Log event
+    * Add Handler
     */
-    @property
-    public auto ref OnLog()
+    public void addHandler(LogEvent ev)
     {
-        return evLog;
+        logEvents ~= ev;
+    }
+
+    //TODO remove handler
+
+    /**
+    * Clear event handler
+    */
+    public void clearHandler()
+    {
+        logEvents.length = 0;
+    }
+
+    /**
+    * Assign fire Event
+    */
+    private void fireEvent(const ref LogMessage msg)
+    {
+        foreach(e;logEvents)
+            e(msg);
     }
 
     /**
     * Getting LogSource Name
     */
     @property
-    public string Name()
+    public string Name() const
     {
         return mName;
+    }
+
+    /**
+    * Get file of logger
+    */
+    @property
+    public string File() const
+    {
+        return loggerFile;
     }
 
 }
 
 /**
-* Log
+* Logging Access Class
 */
 final static class Log
 {
-    //all log sources
+    /// all managed log sources
     private static LogSource[string] logSources;
     
-    //static core log source
+    /// static core log source
     private static LogSource rootLog;
 
+    /// Alias to this
     public alias rootLog this;
 
     /**
@@ -171,13 +201,21 @@ final static class Log
     static this()
     {
         rootLog = LogSource("");
-        logSources[""] = rootLog;
     }
 
     /**
     * Get Default Log Source
     */
-    static LogSource opCall()
+    static ref LogSource opCall()
+    {
+        return rootLog;
+    }
+
+    /**
+    * Root Logger
+    */
+    @property
+    static ref LogSource Root()
     {
         return rootLog;
     }
@@ -185,10 +223,10 @@ final static class Log
     /**
     * Get a specific Log Source
     */
-    static LogSource opCall(string s, bool register = true)
+    static LogSource get(string s, bool register = true, string file = __FILE__)
     {
         if (__ctfe)
-            return LogSource(s);
+            return LogSource(s, file);
         else
         {
             //look in log Sources
@@ -197,7 +235,9 @@ final static class Log
             {
                 logSources[s] = LogSource(s);
                 if(register)
-                    logSources[s].OnLog += &rootLog.OnLog.opCall;
+                {
+                    logSources[s].addHandler(&rootLog.fireEvent);
+                }
 
                 ls = &logSources[s];
             }
@@ -205,25 +245,17 @@ final static class Log
             return *ls;
         }
     }
-
-    /**
-    * Get a specific Log Source
-    */
-    static LogSource opDispatch(string s)()
-    {
-        return opCall(s);
-    }
-}
+};
 
 /**
 * Console Log Listener
 */
-public void ConsoleListener(LogSource ls, SysTime t, LogType ty, string msg)
+public void ConsoleListener(const ref LogMessage msg)
 {
     import std.stdio;
 
     string type;
-    final switch(ty) {
+    final switch(msg.type) {
     case LogType.Verbose: type = "Verbose"; break;
     case LogType.Debug: type = "Debug"; break;
     case LogType.Information: type = "Information"; break;
@@ -232,22 +264,22 @@ public void ConsoleListener(LogSource ls, SysTime t, LogType ty, string msg)
     case LogType.Fatal: type = "Fatal"; break;
     }
 
-    writefln("%1$s %2$s: %3$s", ls.Name, type, msg);
+    writefln("%1$s %2$s: %3$s", msg.source.Name, type, msg.msg);
 }
 
 /**
 * File Log Listener
 */
-public LogEvent.Dg FileListener(string file, LogType minimal)
+public LogEvent FileListener(string file, LogType minimal)
 {
     import std.stdio;
 
     auto f = File(file, "a");
 
-    return (LogSource ls, SysTime t, LogType ty, string msg)
+    return (const ref LogMessage msg)
     {
-        if(ty >= minimal)
-            f.writefln("%1$s: %2$s", ls.Name, msg);
+        if(msg.type >= minimal)
+            f.writefln("%1$s: %2$s", msg.source.Name, msg.msg);
     };
 }
 
@@ -258,18 +290,19 @@ unittest
     import std.stdio;
 
     //clear core log after test
-    scope(exit) Log().OnLog.clear();
+    scope(exit) Log().clearHandler();
 
-    auto s = Log.Test; 
-    s.OnLog += (LogSource ls, SysTime t, LogType ty, string msg){
-        assert(ls.Name == "Test");
-        assert(msg == "foo");
-    };
-
+    auto s = Log.get("Test"); 
+    s.addHandler((const ref LogMessage msg){
+        assert(msg.source.Name == "Test");
+        assert(msg.msg == "foo");
+    });
 
     s.Information("%s", "foo");
     s.log!(LogType.Verbose)("%s", "foo");
     Log().Information("%s", "foo"); 
+    //logInformation("%s", "abc");
+    Log.Information("%s", "abc");
 
     writeln("[TEST] Log Tests passed");
 }

@@ -32,7 +32,7 @@ public enum NodeKind : ushort
 {
     Unkown,
 
-    //Declaration
+    //Declarations
     Declaration,
     PackageDecl,
     ImportDecl,
@@ -47,7 +47,7 @@ public enum NodeKind : ushort
     AliasDecl,
     VariantDecl,
 
-    //Statement
+    //Statements
     Statement,
     BlockStmt,
     ExpressionStmt,
@@ -56,27 +56,41 @@ public enum NodeKind : ushort
     ForEachStmt,
     WhileStmt,
 
-    //Expression
+    //Expressions
     Expression,
     LiteralExpr,
     CallExpr,
     BinaryExpr,
     DotExpr,
-    DotIdExpr,
+    IdExpr,
     UnaryExpr,
     AssignExpr,
     IfExpr,
     SwitchExpr,
     
-    //DataType
-    DataType,
+    //DataTypes
+    //Primary:
+    VoidType,
+    BoolType,
+    Byte8Type,
+    UByte8Type,
+    Short16Type,
+    UShort16Type,
+    Int32Type,
+    UInt32Type,
+    Long64Type,
+    ULong64Type,
+    Float32Type,
+    Double64Type,
+    //Other:
+    RefType,
+    PtrType,
+    ArrayType,
+    FunctionType,
+    DeclarationType,
+    // PlaceHolder:
     OpaqueType,
     DotType,
-    UnsolvedType,
-    FunctionType,
-    StructType,
-    ClassType,
-    TraitType,
 
     //Annotation,
     Annotation,
@@ -100,24 +114,27 @@ abstract class Node
     public Location Loc;
 
     /// Storage for Semantic Node
+    //TODO Make this struct? for different node types different?
     public Node Semantic;
 
     /// Storage for CodeGen Node
+    //TODO Make this struct? for different node types different?
     public Node CodeGen;
+
+    //TODO Node Status for Stage? Parse, Semantic, CodeGen
 
     /// Kind (immutable)? function?
     @property public abstract const NodeKind Kind() const;
 
-    //TODO remove that
-    /// Self Pointer for (crazy) dispatch replace
-    public Node Self;
-
-    /**
-    * Validator Function
-    */
-    public void valid()
+    @property
+    public final T to(T:Node)()
     {
-        
+        //TODO can be optimized into a static cast
+        //assert(T.Kind == this.Kind, "Missmatch "~this.toString());
+        // FuncDecl to Declaration needs special handling
+        T n = cast(T)this;
+        assert(n);
+        return n;
     }
 }
 
@@ -126,7 +143,8 @@ abstract class Node
 */
 string IsKind(string name)
 {
-    return "@property public override const NodeKind Kind() const{ return NodeKind."~name~"; }";
+    return "@property public override NodeKind Kind(){ return NodeKind."~name~"; } " ~
+           "@property public final static NodeKind Kind() { return NodeKind."~name~"; } ";
 }
 
 
@@ -137,10 +155,10 @@ bool isDeclaration(Node n) { return n.Kind >= NodeKind.Declaration && n.Kind < N
 bool isStatement(Node n) { return n.Kind >= NodeKind.Statement && n.Kind < NodeKind.Expression; }
 
 /// Is Expression
-bool isExpression(Node n) { return n.Kind >= NodeKind.Expression && n.Kind < NodeKind.DataType; }
+bool isExpression(Node n) { return n.Kind >= NodeKind.Expression && n.Kind < NodeKind.VoidType; }
 
 /// Is DataType
-bool isDataType(Node n) { return n.Kind >= NodeKind.DataType && n.Kind < NodeKind.Annotation; }
+bool isDataType(Node n) { return n.Kind >= NodeKind.VoidType && n.Kind < NodeKind.Annotation; }
 
 /// Is Annotation
 bool isAnnotation(Node n) { return n.Kind >= NodeKind.Annotation && n.Kind < NodeKind.Comment; }

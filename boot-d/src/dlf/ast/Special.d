@@ -59,6 +59,14 @@ struct CompositeIdentifier
         return idents[i];
     }
 
+      /**
+    * Index Access for Types
+    */
+    public string opIndex(long l)
+    {
+        return idents[l];
+    }
+
     /**
     * To string with default seperator
     */
@@ -92,5 +100,15 @@ struct CompositeIdentifier
         return idents.length;
     }
 }
+
+
+/*
+mixin?
+interface SymbolTableOwner
+{
+    //getter for symbol table
+    SymbolTable SymTable();
+}
+*/
 
 

@@ -7,7 +7,7 @@
 package tests.runnable.type001;
 
 //alias type
-type foo int;
+type foo int32;
 
 //main
 def main

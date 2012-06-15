@@ -18,9 +18,10 @@
 ******************************************************************************/
 module dlf.dis.Lexer;
 
+import dlf.basic.ArrayBuffer;
 import dlf.basic.Location;
 import dlf.basic.Source;
-import dlf.basic.ArrayBuffer;
+import dlf.basic.ILexer;
 import util = dlf.basic.Util;
 import dlf.dis.Token;
 
@@ -34,7 +35,7 @@ import std.stdio;
 /**
 * Dis Lexer
 */
-class Lexer
+class Lexer : ILexer!Token
 {
     /// Keyword to Token
     private static TokenType[char[]] mKeywords;
@@ -251,7 +252,7 @@ class Lexer
     /**
     * Get Next Entry
     */
-    private Token nextToken()
+    private Token nextTokenInternal()
     {
         auto tok = Token();
 
@@ -333,7 +334,7 @@ class Lexer
     /**
     * Start lexing source
     */
-    public void open(Source src)
+    public void load(Source src)
     {
         mSrc = src;
     }
@@ -341,7 +342,7 @@ class Lexer
     /**
     * Get next Token
     */
-    public Token getToken()
+    public Token nextToken()
     {
         if(!mTokList.empty())
         {
@@ -352,7 +353,7 @@ class Lexer
         {
             do
             {
-                mTok = nextToken();
+                mTok = nextTokenInternal();
             }
             while(util.isIn(mTok.Type, ignoreList));
         }
@@ -373,7 +374,7 @@ class Lexer
         {
             do
             {
-                tok = nextToken();
+                tok = nextTokenInternal();
             }
             while(util.isIn(tok.Type, ignoreList));
         
@@ -436,6 +437,7 @@ class Lexer
         mKeywords["type"] = TokenType.KwType;
         mKeywords["const"] = TokenType.KwConst;
         mKeywords["ref"] = TokenType.KwRef;
+        mKeywords["ptr"] = TokenType.KwPtr;
         mKeywords["import"] = TokenType.KwImport;
         mKeywords["if"] = TokenType.KwIf;
         mKeywords["else"] = TokenType.KwElse;
@@ -478,12 +480,12 @@ unittest
 
     auto src = new SourceString("{ } \n ");
     auto lex = new Lexer();
-    lex.open(src);
+    lex.load(src);
 
-    assert(lex.getToken().Type == TokenType.COBracket);
-    assert(lex.getToken().Type == TokenType.CCBracket);
-    assert(lex.getToken().Type == TokenType.EOL);
-    assert(lex.getToken().Type == TokenType.EOF);
+    assert(lex.nextToken().Type == TokenType.COBracket);
+    assert(lex.nextToken().Type == TokenType.CCBracket);
+    assert(lex.nextToken().Type == TokenType.EOL);
+    assert(lex.nextToken().Type == TokenType.EOF);
 
     //keyword test
 

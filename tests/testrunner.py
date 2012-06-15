@@ -47,7 +47,7 @@ def main(argv=None):
         normalFile = os.path.abspath(testfile)
         normalFile = normalFile[len(os.path.abspath(TEST_DIR))+1:]
         
-        print(" {1} <{0}>".format(spec.get(SPECDESC, ""), normalFile),)
+        print(" {1} '{0}'".format(spec.get(SPECDESC, ""), normalFile),)
    
     # print results
     
@@ -153,11 +153,15 @@ def runTest(spec, testExec):
     
     expected = int(spec.get(SPECRUNRESULT, "0"))
     
+    color = FAIL
+    if expected == ret:
+        color = OKGREEN
+        
     # print result
-    if ret == expected:
-        write(OKGREEN, "Exc Success: {0}".format(ret))
+    if ret == 0:
+        write(color, "Execution Success: {0}".format(ret))
     else:
-        write(OKGREEN, "Exc Failed: {0}".format(ret));
+        write(color, "Execution Failed: {0}".format(ret));
     
 # -----------------------------------------------------------------------------
 # Helper Function for colored output 

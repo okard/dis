@@ -75,7 +75,7 @@ enum TokenType //: ubyte//c main
 
     //Double Operator
     LambdaAssign,   // ->
-    Power,          // ** (4 ** 2 == 4²)
+    Pow  ,          // ** (4 ** 2 == 4²)
     LAnd,           // && Logic And
     LOr,            // || Logic Or
     Equal,          // ==
@@ -120,6 +120,7 @@ enum TokenType //: ubyte//c main
     KwType,         // type
     KwConst,        // const
     KwRef,          // ref
+    KwPtr,          //ptr
     KwImport,       // import
     KwIf,           // if
     KwElse,         // else
@@ -145,7 +146,6 @@ enum TokenType //: ubyte//c main
     // -op, operator overloading 
     // -asm inline assembler (parse as string???)
     // -dsl[linq] for embedded dsl, compiler plugins
-    // -ptr for pointer types
     // -data for structs and flat data types
 
     //Comment Tokens, DocComments
@@ -204,7 +204,7 @@ string toString(TokenType tok)
     case TokenType.Concat:      return "~";
     //Double Operator
     case TokenType.LambdaAssign:return "->";
-    case TokenType.Power:       return "**";
+    case TokenType.Pow:         return "**";
     case TokenType.LAnd:        return "&&";
     case TokenType.LOr:         return "||";
     case TokenType.Equal:       return "==";
@@ -231,6 +231,7 @@ string toString(TokenType tok)
     case TokenType.KwType:      return "type";
     case TokenType.KwConst:     return "const";
     case TokenType.KwRef:       return "ref";
+    case TokenType.KwPtr:       return "ptr";
     case TokenType.KwImport:    return "import";
     case TokenType.KwIf:        return "if";
     case TokenType.KwElse:      return "else";

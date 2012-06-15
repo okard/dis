@@ -57,7 +57,7 @@ struct Any
             return (*c).data;
         }
         else
-            throw new Exception("Wrong Type: Can't cast " ~ type.toString ~ " to " ~ typeid(T).toString);
+            throw new Exception("Wrong Type: Can't cast " ~ type.toString() ~ " to " ~ typeid(T).toString());
     }
 
     /**

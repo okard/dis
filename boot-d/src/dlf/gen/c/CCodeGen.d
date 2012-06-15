@@ -43,10 +43,10 @@ import dlf.gen.c.CBuilder;
 /**
 * C Code Generator
 */
-class CCodeGen : ObjectGen, Visitor
+class CCodeGen : ObjectGen, BinaryGen, Visitor
 {
     /// Logger
-    private LogSource log = Log("CCodeGen");
+    private LogSource log = Log.get("CCodeGen");
 
     /// Compile Context
     private Context ctx;
@@ -79,22 +79,22 @@ class CCodeGen : ObjectGen, Visitor
         
         srcDir = buildPath(ctx.Backend.ObjDir, "tmpDisSrc");
         //TODO create dir
-        assert(srcDir.isDir(), "Target src dir isn't a directory");
+        assert(srcDir.isDir(), "Target src dir isn't a directory: " ~ srcDir);
         writer.SourceDirectory = srcDir;
 
         // Primary/Builtin Types
         VoidType.Instance.CodeGen = ctype("dis_void");
         BoolType.Instance.CodeGen = ctype("dis_bool");
-        ByteType.Instance.CodeGen = ctype("dis_byte");
-        UByteType.Instance.CodeGen = ctype("dis_ubyte");
-        ShortType.Instance.CodeGen = ctype("dis_short");
-        UShortType.Instance.CodeGen = ctype("dis_ushort");
-        IntType.Instance.CodeGen = ctype("dis_int");
-        UIntType.Instance.CodeGen = ctype("dis_uint");
-        LongType.Instance.CodeGen = ctype("dis_long");
-        ULongType.Instance.CodeGen = ctype("dis_uint");
-        FloatType.Instance.CodeGen = ctype("dis_float");
-        DoubleType.Instance.CodeGen = ctype("dis_double");
+        Byte8Type.Instance.CodeGen = ctype("dis_byte8");
+        UByte8Type.Instance.CodeGen = ctype("dis_ubyte8");
+        Short16Type.Instance.CodeGen = ctype("dis_short16");
+        UShort16Type.Instance.CodeGen = ctype("dis_ushort16");
+        Int32Type.Instance.CodeGen = ctype("dis_int32");
+        UInt32Type.Instance.CodeGen = ctype("dis_uint32");
+        Long64Type.Instance.CodeGen = ctype("dis_long64");
+        ULong64Type.Instance.CodeGen = ctype("dis_uint64");
+        Float32Type.Instance.CodeGen = ctype("dis_float32");
+        Double64Type.Instance.CodeGen = ctype("dis_double64");
 
         VoidType.PtrInstance.CodeGen = ctype("dis_ptr");
         
@@ -111,17 +111,19 @@ class CCodeGen : ObjectGen, Visitor
     /**
     * Compile Package
     */
-    void compile(PackageDecl pd)
+    string compile(PackageDecl pd)
     {
         assert(pd !is null, "PackageDecl is null");
         
         //Package already compiled
         if(pd.CodeGen !is null)
-            return;
+            return null;
 
         //Write Dis Helper Header to src dir
         std.file.write(buildPath(srcDir, DisCGenHeaderName), DisCGenHeader); 
 
+
+        //TODO Compile Exports not here -> in DisCompiler class
         //compile imports?
         //compile other packages first or look if they already compile
         //pd.Imports.Package
@@ -140,85 +142,102 @@ class CCodeGen : ObjectGen, Visitor
 
             //first compile imports to get right include names
             autoDispatch(id.Package);
+            
+            //TODO Save object files
             builder.compile(ctx, [p.SourceFile]);
 
             //detect if one import has recompiled then this source should be recompiled too?
+                //-> set modification date of these package to the newest in imports 
             //Imports to compile before? 
             //so assert when its not yet compiled?
         }
 
-        //start creating definitions
+        //write source code of this package
         autoDispatch(pd);
 
         //compile file, create object file for this package (return object file)
-        builder.compile(ctx, [p.SourceFile]);
+        return builder.compile(ctx, [p.SourceFile]);
     }
 
-
     /**
-    * Seperate Static Build Function
+    *  Link Interface
     */
-    void link(Context ctx)
+    void link(Context ctx, string[] objfiles)
     {
-        //TODO object files as parameter
-        builder.link(ctx, CBuilder.objfiles);
+        builder.link(ctx, objfiles);
     }
 
     //debug infos with #line
 
 
+    ///////////////////////////////////////////////////////////////////////////
+    //Declarations
+
     /**
     * Compile Package Declaration
     */
-    void visit(PackageDecl pd)
+    Declaration visit(PackageDecl pd)
     { 
         //Package already compiled
         if(pd.CodeGen !is null)
-            return;
+            return pd;
 
         //check if target header & source file exist
         //and check modify date when its not newer than already c code is compiled
+        //-> if(writer.PackageExists(pd.Name, pd.Loc.modDate))
 
         //Create C Package
         p = writer.Package(pd.Name);
         pd.CodeGen = cheader(p.Header.name);
 
         //extend(pd, new CCNode(filename));
-        p.start(pd.Name.toUpper.replace(".", "_"));
+        p.start(pd.Name.toUpper().replace(".", "_"));
 
+        //include default header dish.h
         p.include(DisCGenHeaderName);
-
-        //include default header dish.h ???
+ 
         //Imports
         mapDispatch(pd.Imports);
 
-        //go through declarations
-        foreach(Declaration d; pd.SymTable)
-            autoDispatch(d);
+        //go through Symbol Table and
+        //create all symbols
+        //TODO split into two steps first fill header (definitions)?
+        //     then fill in the declarations in code
+        symDispatch(pd.SymTable);
         
         p.close();
+
+        return pd;
     }
 
     /**
     * Compile Import Declarations
     */
-    void visit(ImportDecl id)
+    Declaration visit(ImportDecl id)
     {
         //imports are includes
         //get compile header name
         //p.include(getgen(id.Package).Identifier);
+
+        return id;
     }
 
     /**
     * Compile FunctionSymbol
     */
-    void visit(FunctionDecl fd)
+    Declaration visit(FunctionDecl fd)
     {
+        // a function can have multiple instances
+        // templated functions
+        // external function has no body
+        
         //generate for each instantiation of (tpl) function
         foreach(FunctionType ft; fd.Instances)
         {
+            //TODO split because of defintion and decl body code
+            //InstanceBodies
             //Generate code for each function instance
-            gen(ft);
+            gen(fd, ft);
             //fd.Body[ft]
         }
 
@@ -226,25 +245,28 @@ class CCodeGen : ObjectGen, Visitor
         //unique name through mangleing
         mapDispatch(fd.Overrides);
 
-        //generate c main wrapper
-        //main can't be a template so generate c main here
+        //special case when the dis main is generated
+        //also generate the main c function (calls dis main)
+        //the dis main can't be a template
         if(fd.Name == "main")
             genCMain();
+
+        return fd;
     }
 
     /**
     * Generate Function type
     */
-    private void gen(FunctionType ft)
+    private void gen(FunctionDecl fdecl, FunctionType ft)
     {
-        auto funcDecl = to!FunctionDecl(ft.FuncDecl);
+        auto bodyStmt = fdecl.InstanceBodies.get(ft, null);
 
         //write type information for runtime?
         
         //name for function type
-        string name = funcDecl.CallingConv == CallingConvention.C ?
-                      funcDecl.Name :
-                      Mangle.mangle(ft);
+        string name = fdecl.CallingConv == CallingConvention.C ?
+                      fdecl.Name :
+                      Mangle.mangle(fdecl, ft);
 
         log.Information("Function: %s", name);
 
@@ -260,18 +282,18 @@ class CCodeGen : ObjectGen, Visitor
         string rettype = getgen(ft.ReturnType).Identifier;
         
         //reate function declaration
-        p.debugln(funcDecl.Loc);
+        p.debugln(fdecl.Loc);
         p.funcDecl(rettype, name, []);
 
         //write body aka function definition
-        if(ft.Body !is null)
+        if(bodyStmt)
         {
-            assert(ft.Body.Kind == NodeKind.BlockStmt, "Sem should rewrite body to block statement");
+            assert(bodyStmt.Kind == NodeKind.BlockStmt, "Sem should rewrite body to block statement");
 
             //start function definition
             p.funcDef(rettype, name, []);
             
-            autoDispatch(ft.Body);
+            autoDispatch(bodyStmt);
         }
     }
 
@@ -304,91 +326,128 @@ class CCodeGen : ObjectGen, Visitor
     }
     
 
-    void visit(VarDecl vd)
+    Declaration visit(VarDecl vd)
     {
         //value vs reference type
 
         //initializer maybe not working here directly (globalvariables?)
         //p.variable(type, name, initializer);
+
+        return vd;
     }
 
-    void visit(ClassDecl cd)
+    Declaration visit(ClassDecl cd)
     {
         //add to type array?
 
         //type information for runtime?
 
         //generate for each class instance
+
+
+        return cd;
     }
 
-    void visit(StructDecl sd){}
+    Declaration visit(StructDecl sd)
+    {
+        return sd;
+    }
     
-    void visit(TraitDecl td)
+    Declaration visit(TraitDecl td)
     {  
         //add to type array?
+        return td;
     }
 
+    /// Alias Declaration
+    Declaration visit(AliasDecl ad)
+    {
+        return ad;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Statements
+
     //Statements
-    void visit(BlockStmt bs)
+    Statement visit(BlockStmt bs)
     {  
         p.blockStart();
         //write variables
         //write statements
         p.blockEnd();
+        return bs;
     }
     
-    void visit(ExpressionStmt es)
+    Statement visit(ExpressionStmt es)
     {  
         autoDispatch(es.Expr);
+        return es;
     }
 
-    void visit(ReturnStmt rt)
+    Statement visit(ReturnStmt rt)
     {  
         //save expression result
         //return it
+        return rt;
     }
 
+    ///////////////////////////////////////////////////////////////////////////
+    // Expressions
+
     //Expressions
-    void visit(LiteralExpr le)
+    Expression visit(LiteralExpr le)
     {  
         //write value
+        return le;
     }
     
     
-    void visit(CallExpr ce)
+    Expression visit(CallExpr ce)
     {  
         //retrieve functionname
         //arguments maybe need to be prepared
         //p.call(name, [args]);
+        return ce;
     }
 
-    void visit(DotIdExpr di)
+    Expression visit(IdExpr di)
     {
         //TODO how this?
         // this->foo->bar when reference
         // this.foo.bar when value type
+
+        return di;
+    }
+    
+    Expression visit(DotExpr de)
+    {
+        return de;
     }
 
-    void visit(BinaryExpr be)
+    Expression visit(BinaryExpr be)
     {  
         //write be.Left
         //write op
         //write be.Right
+        return be;
     }
 
+    ///////////////////////////////////////////////////////////////////////////
+    // DataTypes
 
     DataType visit(DataType dt){ return dt; }
+    DataType visit(DotType dt){ return dt; }
 
     /// Mixin Dispatch Utils
     mixin DispatchUtils!false;
 
-   /**
+    /**
     * Log Event
     */
     @property
-    ref LogEvent OnLog()
+    ref LogSource Logger()
     {
-        return log.OnLog;
+        return log;
     }
 
     /**

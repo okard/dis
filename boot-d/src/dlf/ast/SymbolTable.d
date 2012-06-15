@@ -22,27 +22,34 @@ import dlf.ast.Node;
 import dlf.ast.Declaration;
 
 
+//TODO Special Names? $_import contains import-symbol
+
 /**
 * SymbolTable
+* TypeDecl
 */
-final class SymbolTable
+final struct SymbolTable
 {
-    /// Prev Symbol Table
-    private SymbolTable mPrev;
-
-    /// Owner Node of SymbolTable
+    /// Owner Node of SymbolTable (to declaration?)
     public Node Owner;
+
+    //TODO Use Interface for SymbolTable owner
     
     /// the symbols
-    private Declaration mSymbols[string];
+    private Declaration symbols[string];
+    
+    //TODO Children Table? nested scopes
+    private SymbolTable[Node] children;
+
+    //save levle?
+    private int level=0;
     
     /**
     * Create new SymbolTable
     */
-    public this(Node Owner, SymbolTable parent)
+    public this(Node Owner)
     {
         this.Owner = Owner;
-        this.mPrev = parent;
     }
 
     /**
@@ -50,7 +57,7 @@ final class SymbolTable
     */
     public Declaration opIndex(string identifier)
     {
-        return mSymbols[identifier];
+        return symbols[identifier];
     }
 
     /**
@@ -58,7 +65,10 @@ final class SymbolTable
     */
     public Declaration opIndexAssign(Declaration dec, string name)
     {
-        mSymbols[name] = dec;
+        if(contains(name))
+            throw new Exception("Already in SymbolTable, use assign method for duplicated entries");
+
+        symbols[name] = dec;
         return dec;
     }
 
@@ -70,7 +80,7 @@ final class SymbolTable
     {   
         int result = 0;
     
-        foreach(string key, Declaration value; mSymbols)
+        foreach(string key, Declaration value; symbols)
         {
             result = dg(value);
 
@@ -85,57 +95,137 @@ final class SymbolTable
     */
     public bool contains(string value)
     {
-        return cast(bool)(value in mSymbols);
+        return cast(bool)(value in symbols);
+    }
+
+    /**
+    * Count of elements in symbol table
+    */
+    @property
+    public auto count()
+    {
+        return symbols.length;
     }
 
     /**
     * Assign Entry
+    * with delegate handler
     */
     public void assign(T : Declaration)(T symbol, void delegate(T symA, T symB) concat)
     {
         //append to function table
         if(!this.contains(symbol.Name))
-            this[symbol.Name] = symbol;
+            symbols[symbol.Name] = symbol;
         else
         {
             //types must match
             if(this[symbol.Name].Kind != symbol.Kind)
                 throw new Exception("Wrong kind of symbol already in symbol table");
    
-            concat(cast(T)this[symbol.Name], symbol);
+            concat(symbols[symbol.Name].to!T, symbol);
         }
     }
 
     /**
-    * Creates a new SymbolTable
+    * Direct assign which can replace old symbol
+    * TODO: Rename to replaceSymbol(), remove seperate replace function?
     */
-    public SymbolTable push(Node owner)
+    public void replace(Declaration symbol)
     {
-        auto st = new SymbolTable(owner, this);
-        return st;
+        symbols[symbol.Name] = symbol;
     }
 
     /**
-    * Popes Table and get parent
+    * Direct access to symbol flags
     */
-    public SymbolTable pop()
+    public DeclarationFlags flags(string symName)
     {
-        return mPrev;
+        if(!contains(symName))
+            return DeclarationFlags.Blank;
+
+        return symbols[symName].Flags;
     }
 
     /**
-    * Is Head
+    * Get kind of symbol
     */
-    public bool isHead()
+    public NodeKind kind(string symName)
     {
-        return !(mPrev is null);
+        if(!contains(symName))
+            return NodeKind.Unkown;
+
+        return symbols[symName].Kind;
+    }
+
+    /**
+    * Getting Kind of SymbolTable
+    */
+    @property
+    public NodeKind Kind()
+    {
+        assert(Owner !is null);
+        return Owner.Kind;
+    }
+
+    /**
+    * Has child tables
+    */
+    public bool hasChildren()
+    {
+        return children.length > 0;
     }
 
 
-    private struct Entry
+    public ref SymbolTable childTable(Node n)
     {
-        //type: variable, function, class, struct 
-        //binding: extern 
+        if(!(n in children))
+            children[n] = SymbolTable(n);
+        return children[n];
     }
 
-} 
+    //TODO what attributes save in ast node what save in symbol table
+
+
+
+    //TODO handling sub symbol tables SymbolTable[Node]?
+
+    //TODO type? package,function,class,struct,trait
+
+
+    //struct Entry (Declaration, Imported, State of symbol(parse,sem,gen), IsUsed )
+
+    /*
+    link: http://www.cs.pitt.edu/~mock/cs2210/lectures/lecture9.pdf
+
+    Symbol Table:  Maps symbol names to attributes
+    Common attributes:
+    Name: String
+    Class:Enumeration (storage class)
+    Volatile:Boolean
+    Size:Integer
+    Bitsize:Integer
+    Boundary: Integer
+    Bitbdry:Integer
+    Type:Enumeration or Type referent
+    Basetype:Enumeration or Type referent
+    Machtype:Enumeration
+    Nelts:Integer
+    Register:Boolean
+    Reg:String (register name)
+    Basereg:String
+    Disp:Integer (offset)
+    */
+}
+
+
+/*
+ Refed SymTable for inner Scopes:
+
+    function
+        if
+            for
+        else
+            if
+        while
+        
+*/

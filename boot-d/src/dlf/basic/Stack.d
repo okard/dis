@@ -27,7 +27,7 @@ struct Stack(T)
     /// Array with Stack Values
     T[] mStackArr;
     /// Elements in Stack
-    uint mCount;
+    uint mCount = 0;
 
     /**
     * Ctor
@@ -35,8 +35,8 @@ struct Stack(T)
     this(uint size = 256)
     {
         mStackArr = new T[size];
-        mCount = 0;
     }
+
 
     /**
     * Push Value on Stack
@@ -69,6 +69,25 @@ struct Stack(T)
     {
 
         return mStackArr[mCount-1];
+    }
+
+    /**
+    * Bottom element
+    */
+    @property
+    T bottom()
+    {
+        assert(mStackArr !is null);
+        return mStackArr[0];
+    }
+
+    /**
+    * Element on Index?
+    */
+    T opIndex(size_t index)
+    {
+        assert(index < mCount);
+        return mStackArr[index];
     }
 
     /**
@@ -112,6 +131,11 @@ unittest
 
     for(uint i = 0; i < 10; i++)
         stack.push(i);
+
+    assert(stack.bottom == 0);
+    assert(stack[0] == stack.bottom);
+    assert(stack[5] == 5);
+    assert(stack[stack.length-1] == stack.top);
     
     assert(stack.length() == 10);
 

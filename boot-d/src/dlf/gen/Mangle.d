@@ -46,14 +46,14 @@ static class Mangle
     /**
     * Mangle a FunctionType
     */
-    static string mangle(FunctionType f)
+    static string mangle(FunctionDecl f, FunctionType t)
     {
         string name;
 
         int i = 0;
-        foreach(DataType dt; f.Arguments)
+        foreach(DataType dt; t.Arguments)
         {
-            name = format("%d%s%s",i, dt.toString, name);
+            name = format("%d%s%s",i, dt.toString(), name);
             i++;
         }
 
@@ -61,12 +61,11 @@ static class Mangle
         //first generate mangle for function type
         //then add function decl
         //then add parent function 
-
   
-        Node n = f.FuncDecl;
+        Node n = f;
         while(n !is null)
         {
-            Declaration d = cast(Declaration)n;
+            Declaration d = n.to!Declaration;
             if(n is null)
             {
                 n = n.Parent;
@@ -126,7 +125,7 @@ static class Mangle
             if(!isDeclaration(n))
                 continue;
             
-            auto d = cast(Declaration)n;
+            auto d = n.to!Declaration;
 
             switch(d.Kind)
             {

@@ -37,8 +37,10 @@ import dlf.ast.Annotation;
 /**
 * AST Printer
 */
-class Printer : Visitor
+class Printer
 {
+    /// Mixin Dispatch Utils
+    //mixin DispatchUtils!false;
 
     /// Tab Count
     private ubyte tabDeepness = 0;
@@ -49,6 +51,12 @@ class Printer : Visitor
     public void print(Node astNode)
     {
         dispatch(astNode, this);
+    }
+
+    //TODO Remove this dummy when visitor interface is inheriting
+    //To do this, fix semantic and ast first
+    public void dispatch(Node n, Printer p)
+    {
     }
 
     //=========================================================================
@@ -87,8 +95,9 @@ class Printer : Visitor
 
         writefln(") %s", fd.ReturnType);
 
-        if(fd.Body !is null)
-            dispatch(fd.Body, this);
+        if(fd.Body.length > 0)
+            foreach(stmt; fd.Body)
+                dispatch(stmt, this);
 
         foreach(FunctionDecl fdo; fd.Overrides)
             visit(fdo);
@@ -128,8 +137,11 @@ class Printer : Visitor
         writetln("{");
         tabDeepness++;
 
-        foreach(Declaration sym; bs.SymTable)
-            dispatch(sym, this);
+        //scope
+        //foreach(Declaration sym; bs.SymTable)
+        //    dispatch(sym, this);
+
+        //TODO Data
 
         foreach(stat; bs.Statements)
             dispatch(stat, this);
@@ -170,12 +182,7 @@ class Printer : Visitor
     */
     void visit(LiteralExpr le)
     {
-        if(le.ReturnType == StringType.Instance)
-        {
-            writef("\"%s\"", replace(le.Value, "\n", "\\n"));
-        }
-        else
-            writef("%s", le.Value);
+        writef("%s", le.Value);
     }
 
     /**
@@ -191,7 +198,7 @@ class Printer : Visitor
     /**
     * Visit Dot Identifier
     */
-    void visit(DotIdExpr di)
+    void visit(IdExpr di)
     {
         write(di.toString());
     }
@@ -234,7 +241,7 @@ class Printer : Visitor
     {
         switch(exp.Kind)
         {
-            case NodeKind.DotIdExpr: return (cast(DotIdExpr) exp).toString();
+            case NodeKind.IdExpr: return (cast(IdExpr) exp).toString();
             case NodeKind.CallExpr: return toString(cast(CallExpr) exp);
             case NodeKind.LiteralExpr: return (cast(LiteralExpr)exp).Value;
             default: return "<unkown expression>";

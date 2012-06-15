@@ -18,8 +18,7 @@
 ******************************************************************************/
 module dlf.Context;
 
-import dlf.sem.SemanticContext;
-import dlf.gen.CodeGen;
+import dlf.ast.Declaration;
 
 /// Target Type
 enum TargetType { Executable, StaticLib, SharedLib, Binary }
@@ -29,6 +28,34 @@ enum TargetPlatform { Linux, MacOSX, Windows }
 
 /// Target Arch
 enum TargetArch { x86_32, x86_64, ARM, DisVM }
+
+/**
+* Semantic Context
+*/
+struct SemanticContext
+{
+
+}
+
+/**
+* Codegen Context
+*/
+struct BackendContext
+{
+    //Libraries to Link
+
+    /// Object files directory
+    string ObjDir;
+
+    /// Binary output directory
+    string OutDir;
+
+    /// Binary output Name
+    string OutFile;
+
+    /// Header directory for library generation
+    string HeaderDir;
+}
 
 /**
 * Global Compiler Context
@@ -49,7 +76,9 @@ class Context
 
     //parser context
 
-    ///Libraries to Link
+    PackageDecl[] Packages;
+
+    ///Libraries to Link (static, dynamic, ...)
     string[] libs; 
 
     ///Semantic Context

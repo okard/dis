@@ -33,30 +33,38 @@ abstract class DataType : Node
      /// is Runtime Type
      public bool isRuntimeType = false;
 
+     //abstract is primarytype
+
      //ptr type
      //type size
+     //offset?
 
      /// Pointer Singleton Mixin
      protected mixin template PtrTypeSingleton()
      {
-        private static PointerType _PtrInstance;
+        private static PtrType _PtrInstance;
 
         static this()
         {
-            _PtrInstance  = new PointerType(Instance);
+            _PtrInstance  = new PtrType(Instance);
         }
 
         @property
-        public static PointerType PtrInstance()
+        public static PtrType PtrInstance()
         {
             return _PtrInstance;
         }
     }
-
-    //RefType instead of Ptr Type
-
-    mixin(IsKind("DataType"));
 }
+
+abstract class PrimaryType(T, string name) : DataType
+{
+    override string toString() { return name; }
+    mixin Singleton!T;
+    mixin PtrTypeSingleton;
+}
+
+// Add a Basic Primary Type?
 
 /// Void
 final class VoidType : DataType
@@ -64,6 +72,7 @@ final class VoidType : DataType
     override string toString() { return "void"; }
     mixin Singleton!VoidType;
     mixin PtrTypeSingleton;
+    mixin(IsKind("VoidType"));
 }
 
 /// 1 Bit Type
@@ -72,90 +81,101 @@ final class BoolType : DataType
     override string toString() { return "bool"; }
     mixin Singleton!BoolType;
     mixin PtrTypeSingleton;
+    mixin(IsKind("BoolType"));
 }
 
 /// 8 Bit signed
-final class ByteType : DataType
+final class Byte8Type : DataType
 {
-    override string toString() { return "byte"; }
-    mixin Singleton!ByteType;
+    override string toString() { return "byte8"; }
+    mixin Singleton!Byte8Type;
     mixin PtrTypeSingleton;
+    mixin(IsKind("Byte8Type"));
 }
 
 /// 8 Bit unsigned
-final class UByteType : DataType
+final class UByte8Type : DataType
 {
-    override string toString() { return "ubyte"; }
-    mixin Singleton!UByteType;
+    override string toString() { return "ubyte8"; }
+    mixin Singleton!UByte8Type;
     mixin PtrTypeSingleton;
+    mixin(IsKind("UByte8Type"));
 }
 
 /// 16 Bit
-final class ShortType : DataType
+final class Short16Type : DataType
 {
-    override string toString() { return "short"; }
-    mixin Singleton!ShortType;
+    override string toString() { return "short16"; }
+    mixin Singleton!Short16Type;
     mixin PtrTypeSingleton;
+    mixin(IsKind("Short16Type"));
 }
 
 /// 16 Bit
-final class UShortType : DataType
+final class UShort16Type : DataType
 {
-    override string toString() { return "ushort"; }
-    mixin Singleton!UShortType;
+    override string toString() { return "ushort16"; }
+    mixin Singleton!UShort16Type;
     mixin PtrTypeSingleton;
+    mixin(IsKind("UShort16Type"));
 }
 
 /// 32 Bit
-final class IntType : DataType
+final class Int32Type : DataType
 {
-    override string toString() { return "int"; }
-    mixin Singleton!IntType;
+    override string toString() { return "int32"; }
+    mixin Singleton!Int32Type;
     mixin PtrTypeSingleton;
+    mixin(IsKind("Int32Type"));
 }
 
 /// 32 Bit
-final class UIntType : DataType
+final class UInt32Type : DataType
 {
-    override string toString() { return "uint"; }
-    mixin Singleton!UIntType;
+    override string toString() { return "uint32"; }
+    mixin Singleton!UInt32Type;
     mixin PtrTypeSingleton;
+    mixin(IsKind("UInt32Type"));
 }
 
 /// 64 Bit
-final class LongType : DataType
+final class Long64Type : DataType
 {
-    override string toString() { return "long"; }
-    mixin Singleton!LongType;
+    override string toString() { return "long64"; }
+    mixin Singleton!Long64Type;
     mixin PtrTypeSingleton;
+    mixin(IsKind("Long64Type"));
 }
 
 /// 64 Bit
-final class ULongType : DataType
+final class ULong64Type : DataType
 {
-    override string toString() { return "ulong"; }
-    mixin Singleton!ULongType;
+    override string toString() { return "ulong64"; }
+    mixin Singleton!ULong64Type;
     mixin PtrTypeSingleton;
+    mixin(IsKind("ULong64Type"));
 }
 
 /// 32 Bit Floating Point IEEE754
-final class FloatType : DataType
+final class Float32Type : DataType
 {
-    override string toString() { return "float"; }
-    mixin Singleton!FloatType;
+    override string toString() { return "float32"; }
+    mixin Singleton!Float32Type;
     mixin PtrTypeSingleton;
+    mixin(IsKind("Float32Type"));
 }
 
 /// 64 Bit Floating Point IEEE754
-final class DoubleType : DataType
+final class Double64Type : DataType
 {
-    override string toString() { return "double"; }
-    mixin Singleton!DoubleType;
+    override string toString() { return "double64"; }
+    mixin Singleton!Double64Type;
     mixin PtrTypeSingleton;
+    mixin(IsKind("Double64Type"));
 }
 
 /**
-* Not known datatype
+* Not set datatype, place holder
 * For implicit typing
 */
 final class OpaqueType : DataType
@@ -166,30 +186,13 @@ final class OpaqueType : DataType
 }
 
 /**
-* A composite type name
-*/
-final class DotType : DataType
-{
-    CompositeIdentifier identifier;
-    alias identifier this;
-
-    DataType ResolvedType;
-
-    //DataType left;
-
-    mixin(IsKind("DotType"));
-}
-
-
-// string array? / char array / byte array 
-
-
-/**
 * PointerType 
 * Ptr to a type
 */
-class PointerType : DataType 
+class PtrType : DataType 
 {
+    mixin(IsKind("PtrType"));
+
     ///The Type this PoiThe Intelligent Transport Layer - nterType points to
     public DataType PtrType;
 
@@ -210,37 +213,19 @@ class PointerType : DataType
 /**
 * Reference Type
 */
-class ReferenceType : DataType
+class RefType : DataType
 {
-    public DataType RefType;
+    mixin(IsKind("RefType"));
+
+    public DataType TargetType;
 
     ///toString
     override string toString() 
     { 
-        return "ref " ~ RefType.toString(); 
+        return "ref " ~ TargetType.toString(); 
     }
-}
 
-/**
-* Char Type
-*/
-class CharType : DataType
-{
-    //encoding???
-    override string toString() { return "char"; }
-    mixin Singleton!CharType;
-    mixin PtrTypeSingleton;
-}
 
-/**
-* String Type aka ArrayType(CharType)?
-* Runtime Type
-*/
-class StringType : DataType
-{ 
-    //encoding???
-    override string toString() { return "string"; }
-    mixin Singleton!StringType;
 }
 
 /**
@@ -248,22 +233,71 @@ class StringType : DataType
 */
 class ArrayType : DataType
 {
+    mixin(IsKind("ArrayType"));
+
     /// DataType of Array
-    public DataType ArrType;
+    public DataType TargetType;
     /// Size of Array
-    public uint Size;
+    public ulong Size;
     /// Is Dynamic Array
     public bool Dynamic = false;
+
+
+    //static type for ref byte array
+
+    public static RefType createArrayLiteral(ulong size)
+    {
+        auto arrType = new ArrayType();
+        arrType.TargetType = Byte8Type.Instance;
+        arrType.Size = size;
+        auto refType = new RefType();
+        refType.TargetType = arrType;
+        return refType;
+    }
+}
+
+//TODO add alias type for string literals == byte arrays
+
+/**
+* A composite type name
+*/
+final class DotType : DataType
+{
+    mixin(IsKind("DotType"));
+
+    /// Name
+    string Value; 
+
+    /// Resolved Declaration
+    Declaration ResolvedDecl;
+
+    /// Concat (type.type.type...)
+    DataType Right;
+}
+
+/**
+* Something like that?
+* Whats about Template Type Instancing?
+* Merge with DotType?
+*/
+final class DeclarationType : DataType
+{
+    mixin(IsKind("DeclarationType"));
+
+    /// Target Declaration
+    public Declaration Decl;
+
+    /// For template instancing?
+    public DataType[] Arguments;
 }
 
 /**
 * Defines a Function Signature
+* Used for Anonymous/Declarated Functions 
 */
 class FunctionType : DataType
-{
-    /// The base function declaration of this type, Parent
-    @property
-    public auto FuncDecl() { return cast(FunctionDecl)Parent; }
+{ 
+    mixin(IsKind("FunctionType"));
 
     /// The function type arguments
     public DataType[] Arguments;
@@ -274,68 +308,11 @@ class FunctionType : DataType
     /// is a varargs function
     public bool mVarArgs;
 
-    /// Body (for template functions) move to declarations
-    public Statement Body;
-
-    //mangled name?
-
     //match helper function?
 
     public this()
     {
         ReturnType = OpaqueType.Instance;
     }
-
-    mixin(IsKind("FunctionType"));
 }
 
-/**
-* Struct Type
-*/
-class StructType : DataType
-{
-    /// Struct Declaration
-    public StructDecl Decl;
-    
-    //TODO indexes, offsets
-
-    /// Struct Fields
-    public DataType Fields[];
-
-
-    mixin(IsKind("StructType"));
-}
-
-/**
-* Class Type
-*/
-class ClassType : DataType
-{
-    /// The original class declaration
-    public ClassDecl Decl;
-
-    //Template Classes can have subclasstypes?
-    //Parent Class
-    //template arguments specifications
-    //classname!(datatypes, ...)
-    //trait types
-
-    mixin(IsKind("ClassType"));
-}
-
-/**
-* Trait Type 
-*/
-class TraitType : DataType
-{
-    ///The original trait declaration
-    TraitDecl Decl;
-
-
-    mixin(IsKind("TraitType"));
-}
-
-
-//enum type
-
-//Variant Type

@@ -43,34 +43,19 @@ struct CBuilder
 
     //static lib: ar rcs libname.a obj0.o obj1.o
 
-    private static string[] objfiles;
-
-    /**
-    * Compile source files to object files
-    */ 
-    void compile(Context ctx, string[] sources)
-    {
-        //make last change date available
-
-        //compile source file
-        //TODO this can be threaded
-        foreach(string src; sources)
-        {
-            objfiles ~= compile(ctx, src);
-        }  
-    }
-
     /**
     * Compile a single source file to object
     */ 
-    string compile(Context ctx, string source)
+    string compile(Context ctx, string[] source)
     {
+        assert(source.length > 0);
+
         string[] args;
         args ~= compilerExec;
         args ~= compilerFlags;
         if(ctx.Platform != TargetPlatform.Windows)
             args ~= "-fPIC";
-        string objfile = buildPath(ctx.Backend.ObjDir, setExtension(baseName(source), ".o"));
+        string objfile = buildPath(ctx.Backend.ObjDir, setExtension(baseName(source[0]), ".o"));
         args ~= ["-o", objfile] ;
         args ~= source;
 

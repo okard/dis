@@ -6,7 +6,7 @@
 
 package tests.runnable.function001;
 
-def dbl(x: int) :int
+def dbl(x: int32) :int32
 {
     return x * 2;
 }
