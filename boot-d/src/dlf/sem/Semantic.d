@@ -79,7 +79,9 @@ final class Semantic
         }
         
         //resolve types
-        astNode = dispatch(astNode, typeResolver);
+        //astNode = dispatch(astNode, typeResolver);
+        VisitorParameter vp;
+        astNode = astNode.accept(typeResolver, vp);
     
         //scope instanciatio classes
 
@@ -96,7 +98,10 @@ final class Semantic
         checkPackageName(pd);
         //prepare step?
         //resolve types
-        pd = dispatch(pd, typeResolver).to!PackageDecl;
+        //pd = dispatch(pd, typeResolver).to!PackageDecl;
+        
+        VisitorParameter vp;
+        pd = pd.accept(typeResolver, vp).to!PackageDecl;
 
         return pd;
     }

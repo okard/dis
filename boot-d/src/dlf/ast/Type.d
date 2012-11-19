@@ -57,36 +57,34 @@ abstract class DataType : Node
     }
 }
 
+/*
 abstract class PrimaryType(T, string name) : DataType
 {
     override string toString() { return name; }
     mixin Singleton!T;
     mixin PtrTypeSingleton;
-}
+}*/
 
 // Add a Basic Primary Type?
 
-/// Void
-final class VoidType : DataType
+abstract class PrimaryType(T, string name, NodeKind kind) : DataType
 {
-	// Mixin for Visitor
-    mixin VisitorMixin;
+	mixin KindMixin!(kind);
+    mixin Singleton!T;
+    //mixin PtrTypeSingleton;
+    override string toString() { return name; }
     
-    override string toString() { return "void"; }
-    mixin Singleton!VoidType;
-    mixin PtrTypeSingleton;
-    mixin(IsKind("VoidType"));
+    public override Node accept(Visitor visitor, const ref VisitorParameter vp)
+	{
+		return vp.Changeable ? visitor.visit(cast(T)this) : this; 
+	}
 }
 
-/// 1 Bit Type
-final class BoolType : DataType
-{
-	mixin VisitorMixin;
-    override string toString() { return "bool"; }
-    mixin Singleton!BoolType;
-    mixin PtrTypeSingleton;
-    mixin(IsKind("BoolType"));
-}
+//Void Type
+final class VoidType : PrimaryType!(VoidType, "void", NodeKind.VoidType) { mixin PtrTypeSingleton; };
+// 1 Bit Type
+final class BoolType : PrimaryType!(BoolType, "bool", NodeKind.BoolType) { mixin PtrTypeSingleton; };
+
 
 /// 8 Bit signed
 final class Byte8Type : DataType
@@ -204,7 +202,7 @@ final class OpaqueType : DataType
 * PointerType 
 * Ptr to a type
 */
-class PtrType : DataType 
+final class PtrType : DataType 
 {
     mixin(IsKind("PtrType"));
     mixin VisitorMixin;
