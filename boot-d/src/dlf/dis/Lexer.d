@@ -282,7 +282,7 @@ class Lexer : ILexer!Token
         case ']':  tok.Type = TokenType.ACBracket; break;
         case '{':  tok.Type = TokenType.COBracket; break;
         case '}':  tok.Type = TokenType.CCBracket; break;
-        case '@':  tok.Type = TokenType.Annotation; break;
+        case '@':  tok.Type = TokenType.Attribute; break;
         case '~':  tok.Type = TokenType.Concat; break;
         case '$':  tok.Type = TokenType.Dollar; break;
         case '#':  tok.Type = TokenType.SharpSign; break;

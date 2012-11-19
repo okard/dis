@@ -70,8 +70,8 @@ abstract class Declaration : Node
     /// Flags
     public DeclarationFlags Flags;
 
-    /// Annotations
-    public Annotation[] Annotations;
+    /// Attributes
+    public Attribute[] Attributes;
 
     //uint Index;
 

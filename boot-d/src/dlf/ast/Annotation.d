@@ -27,22 +27,20 @@ import dlf.ast.Visitor;
 /**
 * Annotation Base Class
 */
-abstract class Annotation : Node
+abstract class Attribute : Node
 {
+	mixin KindMixin!(NodeKind.Attribute);
+	
     /// Annotation Name
     string Name;
-
-    mixin(IsKind("Annotation"));
 }
 
 /**
 * UnitTest Annotation
 */
-final class TestAnnotation : Annotation
+final class TestAttribute : Attribute
 {
-    //test name
-    mixin(IsKind("TestAnnotation"));
-    
+	mixin KindMixin!(NodeKind.TestAttribute);
     mixin VisitorMixin;
 
     //parameter pre/post methods, depends 
@@ -51,7 +49,7 @@ final class TestAnnotation : Annotation
 /**
 * Deprecated Annotation
 */
-final class DeprecatedAnnotation : Annotation
+final class DeprecatedAttribute : Attribute
 {
     //mixin(IsKind("DeprecatedAnnotation"));
 }
@@ -59,7 +57,7 @@ final class DeprecatedAnnotation : Annotation
 /**
 * MainFunction Annotation for declaring a entry points for static/dynamic libraries
 */
-final class LibMainAnnotation : Annotation
+final class LibMainAttribute : Attribute
 {
     //mixin(IsKind("LibMainAnnotation"));
 }

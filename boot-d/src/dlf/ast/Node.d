@@ -93,9 +93,9 @@ public enum NodeKind : ushort
     OpaqueType,
     DotType,
 
-    //Annotation,
-    Annotation,
-    TestAnnotation,
+    //Attribute,
+    Attribute,
+    TestAttribute,
 
     //Special
     Comment,
@@ -189,10 +189,10 @@ bool isStatement(Node n) { return n.Kind >= NodeKind.Statement && n.Kind < NodeK
 bool isExpression(Node n) { return n.Kind >= NodeKind.Expression && n.Kind < NodeKind.VoidType; }
 
 /// Is DataType
-bool isDataType(Node n) { return n.Kind >= NodeKind.VoidType && n.Kind < NodeKind.Annotation; }
+bool isDataType(Node n) { return n.Kind >= NodeKind.VoidType && n.Kind < NodeKind.Attribute; }
 
 /// Is Annotation
-bool isAnnotation(Node n) { return n.Kind >= NodeKind.Annotation && n.Kind < NodeKind.Comment; }
+bool isAttribute(Node n) { return n.Kind >= NodeKind.Attribute && n.Kind < NodeKind.Comment; }
 
 /// Is Backend Node
 bool isBackendNode(Node n) { return n is null ? false : n.Kind == NodeKind.Backend; }

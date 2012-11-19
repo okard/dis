@@ -62,8 +62,8 @@ class Parser
     /// Current flags
     private DeclarationFlags flags;
 
-    /// Current Annotations
-    private Annotation[] annotations;
+    /// Current Attributes
+    private Attribute[] attributes;
 
     /// Internal Types (Builtin)
     public static DataType[string] InternalTypes;
@@ -111,7 +111,7 @@ class Parser
 
         //clean up state
         flags = DeclarationFlags.Blank;
-        annotations.length = 0;
+        attributes.length = 0;
 
         //open source file and set ignore tokens
         lexer.load(src);
@@ -148,7 +148,7 @@ class Parser
             case TokenType.KwType: return parseType();
             
             //Other
-            case TokenType.Annotation: return parseAnnotation();
+            case TokenType.Attribute: return parseAttribute();
 
             default: return null;
         }
@@ -243,7 +243,7 @@ class Parser
             //function
             case NodeKind.FunctionDecl:
                 auto dcl = n.to!FunctionDecl;
-                assignAnnotations(dcl);
+                assignAttributes(dcl);
                 assignDeclarationFlags(dcl);
                 pkg.SymTable.assign(dcl, &symFuncAssign);
                 break;
@@ -275,8 +275,8 @@ class Parser
                 pkg.SymTable.assign(n.to!ValDecl, genNoAssign!ValDecl("Can't override value declarations"));
                 break;
             //@Annotations/Attributes
-            case TokenType.Annotation:
-                annotations ~= n.to!Annotation;
+            case TokenType.Attribute:
+                attributes ~= n.to!Attribute;
                 break;
 
             default:
@@ -1069,25 +1069,25 @@ class Parser
     }
 
     /**
-    * Parse Annotation
+    * Parse Attribute
     */
-    private Annotation parseAnnotation()
+    private Attribute parseAttribute()
     {
         // Annotions: @identifier
-        checkType(TokenType.Annotation);
+        checkType(TokenType.Attribute);
 
         next();
-        checkType(TokenType.Identifier, "Expected Identifier after @ for Annotations");
+        checkType(TokenType.Identifier, "Expected Identifier after @ for Attributes");
 
         switch(mToken.Value)
         {
             case "unittest":
             case "test":
-                auto uta = new TestAnnotation();
+                auto uta = new TestAttribute();
                 uta.Loc = mToken.Loc;
                 return uta; 
             default:
-                Error(mToken.Loc, "Invalid annotation");
+                Error(mToken.Loc, "Invalid Attribute");
         }
         
         //never get here
@@ -1252,12 +1252,12 @@ class Parser
     }
 
     /**
-    * Assign Annotations and clear them
+    * Assign Attributes and clear them
     */
-    private void assignAnnotations(Declaration d)
+    private void assignAttributes(Declaration d)
     {
-        d.Annotations = annotations;
-        annotations.length = 0;
+        d.Attributes = attributes;
+        attributes.length = 0;
     }
 
     /**
