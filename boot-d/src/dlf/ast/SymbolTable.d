@@ -38,6 +38,7 @@ final struct SymbolTable
     /// the symbols
     private Declaration symbols[string];
     
+    //TODO as Stack 
     //TODO Children Table? nested scopes
     private SymbolTable[Node] children;
 

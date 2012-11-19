@@ -42,6 +42,8 @@ final class TestAnnotation : Annotation
 {
     //test name
     mixin(IsKind("TestAnnotation"));
+    
+    mixin VisitorMixin;
 
     //parameter pre/post methods, depends 
 }

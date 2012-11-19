@@ -19,6 +19,7 @@
 module dlf.ast.Node;
 
 import dlf.basic.Location;
+import dlf.ast.Visitor;
 
 //ids to split kind groups
 //0xFFFF_FFFF
@@ -121,10 +122,15 @@ abstract class Node
     //TODO Make this struct? for different node types different?
     public Node CodeGen;
 
+	
+	public abstract Node accept(Visitor visitor, const ref VisitorParameter);
+
+
     //TODO Node Status for Stage? Parse, Semantic, CodeGen
 
     /// Kind (immutable)? function?
     @property public abstract const NodeKind Kind() const;
+    
 
     @property
     public final T to(T:Node)()
@@ -146,6 +152,25 @@ string IsKind(string name)
     return "@property public override NodeKind Kind(){ return NodeKind."~name~"; } " ~
            "@property public final static NodeKind Kind() { return NodeKind."~name~"; } ";
 }
+
+/**
+* Visitor Mixin
+*/
+/*string VisitorMixin()
+{
+	return "public override Node accept(Visitor visitor, const ref VisitorParameter vp){" ~
+		   " return vp.Changeable ? visitor.visit(this) : this; }";
+}*/
+
+mixin template VisitorMixin()
+{
+	public override Node accept(Visitor visitor, const ref VisitorParameter vp)
+	{
+		return vp.Changeable ? visitor.visit(this) : this; 
+	}
+}
+
+
 
 
 /// Is Declaration

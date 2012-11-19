@@ -431,6 +431,16 @@ class CCodeGen : ObjectGen, BinaryGen, Visitor
         //write be.Right
         return be;
     }
+    
+    Expression visit(UnaryExpr ue)
+    {
+		return ue;
+	}
+	
+	Node visit(Node n)
+	{
+		return n;
+	}
 
     ///////////////////////////////////////////////////////////////////////////
     // DataTypes
@@ -497,6 +507,8 @@ class CCodeGen : ObjectGen, BinaryGen, Visitor
     */
     private static class CCNode : Node
     {
+		mixin VisitorMixin;
+			
         //header file name
 
         /// Type List for C Code Identifier

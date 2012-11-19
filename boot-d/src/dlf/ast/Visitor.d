@@ -28,6 +28,13 @@ public import dlf.ast.SymbolTable;
 
 debug import std.stdio;
 
+
+public class VisitorParameter
+{
+	public bool Changeable = true;
+}
+
+
 /**
 * AST Visitor
 */
@@ -65,6 +72,7 @@ public interface Visitor
     Expression visit(IdExpr);
     Expression visit(DotExpr);
     Expression visit(BinaryExpr);
+    Expression visit(UnaryExpr);
     //Unary
     //IfExpr
     //SwitchExpr
@@ -81,7 +89,7 @@ public interface Visitor
     //RefType
     //
 
-    
+	Node visit(Node);
     }
 
     //voids with ref for modification or not?
