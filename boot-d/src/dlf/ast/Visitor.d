@@ -28,8 +28,10 @@ public import dlf.ast.SymbolTable;
 
 debug import std.stdio;
 
-
-public class VisitorParameter
+/**
+* Parameter default on stack
+*/
+public struct VisitorParameter
 {
 	public bool Changeable = true;
 }
@@ -89,6 +91,7 @@ public interface Visitor
     //RefType
     //
 
+	//dummy interface
 	Node visit(Node);
     }
 

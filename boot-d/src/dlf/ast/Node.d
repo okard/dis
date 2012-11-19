@@ -114,10 +114,6 @@ abstract class Node
     /// Location
     public Location Loc;
 
-    /// Storage for Semantic Node
-    //TODO Make this struct? for different node types different?
-    public Node Semantic;
-
     /// Storage for CodeGen Node
     //TODO Make this struct? for different node types different?
     public Node CodeGen;
@@ -156,17 +152,27 @@ string IsKind(string name)
 /**
 * Visitor Mixin
 */
-/*string VisitorMixin()
-{
-	return "public override Node accept(Visitor visitor, const ref VisitorParameter vp){" ~
-		   " return vp.Changeable ? visitor.visit(this) : this; }";
-}*/
-
 mixin template VisitorMixin()
 {
 	public override Node accept(Visitor visitor, const ref VisitorParameter vp)
 	{
 		return vp.Changeable ? visitor.visit(this) : this; 
+	}
+}
+
+/**
+* Node Kind Mixin
+*/
+mixin template KindMixin(NodeKind kind)
+{
+	@property public override NodeKind Kind()
+	{ 
+		return kind; 
+	}
+	
+	@property public final static NodeKind Kind() 
+	{ 
+		return kind; 
 	}
 }
 

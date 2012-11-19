@@ -118,7 +118,7 @@ abstract class InstanceDecl : Declaration
 final class PackageDecl : TypeDecl
 {
 	// Mixin for Kind Declaration
-    mixin(IsKind("PackageDecl"));
+    mixin KindMixin!(NodeKind.PackageDecl);
     
     // Mixin for Visitor
     mixin VisitorMixin;
