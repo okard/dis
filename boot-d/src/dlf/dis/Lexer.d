@@ -478,7 +478,7 @@ unittest
     //lexer unittest
     import std.stdio;
 
-    auto src = new SourceString("{ } \n ");
+    auto src = new SourceString(0, "{ } \n ");
     auto lex = new Lexer();
     lex.load(src);
 

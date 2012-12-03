@@ -20,6 +20,13 @@ module dlf.basic.Location;
 
 import std.conv;
 
+
+struct SourceID
+{
+	uint id_;
+}
+
+
 /**
 * Represents Code Location
 */
@@ -33,18 +40,32 @@ struct Location
  
     /// Column starts with 0
     uint Col; 	
+    
+    /// Source Id used with SourceManager
+    uint SourceId; 
+    //what the fuck? why not immutable either const possible 
+    // give me stupid error message instead of doing a copy constructor right
+    // no documentation yeah
+    // nice dmd well implemented -.-
 
-    /// Name or File
+    ///REMOVE Name or File
     string Name;
     
     /**
     * Create Loc
     */
-    this(uint line, uint col)
+    this(uint id, uint line, uint col)
     {
+		SourceId = id;
         Line = line;
         Col = col;
     }
+    
+    //okay fine show me the syntax of a copy constructor with immutable/const elements
+    this(this)
+    {
+	}
+    
     
     /**
     * to String

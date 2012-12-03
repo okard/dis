@@ -29,7 +29,7 @@ import dlf.ast.Annotation;
 import dlf.ast.Statement;
 import dlf.ast.Expression;
 import dlf.ast.Special;
-import dlf.ast.SymbolTable;
+import dlf.ast.SymbolTable; //TODO Remove all ast -> SymTable References
 
 /// Flags for Declaration
 enum DeclarationFlags : ushort 
@@ -114,6 +114,8 @@ abstract class InstanceDecl : Declaration
 
 /**
 * Package
+* package foo.bar.abc 
+* Package(foo)->Package(bar)->Package(abc)
 */
 final class PackageDecl : TypeDecl
 {
@@ -123,24 +125,41 @@ final class PackageDecl : TypeDecl
     // Mixin for Visitor
     mixin VisitorMixin;
     
-    /// Package Identifier
+    ///TODO Remove Package Identifier
     CompositeIdentifier PackageIdentifier;
 
-    /// Symbol Table
+    ///TODO Remove Symbol Table
     public SymbolTable SymTable;
 
     /// Imports
     ImportDecl[] Imports;
+    
+    /// Sub Packages
+    PackageDecl SubPkg[];
+    
+    /// Child Declarations
+    Declaration Declarations[];
 
-    //TODO Defined Versions
+    /// Defined Versions?  
+    bool Version[string];
 
     /// Runtime enabled
     bool RuntimeEnabled = true;
 
     /// Is a Header Package
     bool IsHeader = false;
+    
+    ///The package requested from parseFunction?
+    //Name? CompilationUnit? 
+    bool ParseTarget = false;
+    
+    /// Is a root package
+    bool IsRootPkg()
+    {
+		return Parent is null;
+	}
 
-    /// Modification Date
+    /// Modification Date (TODO resolve via location.id and source manager?)
     SysTime modificationDate;
 }
 

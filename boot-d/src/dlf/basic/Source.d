@@ -58,12 +58,6 @@ interface Source
     public bool isEof();
 
     /**
-    * name of source
-    */
-    @property
-    public string name();
-
-    /**
     * modification date of source
     */
     @property
@@ -75,7 +69,12 @@ interface Source
     @property
     public size_t offset();
 
-
+	/**
+	* Get id
+	*/
+	@property
+	public uint Id();
+    
     
     //TODO Slice & Index Operator 
     
@@ -84,6 +83,8 @@ interface Source
     //char opIndex(int pos);
     //char[] opSlice(int start, int end);
     //Encoding utf8,...
+    
+    //id
 
 }
 
@@ -111,9 +112,9 @@ class SourceFile : File, Source
     /**
     * Ctor
     */
-    public this()
+    public this(uint id)
     {
-        mLoc = Location(0, 0);
+        mLoc = Location(id, 0, 0);
     }
 
     /**
@@ -197,6 +198,15 @@ class SourceFile : File, Source
     {
         return mLoc.Name;
     }
+    
+    /**
+	* Get id
+	*/
+	@property
+	public uint Id()
+	{
+		return mLoc.SourceId;
+	}
 
     /**
     * modification date of source
@@ -238,10 +248,10 @@ class SourceString : Source
     /**
     * Ctor
     */
-    public this(string str)
+    public this(uint id, string str)
     {
         mPos = 0;
-        mLoc = Location(0, 0);
+        mLoc = Location(id, 0, 0);
         mStr = str;
         modDate = Clock.currTime(UTC());
     }
@@ -298,6 +308,15 @@ class SourceString : Source
     {
         return mLoc.Name;
     }
+    
+    /**
+	* Get id
+	*/
+	@property
+	public uint Id()
+	{
+		return mLoc.SourceId;
+	}
 
     /**
     * set name of source
@@ -337,7 +356,7 @@ unittest
     import conv = std.conv;
     import std.c.stdio;
 
-    auto ss = new SourceString("abcd efgh ijkl mnop qrst uvwx yz");
+    auto ss = new SourceString(0, "abcd efgh ijkl mnop qrst uvwx yz");
     ss.name = "<unittestsource>";
 
     assert(ss.getChar() == 'a');
@@ -363,7 +382,7 @@ unittest
     f.writeln("abcd efgh ijkl mnop qrst uvwx yz");
     f.close();
 
-    auto sf = new SourceFile();
+    auto sf = new SourceFile(0);
     sf.open(filename);
     
     assert(sf.getChar() == 'a');

@@ -42,8 +42,8 @@ final struct SymbolTable
     //TODO Children Table? nested scopes
     private SymbolTable[Node] children;
 
-    //save levle?
-    private int level=0;
+    //save levle? / depth
+    private uint level=0;
     
     /**
     * Create new SymbolTable

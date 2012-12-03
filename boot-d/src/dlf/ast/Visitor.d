@@ -116,8 +116,8 @@ mixin template DispatchUtils(bool modify)
         if(e is null) return e;
 		VisitorParameter vp;
 		vp.Changeable = modify;
+		//TODO fast cast here?
 		return e.accept(this, vp).to!T;
-        //return dispatch(e, this, modify).to!T;
     }
 
     /**

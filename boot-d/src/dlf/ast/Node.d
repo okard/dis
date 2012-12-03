@@ -114,13 +114,11 @@ abstract class Node
     /// Location
     public Location Loc;
 
-    /// Storage for CodeGen Node
-    //TODO Make this struct? for different node types different?
+    ///REMOVE Storage for CodeGen Node
     public Node CodeGen;
 
-	
+	/// Visitor Interface
 	public abstract Node accept(Visitor visitor, const ref VisitorParameter);
-
 
     //TODO Node Status for Stage? Parse, Semantic, CodeGen
 

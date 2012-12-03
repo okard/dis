@@ -22,6 +22,7 @@ import std.stdio;
 import std.datetime;
 
 import dlf.basic.Log;
+import dlf.basic.SourceManager;
 import dlf.basic.Source;
 import dlf.basic.ArgHelper;
 import dlf.basic.Util;
@@ -108,9 +109,13 @@ class DisCompiler
     
     /// Log Source
     private LogSource log;
+    
+    private SourceManager srcMng;
 
     /// Compile Context
     private Context ctx;
+    //SemanticContext
+    //BackendContext
 
     /// Store parsed packages package name or file
     private PackageDecl[string] packages;
@@ -131,6 +136,8 @@ class DisCompiler
         this.args = new CommandLineArg(args);
         this.log =  Log.get("disc");
         this.log.addHandler(LevelConsoleListener(LogType.Information));
+        
+        srcMng = new SourceManager();
 
         //TODO config and command line parsing
 
@@ -213,7 +220,7 @@ class DisCompiler
         for(int i=0;i < pkgs.length; i++)
         {
             log.Information("file: %s", srcFiles[i]);
-            pkgs[i].file = new SourceFile();
+            pkgs[i].file = new SourceFile(0);
             pkgs[i].file.open(srcFiles[i]);
 
             
