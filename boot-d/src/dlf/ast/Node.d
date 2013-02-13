@@ -19,6 +19,7 @@
 module dlf.ast.Node;
 
 import dlf.basic.Location;
+import dlf.ast.Visitor;
 
 //ids to split kind groups
 //0xFFFF_FFFF
@@ -92,9 +93,9 @@ public enum NodeKind : ushort
     OpaqueType,
     DotType,
 
-    //Annotation,
-    Annotation,
-    TestAnnotation,
+    //Attribute,
+    Attribute,
+    TestAttribute,
 
     //Special
     Comment,
@@ -113,18 +114,17 @@ abstract class Node
     /// Location
     public Location Loc;
 
-    /// Storage for Semantic Node
-    //TODO Make this struct? for different node types different?
-    public Node Semantic;
-
-    /// Storage for CodeGen Node
-    //TODO Make this struct? for different node types different?
+    ///REMOVE Storage for CodeGen Node
     public Node CodeGen;
+
+	/// Visitor Interface
+	public abstract Node accept(Visitor visitor, const ref VisitorParameter);
 
     //TODO Node Status for Stage? Parse, Semantic, CodeGen
 
     /// Kind (immutable)? function?
     @property public abstract const NodeKind Kind() const;
+    
 
     @property
     public final T to(T:Node)()
@@ -147,6 +147,35 @@ string IsKind(string name)
            "@property public final static NodeKind Kind() { return NodeKind."~name~"; } ";
 }
 
+/**
+* Visitor Mixin
+*/
+mixin template VisitorMixin()
+{
+	public override Node accept(Visitor visitor, const ref VisitorParameter vp)
+	{
+		return vp.Changeable ? visitor.visit(this) : this; 
+	}
+}
+
+/**
+* Node Kind Mixin
+*/
+mixin template KindMixin(NodeKind kind)
+{
+	@property public override NodeKind Kind()
+	{ 
+		return kind; 
+	}
+	
+	@property public final static NodeKind Kind() 
+	{ 
+		return kind; 
+	}
+}
+
+
+
 
 /// Is Declaration
 bool isDeclaration(Node n) { return n.Kind >= NodeKind.Declaration && n.Kind < NodeKind.Statement; }
@@ -158,10 +187,10 @@ bool isStatement(Node n) { return n.Kind >= NodeKind.Statement && n.Kind < NodeK
 bool isExpression(Node n) { return n.Kind >= NodeKind.Expression && n.Kind < NodeKind.VoidType; }
 
 /// Is DataType
-bool isDataType(Node n) { return n.Kind >= NodeKind.VoidType && n.Kind < NodeKind.Annotation; }
+bool isDataType(Node n) { return n.Kind >= NodeKind.VoidType && n.Kind < NodeKind.Attribute; }
 
 /// Is Annotation
-bool isAnnotation(Node n) { return n.Kind >= NodeKind.Annotation && n.Kind < NodeKind.Comment; }
+bool isAttribute(Node n) { return n.Kind >= NodeKind.Attribute && n.Kind < NodeKind.Comment; }
 
 /// Is Backend Node
 bool isBackendNode(Node n) { return n is null ? false : n.Kind == NodeKind.Backend; }

@@ -54,7 +54,7 @@ enum TokenType //: ubyte//c main
     ACBracket,      // ] - Angled Close Bracket
     COBracket,      // { - Cambered Open Bracket
     CCBracket,      // } - Cambered Close Bracket
-    Annotation,     // @
+    Attribute,      // @
     Dot,            // .
     Slice,          // ..
     Vararg,         // ...
@@ -187,7 +187,7 @@ string toString(TokenType tok)
     case TokenType.ACBracket:   return "]";
     case TokenType.COBracket:   return "{";
     case TokenType.CCBracket:   return "}";
-    case TokenType.Annotation:  return "@";
+    case TokenType.Attribute:   return "@";
     case TokenType.SharpSign:   return "#";
     case TokenType.Dollar:      return "$";
     // Single Operator

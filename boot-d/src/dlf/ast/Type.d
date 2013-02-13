@@ -57,36 +57,39 @@ abstract class DataType : Node
     }
 }
 
+/*
 abstract class PrimaryType(T, string name) : DataType
 {
     override string toString() { return name; }
     mixin Singleton!T;
     mixin PtrTypeSingleton;
-}
+}*/
 
 // Add a Basic Primary Type?
 
-/// Void
-final class VoidType : DataType
+abstract class PrimaryType(T, string name, NodeKind kind) : DataType
 {
-    override string toString() { return "void"; }
-    mixin Singleton!VoidType;
-    mixin PtrTypeSingleton;
-    mixin(IsKind("VoidType"));
+	mixin KindMixin!(kind);
+    mixin Singleton!T;
+    //mixin PtrTypeSingleton;
+    override string toString() { return name; }
+    
+    public override Node accept(Visitor visitor, const ref VisitorParameter vp)
+	{
+		return vp.Changeable ? visitor.visit(cast(T)this) : this; 
+	}
 }
 
-/// 1 Bit Type
-final class BoolType : DataType
-{
-    override string toString() { return "bool"; }
-    mixin Singleton!BoolType;
-    mixin PtrTypeSingleton;
-    mixin(IsKind("BoolType"));
-}
+//Void Type
+final class VoidType : PrimaryType!(VoidType, "void", NodeKind.VoidType) { mixin PtrTypeSingleton; };
+// 1 Bit Type
+final class BoolType : PrimaryType!(BoolType, "bool", NodeKind.BoolType) { mixin PtrTypeSingleton; };
+
 
 /// 8 Bit signed
 final class Byte8Type : DataType
 {
+	mixin VisitorMixin;
     override string toString() { return "byte8"; }
     mixin Singleton!Byte8Type;
     mixin PtrTypeSingleton;
@@ -96,6 +99,7 @@ final class Byte8Type : DataType
 /// 8 Bit unsigned
 final class UByte8Type : DataType
 {
+	mixin VisitorMixin;
     override string toString() { return "ubyte8"; }
     mixin Singleton!UByte8Type;
     mixin PtrTypeSingleton;
@@ -105,6 +109,7 @@ final class UByte8Type : DataType
 /// 16 Bit
 final class Short16Type : DataType
 {
+	mixin VisitorMixin;
     override string toString() { return "short16"; }
     mixin Singleton!Short16Type;
     mixin PtrTypeSingleton;
@@ -114,6 +119,7 @@ final class Short16Type : DataType
 /// 16 Bit
 final class UShort16Type : DataType
 {
+	mixin VisitorMixin;
     override string toString() { return "ushort16"; }
     mixin Singleton!UShort16Type;
     mixin PtrTypeSingleton;
@@ -123,6 +129,7 @@ final class UShort16Type : DataType
 /// 32 Bit
 final class Int32Type : DataType
 {
+	mixin VisitorMixin;
     override string toString() { return "int32"; }
     mixin Singleton!Int32Type;
     mixin PtrTypeSingleton;
@@ -132,6 +139,7 @@ final class Int32Type : DataType
 /// 32 Bit
 final class UInt32Type : DataType
 {
+	mixin VisitorMixin;
     override string toString() { return "uint32"; }
     mixin Singleton!UInt32Type;
     mixin PtrTypeSingleton;
@@ -141,6 +149,7 @@ final class UInt32Type : DataType
 /// 64 Bit
 final class Long64Type : DataType
 {
+	mixin VisitorMixin;
     override string toString() { return "long64"; }
     mixin Singleton!Long64Type;
     mixin PtrTypeSingleton;
@@ -150,6 +159,7 @@ final class Long64Type : DataType
 /// 64 Bit
 final class ULong64Type : DataType
 {
+	mixin VisitorMixin;
     override string toString() { return "ulong64"; }
     mixin Singleton!ULong64Type;
     mixin PtrTypeSingleton;
@@ -159,6 +169,7 @@ final class ULong64Type : DataType
 /// 32 Bit Floating Point IEEE754
 final class Float32Type : DataType
 {
+	mixin VisitorMixin;
     override string toString() { return "float32"; }
     mixin Singleton!Float32Type;
     mixin PtrTypeSingleton;
@@ -168,6 +179,7 @@ final class Float32Type : DataType
 /// 64 Bit Floating Point IEEE754
 final class Double64Type : DataType
 {
+	mixin VisitorMixin;
     override string toString() { return "double64"; }
     mixin Singleton!Double64Type;
     mixin PtrTypeSingleton;
@@ -180,6 +192,7 @@ final class Double64Type : DataType
 */
 final class OpaqueType : DataType
 {
+	mixin VisitorMixin;
     override string toString() { return "<Opaque>"; }
     mixin Singleton!OpaqueType;
     mixin(IsKind("OpaqueType"));
@@ -189,9 +202,10 @@ final class OpaqueType : DataType
 * PointerType 
 * Ptr to a type
 */
-class PtrType : DataType 
+final class PtrType : DataType 
 {
     mixin(IsKind("PtrType"));
+    mixin VisitorMixin;
 
     ///The Type this PoiThe Intelligent Transport Layer - nterType points to
     public DataType PtrType;
@@ -216,6 +230,7 @@ class PtrType : DataType
 class RefType : DataType
 {
     mixin(IsKind("RefType"));
+    mixin VisitorMixin;
 
     public DataType TargetType;
 
@@ -234,6 +249,7 @@ class RefType : DataType
 class ArrayType : DataType
 {
     mixin(IsKind("ArrayType"));
+    mixin VisitorMixin;
 
     /// DataType of Array
     public DataType TargetType;
@@ -264,6 +280,7 @@ class ArrayType : DataType
 final class DotType : DataType
 {
     mixin(IsKind("DotType"));
+    mixin VisitorMixin;
 
     /// Name
     string Value; 
@@ -283,6 +300,7 @@ final class DotType : DataType
 final class DeclarationType : DataType
 {
     mixin(IsKind("DeclarationType"));
+    mixin VisitorMixin;
 
     /// Target Declaration
     public Declaration Decl;
@@ -297,7 +315,8 @@ final class DeclarationType : DataType
 */
 class FunctionType : DataType
 { 
-    mixin(IsKind("FunctionType"));
+    mixin(IsKind("FunctionType"));	
+    mixin VisitorMixin;
 
     /// The function type arguments
     public DataType[] Arguments;

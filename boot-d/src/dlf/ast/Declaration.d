@@ -29,7 +29,7 @@ import dlf.ast.Annotation;
 import dlf.ast.Statement;
 import dlf.ast.Expression;
 import dlf.ast.Special;
-import dlf.ast.SymbolTable;
+import dlf.ast.SymbolTable; //TODO Remove all ast -> SymTable References
 
 /// Flags for Declaration
 enum DeclarationFlags : ushort 
@@ -70,8 +70,8 @@ abstract class Declaration : Node
     /// Flags
     public DeclarationFlags Flags;
 
-    /// Annotations
-    public Annotation[] Annotations;
+    /// Attributes
+    public Attribute[] Attributes;
 
     //uint Index;
 
@@ -114,31 +114,53 @@ abstract class InstanceDecl : Declaration
 
 /**
 * Package
+* package foo.bar.abc 
+* Package(foo)->Package(bar)->Package(abc)
 */
 final class PackageDecl : TypeDecl
 {
-    /// Package Identifier
+	// Mixin for Kind Declaration
+    mixin KindMixin!(NodeKind.PackageDecl);
+    
+    // Mixin for Visitor
+    mixin VisitorMixin;
+    
+    ///TODO Remove Package Identifier
     CompositeIdentifier PackageIdentifier;
 
-    /// Symbol Table
+    ///TODO Remove Symbol Table
     public SymbolTable SymTable;
 
     /// Imports
     ImportDecl[] Imports;
+    
+    /// Sub Packages
+    PackageDecl SubPkg[];
+    
+    /// Child Declarations
+    Declaration Declarations[];
 
-    //TODO Defined Versions
+    /// Defined Versions?  
+    bool Version[string];
 
     /// Runtime enabled
     bool RuntimeEnabled = true;
 
     /// Is a Header Package
     bool IsHeader = false;
-
-    /// Modification Date
-    SysTime modificationDate;
     
-    /// Mixin for Kind Declaration
-    mixin(IsKind("PackageDecl"));
+    ///The package requested from parseFunction?
+    //Name? CompilationUnit? 
+    bool ParseTarget = false;
+    
+    /// Is a root package
+    bool IsRootPkg()
+    {
+		return Parent is null;
+	}
+
+    /// Modification Date (TODO resolve via location.id and source manager?)
+    SysTime modificationDate;
 }
 
 /**
@@ -146,6 +168,9 @@ final class PackageDecl : TypeDecl
 */
 final class ImportDecl : TypeDecl
 {
+	// Mixin for Visitor
+    mixin VisitorMixin;
+    
     /// Import Identifier
     CompositeIdentifier ImportIdentifier;
 
@@ -194,6 +219,9 @@ struct FunctionParameter
 */
 class FunctionDecl : TypeDecl
 {
+	// Mixin for Visitor
+    mixin VisitorMixin;
+    
     /// The Function Parameters
     public FunctionParameter[] Parameter;
 
@@ -239,6 +267,9 @@ class FunctionDecl : TypeDecl
 */
 final class StructDecl : TypeDecl
 {
+	// Mixin for Visitor
+    mixin VisitorMixin;
+    
     /// Symbol Table (Functions and so on)
     public SymbolTable SymTable;
 
@@ -258,6 +289,9 @@ final class StructDecl : TypeDecl
 */
 final class ClassDecl : TypeDecl
 {
+	// Mixin for Visitor
+    mixin VisitorMixin;
+    
     /// Symbol Table
     public SymbolTable SymTable;
 
@@ -291,11 +325,19 @@ final class ClassDecl : TypeDecl
     mixin(IsKind("ClassDecl"));
 }
 
+//ClassFunctionDecl
+//IsCtor
+//IsDtor
+
+
 /**
 * Trait Declaration
 */
 final class TraitDecl : TypeDecl
 {
+	// Mixin for Visitor
+    mixin VisitorMixin;
+    
     /// Symbol Table
     public SymbolTable SymTable;
 
@@ -310,6 +352,9 @@ final class TraitDecl : TypeDecl
 */
 final class AliasDecl : TypeDecl
 {
+	// Mixin for Visitor
+    mixin VisitorMixin;
+    
     /// The target type
     DataType AliasType;
 
@@ -322,6 +367,9 @@ final class AliasDecl : TypeDecl
 */
 final class EnumDecl : TypeDecl
 {
+	// Mixin for Visitor
+    //mixin VisitorMixin;
+    
     /// Mixin for Kind Declaration
     mixin(IsKind("EnumDecl"));
 }
@@ -331,6 +379,9 @@ final class EnumDecl : TypeDecl
 */
 final class VariantDecl : TypeDecl
 {
+	// Mixin for Visitor
+    //mixin VisitorMixin;
+    
     /// Mixin for Kind Declaration
     mixin(IsKind("VariantDecl"));
 }
@@ -340,6 +391,9 @@ final class VariantDecl : TypeDecl
 */
 final class VarDecl : InstanceDecl
 {
+	// Mixin for Visitor
+    mixin VisitorMixin;
+    
     /// Variable Type
     public DataType VarDataType;
     //TODO naming
@@ -375,6 +429,9 @@ final class VarDecl : InstanceDecl
 */
 final class ValDecl : InstanceDecl
 {
+	// Mixin for Visitor
+    //mixin VisitorMixin;
+    
     /// Mixin for Kind Declaration
     mixin(IsKind("ValDecl"));
 }
@@ -384,6 +441,9 @@ final class ValDecl : InstanceDecl
 */
 final class ConstDecl : InstanceDecl
 {
+	// Mixin for Visitor
+    //mixin VisitorMixin;
+    
     /// Mixin for Kind Declaration
     mixin(IsKind("ConstDecl"));
 }

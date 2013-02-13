@@ -34,6 +34,8 @@ abstract class Statement : Node
     uint Index = 0; 
 } 
 
+//For Declarations
+//final class DeclStmt : Statement 
 
 //TwoKind of Statements with SymbolTable and without
 
@@ -46,6 +48,9 @@ abstract class Statement : Node
 */
 final class BlockStmt : Statement
 {
+	// Mixin for Visitor
+    mixin VisitorMixin;
+    
     /// Statements
     public Statement[] Statements;
 
@@ -59,6 +64,9 @@ final class BlockStmt : Statement
 */
 final class ExpressionStmt : Statement
 {
+	// Mixin for Visitor
+    mixin VisitorMixin;
+    
     /// Expression
     public Expression Expr;
 
@@ -78,6 +86,9 @@ final class ExpressionStmt : Statement
 */
 final class ReturnStmt : Statement
 {
+	// Mixin for Visitor
+    mixin VisitorMixin;
+    
     /// The Return Expression
     public Expression Expr;
 
@@ -99,6 +110,9 @@ final class ReturnStmt : Statement
 */
 final class ForStmt : Statement
 {
+	// Mixin for Visitor
+    //mixin VisitorMixin;
+    
     /// Symbol Table?
 
     /// Initialization Statements
@@ -122,6 +136,9 @@ final class ForStmt : Statement
 */
 final class ForEachStmt : Statement
 {
+	// Mixin for Visitor
+    //mixin VisitorMixin;
+    
     //public VarDecl Var;
 
     public Expression List;
@@ -139,6 +156,9 @@ final class ForEachStmt : Statement
 */
 final class WhileStmt : Statement
 {
+	// Mixin for Visitor
+    //mixin VisitorMixin;
+    
     /// Post test condition, While or DoWhile
     bool PostCondition = false;
 
@@ -158,6 +178,9 @@ final class WhileStmt : Statement
 */
 final class ContinueStmt : Statement
 {
+	// Mixin for Visitor
+    //mixin VisitorMixin;
+    
     //target statement
 
     //mixin(IsKind("ContinueStmt"));
@@ -171,6 +194,9 @@ final class ContinueStmt : Statement
 */
 final class BreakStmt : Statement
 {
+	// Mixin for Visitor
+    //mixin VisitorMixin;
+    
     //target statement
     //mixin(IsKind("BreakStmt"));
 
@@ -182,21 +208,33 @@ final class BreakStmt : Statement
 
 final class ThrowStmt : Statement
 {
+	// Mixin for Visitor
+    //mixin VisitorMixin;
+    
     //Expression
     //mixin(IsKind("ThrowStmt"));
 }
 
 final class TryStmt : Statement
 {
+	// Mixin for Visitor
+    //mixin VisitorMixin;
+    
     //mixin(IsKind("TryStmt"));
 }
 
 final class CatchStmt : Statement
 {
+	// Mixin for Visitor
+    //mixin VisitorMixin;
+    
     //mixin(IsKind("CatchStmt"));
 }
 
 final class FinallyStmt : Statement
 {
+	// Mixin for Visitor
+    //mixin VisitorMixin;
+    
     //mixin(IsKind("FinallyStmt"));
 }

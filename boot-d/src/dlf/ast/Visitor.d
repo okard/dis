@@ -29,12 +29,21 @@ public import dlf.ast.SymbolTable;
 debug import std.stdio;
 
 /**
+* Parameter default on stack
+*/
+public struct VisitorParameter
+{
+	public bool Changeable = true;
+}
+
+
+/**
 * AST Visitor
 */
 public interface Visitor
 {
-    public 
-    {
+
+public:
     //Declarations
     Declaration visit(PackageDecl);
     Declaration visit(ImportDecl);
@@ -65,6 +74,7 @@ public interface Visitor
     Expression visit(IdExpr);
     Expression visit(DotExpr);
     Expression visit(BinaryExpr);
+    Expression visit(UnaryExpr);
     //Unary
     //IfExpr
     //SwitchExpr
@@ -81,8 +91,8 @@ public interface Visitor
     //RefType
     //
 
-    
-    }
+	//dummy interface
+	Node visit(Node);
 
     //voids with ref for modification or not?
     //handle in dispatch so pd = dispatch(pd) works?
@@ -91,89 +101,6 @@ public interface Visitor
     //disable special ranges (declarations, statements, expression, types, and so on)
 }
 
-private auto doVisit(T)(const bool mod, Node n, Visitor v)
-{
-    auto r = v.visit(n.to!T);
-    return mod ? r : n;
-} 
-
-/**
-* Dispatch Function General
-*/
-Node dispatch(Node n, Visitor v, const bool mod = false)
-{
-    assert(n !is null, "Node shouldn't be null");
-    assert(v !is null, "Visitor shouldn't be null");
-
-    switch(n.Kind)
-    {   
-        //Declarations
-        case NodeKind.PackageDecl: return doVisit!PackageDecl(mod, n, v);
-        case NodeKind.ImportDecl: return doVisit!ImportDecl(mod, n, v);
-        case NodeKind.VarDecl: return doVisit!VarDecl(mod, n, v);
-
-        //Value
-        //Constant
-        case NodeKind.FunctionDecl: return doVisit!FunctionDecl(mod, n, v);
-        case NodeKind.ClassDecl: return doVisit!ClassDecl(mod, n, v);
-        case NodeKind.TraitDecl: return doVisit!TraitDecl(mod, n, v);
-        case NodeKind.StructDecl: return doVisit!StructDecl(mod, n, v);
-        case NodeKind.AliasDecl: return doVisit!AliasDecl(mod, n, v);
-        //Enum
-        //Variant
-
-        //Statements
-        case NodeKind.BlockStmt: return doVisit!BlockStmt(mod, n, v);
-        case NodeKind.ExpressionStmt: return doVisit!ExpressionStmt(mod, n, v);
-        case NodeKind.ReturnStmt: return doVisit!ReturnStmt(mod, n, v);
-        //For
-        //ForEach
-        //While
-        
-        //Expressions
-        case NodeKind.LiteralExpr: return doVisit!LiteralExpr(mod, n, v);
-        case NodeKind.CallExpr: return doVisit!CallExpr(mod, n, v);
-        case NodeKind.IdExpr: return doVisit!IdExpr(mod, n, v);
-        case NodeKind.DotExpr: return doVisit!DotExpr(mod, n, v);
-        case NodeKind.BinaryExpr: return doVisit!BinaryExpr(mod, n, v);
-        //UnaryExpr
-        //If
-        //Switch
-
-        //Types
-        case NodeKind.VoidType:
-        case NodeKind.BoolType:
-        case NodeKind.Byte8Type:
-        case NodeKind.UByte8Type:
-        case NodeKind.Short16Type:
-        case NodeKind.UShort16Type:
-        case NodeKind.Int32Type:
-        case NodeKind.UInt32Type:
-        case NodeKind.Long64Type:
-        case NodeKind.ULong64Type:
-        case NodeKind.Float32Type:
-        case NodeKind.Double64Type:
-        case NodeKind.OpaqueType:
-            return doVisit!DataType(mod, n, v);
-        //requires action?
-        //DeclarationType, RefType, PtrType, ArrayType,
-        case NodeKind.FunctionType: return doVisit!FunctionType(mod, n, v);
-        case NodeKind.DotType: return doVisit!DotType(mod, n, v);
-
-
-        //Special
-        case NodeKind.Semantic: assert(false, "Can't dispatch special semantic node");
-        case NodeKind.Backend: assert(false, "Can't dispatch special backend node"); 
-    
-        default:
-            debug writeln(n.toString());
-            assert(false, "Missing dispatch case");
-            
-    }
-
-    assert(false, "should not get here");
-}
-    
 
 
 /**
@@ -187,8 +114,10 @@ mixin template DispatchUtils(bool modify)
     private final T autoDispatch(T)(T e)
     {
         if(e is null) return e;
-
-        return dispatch(e, this, modify).to!T;
+		VisitorParameter vp;
+		vp.Changeable = modify;
+		//TODO fast cast here?
+		return e.accept(this, vp).to!T;
     }
 
     /**

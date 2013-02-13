@@ -39,6 +39,9 @@ abstract class Expression : Node
 */
 final class LiteralExpr : Expression
 {
+	// Mixin for Visitor
+    mixin VisitorMixin;
+    
     /// Value
     public string Value;
 
@@ -61,6 +64,9 @@ final class LiteralExpr : Expression
 */
 final class CallExpr : Expression
 {
+	// Mixin for Visitor
+    mixin VisitorMixin;
+    
     ///Expression to retrieve a function type
     Expression Func;
 
@@ -98,6 +104,9 @@ public enum BinaryOperator : ubyte
 */
 class BinaryExpr : Expression
 {
+	// Mixin for Visitor
+    mixin VisitorMixin;
+    
     /// Operator
     BinaryOperator Op; 
 
@@ -119,6 +128,9 @@ class BinaryExpr : Expression
 */
 final class DotExpr : BinaryExpr
 {
+	// Mixin for Visitor
+    mixin VisitorMixin;
+    
     public this()
     {
         Op = BinaryOperator.Dot;
@@ -134,6 +146,9 @@ final class DotExpr : BinaryExpr
 */
 final class IdExpr : Expression
 {
+	// Mixin for Visitor
+    mixin VisitorMixin;
+    
     /// Identifier
     public string Id;
 
@@ -166,6 +181,9 @@ public enum UnaryOperator : ubyte
 */
 final class UnaryExpr : Expression
 {
+	// Mixin for Visitor
+    mixin VisitorMixin;
+    
     /// The Operator
     UnaryOperator Op;
 
@@ -181,6 +199,9 @@ final class UnaryExpr : Expression
 */
 final class LambdaExpression : Expression
 {
+	// Mixin for Visitor
+    //mixin VisitorMixin;
+    
     //has a function type
     
     //Parameter[] Arguments
@@ -195,6 +216,9 @@ final class LambdaExpression : Expression
 */
 final class IfExpr : Expression
 {
+	// Mixin for Visitor
+    //mixin VisitorMixin;
+    
     /// Condition
     Expression Condition;
     
@@ -213,6 +237,9 @@ final class IfExpr : Expression
 */
 final class SwitchExpr : Expression
 {
+	// Mixin for Visitor
+    //mixin VisitorMixin;
+    
     ///Condition?
     Expression Condition;
 

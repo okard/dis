@@ -16,48 +16,52 @@
 *    along with disc.  If not, see <http://www.gnu.org/licenses/>.
 *
 ******************************************************************************/
-module dlf.ast.Annotation;
+module dlf.basic.SourceManager;
 
-import dlf.ast.Node;
-import dlf.ast.Visitor;
-
-//TODO Rename to Attribute?
-// TestAttr
+import dlf.basic.Location;
+import dlf.basic.Source;
 
 /**
-* Annotation Base Class
+* Manging different sources
 */
-abstract class Attribute : Node
+public final class SourceManager
 {
-	mixin KindMixin!(NodeKind.Attribute);
+	/// the sources mapped by id
+	private Source sources_[uint];
 	
-    /// Annotation Name
-    string Name;
-}
-
-/**
-* UnitTest Annotation
-*/
-final class TestAttribute : Attribute
-{
-	mixin KindMixin!(NodeKind.TestAttribute);
-    mixin VisitorMixin;
-
-    //parameter pre/post methods, depends 
-}
-
-/**
-* Deprecated Annotation
-*/
-final class DeprecatedAttribute : Attribute
-{
-    //mixin(IsKind("DeprecatedAnnotation"));
-}
-
-/**
-* MainFunction Annotation for declaring a entry points for static/dynamic libraries
-*/
-final class LibMainAttribute : Attribute
-{
-    //mixin(IsKind("LibMainAnnotation"));
+	private uint curId_ = 0;
+	
+	//Save information for ids
+	
+	//TODO singleton
+	
+	///map source names
+	
+	//Other meta information about file sources?
+	
+	//get ModificationDate (sourceId)
+	
+	
+	string getName(uint sourceId)
+	{
+		return "";
+	}
+	
+	Source get(uint id)
+	{
+		return sources_[id];
+	}
+	
+	Source loadFile(string fileName)
+	{
+		auto src = new SourceFile(curId_++);
+		src.open(fileName);
+		return src;
+	}
+	
+	Source loadMemory(string buffer)
+	{
+		auto src = new SourceString(curId_++, buffer);
+		return src;
+	}
 }

@@ -34,7 +34,7 @@ enum TargetArch { x86_32, x86_64, ARM, DisVM }
 */
 struct SemanticContext
 {
-
+	//ref CoreContext
 }
 
 /**
@@ -42,6 +42,8 @@ struct SemanticContext
 */
 struct BackendContext
 {
+	//ref CoreContext
+	
     //Libraries to Link
 
     /// Object files directory
@@ -73,6 +75,8 @@ class Context
 
     /// Link program with runtime
     bool EnableRuntime = true;
+    
+    //Version Flags? bool Version[string]
 
     //parser context
 
@@ -81,9 +85,9 @@ class Context
     ///Libraries to Link (static, dynamic, ...)
     string[] libs; 
 
-    ///Semantic Context
+    ///TODO Remove Semantic Context
     SemanticContext Semantic;
 
-    ///Backend/CodeGen Context
+    ///TODO Remove Backend/CodeGen Context
     BackendContext Backend;
 }

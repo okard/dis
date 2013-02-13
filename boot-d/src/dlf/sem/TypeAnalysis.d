@@ -303,6 +303,11 @@ class TypeAnalysis : Visitor
         //type matching
         return be;
     }
+    
+	Expression visit(UnaryExpr ue)
+    {
+		return ue;
+	}
 
     /**
     * DotExpr 
@@ -466,6 +471,13 @@ class TypeAnalysis : Visitor
 
         return declType;
     }
+    
+    //dummy
+	Node visit(Node n)
+	{
+		return n;
+	}
+	
     
     ///////////////////////////////////////////////////////////////////////////
     //Helper
