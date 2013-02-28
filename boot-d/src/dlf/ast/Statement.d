@@ -48,14 +48,11 @@ abstract class Statement : Node
 */
 final class BlockStmt : Statement
 {
-	// Mixin for Visitor
+	mixin KindMixin!(NodeKind.BlockStmt);
     mixin VisitorMixin;
     
     /// Statements
     public Statement[] Statements;
-
-    /// Mixin for Kind Declaration
-    mixin(IsKind("BlockStmt"));
 }
 
 /**
@@ -64,7 +61,7 @@ final class BlockStmt : Statement
 */
 final class ExpressionStmt : Statement
 {
-	// Mixin for Visitor
+	mixin KindMixin!(NodeKind.ExpressionStmt);
     mixin VisitorMixin;
     
     /// Expression
@@ -76,9 +73,6 @@ final class ExpressionStmt : Statement
         Expr = expr;
         expr.Parent = this;
     }
-
-    /// Mixin for Kind Declaration
-    mixin(IsKind("ExpressionStmt"));
 }
 
 /**
@@ -86,7 +80,7 @@ final class ExpressionStmt : Statement
 */
 final class ReturnStmt : Statement
 {
-	// Mixin for Visitor
+	mixin KindMixin!(NodeKind.ReturnStmt);
     mixin VisitorMixin;
     
     /// The Return Expression
@@ -100,9 +94,6 @@ final class ReturnStmt : Statement
     {
         Expr = expr;
     }
-
-    /// Mixin for Kind Declaration
-    mixin(IsKind("ReturnStmt"));
 }
 
 /**
@@ -110,7 +101,7 @@ final class ReturnStmt : Statement
 */
 final class ForStmt : Statement
 {
-	// Mixin for Visitor
+	mixin KindMixin!(NodeKind.ForStmt);
     //mixin VisitorMixin;
     
     /// Symbol Table?
@@ -126,9 +117,6 @@ final class ForStmt : Statement
 
     /// The Body Statement
     public Statement Body;
-
-    /// Mixin for Kind Declaration
-    mixin(IsKind("ForStmt"));
 }
 
 /**
@@ -136,7 +124,7 @@ final class ForStmt : Statement
 */
 final class ForEachStmt : Statement
 {
-	// Mixin for Visitor
+	mixin KindMixin!(NodeKind.ForEachStmt);
     //mixin VisitorMixin;
     
     //public VarDecl Var;
@@ -145,9 +133,6 @@ final class ForEachStmt : Statement
 
     /// Body Statement
     public Statement Body;
-
-    /// Mixin for Kind Declaration
-    mixin(IsKind("ForEachStmt"));
 }
 
 /**
@@ -156,7 +141,7 @@ final class ForEachStmt : Statement
 */
 final class WhileStmt : Statement
 {
-	// Mixin for Visitor
+	mixin KindMixin!(NodeKind.WhileStmt);
     //mixin VisitorMixin;
     
     /// Post test condition, While or DoWhile
@@ -167,9 +152,6 @@ final class WhileStmt : Statement
 
     /// Body Statement
     public Statement Body;
-
-    /// Mixin for Kind Declaration
-    mixin(IsKind("WhileStmt"));
 }
 
 

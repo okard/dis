@@ -168,7 +168,7 @@ final class PackageDecl : TypeDecl
 */
 final class ImportDecl : TypeDecl
 {
-	// Mixin for Visitor
+	mixin KindMixin!(NodeKind.ImportDecl);
     mixin VisitorMixin;
     
     /// Import Identifier
@@ -183,9 +183,6 @@ final class ImportDecl : TypeDecl
 
     /// The associated package node
     PackageDecl Package;
-
-    /// Mixin for Kind Declaration
-    mixin(IsKind("ImportDecl"));
 }
 
 /**
@@ -219,7 +216,7 @@ struct FunctionParameter
 */
 class FunctionDecl : TypeDecl
 {
-	// Mixin for Visitor
+	mixin KindMixin!(NodeKind.FunctionDecl);
     mixin VisitorMixin;
     
     /// The Function Parameters
@@ -257,9 +254,6 @@ class FunctionDecl : TypeDecl
 
     /// Calling Convention
     public CallingConvention CallingConv;
-
-    /// Mixin for Kind Declaration
-    mixin(IsKind("FunctionDecl"));
 }
 
 /**
@@ -267,7 +261,7 @@ class FunctionDecl : TypeDecl
 */
 final class StructDecl : TypeDecl
 {
-	// Mixin for Visitor
+	mixin KindMixin!(NodeKind.StructDecl);
     mixin VisitorMixin;
     
     /// Symbol Table (Functions and so on)
@@ -278,9 +272,6 @@ final class StructDecl : TypeDecl
 
     /// Inherits from Base
     public DataType BaseType;
-    
-    /// Mixin for Kind Declaration
-    mixin(IsKind("StructDecl"));
 }
 
 
@@ -289,7 +280,7 @@ final class StructDecl : TypeDecl
 */
 final class ClassDecl : TypeDecl
 {
-	// Mixin for Visitor
+	mixin KindMixin!(NodeKind.ClassDecl);
     mixin VisitorMixin;
     
     /// Symbol Table
@@ -320,9 +311,6 @@ final class ClassDecl : TypeDecl
 
     //Implementations
     //public ClassDecl[DeclarationType] Instances;
-
-    /// Mixin for Kind Declaration
-    mixin(IsKind("ClassDecl"));
 }
 
 //ClassFunctionDecl
@@ -335,16 +323,13 @@ final class ClassDecl : TypeDecl
 */
 final class TraitDecl : TypeDecl
 {
-	// Mixin for Visitor
+	mixin KindMixin!(NodeKind.TraitDecl);
     mixin VisitorMixin;
     
     /// Symbol Table
     public SymbolTable SymTable;
 
     //Variables, Methods, Properties
-
-    /// Mixin for Kind Declaration
-    mixin(IsKind("TraitDecl"));
 }
 
 /**
@@ -352,14 +337,11 @@ final class TraitDecl : TypeDecl
 */
 final class AliasDecl : TypeDecl
 {
-	// Mixin for Visitor
+	mixin KindMixin!(NodeKind.AliasDecl);
     mixin VisitorMixin;
     
     /// The target type
     DataType AliasType;
-
-    /// Mixin for Kind Declaration
-    mixin(IsKind("AliasDecl"));
 }
 
 /**
@@ -367,11 +349,9 @@ final class AliasDecl : TypeDecl
 */
 final class EnumDecl : TypeDecl
 {
+	mixin KindMixin!(NodeKind.EnumDecl);
 	// Mixin for Visitor
     //mixin VisitorMixin;
-    
-    /// Mixin for Kind Declaration
-    mixin(IsKind("EnumDecl"));
 }
 
 /**
@@ -379,11 +359,9 @@ final class EnumDecl : TypeDecl
 */
 final class VariantDecl : TypeDecl
 {
-	// Mixin for Visitor
+	mixin KindMixin!(NodeKind.VariantDecl);
     //mixin VisitorMixin;
     
-    /// Mixin for Kind Declaration
-    mixin(IsKind("VariantDecl"));
 }
 
 /**
@@ -391,7 +369,7 @@ final class VariantDecl : TypeDecl
 */
 final class VarDecl : InstanceDecl
 {
-	// Mixin for Visitor
+	mixin KindMixin!(NodeKind.VarDecl);
     mixin VisitorMixin;
     
     /// Variable Type
@@ -419,9 +397,6 @@ final class VarDecl : InstanceDecl
     {
         VarDataType = type;
     }
-
-    /// Mixin for Kind Declaration
-    mixin(IsKind("VarDecl"));
 }
 
 /**
@@ -429,11 +404,8 @@ final class VarDecl : InstanceDecl
 */
 final class ValDecl : InstanceDecl
 {
-	// Mixin for Visitor
+	mixin KindMixin!(NodeKind.ValDecl);
     //mixin VisitorMixin;
-    
-    /// Mixin for Kind Declaration
-    mixin(IsKind("ValDecl"));
 }
 
 /**
@@ -441,10 +413,9 @@ final class ValDecl : InstanceDecl
 */
 final class ConstDecl : InstanceDecl
 {
+	mixin KindMixin!(NodeKind.ConstDecl);
 	// Mixin for Visitor
     //mixin VisitorMixin;
     
-    /// Mixin for Kind Declaration
-    mixin(IsKind("ConstDecl"));
 }
 

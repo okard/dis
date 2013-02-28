@@ -95,6 +95,8 @@ class ArgHelper
         return Args[++pos];
     }
 
+	//isNumber?
+		//-> isFormat(regex)
     //TODO getNumber
     //TODO getValue(["foo", "bar"]) 
 

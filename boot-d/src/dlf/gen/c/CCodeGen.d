@@ -546,8 +546,7 @@ class CCodeGen : ObjectGen, BinaryGen, Visitor
             Type = type;
         }
 
-        ///Node Kind Mixin
-        mixin(IsKind("Backend"));
+        mixin KindMixin!(NodeKind.Backend);
     }
 
 }

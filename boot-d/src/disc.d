@@ -21,23 +21,30 @@ module disc;
 import std.stdio;
 import std.datetime;
 
+//Basic Imports
 import dlf.basic.Log;
 import dlf.basic.SourceManager;
 import dlf.basic.Source;
 import dlf.basic.ArgHelper;
 import dlf.basic.Util;
 
+// Default Context
+import dlf.Context;
+
+// AST
 import dlf.ast.Printer;
 import dlf.ast.Node;
 import dlf.ast.Declaration;
+
+// Dis Lexer/Parser
 import dlf.dis.Token;
 import dlf.dis.Lexer;
-
 import dlf.dis.Parser;
 
+// Semantic Runs
 import dlf.sem.Semantic;
 
-import dlf.Context;
+// Backend / Code Generation
 import dlf.gen.HeaderGen;
 import dlf.gen.DocGen;
 import dlf.gen.CodeGen;
