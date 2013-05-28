@@ -24,20 +24,14 @@ THE SOFTWARE.
 */
 package(nr) rt.mem;
 
-type MemObj : ubyte = 
+trait Allocator(T)
 {
-    //Boxed Types
-    PBool,
-    PByte,
-    PShort,
-    PInt,
-    PLong,
-
-    //Closure
-    Closure,
-
-    //Things with TypeInfo Reference
-    //Array, Set, Dict, Struct, Object
-    TypeInfo
+	def alloc(count: size_t) : ptr T;
+	def free(obj : ptr T);
+	
+	def construct(obj : ptr T);
+	def destruct(obj: ptr T);
 }
 
+//Allocator<ubyte8>
+//Allocator<object>

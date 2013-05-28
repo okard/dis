@@ -43,7 +43,8 @@ User defined types:
 PackageDeclaration & \rightarrow "package" identifier\; \\
 \end{ebnf}
 
-\subsubsection*{Type Identifier}
+\subsubsection{Types}
+
 \begin{itemize}
 \item Identifier
 \item Identifier.Identifier
@@ -52,6 +53,8 @@ PackageDeclaration & \rightarrow "package" identifier\; \\
 \item Identifier!(Identifier, Identifier)
 \item {[}Identifier]
 \item Identifier *
+\item ref Type
+\item ptr Type
 \end{itemize}
 
 %% Variables %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -134,15 +137,15 @@ type Number = byte | short | int | long | float | double;
 
 
 \subsection{Statements}
-for 
-while do  
-try catch finally
-return
-
+\subsubsection{for-Statement}
+\subsubsection{while-do-Statement}
+\subsubsection{try-catch-finally-Statement}
+\subsubsection{return-Statement}
 \begin{ebnf}
 ReturnStatement & \rightarrow "return" Expression \\
 \end{ebnf}
 
+\subsubsection{Expression-Statement}
 \begin{ebnf}
 BlockStatement & \rightarrow {Statement} \\
 \end{ebnf}
@@ -152,12 +155,20 @@ block
 (mixins)
 
 \subsection{Expression}
+
+
+\subsubsection{Binary-Expression}
 \begin{itemize}
 \item BinaryOperator: \& | + - * ** / \% \textasciicircum{} 
 \item LogicalOperator: \&\&  ||
 \end{itemize}
-if 
-switch
-cast Expressions
-Lambda Expressions
+
+\subsubsection{Unary-Expression}
+
+\subsubsection{if-Expression}
+\subsubsection{switch-case-Expression}
+\subsubsection{cast-Expression}
+\subsubsection{lambda-Expression}
+\subsubsection{if-Expression}
+
 
