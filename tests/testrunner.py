@@ -5,7 +5,7 @@ import subprocess
 
 # Settings:
 TEST_DIR = os.path.dirname(__file__) # test path (is script path)
-DISC = os.path.join(TEST_DIR, "../boot-d/disc.sh") # the compiler executable
+DISC = os.path.join(TEST_DIR, "../boot-cpp/bin/disc") # the compiler executable
 LIBDIR = os.path.join(TEST_DIR, "../boot-d/bin/") # libraries e.g. runtime
 OBJDIR = os.path.join(TEST_DIR, ".objdis") # object files for test compilation
 BINDIR = os.path.join(TEST_DIR, ".testbin") # test binaries
@@ -113,6 +113,7 @@ def compileTest(spec, testfile):
                 write(color, "Unkown Result: {0}".format(ret));
            
             if ret == 0:
+				#TODO check if file exists
                 return os.path.join(BINDIR, binname)
             else:
                 return None
@@ -131,12 +132,13 @@ def compileTest(spec, testfile):
 def runTest(spec, testExec):
     
     # check if binary is available
-    if testExec == None:
+    if testExec == None or not os.path.isfile(testExec):
         color = FAIL
         if int(spec.get(SPECCOMPRESULT, "0")) != 0:
             color = OKGREEN
         write(color, "No Binary");
         return
+        
         
     #LD Path
     runenv = os.environ

@@ -22,10 +22,12 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
+#[abi(c)]
 package rt.c.stdio;
 
-def(C) printf(format : ptr, ...) : int;
-
+def printf(format : ptr, ...) : int;
+struct FILE;
+var stdin : *FILE;
 
 //stdin, stdout and stderr
 //var(C) stdin : ptr = $external;
