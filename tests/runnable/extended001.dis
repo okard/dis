@@ -8,26 +8,29 @@ package tests.runnable.extended001;
 
 import std.io;
 
-//class
-obj foo
-{
-    var i: int32 = 0;
-}
-
 //interface
 trait Printable
 {
     def print() : void;
 }
 
-//extension method
+//class
+obj foo
+{
+    var i: int32 = 4;
+}
 def print(this f: foo): void = writeln(f.i.toString());
+
+// primary type
+var i: int32 = 5;
+def print(this i: int32): void = writeln(i.toString());
 
 //main
 def main
 {
     var f: Printable = foo();
     f.print();
+    i.print();
 }
 
 

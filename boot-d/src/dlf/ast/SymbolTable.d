@@ -30,7 +30,7 @@ import dlf.ast.Declaration;
 */
 final struct SymbolTable
 {
-    /// Owner Node of SymbolTable (to declaration?)
+    /// Owner Node of SymbolTable (to declaration?) Declaration Owner
     public Node Owner;
 
     //TODO Use Interface for SymbolTable owner
@@ -217,6 +217,19 @@ final struct SymbolTable
     Disp:Integer (offset)
     */
 }
+
+/*
+ 
+SymbolTableSet
+	- rootTable;
+	- currentTable;
+	- push()
+	- createPush();
+	- pop()
+	- depth;
+
+
+*/
 
 
 /*

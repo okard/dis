@@ -39,7 +39,7 @@ abstract class Expression : Node
 */
 final class LiteralExpr : Expression
 {
-	// Mixin for Visitor
+	mixin KindMixin!(NodeKind.LiteralExpr);
     mixin VisitorMixin;
     
     /// Value
@@ -51,9 +51,6 @@ final class LiteralExpr : Expression
         Value = value;
         ReturnType = returnType;
     }
-
-    ///Mixin for Kind Declaration
-    mixin(IsKind("LiteralExpr"));
 }
 
 //TODO IntLiteral
@@ -64,7 +61,7 @@ final class LiteralExpr : Expression
 */
 final class CallExpr : Expression
 {
-	// Mixin for Visitor
+	mixin KindMixin!(NodeKind.CallExpr);
     mixin VisitorMixin;
     
     ///Expression to retrieve a function type
@@ -74,9 +71,6 @@ final class CallExpr : Expression
     Expression[] Arguments;
 
     //return type is mFunction.solve().mReturnType
-
-    ///Mixin for Kind Declaration
-    mixin(IsKind("CallExpr"));
 }
 
 
@@ -104,7 +98,7 @@ public enum BinaryOperator : ubyte
 */
 class BinaryExpr : Expression
 {
-	// Mixin for Visitor
+	mixin KindMixin!(NodeKind.BinaryExpr);
     mixin VisitorMixin;
     
     /// Operator
@@ -116,8 +110,6 @@ class BinaryExpr : Expression
     /// Right Expression
     Expression Right;
 
-    /// Mixin for Kind Declaration
-    mixin(IsKind("BinaryExpr"));
 }
 
 /**
@@ -128,15 +120,13 @@ class BinaryExpr : Expression
 */
 final class DotExpr : BinaryExpr
 {
-	// Mixin for Visitor
+	mixin KindMixin!(NodeKind.DotExpr);
     mixin VisitorMixin;
     
     public this()
     {
         Op = BinaryOperator.Dot;
     }
-
-    mixin(IsKind("DotExpr"));
 }
 
 /**
@@ -146,7 +136,7 @@ final class DotExpr : BinaryExpr
 */
 final class IdExpr : Expression
 {
-	// Mixin for Visitor
+	mixin KindMixin!(NodeKind.IdExpr);
     mixin VisitorMixin;
     
     /// Identifier
@@ -162,9 +152,6 @@ final class IdExpr : Expression
     {   
         return Id;
     }
-
-    ///Mixin for Kind Declaration
-    mixin(IsKind("IdExpr"));
 }
 
 /**
@@ -181,7 +168,7 @@ public enum UnaryOperator : ubyte
 */
 final class UnaryExpr : Expression
 {
-	// Mixin for Visitor
+	mixin KindMixin!(NodeKind.UnaryExpr);
     mixin VisitorMixin;
     
     /// The Operator
@@ -189,9 +176,6 @@ final class UnaryExpr : Expression
 
     /// The Expression
     Expression Expr;
-
-    /// Mixin for Kind Declaration
-    mixin(IsKind("UnaryExpr"));
 }
 
 /**
@@ -216,6 +200,7 @@ final class LambdaExpression : Expression
 */
 final class IfExpr : Expression
 {
+	mixin KindMixin!(NodeKind.IfExpr);
 	// Mixin for Visitor
     //mixin VisitorMixin;
     
@@ -227,9 +212,6 @@ final class IfExpr : Expression
 
     /// Else Expression
     Expression ElseExpr;
-
-    ///Mixin for Kind Declaration
-    mixin(IsKind("IfExpr"));
 }
 
 /**
@@ -237,6 +219,7 @@ final class IfExpr : Expression
 */
 final class SwitchExpr : Expression
 {
+	mixin KindMixin!(NodeKind.SwitchExpr);
 	// Mixin for Visitor
     //mixin VisitorMixin;
     
@@ -247,6 +230,4 @@ final class SwitchExpr : Expression
     //default case
         //CaseExpression?
 
-    ///Mixin for Kind Declaration
-    mixin(IsKind("SwitchExpr"));
 }

@@ -1,11 +1,22 @@
 
 # Dis Programming Language
 
+## Start with respository
+
+	$ git submodule update --init --recursive
+	
+	# set push url
+	$ git remote set-url --push origin <url>
+	
 ## Repository Structure
 
 * boot-d/
 
-    Bootstrap Compiler written in D
+    Bootstrap Compiler written in D (deprecated)
+    
+* boot-cpp/
+	
+	Bootstrap Compiler written in C++ 
     
 * doc/
     

@@ -41,8 +41,25 @@ can be configured. To access type information at runtime is still a todo;
 
     $(expr).Node - Access the Ast Node of expr
     
-    
+        .replace(astnode)
+                (string (bytearray intepreted as text))
+        .dump(File)
+        .append
         
+    //function using AstNodes?
+	def function( a : $Node) : $Node
+	
+	$.ast.Decl
+	
+	$(expr).astNode;
+
+## CTFE statements?
+
+	$if($flag[ARCH_x32)])
+	{}
+	$flag(ARCH_x32)
+	{}
+ 
 ## Explicit Functions execution
 
 Additional to *$.* and *$()* the expression *$identifier()* can be used to enforce ctfe, 
@@ -54,7 +71,14 @@ To be shure that a function can and will be run at compile time these expression
 Example
 
     $$fak(5) - Calling fak(5) at compile time
+    
 
+## Special Functions
+
+Include the file as binary data
+
+	var data = $.include_bin(path);
+			   $include_bin(path);
 
 ## Internal Structure
 

@@ -138,14 +138,6 @@ abstract class Node
     }
 }
 
-/**
-* Mixin for Node Kind Declaration
-*/
-string IsKind(string name)
-{
-    return "@property public override NodeKind Kind(){ return NodeKind."~name~"; } " ~
-           "@property public final static NodeKind Kind() { return NodeKind."~name~"; } ";
-}
 
 /**
 * Visitor Mixin

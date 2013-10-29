@@ -89,101 +89,101 @@ final class BoolType : PrimaryType!(BoolType, "bool", NodeKind.BoolType) { mixin
 /// 8 Bit signed
 final class Byte8Type : DataType
 {
+	mixin KindMixin!(NodeKind.Byte8Type);
 	mixin VisitorMixin;
     override string toString() { return "byte8"; }
     mixin Singleton!Byte8Type;
-    mixin PtrTypeSingleton;
-    mixin(IsKind("Byte8Type"));
+    mixin PtrTypeSingleton;  
 }
 
 /// 8 Bit unsigned
 final class UByte8Type : DataType
 {
+	mixin KindMixin!(NodeKind.UByte8Type);
 	mixin VisitorMixin;
     override string toString() { return "ubyte8"; }
     mixin Singleton!UByte8Type;
     mixin PtrTypeSingleton;
-    mixin(IsKind("UByte8Type"));
 }
 
 /// 16 Bit
 final class Short16Type : DataType
 {
+	mixin KindMixin!(NodeKind.Short16Type);
 	mixin VisitorMixin;
     override string toString() { return "short16"; }
     mixin Singleton!Short16Type;
     mixin PtrTypeSingleton;
-    mixin(IsKind("Short16Type"));
 }
 
 /// 16 Bit
 final class UShort16Type : DataType
 {
+	mixin KindMixin!(NodeKind.UShort16Type);
 	mixin VisitorMixin;
     override string toString() { return "ushort16"; }
     mixin Singleton!UShort16Type;
     mixin PtrTypeSingleton;
-    mixin(IsKind("UShort16Type"));
 }
 
 /// 32 Bit
 final class Int32Type : DataType
 {
+	mixin KindMixin!(NodeKind.Int32Type);
 	mixin VisitorMixin;
     override string toString() { return "int32"; }
     mixin Singleton!Int32Type;
     mixin PtrTypeSingleton;
-    mixin(IsKind("Int32Type"));
 }
 
 /// 32 Bit
 final class UInt32Type : DataType
 {
+	mixin KindMixin!(NodeKind.UInt32Type);
 	mixin VisitorMixin;
     override string toString() { return "uint32"; }
     mixin Singleton!UInt32Type;
     mixin PtrTypeSingleton;
-    mixin(IsKind("UInt32Type"));
 }
 
 /// 64 Bit
 final class Long64Type : DataType
 {
+	mixin KindMixin!(NodeKind.Long64Type);
 	mixin VisitorMixin;
     override string toString() { return "long64"; }
     mixin Singleton!Long64Type;
     mixin PtrTypeSingleton;
-    mixin(IsKind("Long64Type"));
 }
 
 /// 64 Bit
 final class ULong64Type : DataType
 {
+	mixin KindMixin!(NodeKind.ULong64Type);
 	mixin VisitorMixin;
     override string toString() { return "ulong64"; }
     mixin Singleton!ULong64Type;
     mixin PtrTypeSingleton;
-    mixin(IsKind("ULong64Type"));
 }
 
 /// 32 Bit Floating Point IEEE754
 final class Float32Type : DataType
 {
+	mixin KindMixin!(NodeKind.Float32Type);
 	mixin VisitorMixin;
     override string toString() { return "float32"; }
     mixin Singleton!Float32Type;
     mixin PtrTypeSingleton;
-    mixin(IsKind("Float32Type"));
 }
 
 /// 64 Bit Floating Point IEEE754
 final class Double64Type : DataType
 {
+	mixin KindMixin!(NodeKind.Double64Type);
 	mixin VisitorMixin;
     override string toString() { return "double64"; }
     mixin Singleton!Double64Type;
     mixin PtrTypeSingleton;
-    mixin(IsKind("Double64Type"));
 }
 
 /**
@@ -192,10 +192,10 @@ final class Double64Type : DataType
 */
 final class OpaqueType : DataType
 {
+	mixin KindMixin!(NodeKind.OpaqueType);
 	mixin VisitorMixin;
     override string toString() { return "<Opaque>"; }
     mixin Singleton!OpaqueType;
-    mixin(IsKind("OpaqueType"));
 }
 
 /**
@@ -204,7 +204,7 @@ final class OpaqueType : DataType
 */
 final class PtrType : DataType 
 {
-    mixin(IsKind("PtrType"));
+    mixin KindMixin!(NodeKind.PtrType);
     mixin VisitorMixin;
 
     ///The Type this PoiThe Intelligent Transport Layer - nterType points to
@@ -229,7 +229,7 @@ final class PtrType : DataType
 */
 class RefType : DataType
 {
-    mixin(IsKind("RefType"));
+	mixin KindMixin!(NodeKind.RefType);
     mixin VisitorMixin;
 
     public DataType TargetType;
@@ -248,7 +248,7 @@ class RefType : DataType
 */
 class ArrayType : DataType
 {
-    mixin(IsKind("ArrayType"));
+	mixin KindMixin!(NodeKind.ArrayType);
     mixin VisitorMixin;
 
     /// DataType of Array
@@ -279,7 +279,7 @@ class ArrayType : DataType
 */
 final class DotType : DataType
 {
-    mixin(IsKind("DotType"));
+	mixin KindMixin!(NodeKind.DotType);
     mixin VisitorMixin;
 
     /// Name
@@ -299,7 +299,7 @@ final class DotType : DataType
 */
 final class DeclarationType : DataType
 {
-    mixin(IsKind("DeclarationType"));
+	mixin KindMixin!(NodeKind.DeclarationType);
     mixin VisitorMixin;
 
     /// Target Declaration
@@ -315,7 +315,7 @@ final class DeclarationType : DataType
 */
 class FunctionType : DataType
 { 
-    mixin(IsKind("FunctionType"));	
+    mixin KindMixin!(NodeKind.FunctionType);
     mixin VisitorMixin;
 
     /// The function type arguments
