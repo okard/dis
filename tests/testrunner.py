@@ -6,7 +6,7 @@ import subprocess
 # Settings:
 TEST_DIR = os.path.dirname(__file__) # test path (is script path)
 DISC = os.path.join(TEST_DIR, "../boot-cpp/bin/disc") # the compiler executable
-LIBDIR = os.path.join(TEST_DIR, "../boot-d/bin/") # libraries e.g. runtime
+LIBDIR = os.path.join(TEST_DIR, "../boot-cpp/bin/") # libraries e.g. runtime
 OBJDIR = os.path.join(TEST_DIR, ".objdis") # object files for test compilation
 BINDIR = os.path.join(TEST_DIR, ".testbin") # test binaries
 
