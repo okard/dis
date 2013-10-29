@@ -11,12 +11,12 @@ All stuff related to compile time access using the symbol **$**
 
     $ - Compile Time Object
 
-Scope Properties:
+Scope Context Properties:
 
-    $.File - Current File Name (Full path)
-    $.Line - Current Line
-    $.Col - Current Column
-    $.Decl - Current Declaration (String)
+    $File - Current File Name (Full path)
+    $Line - Current Line
+    $Col - Current Column
+    $Decl - Current Declaration (String
 
 
 ## Access compile time informations for source code elements
@@ -39,16 +39,9 @@ can be configured. To access type information at runtime is still a todo;
 
 ## Working with AST Nodes
 
-    $.AstNode - access to ast node at compiler level
-
-    //Manipulate AST Nodes
-    //Run at semantic interpreter
-    $.AstNode
-        .replace(astnode)
-                (string (bytearray intepreted as text))
-        .dump(File)
-        .append
-
+    $(expr).Node - Access the Ast Node of expr
+    
+    
         
 ## Explicit Functions execution
 
@@ -56,11 +49,11 @@ Additional to *$.* and *$()* the expression *$identifier()* can be used to enfor
 also the compiler can decide to run functions at compile time when they are not explicitly called as CTFE. 
 To be shure that a function can and will be run at compile time these expression can be used.
 
-    $type() - Execution Call Expression
+    $$type() - Execution Call Expression
 
 Example
 
-    $fak(5) - Calling fak(5) at compile time
+    $$fak(5) - Calling fak(5) at compile time
 
 
 ## Internal Structure

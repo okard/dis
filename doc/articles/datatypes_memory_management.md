@@ -10,6 +10,8 @@ For dis as a native language has a common set of primitive data types showed by 
 
 * Boolean: bool
 * Numbers: byte8, short16, int32, long64 (signed and unsigned )
+            int8,int16,int32,int64, uint8,uint16,uint16,uint32,uint64
+
 * Floating Point Numbers; float, double (IEEE 754)
 
 ### User types 
@@ -85,6 +87,10 @@ Classes:
 
     var x : myobj = myobj();        //stack allocated
     var y : ref myobj = myobj();    //heap allocated
+    
+    var x : myobj;  //stack allocated (Copy Constructor Calls)
+    var x : &myobj; //reference type GC allocated
+    var x : *myobj; //raw ptr
 
     //Implicit typing
     def bar(x) = x;
