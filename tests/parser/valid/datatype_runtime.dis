@@ -1,0 +1,13 @@
+
+
+//Array
+
+var a : []int8;
+
+//Map
+
+var b : [int8]int8;
+
+//Set
+
+var c : [int8];

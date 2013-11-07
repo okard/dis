@@ -1,0 +1,19 @@
+
+
+
+//basic (type required for semantic)
+var a : int8;
+let b : int8;
+const c : int8;
+
+
+//initializer
+var d = 0;
+let e = 0;
+const f = 0;
+
+//type + initializer
+var g : int8 = 0;
+let h : int8 = 0;
+const i : int8 = 0;
+

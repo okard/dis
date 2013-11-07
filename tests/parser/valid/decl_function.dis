@@ -1,0 +1,51 @@
+
+//required
+package tests.parser.valid.func;
+
+//basic
+def a
+{
+}
+
+def b()
+{
+}
+
+//parameter
+def c(p)
+{
+}
+
+def d( p: int8)
+{
+}
+
+def e(var p)
+{
+}
+
+def f(let p)
+{
+}
+
+def g(let p: int8)
+{
+}
+
+//expr definition
+def h = 0;
+
+def i() = 0;
+
+//declaration only
+def j;
+
+def k();
+
+def l(p);
+
+
+//main funtion to satisfy semantic check for existing main
+def main
+{
+}
