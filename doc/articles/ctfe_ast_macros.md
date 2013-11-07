@@ -16,7 +16,7 @@ Scope Context Properties:
     $File - Current File Name (Full path)
     $Line - Current Line
     $Col - Current Column
-    $Decl - Current Declaration (String
+    $Decl - Current Declaration (String)
 
 
 ## Access compile time informations for source code elements
@@ -57,7 +57,7 @@ can be configured. To access type information at runtime is still a todo;
 
 	$if($flag[ARCH_x32)])
 	{}
-	$flag(ARCH_x32)
+	$flag(ARCH\_x32)
 	{}
  
 ## Explicit Functions execution
