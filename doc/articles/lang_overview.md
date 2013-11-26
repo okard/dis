@@ -26,16 +26,42 @@
 ## Classes
 	
 	"obj" 'name' [ "(" <obj_tpl> ")" ] <body_class>
+	
+	obj foo
+	{
+		priv var counter: uint8 = 0;
+		
+		pub def print()
+		{
+			writeln("Counter %d", counter);
+			counter++;
+		}
+	}
+	
 
 ## Trait
-	"trait"
+	"trait" 'name' 
+	
+	
+	trait Printable
+	{
+		pub def print();
+	}	
 
 ## Attributes
 
 	"#" "[" <attr> "]"
 
 
-
+	#[no_runtime]
+	package abc;
+	
+	#[cconv("c")]
+	#[unsafe]
+	def c_func()
+	{
+	}
+	
 
 
 

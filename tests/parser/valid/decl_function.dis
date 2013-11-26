@@ -1,6 +1,6 @@
 
 //required
-package tests.parser.valid.func;
+package tests.parser.valid.decl_function;
 
 //basic
 def a
@@ -32,17 +32,43 @@ def g(let p: int8)
 {
 }
 
-//expr definition
-def h = 0;
+//return type
+def h() : void
+{
+}
 
-def i() = 0;
+
+//ijkl
+
+//expr definition
+def m = 0;
+
+def n() = 0;
 
 //declaration only
-def j;
+def o;
 
-def k();
+def p();
 
-def l(p);
+def q(p: int8);
+
+//multiple args
+
+def r(p, pp)
+{
+}
+
+def s (p: int8, pp:int8)
+{
+}
+
+def t(p, pp:int8)
+{
+}
+
+
+// varargs
+
 
 
 //main funtion to satisfy semantic check for existing main

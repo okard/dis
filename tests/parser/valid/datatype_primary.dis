@@ -1,10 +1,12 @@
 
 
 
-//simple builtin types
-
+//simple builtin types (ident)
 var a : int8;
 
-//pointer
+//pointer raw, ref, owned
+
+//concat types
+//-foo.bar.func
 
 
