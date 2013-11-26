@@ -69,7 +69,21 @@ def t(p, pp:int8)
 
 // varargs
 
+// flags
 
+priv def u()
+{
+}
+
+pub def v()
+{
+}
+
+prot def w()
+{
+}
+
+//def x(this b: uint8) {}
 
 //main funtion to satisfy semantic check for existing main
 def main

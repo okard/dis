@@ -1,0 +1,24 @@
+
+//required
+package tests.parser.valid.decl_class;
+
+obj a
+{
+}
+
+
+
+obj b
+{
+    priv var ba : int8 = 0;
+    
+    pub def bb()
+    {
+    }
+}
+
+
+obj c(T:int8)
+{
+    var cc : T;
+}
