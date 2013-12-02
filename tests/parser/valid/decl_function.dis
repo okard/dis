@@ -83,7 +83,8 @@ prot def w()
 {
 }
 
-//def x(this b: uint8) {}
+//extension functions
+//def x(this:~uint8) {}
 
 //main funtion to satisfy semantic check for existing main
 def main

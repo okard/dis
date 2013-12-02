@@ -1,6 +1,14 @@
 
 # Dis Programming Language
 
+* Native
+* Flexible
+* Modern
+* Consistent
+* Multi-paradigm
+* Completly OSS
+* Influences: C++, D, Rust
+
 ## Start with respository
 
 	$ git submodule update --init --recursive

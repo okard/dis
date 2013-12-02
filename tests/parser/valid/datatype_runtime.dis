@@ -1,8 +1,9 @@
 
+package tests.parser.valid.datatype_runtime;
 
 //Array
 
-var a : []int8;
+var a : []uint8;
 
 //Map
 
@@ -11,3 +12,7 @@ var b : [int8]int8;
 //Set
 
 var c : [int8];
+
+//String
+
+var d : string;
