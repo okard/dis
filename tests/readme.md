@@ -60,8 +60,8 @@ and analyze the results
 
 * TODO
 	command line args for compile / run
-		//# compile-args: $disc -od -o $out $sources
-		//# run-args: $exc 1 2
+		//# compile-cmd: $disc -od -o $out $sources
+		//# run-cmd: $exc 1 2
 	enviroment for compile/run
 		//# compile-env: foo=bar
 		//# run-env: foo=bar

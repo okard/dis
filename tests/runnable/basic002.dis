@@ -1,8 +1,9 @@
 
-//# Desc: simple variable initialization
-//# CompileResult: 0
-//# RunResult: 0
-//# Type: Runnable
+//# desc: simple variable initialization
+//# type: Runnable
+//# compile-cmd: {disc} {srcfile} -o {outname}
+//# compile-result: 0
+//# run-result: 0
 
 package tests.runnable.basic002;
 

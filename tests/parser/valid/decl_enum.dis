@@ -1,0 +1,50 @@
+//# desc: Declaration - Enum
+//# type: Runnable
+//# compile-cmd: {disc} -parse {srcfile} -o {outname}
+//# compile-result: 0
+//# run-cmd: {exc}
+//# run-result: 0
+
+package tests.parser.valid.decl_enum;
+
+
+//simple
+enum A
+{
+    S,
+    SS,
+    Foo
+}
+
+//with type
+enum B : uint8
+{
+    ABC,
+    BCD,
+    Foo
+}
+
+
+//with value expression
+enum C
+{
+    A = 1,
+    B = 0xff,
+    C = 0b101010
+}
+
+
+//type with values
+enum D : uint8
+{
+    A = 1 << 0,
+    B = 1 << 1,
+    C = 1 << 2
+}
+
+//complex enum
+enum E 
+{
+    A(name: int8),
+    B(id: uint8, fid: int8)
+}

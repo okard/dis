@@ -2,10 +2,12 @@
 
 import os, sys, re
 import subprocess
+import shlex
 
 # Settings:
 TEST_DIR = os.path.dirname(__file__) # test path (is script path)
 DISC = os.path.join(TEST_DIR, "../boot-cpp/bin/disc") # the compiler executable
+DISC_ARGS = [ "-parse" ]
 LIBDIR = os.path.join(TEST_DIR, "../boot-cpp/bin/") # libraries e.g. runtime
 OBJDIR = os.path.join(TEST_DIR, ".objdis") # object files for test compilation
 BINDIR = os.path.join(TEST_DIR, ".testbin") # test binaries
@@ -18,9 +20,18 @@ WARNING = '\033[93m'
 FAIL = '\033[91m'
 ENDC = '\033[0m'
 
-SPECDESC = 'Desc'
-SPECCOMPRESULT = 'CompileResult'
-SPECRUNRESULT = 'RunResult'
+# spec fields:
+SPECDESC = 'desc'
+SPECCOMPCMD = 'compile-cmd'
+SPECCOMPRESULT = 'compile-result'
+SPECRUNCMD = 'run-cmd'
+SPECRUNRESULT = 'run-result'
+#run-env
+#cmd-env
+
+#output check
+#std-cout
+#std-err
 
 # -----------------------------------------------------------------------------
 # Main Function
@@ -65,7 +76,13 @@ def extractTestSpec(testfile):
     for line in file:
         entry = specMatcher.search(line)
         if entry :
-            spec[entry.group('key').strip()] = entry.group('value').strip()
+            key = entry.group('key').strip()
+            value = entry.group('value').strip()
+            #special type stdout/stderr!!!! -> create big string
+            if key in spec:
+                spec[key] += '\n'+value
+            else:
+                spec[key] = value
              
     file.close()  
     return spec
@@ -78,13 +95,12 @@ def compileTest(spec, testfile):
         binname = os.path.basename(testfile);
         binname = binname.replace('.', '_')
         binname += '_bin'
-        # create command string
-        cmd = [DISC]
-        cmd.append(testfile)
-        cmd.append("-o")
-        cmd.append(os.path.join(BINDIR, binname))
+        # create compile command string
+        #{disc} -parse {srcfile} -o {outname}
+        cmd_str = spec[SPECCOMPCMD].format(disc=DISC, srcfile=testfile, outname=os.path.join(BINDIR, binname))
+        cmd = shlex.split(cmd_str)
+        
         #print(cmd)
-        # disc file -o outfile
         fnull = open(os.devnull, 'w')
         ret = subprocess.call(cmd, stdout = fnull) #stdout = fnull
         fnull.close()
@@ -113,7 +129,7 @@ def compileTest(spec, testfile):
                 write(color, "Unkown Result: {0}".format(ret));
            
             if ret == 0:
-				#TODO check if file exists
+                #TODO check if file exists
                 return os.path.join(BINDIR, binname)
             else:
                 return None
@@ -121,6 +137,10 @@ def compileTest(spec, testfile):
         else:
             write(WARNING, "Missing Spec (Result: {0})".format(ret));
         #return binary at success
+        return None
+    except KeyError as e:
+        sys.stdout.write(testfile);
+        sys.stdout.write("\nMissing spec key: {0}\n".format(e));
         return None
     except OSError:
         #return null?

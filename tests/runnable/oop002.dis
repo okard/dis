@@ -10,7 +10,7 @@ obj foo
 {
     var i : int32 = 0;
 
-    this(i int32)
+    this(i : int32)
     {
         this.i = i;
     }
