@@ -44,12 +44,13 @@ enum D : uint8
 
 enum E
 {
-	A(~i8)
+	A(~i8),
+	B(u8)
 }
 
 //complex enum
 enum F
 {
-    A(name: int8),
-    B(id: uint8, fid: int8)
+    A(name: i8),
+    B(id: u8, fid: i8)
 }

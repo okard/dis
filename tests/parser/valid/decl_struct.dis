@@ -1,0 +1,47 @@
+//# desc: Declaration - Structs
+//# type: Runnable
+//# compile-cmd: {disc} -parse {srcfile} -o {outname}
+//# compile-result: 0
+//# run-cmd: {exc}
+//# run-result: 0
+
+//empty struct
+struct a;
+
+//empty struct2
+struct b
+{
+}
+
+//struct with one field
+struct c
+{
+	a: i8
+}
+
+//struct with multiple fields
+struct d
+{
+	a: i8,
+	b: i8
+}
+
+//struct inheritance
+struct dd : d
+{
+	c: i8
+}
+
+//template struct
+struct e(T)
+{
+	a: T
+}
+
+
+//required main
+def main
+{
+	
+}
+
