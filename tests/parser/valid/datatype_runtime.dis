@@ -9,19 +9,19 @@ package tests.parser.valid.datatype_runtime;
 
 //Array
 
-var a : []uint8;
+var a : []u8;
 
 //Map
 
-var b : [int8]int8;
+var b : [i8]i8;
 
 //Set
 
-var c : [int8];
+var c : [i8];
 
 //String
 
 var d : string;
 
 // function types
-var e : def(int8, uint8): int8;
+var e : def(i8, u8): i8;

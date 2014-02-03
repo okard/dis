@@ -23,25 +23,8 @@
 ## Struct/Unions/Aliases/Delegate/Variants/Enum/Arrays
 
 
-## Classes
-	
-	"obj" 'name' [ "(" <obj_tpl> ")" ] <body_class>
-	
-	obj foo
-	{
-		priv var counter: uint8 = 0;
-		
-		pub def print()
-		{
-			writeln("Counter %d", counter);
-			counter++;
-		}
-	}
-	
-
 ## Trait
 	"trait" 'name' 
-	
 	
 	trait Printable
 	{

@@ -8,15 +8,15 @@
 package tests.parser.valid.datatype_primary;
 
 //simple builtin primary types (ident)
-var a : int8;
+var a : i8;
 
 //uint8, int16, uint16, int32, uint32, int64, uint64
 
 //pointer raw, ref, owned
 
-var p : ~int8;          //owned ptr
-var p2 : &int8 = &p;    //borrowed ptr
-var p3 : *int8;         //raw ptr
+var p : ~i8;          //owned ptr
+var p2 : &i8 = &p;    //borrowed ptr
+var p3 : *i8;         //raw ptr
 
 //concat types
 //-foo.bar.func

@@ -11,9 +11,9 @@ For dis as a native language has a common set of primitive data types showed by 
 * Boolean: 
 	- bool
 	
-* Numbers: 
-	- Signed Numbers: 	int8,int16,int32,int64, 
-	- Unsigned Numbers:	uint8,uint16,uint32,uint64
+* Numbers: (flaged with signed/unsigned and bit length)
+	- Signed Numbers: 	i8,i16,i32,i64, 
+	- Unsigned Numbers:	u8,u16,u32,u64
 
 * Floating Point Numbers:
 	- float  (IEEE 754)
@@ -27,6 +27,9 @@ For dis as a native language has a common set of primitive data types showed by 
 
 * delegates
   delegates are a special type of a function pointer and can contain the object context when points to a class function or a function which requires a memory context like lambdas
+
+* closures
+  similiar to delegates containts an enviroment pointer to work in
 	
 ### Runtime Types
 
@@ -106,14 +109,14 @@ Dis should have a garbage collector, but has the freedom to choose how heap obje
 
 Classes:
 
-    obj myobj{};
+    struct myobj{};
 
     var x : myobj = myobj();        //stack allocated
     var y : ref myobj = myobj();    //heap allocated
     
     var x : myobj;  //stack allocated (Copy Constructor Calls)
     var x : &myobj; //reference type GC allocated
-    var x : *myobj; //raw ptr
+    var x : *myobj; //raw ptr unsafe
 
     //Implicit typing
     def bar(x) = x;

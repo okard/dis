@@ -1,0 +1,15 @@
+
+
+
+//unary-expr
+// ! * &
+
+let a :i8  = !0;
+
+
+
+
+def main
+{
+	
+}

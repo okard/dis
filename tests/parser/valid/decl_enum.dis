@@ -42,8 +42,13 @@ enum D : uint8
     C = 1 << 2
 }
 
+enum E
+{
+	A(~i8)
+}
+
 //complex enum
-enum E 
+enum F
 {
     A(name: int8),
     B(id: uint8, fid: int8)
