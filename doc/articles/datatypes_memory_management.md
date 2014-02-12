@@ -16,8 +16,8 @@ For dis as a native language has a common set of primitive data types showed by 
 	- Unsigned Numbers:	u8,u16,u32,u64
 
 * Floating Point Numbers:
-	- float  (IEEE 754)
-	- double (IEEE 754)
+	- f32 (IEEE 754)
+	- f64 (IEEE 754)
 	
 * Pointers
 	- Unsafe: *

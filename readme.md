@@ -16,6 +16,9 @@
 	# set push url
 	$ git remote set-url --push origin <url>
 	
+	# push all
+	$ git push --recurse-submodules=on-demand 
+	
 ## Repository Structure
 
 * boot-d/
