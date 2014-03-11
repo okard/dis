@@ -9,17 +9,27 @@ All stuff related to compile time access using the symbol **$**
 
 ## Access to general compile time informations
 
-    $ - Compile Time Object
+    $ - Compile Time Stuff
 
-Scope Context Properties:
+
+
+## Scope Context Properties (Statement/Expression Layer)
 
     $File - Current File Name (Full path)
     $Line - Current Line
     $Col - Current Column
     $Decl - Current Declaration (String)
+    
+    
+    Alternative Object Model
+    
+    $Decl
+    $Source.File.Path
+    $Source.Col
+    $Source.Line
 
 
-## Access compile time informations for source code elements
+## Access compile time informations for source code elements (Statement/Expression Layer)
 
     $(expr) - Compile Time Access Call Expression
 
@@ -72,6 +82,31 @@ Example
 
     $$fak(5) - Calling fak(5) at compile time
     
+    
+## Mixin Functions
+
+	#[mixin]
+	def adder() = x++;
+
+	def main()
+	{
+		var x = 0;
+		$$adder();
+	}
+    
+    
+## Mixin Function for creating source 
+
+	def create() : $Ast.Stmt
+	{
+		return ~$Ast.ReturnStmt();
+	}
+	
+	def foo()
+	{
+		$$create();
+	}
+	
 
 ## Special Functions
 
@@ -79,6 +114,28 @@ Include the file as binary data
 
 	var data = $.include_bin(path);
 			   $include_bin(path);
+			   $Utils.include_binary("foo.txt");
+			   
+
+## Overview
+
+* Expression
+	- $Decl
+	- $Source
+	- $Source.File
+	- $$<call>
+	
+* Statement
+	- identical to expression (statement expression)
+	
+* Declaration
+	- $$<call>
+	
+* Types
+	- $Ast.Expr.If
+	- $Ast.Stmt.Return
+	
+
 
 ## Internal Structure
 

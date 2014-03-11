@@ -9,11 +9,11 @@ package tests.parser.valid.expr_literal;
 
 
 //int
-var i0 = 0;
+let i0 = 0;
 var i1 = 7893123;
 
 //float
-var f0 = 0.5;
+let f0 = 0.5;
 var f1 = 673.123;
 
 //binary
@@ -22,7 +22,7 @@ var b1= 0b001;
 
 //hex
 var h0 = 0xff;
-var h1 = 0x00;
+let h1 = 0x00;
 var h2 = 0xb5;
 
 //string
