@@ -5,8 +5,6 @@
 //# run-cmd: {exc}
 //# run-result: 0
 
-package tests.parser.valid.decl_instance;
-
 
 //basic (type required for semantic)
 var a : i8;

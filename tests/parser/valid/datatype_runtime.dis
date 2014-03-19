@@ -5,8 +5,6 @@
 //# run-cmd: {exc}
 //# run-result: 0
 
-package tests.parser.valid.datatype_runtime;
-
 //Array
 
 var a : []u8;

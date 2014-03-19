@@ -5,8 +5,6 @@
 //# run-cmd: {exc}
 //# run-result: 0
 
-package tests.parser.valid.expr_binary;
-
 
 //simple test all operator
 

@@ -135,7 +135,16 @@ Include the file as binary data
 	- $Ast.Expr.If
 	- $Ast.Stmt.Return
 	
+## AST modify vs Code Generation
 
+* AST modify
+	Work directly with Ast Represtion, can create new nodes etc
+
+* Code Generation
+	Create a pattern which can access compile time information
+	- $for // deliver stmt[]/expr[]
+	- $if  // deliver stmt[]/expr[]
+	- ${}  // return ast node 
 
 ## Internal Structure
 

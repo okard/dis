@@ -5,9 +5,6 @@
 //# run-cmd: {exc}
 //# run-result: 0
 
-package tests.parser.valid.decl_enum;
-
-
 //simple
 enum A
 {

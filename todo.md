@@ -13,16 +13,26 @@
 * Mixins (Special Inlined Functions)
 * Keyword "_" for placeholdings (explicit unused) etc?
 * Documentation
+* Inline Asm 
 
 ## boot-cpp
 
 * Remove complete object stuff
 * Implement trait handling
-* Implement lookup stuff in parser not in lexer
+* Implement lookup stuff in parser not in lexer PARTIAL
 * Improve error handling, eof and try parse stuff
 	- See dis/include/ParserError.hpp
 * Signal/Slot Parser Events/Control Layer
+	- Improve Line/Column/OffsetStart/OffsetEnd Handling in Parser <-> Lexer
 * Implement DocComments
+	- Lexing
+	- Parsing
 * Implement JSON/XML Output for Documentation Generation
 * Delete boot-d
+* get to state to test CTE stuff in interpreter
 
+## Other
+
+* clean up doc/articles/ 
+	- naming scheme for files?
+	- split types / memory mangement

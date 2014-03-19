@@ -5,8 +5,6 @@
 //# run-cmd: {exc}
 //# run-result: 0
 
-package tests.parser.valid.datatype_primary;
-
 //simple builtin primary types (ident)
 var a : i8;
 
@@ -16,7 +14,7 @@ var a : i8;
 
 var p : ~i8;          //owned ptr
 var p2 : &i8 = &p;    //borrowed ptr
-var p3 : *i8;         //raw ptr
+var p3 : *i8;         //raw ptr  = $(p).ptr?
 
 //concat types
 //-foo.bar.func
