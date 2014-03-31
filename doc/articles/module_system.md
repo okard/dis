@@ -51,6 +51,8 @@
 	//syntax to directly import files?
 		//cte macro?
 	    use("file.dis");
+	    
+	//link external crates?
 
 # Modules and Imports
 

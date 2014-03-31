@@ -1,10 +1,8 @@
 
-//# Desc: main without body
-//# CompileResult: 3
-//# RunResult: 0
-//# Type: Fail
+//# desc: Error - Semantic
+//# type: Fail
+//# compile-cmd: {disc} {srcfile} -o {outname}
+//# compile-result: -3
 
-package tests.fails.main001;
-
-def main
+def main;
 

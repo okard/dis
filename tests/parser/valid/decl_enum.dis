@@ -14,7 +14,7 @@ enum A
 }
 
 //with type
-enum B : uint8
+enum B : u8
 {
     ABC,
     BCD,
@@ -32,7 +32,7 @@ enum C
 
 
 //type with values
-enum D : uint8
+enum D : u8
 {
     A = 1 << 0,
     B = 1 << 1,

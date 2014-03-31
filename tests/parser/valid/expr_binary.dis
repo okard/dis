@@ -10,3 +10,23 @@
 
 
 //test concatenation of expressions (only binary expr)
+
+
+def main
+{
+	var a = 0;
+	
+	//Arithmetic
+	a = a + 1;
+	a = a - 2;
+	a = a * 2;
+	a = a / 2;
+	a = a % 1;
+	
+	//Arithmetic Compound Assign
+	a += 2;
+	a -= 1;
+	a *= 2;
+	a /= 2;
+	a %= 1;
+}

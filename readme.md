@@ -20,10 +20,6 @@
 	$ git push --recurse-submodules=on-demand 
 	
 ## Repository Structure
-
-* boot-d/
-
-    Bootstrap Compiler written in D (deprecated)
     
 * boot-cpp/
 	
@@ -32,14 +28,12 @@
 * doc/
     
     Documentation
-    
-* rt/
-
-    Selfhosted Runtime
-    
-* disc/
-    
-    Selfhosted Compiler
+  
+* mod/libstd	standard library
+* mod/runtime 	selfhosted runtime
+* mod/disc		selfhosted compiler
+* mod/libdis 	selfhosted libdis
+* mod/libplf 	selfhosted libplf
     
 * tests/
     

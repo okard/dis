@@ -14,10 +14,12 @@
 * Keyword "_" for placeholdings (explicit unused) etc?
 * Documentation
 * Inline Asm 
+* Trait Implementation/ Extension Methods best way?
+* User String literals?
 
 ## boot-cpp
 
-* Remove complete object stuff
+* Remove complete object stuff (really?)
 * Implement trait handling
 * Implement lookup stuff in parser not in lexer PARTIAL
 * Improve error handling, eof and try parse stuff
@@ -28,11 +30,17 @@
 	- Lexing
 	- Parsing
 * Implement JSON/XML Output for Documentation Generation
-* Delete boot-d
 * get to state to test CTE stuff in interpreter
+* add a quick type resolving in parser for builtin types
+
+## tests
+* update old tests
+* create lexer tests
+* extend test runner script
 
 ## Other
 
 * clean up doc/articles/ 
 	- naming scheme for files?
 	- split types / memory mangement
+* think about directory structure (with src/ component folders etc)

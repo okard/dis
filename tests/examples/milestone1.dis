@@ -4,9 +4,9 @@
 //# RunResult: 0
 //# Type: Runnable
 
-package tests.examples.milestone1;
+#[extern("C")]
+def printf(format: char*, T...): int;
 
-def(C) printf(format: char*, T...): int;
 
 def main
 {
