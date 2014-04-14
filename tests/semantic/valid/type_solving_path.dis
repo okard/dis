@@ -1,0 +1,55 @@
+
+//testing normal path solving
+
+// path of declaration types in module scope
+// binary access expression
+// static instances and stuff?
+
+
+mod ma 
+{
+	struct sc
+	{
+		
+	}
+	
+	mod mb 
+	{
+		struct sa
+		{
+			sa_a : i8
+		}
+		
+		struct sb 
+		{
+			sb_a : sa
+		}
+		
+		//static stuff?
+		
+		mod mc 
+		{
+			def fa()
+			{
+				
+			}
+		}
+		
+	}
+	
+	mod md
+	{
+		
+		def fb()
+		{
+		}
+	}
+}
+
+
+def main
+{
+	var a_ : ma::mb::sb;
+	var r : i8 = a_.sb_a.sa_a;
+}
+

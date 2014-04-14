@@ -6,19 +6,9 @@
 //# run-result: 0
 
 //Array
-
 var a : []u8;
 
-//Map
-
-var b : [i8]i8;
-
-//Set
-
-var c : [i8];
-
 //String
-
 var d : string;
 
 // function types

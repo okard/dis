@@ -4,3 +4,20 @@
 
 
 // abc(def(a) = asd);
+
+def test(func : def(u8) : u8)
+{
+	return func(5);
+}
+
+def test2(p, func, pp, ppp)
+{
+	return p + func(1) + pp + ppp;
+}
+
+def main
+{
+	let i = test(def(a) { return a + 5; });
+	let ii = test( def(a) = a + 5 );
+	let clj = test( def(a) = ii + 1);
+}

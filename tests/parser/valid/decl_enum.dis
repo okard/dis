@@ -39,15 +39,16 @@ enum D : u8
     C = 1 << 2
 }
 
+//tuple container type
 enum E
 {
-	A(~i8),
+	A(~i8),	
 	B(u8)
 }
 
-//complex enum
+//struct container type
 enum F
 {
-    A(name: i8),
-    B(id: u8, fid: i8)
+    A{name: i8},
+    B{id: u8, fid: i8}
 }

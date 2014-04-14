@@ -4,15 +4,18 @@
 //unary-expr
 // ! * &
 
-let a :i8 = !0;
+let a :bool = !false;
 let b :i8 = +1;
 let c :i8 = -1;
 
 let d :i8 = 1;
 let dd = &d;
 
+//bitwise
 
 def main
 {
+	
+
 
 }

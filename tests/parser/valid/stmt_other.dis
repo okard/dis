@@ -1,0 +1,19 @@
+
+
+//DeclStmt
+//ExprStmt
+//Unsafe
+
+
+def get()
+{
+	return 5;
+}
+
+
+def main
+{
+	unsafe {
+		let x = get();
+	}
+}

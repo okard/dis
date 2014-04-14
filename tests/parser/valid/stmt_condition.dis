@@ -1,0 +1,19 @@
+
+
+
+//if
+//if - else
+//if - else if
+//if - else if - else
+
+
+//match
+	// match number
+	// match string
+	// match enum variants
+
+def main
+{
+	if (true) {}
+	if (false) {} else {}
+}

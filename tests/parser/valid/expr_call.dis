@@ -4,3 +4,26 @@
 
 
 // foo(a:b); foo(a); foo(i); foo(<expr>);
+
+// named parameter? foo(x: 5);
+
+def a
+{
+	
+}
+
+def b(x: i8)
+{
+	
+}
+
+
+def main
+{
+	a();
+	b(5);
+	
+	let i = 4;
+	b(i);
+	b(5 * i + 8);
+}

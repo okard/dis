@@ -1,8 +1,0 @@
-
-//# desc: Error - Semantic
-//# type: Fail
-//# compile-cmd: {disc} {srcfile} -o {outname}
-//# compile-result: -3
-
-def main;
-
