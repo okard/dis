@@ -3,6 +3,13 @@
 //template types
 
 
+//test for template instantion and template specialization order
+	//def foo(a)
+	//call foo(8 as i8)
+	//def foo(a : i8)
+	//pay attention with different module/namespace scopes and so on
+	
+
 def main
 {
 	

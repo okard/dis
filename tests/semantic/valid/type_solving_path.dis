@@ -5,6 +5,11 @@
 // binary access expression
 // static instances and stuff?
 
+// type and path solving
+	//path solving -> expression can have paths (modules) and access stuff (static stuff, functions, ....)
+	
+	//type solving -> datatype paths (modules) 
+	
 
 mod ma 
 {
@@ -49,7 +54,17 @@ mod ma
 
 def main
 {
+	//pure module path solve
 	var a_ : ma::mb::sb;
+	
+	//a access path
 	var r : i8 = a_.sb_a.sa_a;
+	
+	//combined
+	
+	//static function calls
+	//static variables
+	
+	//....
 }
 

@@ -18,6 +18,9 @@
 * User String literals?
 * Managed Arrays? stack/heap allocation/growable
 * Clean up syntax
+* Make clear when where ';' var decl in loops ...
+* function definition without name? -> func decl vs lambda expr
+* function and trait syntax -> def trait::func(self: type) ???
 
 ## boot-cpp
 

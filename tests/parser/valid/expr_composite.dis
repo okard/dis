@@ -10,3 +10,5 @@
 // (expr)
 
 //access + mod path "moda::foobar.test();"
+
+//template calls foo!i8() foo!(i8, i16)();

@@ -13,10 +13,14 @@ def get()
 
 def main
 {
+	//unsafe block stmt
 	unsafe {
 		let x = get();
 	}
 
+	//decl statement
 	let a = 5;
+	
+	//expression statement
 	a = 1 * 2 + 4 + (3*4) / 7 % 100 - 5;
 }

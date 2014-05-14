@@ -88,8 +88,14 @@ prot def w()
 
 // unsafe pub def abc();
 
+//cte function
+
+def $x() 
+{ 
+}
+
 //extension functions
-//def x(this:~uint8) {}
+//def yz(this:~uint8) {}
 
 //main funtion to satisfy semantic check for existing main
 def main

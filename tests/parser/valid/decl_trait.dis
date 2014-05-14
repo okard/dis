@@ -1,0 +1,28 @@
+//# desc: Declaration - Trait
+//# type: Runnable
+//# compile-cmd: {disc} -parse {srcfile} -o {outname}
+//# compile-result: 0
+//# run-cmd: {exc}
+//# run-result: 0
+
+
+trait A
+{
+	def a()
+	{
+	}
+}
+
+
+trait B(T)
+{
+	def b() 
+	{
+	}
+}
+
+
+def main
+{
+	
+}
