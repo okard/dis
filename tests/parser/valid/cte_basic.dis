@@ -1,0 +1,50 @@
+
+//compile time execution parse tests
+
+
+//Compile Time Information Access 
+
+// Scope Information:
+
+	// $Decl.Name
+	// $Decl.Name
+	// $Decl.Type
+
+	// $Source.File.Path
+	// $Source.Col
+	// $Source.Line
+	
+
+// Individual Choice of Information (not directly bound to scope):
+
+	// $(<expr>) 
+
+	// $(<expr>).typeof
+	// $(<expr>).sizeof
+	
+	// $(<decl>).fqn //full qualified name
+
+//pure compile time functions:
+
+	// def $func
+
+// compile time types:
+
+	// def foo( a : $Ast.Decl.Func) 
+
+//mixins or definitly cte calls:
+	//mixins return a compile time type (ast node)
+	//cte calls return a runtime type
+
+	// $$func() 
+
+
+// condition/loops with cte:
+
+	//$if
+	//$match
+	//$for
+	
+
+
+

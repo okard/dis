@@ -16,6 +16,8 @@
 * Inline Asm 
 * Trait Implementation/ Extension Methods best way?
 * User String literals?
+* Managed Arrays? stack/heap allocation/growable
+* Clean up syntax
 
 ## boot-cpp
 

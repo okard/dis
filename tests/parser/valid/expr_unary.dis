@@ -4,14 +4,24 @@
 //unary-expr
 // ! * &
 
-let a :bool = !false;
-let b :i8 = +1;
-let c :i8 = -1;
+let a :bool = !false;	//logical neg
+let b :i8 = +1;			//prefix pos
+let c :i8 = -1;			//prefix neg
 
 let d :i8 = 1;
-let dd = &d;
+let dd = &d;			//address
 
-//bitwise
+//bitwise:
+
+
+//template calls:
+// foo!abc(asd)
+// foo!(abc)(asd)
+
+//array:
+
+//foo[i]
+
 
 def main
 {

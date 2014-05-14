@@ -86,6 +86,8 @@ prot def w()
 {
 }
 
+// unsafe pub def abc();
+
 //extension functions
 //def x(this:~uint8) {}
 

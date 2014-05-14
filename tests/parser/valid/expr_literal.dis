@@ -22,5 +22,10 @@ var h0 = 0xff;
 let h1 = 0x00;
 var h2 = 0xb5;
 
+//bool
+var bl0 = true;
+var bl1 = false;
+
 //string
 var s0 = "abc dead";
+

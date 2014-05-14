@@ -15,6 +15,7 @@ var a : i8;
 var p : ~i8;          //owned ptr
 var p2 : &i8 = &p;    //borrowed ptr
 var p3 : *i8;         //raw ptr  = $(p).ptr?
+					   //Only allowed in unsafe decl
 
 //concat types
 //-foo.bar.func

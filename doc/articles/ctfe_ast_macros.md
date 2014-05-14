@@ -15,15 +15,16 @@ All stuff related to compile time access using the symbol **$**
 
 ## Scope Context Properties (Statement/Expression Layer)
 
-    $File - Current File Name (Full path)
-    $Line - Current Line
-    $Col - Current Column
-    $Decl - Current Declaration (String)
+Object Model
     
-    
-    Alternative Object Model
+Current Declaration Scope:
     
     $Decl
+    $Decl.Name
+    $Decl.Type
+
+Current Source:
+    
     $Source.File.Path
     $Source.Col
     $Source.Line

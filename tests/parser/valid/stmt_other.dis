@@ -16,4 +16,7 @@ def main
 	unsafe {
 		let x = get();
 	}
+
+	let a = 5;
+	a = 1 * 2 + 4 + (3*4) / 7 % 100 - 5;
 }

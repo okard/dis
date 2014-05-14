@@ -8,6 +8,9 @@
 
 // basic templates
 
+//mod path
+//var x : moda::modb::foo;
+
 // composed nested templates
 
 // type constraints

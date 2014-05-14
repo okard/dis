@@ -1,12 +1,5 @@
 
 
-
-//if
-//if - else
-//if - else if
-//if - else if - else
-
-
 //match
 	// match number
 	// match string
@@ -14,6 +7,12 @@
 
 def main
 {
+	//if
 	if (true) {}
+	//if - else
 	if (false) {} else {}
+	//if - else if
+	if (false) { } else if (true) { }
+	//if - else if - else
+	if(false) { } else if (true) {} else {} 
 }
