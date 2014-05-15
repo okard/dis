@@ -6,6 +6,7 @@
 //# run-result: 0
 
 
+//simple
 trait A
 {
 	def a()
@@ -13,12 +14,34 @@ trait A
 	}
 }
 
-
+//template 1 param
 trait B(T)
 {
 	def b() 
 	{
 	}
+}
+
+//template multiple params
+trait BB(T,S)
+{
+}
+
+//template params with type
+
+
+//simple inheritance
+trait C : A
+{
+	def c()
+	{
+	}
+}
+
+//complex inheritance
+trait D : A, B!i8, C
+{
+	
 }
 
 

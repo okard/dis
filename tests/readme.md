@@ -15,6 +15,7 @@
 	* error-parser //parsing fails
 	* error-sem //parsing ok but semantic fails
 	* valid //complete valid
+			//should be there for all parsing paths
 	
 * semantic tests
 	* error

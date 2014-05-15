@@ -6,6 +6,14 @@
 
 // Scope Information:
 
+def test
+{
+	let name = $Decl.Name;
+	let ty = $Decl.Type;
+	let path = $Source.File.Path;
+	let col = $Source.Col;
+	let line = $Source.Line;
+	
 	// $Decl.Name
 	// $Decl.Name
 	// $Decl.Type
@@ -13,38 +21,87 @@
 	// $Source.File.Path
 	// $Source.Col
 	// $Source.Line
-	
+}
+
 
 // Individual Choice of Information (not directly bound to scope):
 
+def test_ct_info
+{
 	// $(<expr>) 
+	
+	let name = $(test_ct_info);
 
 	// $(<expr>).typeof
 	// $(<expr>).sizeof
 	
 	// $(<decl>).fqn //full qualified name
+	
+}
 
-//pure compile time functions:
-
-	// def $func
 
 // compile time types:
-
 	// def foo( a : $Ast.Decl.Func) 
+	
+def test_cte_types( a : $Ast.Decl.Func)
+{
+	let node : $Ast.Node = a;
+	
+}
+
+//pure compile time functions:
+	// def $func
+	
+def $foo() : $Ast.Node
+{
+	//$return 
+}
+
 
 //mixins or definitly cte calls:
 	//mixins return a compile time type (ast node)
 	//cte calls return a runtime type
 
 	// $$func() 
+	
+def $value = 6;
+
+def test_mixin()
+{
+	$$foo();
+	
+	let a = $$value();
+}
 
 
 // condition/loops with cte:
 
-	//$if
-	//$match
-	//$for
+def test_ct_condition
+{
+	//ct values?
+	//let $foo = 
 	
+	// $ifs
+	$if(true)
+	{
+	}
+	
+	// $match 
+	let name = $Ast.Decl.Name;
+	$match(name)
+	{
+		
+	}
+
+	//$for
+	//$while
+}
+
+
+//main function
+def main
+{
+}
 
 
 

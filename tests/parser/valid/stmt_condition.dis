@@ -1,9 +1,5 @@
 
 
-//match
-	// match number
-	// match string
-	// match enum variants
 
 def main
 {
@@ -15,4 +11,17 @@ def main
 	if (false) { } else if (true) { }
 	//if - else if - else
 	if(false) { } else if (true) {} else {} 
+	
+	
+	//match
+	// match number
+	// match string
+	// match enum variants
+	
+	let i = 7;
+	match(i)
+	{
+		
+	}
+
 }
