@@ -1,0 +1,25 @@
+
+// test attributes/annotations
+
+//TODO syntax?
+	// functions or structs?
+
+//TODO user defined
+
+//TODO inline? def abc { #[foo]; }
+
+
+//condional compilation?
+#[is($Target.OS == "Linux")]
+def foo
+{
+	
+}
+
+//support for structs/traits/functions something like def foo : if <expr>, 
+
+
+#[test]
+def tt
+{
+}

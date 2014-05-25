@@ -23,6 +23,9 @@ mod test
 mod test2; //not compileable but parseable
 
 
+// allow templated modules?
+
+
 def main()
 {
 	

@@ -38,6 +38,12 @@ struct e(T)
 	a: T
 }
 
+struct e(T,S)
+{
+	a: T,
+	b: S
+}
+
 
 //required main
 def main

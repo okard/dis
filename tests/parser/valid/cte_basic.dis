@@ -43,16 +43,16 @@ def test_ct_info
 // compile time types:
 	// def foo( a : $Ast.Decl.Func) 
 	
-def test_cte_types( a : $Ast.Decl.Func)
+def test_cte_types( a : $Ast::Decl::Func)
 {
-	let node : $Ast.Node = a;
+	let node : $Ast::Node = a;
 	
 }
 
 //pure compile time functions:
 	// def $func
 	
-def $foo() : $Ast.Node
+def $foo() : $Ast::Node
 {
 	//$return 
 }
@@ -87,7 +87,7 @@ def test_ct_condition
 	}
 	
 	// $match 
-	let name = $Ast.Decl.Name;
+	let name = $Ast.CurrentDecl.Name;
 	$match(name)
 	{
 		

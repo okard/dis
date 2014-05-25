@@ -12,7 +12,8 @@ def main
 	
 	while(false) //while false { } ?
 	{
-		
+		continue;
+		break;
 	}
 	
 	//DoWhile

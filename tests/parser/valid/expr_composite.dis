@@ -1,6 +1,13 @@
 
 
 
+mod moda {
+	struct foo(T)
+	{
+		static a : [10]T; //static?
+	}
+}
+
 //mix all expressions
 
 //unary
@@ -12,3 +19,16 @@
 //access + mod path "moda::foobar.test();"
 
 //template calls foo!i8() foo!(i8, i16)();
+
+// array/index  foo!i8.a[1] 
+
+def get(x)
+{
+	return x;
+}
+
+
+def main
+{
+	let a = moda::foo!i8.a[1] + get(5);
+}

@@ -6,12 +6,41 @@
 //# run-result: 0
 
 
-// basic templates
+mod moda 
+{
+	mod modb 
+	{
+		struct simple
+		{
+		}
+		
+		struct tpl(T)
+		{
+			
+		}
+		
+		struct tpl2(T,K)
+		{
+		}
+	}
+	
+}
 
 //mod path
-//var x : moda::modb::foo;
+var a : moda::modb::simple;
+
+// basic templates:
+
+var b : moda::modb::tpl!i8;
+var c :  moda::modb::tpl!(i8);
+var d : moda::modb:tpl2!(i8, i8);
+
+//root starting?
+// var e : ::moda::modb::simple;
 
 // composed nested templates
+	//tpl of tpl of tpl?
+		// moda::test!i8::foobar 
 
 // type constraints
 

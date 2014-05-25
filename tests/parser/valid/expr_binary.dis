@@ -15,6 +15,7 @@
 def main
 {
 	var a = 0;
+	let b = true;
 	
 	//Arithmetic
 	a = a + 1;
@@ -29,4 +30,18 @@ def main
 	a *= 2;
 	a /= 2;
 	a %= 1;
+	
+	//Boolean
+	b = a != a;
+	b = a == a;
+	b = a < a;
+	b = a > a;
+	b = a <= a;
+	b = a >= a;
+	b = true && false;
+	b = false || false;
+	
+	
+	//Bitwise
+	
 }

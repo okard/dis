@@ -6,7 +6,9 @@
 //# run-result: 0
 
 //Array
-var a : []u8;
+var a : []u8;	//dynamic
+
+var b : [10]u8; //fixed
 
 //String
 var d : string;
