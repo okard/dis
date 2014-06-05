@@ -52,3 +52,9 @@ enum F
     A{name: i8},
     B{id: u8, fid: i8}
 }
+
+
+
+//templated enum????
+
+//enum G(T) 

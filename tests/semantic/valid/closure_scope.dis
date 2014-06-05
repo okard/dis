@@ -1,0 +1,24 @@
+
+
+// test closure scoping 
+	// with scope
+	// with scope returning
+		//create a boxed env for function?
+	// free anonymous function
+
+def test_a
+{
+	let i = 5;
+	return def() = i * 10;
+}
+
+def test_b
+{
+	return def(a) = a*a;
+}
+
+
+def main
+{
+	
+}

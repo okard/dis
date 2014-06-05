@@ -14,7 +14,8 @@ def get()
 def main
 {
 	//unsafe block stmt
-	unsafe {
+	unsafe 
+	{
 		let x = get();
 	}
 

@@ -9,8 +9,14 @@ def main
 	}
 	
 	//Foreach
+	for(var i: range(5,10))
+	{
+	}
 	
-	while(false) //while false { } ?
+	
+	// While Stmt
+	
+	while false
 	{
 		continue;
 		break;

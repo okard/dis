@@ -1,0 +1,54 @@
+
+
+//expr conditions
+
+
+
+def test_if
+{
+		//if
+	if true {}
+	
+	//if - else
+	if false {} else {}
+	//if - else if
+	if false { } else if true { }
+	
+	//if - else if - else
+	if false { } else if true {} else {} 
+	
+}
+
+def test_if_expr
+{
+	let b = true;
+	let i = if b { return 0; } else { return 5; }
+	
+	// let i = if b {0} else {5} 
+}
+
+def test_match
+{
+	//match
+	// values
+		//number, string
+	// structs
+	//enums
+	
+	// match enum variants
+	
+	let i = 7;
+	match i
+	{
+		//which patterns?
+		//pat => 
+	}
+}
+
+
+def main
+{
+	test_if();
+	test_if_expr();
+	test_match();
+}

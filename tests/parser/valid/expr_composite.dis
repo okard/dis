@@ -1,4 +1,6 @@
 
+//test compostion of expressions
+	// mix all type of expressions
 
 
 mod moda {
@@ -7,14 +9,19 @@ mod moda {
 		static a : [10]T; //static?
 	}
 }
-
-//mix all expressions
-
 //unary
 //binary
 //tenary
 //call
 // (expr)
+// if, match
+// compile time
+// templates
+// arrays/index
+
+// enum index?
+	// Enum::Value
+	//???? -> Enum!i8::Value
 
 //access + mod path "moda::foobar.test();"
 

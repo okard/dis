@@ -22,6 +22,8 @@
 * Managed Arrays? stack/heap allocation/growable
 	- General Memory Handling 
 	- $RT.MemHandler = adasd //compile time configuration?
+		- Startup initialization at runtime???
+		- Data Segments in Binary?
 * Clean up syntax
 	- Clean consistent looking
 	- Also Parser Cleanup and optimize
@@ -29,8 +31,12 @@
 	- Parser looking garbage 
 * function definition without name? -> func decl vs lambda expr
 	- Parser looking strange 
-* remove () from If(){} ???
-
+* remove () from If(){} YES DONE
+* statement labels?? -> for break/continue/(break?)/etc "abc_loop": for() { break "abc_loop"; }
+* Variadic Templates
+* Match Pattern Syntax
+* reintroduce ref keyword?
+* Fix semicolon stuff
 
 ## boot-cpp
 
@@ -57,6 +63,7 @@
 	- Use LLVM JIT?
 * Pure UTF8 Source Code Files 
 	- Fix Lexer
+* Move datatype parsing to kind of precedence parsing
 
 ## tests
 * update old tests

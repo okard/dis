@@ -38,6 +38,7 @@ struct e(T)
 	a: T
 }
 
+//template struct with multiple tpl types
 struct e(T,S)
 {
 	a: T,
